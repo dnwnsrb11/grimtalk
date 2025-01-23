@@ -1,3 +1,4 @@
+import { Banner } from '@/components/mainPages/home/Banner';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -19,8 +20,7 @@ export const MainPage = () => {
           </div>
         </div>
         <div>
-          <h2>test</h2>
-          {/* 그림 태그 컴포넌트 */}
+          <Banner />
         </div>
         <div>
           <div>
