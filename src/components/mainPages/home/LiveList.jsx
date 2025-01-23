@@ -1,24 +1,34 @@
 import { useEffect } from 'react';
-import testImg from '@/assets/banner/BannerIMG.png';
+import testImg from '@/assets/banner/Test/TestImg.png';
+import testImg2 from '@/assets/banner/BannerIMG.png';
 
 export const LiveList = () => {
   return (
     <>
       <div>
-        <div>
-          <img src={testImg} alt="" />
+        <div className="relative min-h-[160px] overflow-hidden rounded-lg">
+          <div className="absolute left-[5%] top-[5%]">
+            <div className="inline-block rounded-full  bg-black bg-opacity-60 px-3 py-1">
+              <div className="flex items-center gap-1">
+                <div className="h-2 w-2 rounded-full bg-primary-color opacity-100">{/* 원 */}</div>
+                <p className="text-white">124</p>
+              </div>
+            </div>
+          </div>
+          <img src={testImg} alt="" className="h-full w-full object-cover" />
         </div>
         <div>
-          {/* 텍스트 구역 */}
-          <h4 className="text-lg leading-tight">이모티콘을 배오고 싶은 당신을 위한 재밌는 강의</h4>
-          <div className="flex items-center gap-3">
+          <h4 className="mt-2 text-lg leading-tight">
+            이모티콘을 배오고 싶은 당신을 위한 재밌는 강의
+          </h4>
+          <div className="mt-2 flex items-center gap-3 ">
             <h4 className="text-base font-bold">Name</h4>
             <div className="flex gap-1">
               <div className="inline-block rounded-full border bg-bg-gray-color px-3 py-1">
                 <p className="text-text-gray-color">일러스트</p>
               </div>
               <div className="inline-block rounded-full border bg-bg-gray-color px-3 py-1">
-                <p className="text-text-gray-color">일러스트</p>
+                <p className="text-text-gray-color">캐릭터</p>
               </div>
             </div>
           </div>
