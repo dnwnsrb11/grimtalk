@@ -1,9 +1,7 @@
 export const Banner = () => {
-    return (
-        <>
-        <div>
-            
-        </div>
-        </>
-    )
-}
+  return (
+    <>
+      <div></div>
+    </>
+  );
+};
