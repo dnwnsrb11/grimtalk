@@ -1,11 +1,23 @@
+import { LiveList } from '@/components/mainPages/home/LiveList';
+import { useState } from 'react';
+import { useEffect } from 'react';
+
 export const MainPage = () => {
+  const [LiveLists, setLiveLists] = useState([]);
   return (
     <>
       <div>
         <h2>
           인기 있는 <span>라이브</span>
         </h2>
-        <div>{/* 라이브 컴포넌트 */}</div>
+        <div>
+          <LiveList />
+          {/* {LiveLists.length === 0 ? (
+            <p>현재 진행중인 라이브가 없습니다.</p>
+          ) : (
+            LiveLists.map((list, index) => <LiveList />)
+          )} */}
+        </div>
       </div>
       <div>{/* 그림 태그 컴포넌트 */}</div>
       <div>
