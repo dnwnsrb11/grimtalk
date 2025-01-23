@@ -46,9 +46,9 @@ export const MainPage = () => {
             </div>
           </div>
         </div>
-        <div>
-          <h2>
-            <span>인기</span> 있는 강의
+        <div className="mt-[60px]">
+          <h2 className="mb-[15px] text-2xl font-bold">
+            <span className="text-primary-color">인기</span> 있는 강의
           </h2>
           <div className="mt-3 flex gap-3">
             {count.map((c, index) => (
