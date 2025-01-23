@@ -23,20 +23,26 @@ export const MainPage = () => {
         <div className="mt-[60px]">
           <Banner />
         </div>
-        <div>
-          <div>
-            <h2>
-              <span>인기</span> 강사
+        <div className="mb-[15px] mt-[60px] flex  gap-4">
+          <div className="w-[50%] ">
+            <h2 className="mb-[15px] text-2xl font-bold">
+              <span className="text-primary-color">인기</span> 강사
             </h2>
-            <div>
+            <div className="flex flex-col gap-4">
+              <PopularInstructor />
+              <PopularInstructor />
               <PopularInstructor />
             </div>
           </div>
-          <div>
-            <h2>
-              요즘 <span>뜨는</span> 강사
+          <div className="w-[50%] ">
+            <h2 className="mb-[15px] text-2xl font-bold">
+              요즘 <span className="text-primary-color">뜨는</span> 강사
             </h2>
-            <div>{/* 인기강사 */}</div>
+            <div className="flex flex-col gap-4">
+              <PopularInstructor />
+              <PopularInstructor />
+              <PopularInstructor />
+            </div>
           </div>
         </div>
         <div>
