@@ -1,5 +1,6 @@
 import { Banner } from '@/components/mainPages/home/Banner';
 import { LiveList } from '@/components/mainPages/home/LiveList';
+import { PopularInstructor } from '@/components/mainPages/home/PopularInstructor';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -19,7 +20,7 @@ export const MainPage = () => {
             ))}
           </div>
         </div>
-        <div>
+        <div className="mt-[60px]">
           <Banner />
         </div>
         <div>
@@ -27,7 +28,9 @@ export const MainPage = () => {
             <h2>
               <span>인기</span> 강사
             </h2>
-            <div>{/* 인기강사 */}</div>
+            <div>
+              <PopularInstructor />
+            </div>
           </div>
           <div>
             <h2>
