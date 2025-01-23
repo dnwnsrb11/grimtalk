@@ -4,20 +4,18 @@ import { useEffect } from 'react';
 
 export const MainPage = () => {
   const [LiveLists, setLiveLists] = useState([]);
+  const [count, setCount] = useState([1, 2, 3, 4]);
   return (
     <>
       <div>
-        <div className="border">
+        <div>
           <h2 className="text-2xl font-bold">
             인기 있는 <span className="text-primary-color">라이브</span>
           </h2>
-          <div>
-            <LiveList />
-            {/* {LiveLists.length === 0 ? (
-            <p>현재 진행중인 라이브가 없습니다.</p>
-          ) : (
-            LiveLists.map((list, index) => <LiveList />)
-          )} */}
+          <div className="flex gap-3">
+            {count.map((c, index) => (
+              <LiveList key={index} />
+            ))}
           </div>
         </div>
         <div>
