@@ -12,7 +12,7 @@ export const MainPage = () => {
           <h2 className="text-2xl font-bold">
             인기 있는 <span className="text-primary-color">라이브</span>
           </h2>
-          <div className="flex gap-3">
+          <div className="mt-3 flex gap-3">
             {count.map((c, index) => (
               <LiveList key={index} />
             ))}
