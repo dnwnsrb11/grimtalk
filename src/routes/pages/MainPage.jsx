@@ -1,4 +1,5 @@
 import { Banner } from '@/components/mainPages/home/Banner';
+import { Lecture } from '@/components/mainPages/home/Lecture';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { PopularInstructor } from '@/components/mainPages/home/PopularInstructor';
 import { useState } from 'react';
@@ -49,7 +50,11 @@ export const MainPage = () => {
           <h2>
             <span>인기</span> 있는 강의
           </h2>
-          <div>{/* 인기 있는 강사 컴포넌트 */}</div>
+          <div className="mt-3 flex gap-3">
+            {count.map((c, index) => (
+              <Lecture key={index} />
+            ))}
+          </div>
         </div>
       </div>
     </>
