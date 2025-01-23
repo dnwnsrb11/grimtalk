@@ -3,6 +3,7 @@ import { RootLayout } from '@/layouts/RootLayout';
 import { DemoPage } from '@/routes/pages/DemoPage';
 import { LoginPage } from '@/routes/pages/LoginPage';
 import { SignupPage } from '@/routes/pages/SignupPage';
+import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: '/signup',
         element: <SignupPage />,
+      },
+      {
+        path: '/signup-success',
+        element: <SignupSuccessPage />,
       },
     ],
   },
