@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 export const RootLayout = () => {
@@ -7,7 +8,7 @@ export const RootLayout = () => {
       <main className="col-span-10">
         <Outlet />
       </main>
-      <aside className="col-span-2" aria-hidden="true"></aside>
+      <div className="col-span-2"></div>
     </div>
   );
 };
