@@ -35,6 +35,66 @@ export const CategoryList = () => {
           </div>
           <h3>전체</h3>
         </div>
+        <div>
+          <div onClick={() => changeCategory('character')}>
+            {categoryName === 'character' ? (
+              <img src={characterActiveSVG} alt="" />
+            ) : (
+              <img src={characterDeactiveSVG} alt="" />
+            )}
+          </div>
+          <h3>캐릭터</h3>
+        </div>
+        <div>
+          <div onClick={() => changeCategory('emoticon')}>
+            {categoryName === 'emoticon' ? (
+              <img src={emoticonActiveSVG} alt="" />
+            ) : (
+              <img src={emoticonDeactiveSVG} alt="" />
+            )}
+          </div>
+          <h3>이모티콘</h3>
+        </div>
+        <div>
+          <div onClick={() => changeCategory('drawing')}>
+            {categoryName === 'drawing' ? (
+              <img src={drawingActiveSVG} alt="" />
+            ) : (
+              <img src={drawingDeactiveSVG} alt="" />
+            )}
+          </div>
+          <h3>드로잉</h3>
+        </div>
+        <div>
+          <div onClick={() => changeCategory('coloring')}>
+            {categoryName === 'coloring' ? (
+              <img src={coloringActiveSVG} alt="" />
+            ) : (
+              <img src={coloringDeactiveSVG} alt="" />
+            )}
+          </div>
+          <h3>전체</h3>
+        </div>
+        <div>
+          <div onClick={() => changeCategory('webtoon')}>
+            {categoryName === 'webtoon' ? (
+              <img src={webtoonActiveSVG} alt="" />
+            ) : (
+              <img src={webtoonDeactiveSVG} alt="" />
+            )}
+          </div>
+          <h3>웹툰</h3>
+        </div>
+        <div>
+          <div onClick={() => changeCategory('art')}>
+            {categoryName === 'art' ? (
+              <img src={artActiveSVG} alt="" />
+            ) : (
+              <img src={artDeactiveSVG} alt="" />
+            )}
+          </div>
+          <h3>아트</h3>
+        </div>
       </div>
     </>
   );
