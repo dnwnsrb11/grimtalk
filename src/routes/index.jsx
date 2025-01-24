@@ -7,8 +7,7 @@ import { LoginPage } from '@/routes/pages/LoginPage';
 import { SignupPage } from '@/routes/pages/SignupPage';
 import { MainPageCategory } from '@/routes/pages/MainPageCategory';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
-
-
+import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -22,11 +21,18 @@ const router = createBrowserRouter([
         element: <MainPageCategory />,
       },
       {
+        path: '/community',
+        element: <MainPageCommunity />,
+      },
+      {
+        path: '/live',
+        element: <MainPageLive />,
+      },
+      {
         path: '/demo',
         element: <DemoPage />,
       },
       {
-
         path: '/mypage',
         element: <MyPage />,
       },
@@ -41,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: '/signup-success',
         element: <SignupSuccessPage />,
+      },
+      {
+        path: '/aisimilarity',
+        element: <AiSimilarityPage />,
       },
     ],
   },

@@ -3,6 +3,8 @@ import { ProfileSection } from '@/components/mypage/ProfileSection';
 import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
 import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFavoriteSection';
 import { MemberIntroSection } from '@/components/mypage/MemberIntroSection';
+import { MyBoardSection } from '@/components/mypage/MyBoardSection';
+
 
 export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
@@ -11,6 +13,8 @@ export const MyPage = () => {
   const MENU_COMPONENTS = {
     '구독, 즐겨찾기': <SubscriptionFavoriteSection />,
     유저소개: <MemberIntroSection />,
+    '내가 쓴 글': <MyBoardSection />,
+
     default: <div>준비 중입니다.</div>,
   };
 
