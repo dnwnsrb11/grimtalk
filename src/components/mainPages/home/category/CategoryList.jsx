@@ -17,14 +17,19 @@ import { useState } from 'react';
 
 export const CategoryList = () => {
   const [categoryName, setCategoryName] = useState('all');
+  const [categoryNameHover, setCategoryNameHover] = useState('');
   const changeCategory = (name) => {
     // 카테고리 클릭시 활성화 하게 할려고 준비중
     setCategoryName(name);
   };
+  const HoverCategory = (name) => {
+    // 호버시에도 동일하게 변경을 주고 싶음
+    setCategoryNameHover(name);
+  };
 
   return (
     <>
-      <div className="flex">
+      <div className="flex gap-7">
         <div className="flex flex-col items-center">
           <div
             onClick={() => changeCategory('all')}

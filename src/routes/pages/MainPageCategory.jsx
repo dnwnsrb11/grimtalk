@@ -9,8 +9,10 @@ export const MainPageCategory = () => {
           {/* 배너 */}
           <Banner />
         </div>
-        <div>
-          <CategoryList />
+        <div className="mt-[40px] flex items-center justify-center">
+          <div>
+            <CategoryList />
+          </div>
         </div>
         <div>{/* 목록 */}</div>
       </div>
