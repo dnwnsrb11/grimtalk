@@ -4,6 +4,7 @@ import { DemoPage } from '@/routes/pages/DemoPage';
 import { MainPage } from '@/routes/pages/MainPage';
 import { LoginPage } from '@/routes/pages/LoginPage';
 import { SignupPage } from '@/routes/pages/SignupPage';
+import { MainPageCategory } from '@/routes/pages/MainPageCategory';
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <MainPage />,
+      },
+      {
+        path: '/category',
+        element: <MainPageCategory />,
       },
       {
         path: '/demo',
