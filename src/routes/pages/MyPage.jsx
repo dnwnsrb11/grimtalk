@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { ProfileSection } from '@/components/mypage/ProfileSection';
 import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
-import { SubscriptionSection } from '@/components/mypage/SubscriptionSection';
+import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFavoriteSection';
 
 export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
 
   const MENU_COMPONENTS = {
-    '구독, 즐겨찾기': <SubscriptionSection />,
+    '구독, 즐겨찾기': <SubscriptionFavoriteSection />,
     default: <div>준비 중입니다.</div>,
   };
 
