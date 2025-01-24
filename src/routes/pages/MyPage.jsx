@@ -5,7 +5,6 @@ import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFav
 import { MemberIntroSection } from '@/components/mypage/MemberIntroSection';
 import { MyBoardSection } from '@/components/mypage/MyBoardSection';
 
-
 export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
