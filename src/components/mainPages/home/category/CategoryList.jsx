@@ -19,7 +19,8 @@ export const CategoryList = () => {
   const [categoryName, setCategoryName] = useState('all');
   const [categoryNameHover, setCategoryNameHover] = useState('');
   const changeCategory = (name) => {
-    // 카테고리 클릭시 활성화 하게 할려고 준비중
+    // 현재 위치를 알리는 콘솔로그
+    console.log('현재 카테고리 선택 위치: ', name);
     setCategoryName(name);
   };
   const hoverCategory = (name) => {
