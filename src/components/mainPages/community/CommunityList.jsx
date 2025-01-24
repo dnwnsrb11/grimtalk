@@ -4,7 +4,7 @@ export const CommunityList = () => {
   const [checkA, setCheckA] = useState(true);
   return (
     <>
-      <div className="flex flex-col rounded-3xl border border-gray-border-color p-5">
+      <div className="mb-[20px] flex cursor-pointer flex-col rounded-3xl border border-gray-border-color p-5">
         <div className="mb-3">
           {/* 제목 */}
           <h2 className="text-[22px] font-bold">질문이 있습니다</h2>
