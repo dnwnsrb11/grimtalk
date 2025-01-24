@@ -9,7 +9,7 @@ export const ProfileSection = ({
   onProfileMenuSelect, // 프로필 메뉴 선택 핸들러
 }) => {
   return (
-    <div className="flex flex-col items-start gap-5">
+    <div className="flex flex-col items-start">
       {/* 프로필 정보 영역 */}
       <div className="flex flex-col items-center gap-1">
         {/* 프로필 이미지 */}
