@@ -5,6 +5,7 @@ import { MainPage } from '@/routes/pages/MainPage';
 import { LoginPage } from '@/routes/pages/LoginPage';
 import { SignupPage } from '@/routes/pages/SignupPage';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
+import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: '/signup-success',
         element: <SignupSuccessPage />,
+      },
+      {
+        path: '/aisimilarity',
+        element: <AiSimilarityPage />,
       },
     ],
   },
