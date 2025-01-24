@@ -14,14 +14,18 @@ export const StructorList = () => {
           <h4 className="mt-2 text-lg leading-tight">
             이모티콘을 배오고 싶은 당신을 위한 재밌는 강의
           </h4>
-          <div className="mt-2 flex items-center gap-3 ">
-            <h4 className="text-base font-bold">Name</h4>
-            <div className="flex gap-1">
+          <div className="mt-2 flex justify-start gap-3 ">
+            <div className="flex flex-wrap items-center gap-1">
+              <h4 className="mr-2 text-base font-bold">김싸피</h4>
               <div className="inline-block rounded-full border bg-bg-gray-color px-3 py-1">
                 <p className="text-text-gray-color">일러스트</p>
               </div>
               <div className="inline-block rounded-full border bg-bg-gray-color px-3 py-1">
                 <p className="text-text-gray-color">캐릭터</p>
+              </div>
+              {/* 카테고리 섹션 */}
+              <div className="inline-block rounded-full border bg-primary-color px-3 py-1 ">
+                <p className=" text-white">캐릭터</p>
               </div>
             </div>
           </div>
