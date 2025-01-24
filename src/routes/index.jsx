@@ -8,6 +8,8 @@ import { SignupPage } from '@/routes/pages/SignupPage';
 import { MainPageCategory } from '@/routes/pages/MainPageCategory';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
 import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
+import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
+import { MainPageLive } from '@/routes/pages/MainPageLive';
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
