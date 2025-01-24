@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SubscriptionCard } from '@/components/mypage/SubscriptionCard';
+import { Lecture } from '@/components/mainPages/home/Lecture';
 
 export const SubscriptionFavoriteSection = () => {
   // 현재 선택된 탭을 관리하는 상태 (기본값: '구독')
@@ -55,7 +56,13 @@ export const SubscriptionFavoriteSection = () => {
         </div>
       )}
       {/* 즐겨찾기 컨텐츠 */}
-      {selectedTab === '즐겨찾기' && <div>즐겨찾기</div>}
+      {selectedTab === '즐겨찾기' && (
+        <div className="mt-5 grid grid-cols-3 gap-2">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Lecture key={index} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
