@@ -6,6 +6,7 @@ import { LoginPage } from '@/routes/pages/LoginPage';
 import { SignupPage } from '@/routes/pages/SignupPage';
 import { MainPageCategory } from '@/routes/pages/MainPageCategory';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
+import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: '/category',
         element: <MainPageCategory />,
+      },
+      {
+        path: '/community',
+        element: <MainPageCommunity />,
       },
       {
         path: '/demo',
