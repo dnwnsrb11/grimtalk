@@ -10,5 +10,5 @@ React와 TypeScript를 주로 사용하고 있으며, 클린 코드와 사용자
 개발자 커뮤니티에도 적극적으로 참여하여 다양한 경험을 쌓고 있으며, 오픈소스 프로젝트에도 기여하고 있습니다.
 항상 사용자의 입장에서 생각하고, 더 나은 서비스를 만들기 위해 고민하는 개발자가 되고 싶습니다.`;
 
-  return <p className="whitespace-pre-wrap break-all text-xl">{intro}</p>;
+  return <p className="whitespace-pre-wrap break-all text-base">{intro}</p>;
 };
