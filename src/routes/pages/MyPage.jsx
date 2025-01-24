@@ -1,3 +1,7 @@
+import defaultBadge from '@/assets/defaultBadge.svg';
+import instructorBadge from '@/assets/instructorBadge.svg';
+import studentBadge from '@/assets/studentBadge.svg';
+
 export const MyPage = () => {
   return (
     <div className="grid w-full grid-cols-10">
@@ -10,15 +14,18 @@ export const MyPage = () => {
             {/* 프로필 이미지 */}
             <div className="h-24 w-24 rounded-full bg-gray-600"></div>
             {/* 사용자 이름 */}
-            <div className="flex items-center">
+            <div className="flex items-center gap-1">
+              <img src={defaultBadge} alt="defaultBadge" />
               <span className="text-2xl font-bold">Woojungyu</span>
             </div>
             {/* 역할 선택 버튼 */}
             <div className="mt-2 flex gap-3 text-lg font-semibold">
-              <button className="flex items-center rounded-lg border bg-bg-gray-color px-3 py-1">
+              <button className="flex items-center gap-1 rounded-lg border bg-bg-gray-color px-3 py-1">
+                <img src={studentBadge} alt="studentBadge" />
                 수강생
               </button>
-              <button className="flex items-center rounded-lg bg-primary-color px-3 py-1 text-white">
+              <button className="flex items-center gap-1 rounded-lg bg-primary-color px-3 py-1 text-white">
+                <img src={instructorBadge} alt="instructorBadge" />
                 강사
               </button>
             </div>
