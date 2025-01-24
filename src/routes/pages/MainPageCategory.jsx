@@ -1,4 +1,5 @@
 import { Banner } from '@/components/mainPages/home/Banner';
+import { CategoryList } from '@/components/mainPages/home/category/CategoryList';
 
 export const MainPageCategory = () => {
   return (
@@ -8,7 +9,9 @@ export const MainPageCategory = () => {
           {/* 배너 */}
           <Banner />
         </div>
-        <div>{/* 카테고리 */}</div>
+        <div>
+          <CategoryList />
+        </div>
         <div>{/* 목록 */}</div>
       </div>
     </>
