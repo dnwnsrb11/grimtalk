@@ -1,0 +1,70 @@
+import { DefaultBadge, InstructorLogo, StudentLogo } from '@/components/common/icons';
+import { NavigationMenu } from '@/components/mypage/NavigationMenu';
+
+// 마이페이지의 프로필 섹션을 담당하는 컴포넌트
+export const ProfileSection = ({
+  selectedMenu, // 현재 선택된 네비게이션 메뉴
+  selectedProfileMenu, // 현재 선택된 프로필 메뉴 (수강생/강사)
+  onMenuSelect, // 네비게이션 메뉴 선택 핸들러
+  onProfileMenuSelect, // 프로필 메뉴 선택 핸들러
+}) => {
+  return (
+    <div className="flex flex-col items-start gap-5">
+      {/* 프로필 정보 영역 */}
+      <div className="flex flex-col items-center gap-1">
+        {/* 프로필 이미지 */}
+        <div className="h-24 w-24 rounded-full bg-gray-600"></div>
+        {/* 사용자 이름과 뱃지 */}
+        <div className="flex items-center gap-1">
+          <DefaultBadge className="" width={20} height={20} />
+          <span className="text-2xl font-bold">Woojungyu</span>
+        </div>
+        {/* 수강생/강사 전환 버튼 */}
+        <div className="mt-2 flex gap-3 text-lg font-semibold">
+          {/* 수강생 버튼 */}
+          <button
+            onClick={() => onProfileMenuSelect('수강생')}
+            className={`group flex items-center gap-1 rounded-lg border px-3 py-1 
+              ${
+                selectedProfileMenu === '수강생'
+                  ? 'bg-primary-color text-white'
+                  : 'bg-bg-gray-color text-black hover:bg-primary-color hover:text-white'
+              }`}
+          >
+            <StudentLogo
+              className={`${
+                selectedProfileMenu === '수강생'
+                  ? 'fill-white'
+                  : 'fill-black group-hover:fill-white'
+              }`}
+              width={20}
+              height={20}
+            />
+            수강생
+          </button>
+          {/* 강사 버튼 */}
+          <button
+            onClick={() => onProfileMenuSelect('강사')}
+            className={`group flex items-center gap-1 rounded-lg border px-3 py-1 
+              ${
+                selectedProfileMenu === '강사'
+                  ? 'bg-primary-color text-white'
+                  : 'bg-bg-gray-color text-black hover:bg-primary-color hover:text-white'
+              }`}
+          >
+            <InstructorLogo
+              className={`${
+                selectedProfileMenu === '강사' ? 'fill-white' : 'fill-black group-hover:fill-white'
+              }`}
+              width={20}
+              height={20}
+            />
+            강사
+          </button>
+        </div>
+      </div>
+      {/* 네비게이션 메뉴 컴포넌트 */}
+      <NavigationMenu selectedMenu={selectedMenu} onMenuSelect={onMenuSelect} />
+    </div>
+  );
+};
