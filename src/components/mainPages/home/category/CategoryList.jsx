@@ -17,12 +17,16 @@ import { useState } from 'react';
 
 export const CategoryList = () => {
   const [categoryName, setCategoryName] = useState('all');
+  const changeCategory = (name) => {
+    // 카테고리 클릭시 활성화 하게 할려고 준비중
+    setCategoryName(name);
+  };
 
   return (
     <>
       <div>
         <div>
-          <div>
+          <div onClick={() => changeCategory('all')}>
             {categoryName === 'all' ? (
               <img src={allActiveSVG} alt="" />
             ) : (
