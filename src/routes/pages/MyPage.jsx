@@ -4,6 +4,7 @@ import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
 import { SubscriptionSection } from '@/components/mypage/SubscriptionSection';
 
 export const MyPage = () => {
+  const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
 
   const MENU_COMPONENTS = {
@@ -18,7 +19,12 @@ export const MyPage = () => {
   return (
     <div className="grid w-full grid-cols-10">
       <div className="col-span-2 flex flex-col items-center border-r border-gray-200 pr-3">
-        <ProfileSection selectedMenu={selectedMenu} onMenuSelect={setSelectedMenu} />
+        <ProfileSection
+          selectedMenu={selectedMenu}
+          selectedProfileMenu={selectedProfileMenu}
+          onMenuSelect={setSelectedMenu}
+          onProfileMenuSelect={setSelectedProfileMenu}
+        />
       </div>
 
       <div className="col-span-8 flex flex-col gap-3 pl-6">
