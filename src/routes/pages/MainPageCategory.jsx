@@ -26,8 +26,10 @@ export const MainPageCategory = () => {
           </div>
         </div>
         <hr />
-        <div>
-          <StructorList />
+        <div className="mt-[40px] flex gap-3">
+          {count.map((c, index) => (
+            <StructorList key={index} />
+          ))}
         </div>
       </div>
     </>
