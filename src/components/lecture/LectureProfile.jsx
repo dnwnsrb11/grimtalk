@@ -10,8 +10,8 @@ export const LectureProfile = () => {
   return (
     <>
       <div>
-        <div>
-          <h2>간단한 드로잉을 통한 이모티콘 만들기!</h2>
+        <div className="mb-[30px] mt-[60px]">
+          <h2 className="text-[32px] font-bold">간단한 드로잉을 통한 이모티콘 만들기!</h2>
         </div>
         {/* 강의 프로필 카드 구역 */}
         <div className="flex h-full gap-5">
