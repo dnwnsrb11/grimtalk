@@ -51,7 +51,7 @@ export const LectureProfile = () => {
             </div>
           </div>
           {/* 프로필 오른쪽 구역 */}
-          <div className="flex h-[100%] w-[20%] flex-col gap-3">
+          <div className="flex w-[20%] flex-col gap-3">
             <div className="items-center justify-center rounded-xl border border-gray-border-color bg-bg-gray-color py-[10px]">
               <button className="flex w-[100%] items-center justify-center gap-2">
                 <img src={favoritesSVG} alt="favoritesSVGicon" />
