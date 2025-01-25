@@ -12,7 +12,7 @@ export const LectureCategory = () => {
   return (
     <>
       <div>
-        <ul className="flex gap-[40px]">
+        <ul className="mb-[16px] flex gap-[40px]">
           <li
             className={`${categoryActive === 0 ? liTextactive : liTextDeactive}`}
             onClick={() => setCategoryActive(0)}
