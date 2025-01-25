@@ -13,8 +13,8 @@ export const LectureProfile = () => {
           <h2>간단한 드로잉을 통한 이모티콘 만들기!</h2>
         </div>
         {/* 강의 프로필 카드 구역 */}
-        <div>
-          <div className="flex items-center gap-[40px] rounded-3xl border border-gray-border-color px-[40px] py-[22px]">
+        <div className="flex items-center gap-5">
+          <div className="flex flex-[8] items-center gap-[40px] rounded-3xl border border-gray-border-color px-[40px] py-[22px]">
             <div>
               {/* 프로필 이미지 */}
               <div className="relative h-[162px] w-[162px] rounded-full bg-[#565252]">
@@ -49,7 +49,22 @@ export const LectureProfile = () => {
               </div>
             </div>
           </div>
-          <div>{/* 프로필 왼쪽 구역 */}</div>
+          <div className="flex-[2] border">
+            {/* 프로필 왼쪽 구역 */}
+            <div>
+              <button>
+                <p>강의 즐겨찾기</p>
+              </button>
+            </div>
+            <div className="border">
+              {/* 라이브 카드 부분 */}
+              <h3>2024.01.24</h3>
+              <h2>09:00</h2>
+              <div>
+                <button>라이브 시작 전 입니다.</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
