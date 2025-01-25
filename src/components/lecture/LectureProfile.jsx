@@ -52,7 +52,7 @@ export const LectureProfile = () => {
           </div>
           {/* 프로필 오른쪽 구역 */}
           <div className="flex w-[20%] flex-col gap-3">
-            <div className="items-center justify-center rounded-xl border border-gray-border-color bg-bg-gray-color py-[10px]">
+            <div className="items-center justify-center rounded-xl border border-gray-border-color bg-bg-gray-color py-[10px] transition-all duration-300 hover:bg-primary-color hover:text-white">
               <button className="flex w-[100%] items-center justify-center gap-2">
                 <img src={favoritesSVG} alt="favoritesSVGicon" />
                 <p className="text-[18px] font-semibold">강의 즐겨찾기</p>
