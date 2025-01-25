@@ -12,7 +12,7 @@ export const LecturePage = () => {
         <div>
           <LectureProfile />
         </div>
-        <div>
+        <div className="mt-[60px]">
           <LectureCategory />
         </div>
         <div>{/* 컴포넌트 구역 */}</div>
