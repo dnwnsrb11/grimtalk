@@ -14,8 +14,8 @@ export const LectureProfile = () => {
           <h2>간단한 드로잉을 통한 이모티콘 만들기!</h2>
         </div>
         {/* 강의 프로필 카드 구역 */}
-        <div className="flex items-center gap-5">
-          <div className="flex flex-[8] items-center gap-[40px] rounded-3xl border border-gray-border-color px-[40px] py-[22px]">
+        <div className="flex h-full gap-5">
+          <div className="flex h-full w-[80%] gap-[40px] rounded-3xl border border-gray-border-color px-[40px] py-[22px]">
             <div>
               {/* 프로필 이미지 */}
               <div className="relative h-[162px] w-[162px] rounded-full bg-[#565252]">
@@ -50,15 +50,15 @@ export const LectureProfile = () => {
               </div>
             </div>
           </div>
-          <div className="flex-[2]">
-            {/* 프로필 왼쪽 구역 */}
-            <div className="flex items-center justify-center rounded-xl border border-gray-border-color bg-bg-gray-color py-[10px]">
+          {/* 프로필 오른쪽 구역 */}
+          <div className="flex h-[100%] w-[20%] flex-col gap-3">
+            <div className="items-center justify-center rounded-xl border border-gray-border-color bg-bg-gray-color py-[10px]">
               <button className="flex w-[100%] items-center justify-center gap-2">
                 <img src={favoritesSVG} alt="favoritesSVGicon" />
                 <p className="text-[18px] font-semibold">강의 즐겨찾기</p>
               </button>
             </div>
-            <div className="border">
+            <div className=" h-full w-full border">
               {/* 라이브 카드 부분 */}
               <h3>2024.01.24</h3>
               <h2>09:00</h2>
