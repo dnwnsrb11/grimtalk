@@ -58,12 +58,12 @@ export const LectureProfile = () => {
                 <p className="text-[18px] font-semibold">강의 즐겨찾기</p>
               </button>
             </div>
-            <div className=" h-full w-full border">
+            <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl border border-gray-border-color">
               {/* 라이브 카드 부분 */}
-              <h3>2024.01.24</h3>
-              <h2>09:00</h2>
-              <div>
-                <button>라이브 시작 전 입니다.</button>
+              <h3 className="text-[24px] font-medium text-[#565252]">2024.01.24</h3>
+              <h2 className="text-[30px] font-bold">09:00</h2>
+              <div className="rounded-xl bg-bg-gray-color p-3 px-5">
+                <button className="font-semibold">라이브 시작 전 입니다.</button>
               </div>
             </div>
           </div>
