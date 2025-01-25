@@ -1,9 +1,11 @@
 import badge from '@/assets/Group_825.png';
 import subscribe from '@/assets/Group.png';
+import { useState } from 'react';
 export const LectureProfile = () => {
   const testtext =
     '사회적 특수계급의 제도는 인정되지 아니하며, 어떠한 형태로도 이를 창설할 수 없다. 대법원과 각급법원의 조직은 법률로 정한다. 누구든지 체포 또는 구속을 당한 때에는 즉시 변호인의 조력을 받을 권리를 가진다. 다만, 형사피고인이 스스로 변호인을 구할 수 없을 때에는 법률이 정하는 바에 의하여 국가가 변호인을 붙인다.';
-
+  const [checkSubscribe, SetCheckSubscribe] = useState(false);
+  //   구독시 값에 따라 버튼 활성화, 비활성화 기능 구현
   return (
     <>
       <div>
@@ -33,10 +35,17 @@ export const LectureProfile = () => {
                 <button className="rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white">
                   자세히 보기
                 </button>
-                <button className="flex items-center gap-2 rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white">
-                  <img src={subscribe} alt="subscribeIMG" />
-                  구독
-                </button>
+                {checkSubscribe ? (
+                  <button className="flex items-center gap-2 rounded-xl border bg-primary-color p-2 px-3 font-semibold text-white transition-all duration-300 hover:bg-bg-gray-color hover:text-black">
+                    <img src={subscribe} alt="subscribeIMG" />
+                    구독
+                  </button>
+                ) : (
+                  <button className="flex items-center gap-2 rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white">
+                    <img src={subscribe} alt="subscribeIMG" />
+                    구독
+                  </button>
+                )}
               </div>
             </div>
           </div>
