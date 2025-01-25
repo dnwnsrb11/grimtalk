@@ -1,5 +1,6 @@
 import badge from '@/assets/Group_825.png';
 import subscribe from '@/assets/Group.png';
+import favoritesSVG from '@/assets/favorites.svg';
 import { useState } from 'react';
 export const LectureProfile = () => {
   const testtext =
@@ -49,11 +50,12 @@ export const LectureProfile = () => {
               </div>
             </div>
           </div>
-          <div className="flex-[2] border">
+          <div className="flex-[2]">
             {/* 프로필 왼쪽 구역 */}
-            <div>
-              <button>
-                <p>강의 즐겨찾기</p>
+            <div className="flex items-center justify-center rounded-xl border border-gray-border-color bg-bg-gray-color py-[10px]">
+              <button className="flex w-[100%] items-center justify-center gap-2">
+                <img src={favoritesSVG} alt="favoritesSVGicon" />
+                <p className="text-[18px] font-semibold">강의 즐겨찾기</p>
               </button>
             </div>
             <div className="border">
