@@ -8,6 +8,9 @@ import { SignupPage } from '@/routes/pages/SignupPage';
 import { MainPageCategory } from '@/routes/pages/MainPageCategory';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
 import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
+import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
+import { MainPageLive } from '@/routes/pages/MainPageLive';
+import { AlarmPage } from '@/routes/pages/AlarmPage';
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -51,6 +54,11 @@ const router = createBrowserRouter([
       {
         path: '/aisimilarity',
         element: <AiSimilarityPage />,
+      },
+      {
+        // path 후에 /:id를 붙이면 id라는 파라미터를 받을 수 있음 아직 미구현.
+        path: '/alarm',
+        element: <AlarmPage />,
       },
     ],
   },
