@@ -1,5 +1,4 @@
 import { LectureBanner } from '@/components/lecture/LectureBanner';
-
 export const LecturePage = () => {
   return (
     <>
