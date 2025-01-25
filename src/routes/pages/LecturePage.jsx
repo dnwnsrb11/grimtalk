@@ -1,4 +1,6 @@
 import { LectureBanner } from '@/components/lecture/LectureBanner';
+import { LectureProfile } from '@/components/lecture/LectureProfile';
+
 export const LecturePage = () => {
   return (
     <>
@@ -6,7 +8,9 @@ export const LecturePage = () => {
         <div>
           <LectureBanner />
         </div>
-        <div>{/* 강의 인포 */}</div>
+        <div>
+          <LectureProfile />
+        </div>
         <div>{/* 탭 */}</div>
         <div>{/* 컴포넌트 구역 */}</div>
       </div>
