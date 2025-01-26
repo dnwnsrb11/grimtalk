@@ -3,7 +3,7 @@ import subscribe from '@/assets/Group.png';
 import favoritesSVG from '@/assets/favorites.svg';
 import { useState } from 'react';
 // 아이콘 가져오기
-import { DefaultBadge, FavoritIcon } from '@/components/common/icons';
+import { DefaultBadge, SubscribeIcon } from '@/components/common/icons';
 export const LectureProfile = () => {
   const testtext =
     '사회적 특수계급의 제도는 인정되지 아니하며, 어떠한 형태로도 이를 창설할 수 없다. 대법원과 각급법원의 조직은 법률로 정한다. 누구든지 체포 또는 구속을 당한 때에는 즉시 변호인의 조력을 받을 권리를 가진다. 다만, 형사피고인이 스스로 변호인을 구할 수 없을 때에는 법률이 정하는 바에 의하여 국가가 변호인을 붙인다.';
@@ -40,7 +40,7 @@ export const LectureProfile = () => {
                 </button>
                 {checkSubscribe ? (
                   <button className="group flex items-center gap-2 rounded-xl border bg-primary-color p-2 px-3 font-semibold text-white transition-all duration-300 hover:bg-bg-gray-color hover:text-black">
-                    <FavoritIcon
+                    <SubscribeIcon
                       className="stroke-white transition-colors duration-0 group-hover:stroke-black"
                       stroke="currentColor"
                     />
@@ -48,7 +48,7 @@ export const LectureProfile = () => {
                   </button>
                 ) : (
                   <button className="group flex items-center gap-2 rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white">
-                    <FavoritIcon
+                    <SubscribeIcon
                       className="stroke-black transition-colors duration-0 group-hover:stroke-white"
                       stroke="currentColor"
                     />

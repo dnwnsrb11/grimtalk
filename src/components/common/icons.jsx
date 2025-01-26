@@ -35,7 +35,7 @@ const StudentLogo = ({ className, width, height }) => (
 );
 
 // 즐겨찾기 아이콘 추가
-const FavoritIcon = ({
+const SubscribeIcon = ({
   className = '',
   width = 20,
   height = 20,
@@ -92,4 +92,4 @@ const FavoritIcon1 = ({
   </svg>
 );
 
-export { DefaultBadge, InstructorLogo, StudentLogo, FavoritIcon, FavoritIcon1 };
+export { DefaultBadge, InstructorLogo, StudentLogo, SubscribeIcon, FavoritIcon1 };
