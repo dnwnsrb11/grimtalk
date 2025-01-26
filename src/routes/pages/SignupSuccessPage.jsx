@@ -1,3 +1,5 @@
+import { LoginHi } from '@/components/common/icons';
+
 export const SignupSuccessPage = () => {
   return (
     <div className="mx-auto flex h-full flex-col items-center justify-center">
@@ -12,13 +14,7 @@ export const SignupSuccessPage = () => {
             <p className="text-3xl text-[#A8A8A8]">가입이 완료되었습니다.</p>
             <p className="text-3xl text-[#A8A8A8]">그림톡에서 미술 실력을 키워보세요.</p>
           </div>
-
-          {/* 이미지 */}
-          <img
-            src="/src/assets/Vector.png"
-            alt=""
-            className="h-30 ml-[51px] w-auto flex-shrink-0"
-          />
+          <LoginHi />
         </div>
         <div className="mt-[40px] flex">
           <button className="text-s h-[53px] w-[304px] rounded-3xl bg-primary-color text-white">

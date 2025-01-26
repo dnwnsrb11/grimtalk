@@ -92,7 +92,7 @@ const FavoritIcon = ({
   </svg>
 );
 
-const LoginHi = ({ className = '', width = 134, height = 163, fill = 'FF5C38' }) => (
+const LoginHi = ({ className = '', width = 134, height = 163, fill = '#FF5C38' }) => (
   <svg
     width={width}
     height={height}
