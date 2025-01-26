@@ -6,7 +6,7 @@ export const SignupSuccessPage = () => {
       <div className="flex flex-col  justify-center">
         {/* 문장 전체를 감싸는 flex 컨테이너 */}
         <div className="flex flex-row">
-          <div className="flex flex-col">
+          <div className="mr-[50px] flex flex-col">
             <h1 className="mb-[20px]">
               <span className="mr-2 text-5xl font-bold">OOO님</span>
               <span className="text-5xl font-bold text-primary-color">가입을 환영해요.</span>
