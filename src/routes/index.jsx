@@ -11,6 +11,8 @@ import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
 import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
 import { MainPageLive } from '@/routes/pages/MainPageLive';
 import { AlarmPage } from '@/routes/pages/AlarmPage';
+import { LecturePage } from './pages/LecturePage';
+
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -59,6 +61,10 @@ const router = createBrowserRouter([
         // path 후에 /:id를 붙이면 id라는 파라미터를 받을 수 있음 아직 미구현.
         path: '/alarm',
         element: <AlarmPage />,
+      },
+      {
+        path: '/lecture',
+        element: <LecturePage />,
       },
     ],
   },
