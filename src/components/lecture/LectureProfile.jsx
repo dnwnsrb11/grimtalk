@@ -24,7 +24,6 @@ export const LectureProfile = () => {
                 <div className="absolute bottom-0 right-0 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-disabled-font-color">
                   {/* 뱃지 svg로 초기화 */}
                   <DefaultBadge />
-                  <FavoritIcon />
                 </div>
               </div>
             </div>
@@ -40,13 +39,19 @@ export const LectureProfile = () => {
                   자세히 보기
                 </button>
                 {checkSubscribe ? (
-                  <button className="flex items-center gap-2 rounded-xl border bg-primary-color p-2 px-3 font-semibold text-white transition-all duration-300 hover:bg-bg-gray-color hover:text-black">
-                    <img src={subscribe} alt="subscribeIMG" />
+                  <button className="group flex items-center gap-2 rounded-xl border bg-primary-color p-2 px-3 font-semibold text-white transition-all duration-300 hover:bg-bg-gray-color hover:text-black">
+                    <FavoritIcon
+                      className="stroke-white transition-colors duration-0 group-hover:stroke-black"
+                      stroke="currentColor"
+                    />
                     구독
                   </button>
                 ) : (
-                  <button className="flex items-center gap-2 rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white">
-                    <img src={subscribe} alt="subscribeIMG" />
+                  <button className="group flex items-center gap-2 rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white">
+                    <FavoritIcon
+                      className="stroke-black transition-colors duration-0 group-hover:stroke-white"
+                      stroke="currentColor"
+                    />
                     구독
                   </button>
                 )}
