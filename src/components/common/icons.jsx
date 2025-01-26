@@ -92,4 +92,19 @@ const FavoritIcon = ({
   </svg>
 );
 
-export { DefaultBadge, InstructorLogo, StudentLogo, SubscribeIcon, FavoritIcon };
+const LoginHi = ({ className = '', width = 134, height = 163, fill = 'FF5C38' }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 134 163"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M65.3659 0C74.3537 0 81.7073 7.335 81.7073 16.3C81.7073 25.265 74.3537 32.6 65.3659 32.6C56.378 32.6 49.0244 25.265 49.0244 16.3C49.0244 7.335 56.378 0 65.3659 0ZM97.2317 49.715C93.9634 46.455 88.2439 40.75 77.6219 40.75H57.1951C34.3171 40.75 16.3415 22.82 16.3415 0H0C0 26.08 17.1585 47.27 40.8537 54.605V163H57.1951V114.1H73.5366V163H89.878V66.015L122.561 97.8L134 86.39L97.2317 49.715Z"
+      fill={fill}
+    />
+  </svg>
+);
+
+export { DefaultBadge, InstructorLogo, StudentLogo, SubscribeIcon, FavoritIcon, LoginHi };
