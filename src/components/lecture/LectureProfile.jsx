@@ -7,8 +7,9 @@ import { DefaultBadge, SubscribeIcon, FavoritIcon } from '@/components/common/ic
 export const LectureProfile = () => {
   const testtext =
     '사회적 특수계급의 제도는 인정되지 아니하며, 어떠한 형태로도 이를 창설할 수 없다. 대법원과 각급법원의 조직은 법률로 정한다. 누구든지 체포 또는 구속을 당한 때에는 즉시 변호인의 조력을 받을 권리를 가진다. 다만, 형사피고인이 스스로 변호인을 구할 수 없을 때에는 법률이 정하는 바에 의하여 국가가 변호인을 붙인다.';
-  const [checkSubscribe, SetCheckSubscribe] = useState(false);
+  const [checkFavorit, setCheckFavorit] = useState(false);
   //   구독시 값에 따라 버튼 활성화, 비활성화 기능 구현
+  const [checkSubscribe, setCheckSubcribe] = useState(false);
   return (
     <>
       <div>
@@ -38,7 +39,7 @@ export const LectureProfile = () => {
                 <button className="rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white">
                   자세히 보기
                 </button>
-                {checkSubscribe ? (
+                {checkFavorit ? (
                   <button className="group flex items-center gap-2 rounded-xl border bg-primary-color p-2 px-3 font-semibold text-white transition-all duration-300 hover:bg-bg-gray-color hover:text-black">
                     <SubscribeIcon
                       className="stroke-white transition-colors duration-0 group-hover:stroke-black"
@@ -60,15 +61,30 @@ export const LectureProfile = () => {
           </div>
           {/* 프로필 오른쪽 구역 */}
           <div className="flex w-[20%] flex-col gap-3">
-            <div className="group items-center justify-center rounded-xl border border-gray-border-color bg-bg-gray-color py-[10px] transition-all duration-300 hover:bg-primary-color hover:text-white">
-              <button className="flex w-[100%] items-center justify-center gap-2">
-                <FavoritIcon
-                  className="stroke-white transition-colors duration-0 group-hover:stroke-white"
-                  stroke="currentColor"
-                />
-                <p className="text-[18px] font-semibold">강의 즐겨찾기</p>
-              </button>
-            </div>
+            {/* 강의 구독 여부에 따라 다른 버튼이 랜더링 */}
+            {checkSubscribe ? (
+              <div className="group items-center justify-center rounded-xl border border-gray-border-color bg-primary-color py-[10px] transition-all duration-300 hover:bg-bg-gray-color">
+                <button className="group flex w-[100%] items-center justify-center gap-2 text-white transition-all duration-0 group-hover:text-black">
+                  <FavoritIcon
+                    className="stroke-white transition-colors duration-0 group-hover:stroke-black"
+                    stroke="currentColor"
+                  />
+                  <p className="text-[18px] font-semibold transition-colors duration-0 group-hover:text-black">
+                    강의 즐겨찾기
+                  </p>
+                </button>
+              </div>
+            ) : (
+              <div className="group items-center justify-center rounded-xl border border-gray-border-color bg-bg-gray-color py-[10px] transition-all duration-300 hover:bg-primary-color hover:text-white">
+                <button className="flex w-[100%] items-center justify-center gap-2">
+                  <FavoritIcon
+                    className="stroke-white transition-colors duration-0 group-hover:stroke-white"
+                    stroke="currentColor"
+                  />
+                  <p className="text-[18px] font-semibold">강의 즐겨찾기</p>
+                </button>
+              </div>
+            )}
             <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl border border-gray-border-color">
               {/* 라이브 카드 부분 */}
               <h3 className="text-[24px] font-medium text-[#565252]">2024.01.24</h3>
