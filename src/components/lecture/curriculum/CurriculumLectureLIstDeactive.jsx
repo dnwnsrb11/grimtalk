@@ -14,7 +14,12 @@ export const CurriculumLectureLIstDeactive = () => {
         </div>
         <div>
           {/* 하단 정보  */}
-          <div></div>
+          <div>
+            <p>수업예정</p>
+          </div>
+          <div>
+            <p>2025.05.15 12:00</p>
+          </div>
         </div>
       </div>
     </>
