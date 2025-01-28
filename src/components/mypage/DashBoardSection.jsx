@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { DashBoardCard } from '@/components/mypage/DashBoardCard';
 import { RecentLectureCurriculumItem } from '@/components/mypage/RecentLectureCurriculmItem';
 import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
