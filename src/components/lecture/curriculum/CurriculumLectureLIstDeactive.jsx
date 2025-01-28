@@ -13,10 +13,10 @@ export const CurriculumLectureLIstDeactive = () => {
             </p>
           </div>
         </div>
-        <div>
+        <div className="flex">
           {/* 하단 정보  */}
-          <div>
-            <p>수업예정</p>
+          <div className="border-'gray-border-color' rounded-full border bg-bg-gray-color px-[10px] py-[5px]">
+            <p className="text-[16px] font-semibold">수업예정</p>
           </div>
           <div>
             <p>2025.05.15 12:00</p>
