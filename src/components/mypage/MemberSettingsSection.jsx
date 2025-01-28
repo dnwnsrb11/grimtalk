@@ -1,13 +1,49 @@
+import { useState } from 'react';
 import { DefaultBadge } from '@/components/common/icons';
 import { calculateBadgeLevel, calculateNextLevel } from '@/utils/badgeCalculator';
+
 export const MemberSettingsSection = () => {
   // api로 호출 예정
-  const { memberId, memberPassword, memberProfileImage, memberSubscribeNumber } = {
+  const { memberId, memberPassword, memberSubscribeNumber } = {
     memberId: 'WooJunGyu12@naver.com',
     memberPassword: 'password',
-    memberProfileImage: 'MYPROFILEIMAGE.jpg',
     memberSubscribeNumber: 2,
   };
+  const [memberProfileImage, setMemberProfileImage] = useState('MYPROFILEIMAGE.jpg');
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleImageSelect = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.png,.jpg,.jpeg';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        setSelectedFile(file);
+        setMemberProfileImage(file.name);
+      }
+    };
+    input.click();
+  };
+
+  const handleSubmit = async () => {
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('profileImage', selectedFile);
+
+      try {
+        // API 호출 예시
+        // const response = await axios.post('/api/profile/image', formData);
+        // if (response.status === 200) {
+        //   alert('프로필 이미지가 성공적으로 변경되었습니다.');
+        // }
+      } catch (error) {
+        console.error('이미지 업로드 실패:', error);
+        alert('이미지 업로드에 실패했습니다.');
+      }
+    }
+  };
+
   return (
     <div className="flex w-[65%] flex-col gap-5">
       <div className="flex flex-col gap-2">
@@ -15,7 +51,7 @@ export const MemberSettingsSection = () => {
         <input
           type="email"
           disabled
-          className="rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
+          className="bo rder-opacity-20 rounded-md border border-[#000000] bg-[#E6E6E6] p-2 text-[#C6C6C6]"
           value={memberId}
         />
       </div>
@@ -42,7 +78,10 @@ export const MemberSettingsSection = () => {
             className="flex-[80%] rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
             value={memberProfileImage}
           />
-          <button className="flex-[20%] rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-primary-color hover:text-white focus:bg-primary-color focus:text-white active:bg-primary-color active:text-white">
+          <button
+            onClick={handleImageSelect}
+            className="flex-[20%] rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-primary-color hover:text-white focus:bg-primary-color focus:text-white active:bg-primary-color active:text-white"
+          >
             이미지 찾기
           </button>
         </div>
@@ -83,7 +122,10 @@ export const MemberSettingsSection = () => {
         >
           뒤로가기
         </button>
-        <button className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80 focus:bg-primary-color/80 active:bg-primary-color/80">
+        <button
+          onClick={handleSubmit}
+          className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80 focus:bg-primary-color/80 active:bg-primary-color/80"
+        >
           수정하기
         </button>
       </div>
