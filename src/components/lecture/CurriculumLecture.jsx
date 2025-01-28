@@ -10,6 +10,8 @@ export const CurriculumLecture = () => {
       return <CurriculumLectureLIstActive />;
     }
   };
+  // 테스트를 위한 배열 생성
+  const test = [false, true, true];
 
   return (
     <>
