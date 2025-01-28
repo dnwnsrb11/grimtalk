@@ -4,7 +4,7 @@ import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
 
 export const DashBoardSection = () => {
   // 임시 데모 데이터
-  const recentLecture = {
+  const recentCurriculum = {
     title: '이모티콘을 배우고 싶은 당신을 위한 강의',
     image: 'https://picsum.photos/200/300', // demo image
     hashTags: ['일러스트', '신입환영'],
@@ -31,15 +31,21 @@ export const DashBoardSection = () => {
   const myHighestSimilarity = 90;
   const myHighestSimilarityLectureTitle = '이모티콘을 배우고 싶은 당신을 위한 강의';
 
+  const recentLecture = {
+    title: '이모티콘을 배우고 싶은 당신을 위한 강의',
+    hashTags: ['일러스트', '신입환영'],
+    image: 'https://picsum.photos/200/300', // demo image
+  };
+
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
           <DashBoardCard title="최근 학습 커리큘럼">
             <RecentLectureCurriculumItem
-              title={recentLecture.title}
-              hashTags={recentLecture.hashTags}
-              image={recentLecture.image}
+              title={recentCurriculum.title}
+              hashTags={recentCurriculum.hashTags}
+              image={recentCurriculum.image}
             />
           </DashBoardCard>
           <DashBoardCard
@@ -65,7 +71,13 @@ export const DashBoardSection = () => {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <DashBoardCard title="최근 구독한 강사"></DashBoardCard>
-        <DashBoardCard title="최근 구독한 강의"></DashBoardCard>
+        <DashBoardCard title="최근 구독한 강의">
+          <RecentLectureCurriculumItem
+            title={recentLecture.title}
+            hashTags={recentLecture.hashTags}
+            image={recentLecture.image}
+          />
+        </DashBoardCard>
       </div>
       <DashBoardCard title="월간 진척도"></DashBoardCard>
     </div>
