@@ -4,6 +4,12 @@ import { RecentLectureItem } from '@/components/mypage/RecentLectureItem';
 import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
 
 export const DashBoardSection = () => {
+  // api로 최근 학습 커리큘럼 불러올 예정
+  const [recentLecture, setRecentLecture] = useState({
+    title: '이모티콘을 배우고 싶은 당신을 위한 강의',
+    image: 'https://picsum.photos/200/300', // demo image
+    hashTags: ['일러스트', '신입환영'],
+  });
   // api로 예정 커리큘럼 불러올 예정
   const [upcomingLectureList, setUpcomingLectureList] = useState([
     {
@@ -29,9 +35,9 @@ export const DashBoardSection = () => {
         <div className="grid grid-rows-2 gap-3">
           <DashBoardCard title="최근 학습 커리큘럼">
             <RecentLectureItem
-              title="이모티콘을 배우고 싶은 당신을 위한 강의"
-              hashTags={['일러스트', '신입환영']}
-              image="https://picsum.photos/200/300" // demo image
+              title={recentLecture.title}
+              hashTags={recentLecture.hashTags}
+              image={recentLecture.image}
             />
           </DashBoardCard>
           <DashBoardCard title="나의 가장 높은 유사도"></DashBoardCard>
