@@ -7,7 +7,6 @@ export const LectureCategory = ({ sendDatetoParent }) => {
 
   const [categoryActive, setCategoryActive] = useState('강의소개');
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const sendData = () => {
     sendDatetoParent(categoryActive);
   };
