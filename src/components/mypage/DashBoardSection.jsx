@@ -4,14 +4,14 @@ import { RecentLectureItem } from '@/components/mypage/RecentLectureItem';
 import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
 
 export const DashBoardSection = () => {
-  // api로 최근 학습 커리큘럼 불러올 예정
-  const [recentLecture, setRecentLecture] = useState({
+  // 임시 데모 데이터
+  const recentLecture = {
     title: '이모티콘을 배우고 싶은 당신을 위한 강의',
     image: 'https://picsum.photos/200/300', // demo image
     hashTags: ['일러스트', '신입환영'],
-  });
-  // api로 예정 커리큘럼 불러올 예정
-  const [upcomingLectureList, setUpcomingLectureList] = useState([
+  };
+
+  const upcomingLectureList = [
     {
       title: '이모티콘을 배우고 싶은 당신을 위한 강의',
       image: 'https://picsum.photos/200/300', // demo image
@@ -27,7 +27,10 @@ export const DashBoardSection = () => {
       image: 'https://picsum.photos/200/300', // demo image
       date: '2025-02-01',
     },
-  ]);
+  ];
+
+  const myHighestSimilarity = 90;
+  const myHighestSimilarityLectureTitle = '이모티콘을 배우고 싶은 당신을 위한 강의';
 
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
