@@ -51,7 +51,7 @@ export const MemberSettingsSection = () => {
         <input
           type="email"
           disabled
-          className="bo rder-opacity-20 rounded-md border border-[#000000] bg-[#E6E6E6] p-2 text-[#C6C6C6]"
+          className="rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
           value={memberId}
         />
       </div>
