@@ -5,10 +5,12 @@ export const LectureCategory = ({ setSelectedCategory, selectedCategory }) => {
   const liTextactive = 'text-[22px] font-bold cursor-pointer';
   const liTextDeactive = 'text-[22px] font-light text-[#828282] cursor-pointer';
 
+  // 전달받은 함수 실행 함수
   const sendData = (category) => {
     setSelectedCategory(category);
   };
 
+  // 클릭 활성화 함수
   const clickCateogry = (category) => {
     sendData(category);
   };
