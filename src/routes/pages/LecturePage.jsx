@@ -27,7 +27,10 @@ export const LecturePage = () => {
           <LectureProfile />
         </div>
         <div className="mt-[60px]">
-          <LectureCategory setSelectedCategory={handleCatagory} />
+          <LectureCategory
+            setSelectedCategory={handleCatagory}
+            selectedCategory={selectedCategory}
+          />
         </div>
         <div>{MENU_COMPONENTS[selectedCategory]}</div>
       </div>
