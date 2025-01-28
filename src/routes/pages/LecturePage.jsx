@@ -2,6 +2,7 @@ import { IntroductionLecture } from '@/components/lecture/IntroductionLecture';
 import { LectureBanner } from '@/components/lecture/LectureBanner';
 import { LectureCategory } from '@/components/lecture/LectureCategory';
 import { LectureProfile } from '@/components/lecture/LectureProfile';
+import { ReplayLecture } from '@/components/lecture/ReplayLecture';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
@@ -15,6 +16,7 @@ export const LecturePage = () => {
   // 자식 컴포넌트인 LectureCategory에서 값을 받아 catagory에 값을 넣어주면 값이 변경되어 아래에 다른 컴포넌트가 리랜더링 된다.
   const MENU_COMPONENTS = {
     강의소개: <IntroductionLecture />,
+    다시보기: <ReplayLecture />,
     default: <p>now Tesing</p>,
   };
   return (
