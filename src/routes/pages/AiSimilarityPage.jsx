@@ -1,11 +1,20 @@
 import { useState } from 'react';
+import { AiSimilarityResultPage } from '@/components/aiPages/AiSimilarityResult';
 export const AiSimilarityPage = () => {
+  // 이미지 렌더링 url 상태 추가
+  const [imageSrc, setImageSrc] = useState(null);
+  // 비교 결과 또는 표시
+  const [showComparison, setShowComparison] = useState(false);
+
+  // 파일 올리기 여부
   const [fileName, setFileName] = useState('');
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setFileName(file.name);
+      setImageSrc(URL.createObjectURL(file));
+      console.log(imageSrc);
     }
   };
   return (
@@ -83,13 +92,19 @@ export const AiSimilarityPage = () => {
         </label>
         <input id="file-upload" type="file" className="hidden" onChange={handleFileChange} />
       </div>
-
       <hr className="mb-[15px] mt-[15px]" />
       <div className="flex flex-row justify-end gap-[10px]">
         <button className="h-[41px] w-[88px] rounded-xl bg-bg-gray-color">뒤로가기</button>
-        <button className="h-[41px] w-[88px] rounded-xl bg-primary-color text-white">
+        <button
+          className="h-[41px] w-[88px] rounded-xl bg-blue-500 text-white"
+          onClick={() => setShowComparison(true)}
+        >
           비교하기
         </button>
+      </div>
+      <div className=" ">
+        {/* 아래 similarity부분은 ai 분석 퍼센트가 들어올 자리 입니다. */}
+        {showComparison && <AiSimilarityResultPage imageSrc={imageSrc} similarity={100} />}
       </div>
     </div>
   );
