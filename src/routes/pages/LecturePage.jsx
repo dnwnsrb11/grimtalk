@@ -1,3 +1,4 @@
+import { IntroductionLecture } from '@/components/lecture/IntroductionLecture';
 import { LectureBanner } from '@/components/lecture/LectureBanner';
 import { LectureCategory } from '@/components/lecture/LectureCategory';
 import { LectureProfile } from '@/components/lecture/LectureProfile';
@@ -9,6 +10,9 @@ export const LecturePage = () => {
   const handleMessage = (childData) => {
     setMessage(childData);
     console.log(childData);
+  };
+  const MENU_COMPONENTS = {
+    강의소개: <IntroductionLecture />,
   };
   return (
     <>

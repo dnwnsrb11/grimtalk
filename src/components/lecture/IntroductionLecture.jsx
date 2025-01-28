@@ -1,7 +1,10 @@
 export const IntroductionLecture = () => {
   return (
     <>
-      <div></div>
+      <div>
+        <h1>강의 소개</h1>
+        <p>hello</p>
+      </div>
     </>
   );
 };
