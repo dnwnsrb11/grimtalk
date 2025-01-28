@@ -2,7 +2,7 @@ import { DateChip } from '@/components/mypage/DateChip';
 export const UpcomingLectureItem = ({ title, image, date }) => {
   return (
     // 커리큘럼 이미지가 70px이기 때문에 컬럼 너비를 70px로 고정
-    <div className="mb-5 grid grid-cols-[70px_1fr_110px] items-center justify-between gap-5">
+    <div className="mb-7 grid grid-cols-[70px_1fr_110px] items-center justify-between gap-5">
       <img
         src={image}
         alt="lecture-curriculum"
