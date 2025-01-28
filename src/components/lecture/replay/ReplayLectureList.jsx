@@ -20,7 +20,7 @@ export const ReplayLectureList = () => {
             </div>
           </div>
         </div>
-        <div>
+        <div className="border-l border-gray-border-color">
           {/* 오른쪽 */}
           <div>
             <div>
