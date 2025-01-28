@@ -5,8 +5,6 @@ export const LectureCategory = ({ setSelectedCategory, selectedCategory }) => {
   const liTextactive = 'text-[22px] font-bold cursor-pointer';
   const liTextDeactive = 'text-[22px] font-light text-[#828282] cursor-pointer';
 
-  const [categoryActive, setCategoryActive] = useState('강의소개');
-
   const sendData = (category) => {
     setSelectedCategory(category);
   };
