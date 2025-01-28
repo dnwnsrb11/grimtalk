@@ -2,6 +2,7 @@ import { DashBoardCard } from '@/components/mypage/DashBoardCard';
 import { RecentLectureCurriculumItem } from '@/components/mypage/RecentLectureCurriculumItem';
 import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
+import { ResponsiveBar } from '@nivo/bar';
 
 export const DashBoardSection = () => {
   // 임시 데모 데이터
@@ -43,6 +44,22 @@ export const DashBoardSection = () => {
     hashTags: ['일러스트', '신입환영'],
     image: 'https://picsum.photos/200/300', // demo image
   };
+
+  // 월간 진척도 데모 데이터
+  const monthlyProgressData = [
+    { month: '1월', count: 13 },
+    { month: '2월', count: 25 },
+    { month: '3월', count: 18 },
+    { month: '4월', count: 22 },
+    { month: '5월', count: 30 },
+    { month: '6월', count: 15 },
+    { month: '7월', count: 20 },
+    { month: '8월', count: 28 },
+    { month: '9월', count: 19 },
+    { month: '10월', count: 24 },
+    { month: '11월', count: 17 },
+    { month: '12월', count: 23 },
+  ];
 
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
@@ -106,7 +123,70 @@ export const DashBoardSection = () => {
           />
         </DashBoardCard>
       </div>
-      <DashBoardCard title="월간 진척도"></DashBoardCard>
+      <DashBoardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
+        <div className="h-[250px]">
+          <ResponsiveBar
+            // 차트 데이터
+            data={monthlyProgressData}
+            // 데이터의 값을 나타내는 키
+            keys={['count']}
+            // x축 기준이 되는 데이터 키
+            indexBy="month"
+            // 차트 여백 설정
+            margin={{ top: 10, right: 10, bottom: 40, left: 10 }}
+            // 막대 사이 간격
+            padding={0.3}
+            // y축 스케일 타입
+            valueScale={{ type: 'linear' }}
+            // 막대 색상
+            colors="#FF5C38"
+            // 막대 모서리 둥글기
+            borderRadius={4}
+            // x축(하단) 스타일링
+            axisBottom={{
+              tickSize: 0,
+              tickPadding: 5,
+              tickRotation: 0,
+            }}
+            // y축(좌측) 비활성화
+            axisLeft={null}
+            // y축 그리드 비활성화
+            enableGridY={false}
+            // 막대 위 라벨 비활성화
+            enableLabel={false}
+            // 접근성
+            role="application"
+            ariaLabel="월간 진척도"
+            // 툴팁 커스터마이징
+            tooltip={({ value, data }) => (
+              <div
+                style={{
+                  padding: '8px',
+                  background: 'white',
+                  border: '1px solid #ccc',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <div style={{ width: '12px', height: '12px', background: '#FF5C38' }} />
+                <span>{`${data.month}: ${value}회 제출`}</span>
+              </div>
+            )}
+            // 차트 테마 설정
+            theme={{
+              axis: {
+                ticks: {
+                  text: {
+                    fontSize: 13,
+                    fill: '#C6C6C6',
+                  },
+                },
+              },
+            }}
+          />
+        </div>
+      </DashBoardCard>
     </div>
   );
 };
