@@ -77,8 +77,8 @@ export const DashBoardSection = () => {
             subtitle={`수업: ${myHighestSimilarityLectureTitle}`}
           >
             <div className="flex items-end justify-end">
-              <span className="text-5xl font-bold text-primary-color">{myHighestSimilarity}</span>
-              <span className="text-2xl font-bold text-black">%</span>
+              <span className="text-7xl font-bold text-primary-color">{myHighestSimilarity}</span>
+              <span className="text-4xl font-bold text-black">%</span>
             </div>
           </DashBoardCard>
         </div>
