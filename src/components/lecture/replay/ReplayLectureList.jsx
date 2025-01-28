@@ -18,7 +18,17 @@ export const ReplayLectureList = () => {
             </div>
           </div>
         </div>
-        <div>{/* 오른쪽 */}</div>
+        <div>
+          {/* 오른쪽 */}
+          <div>
+            <div>
+              <p>강의 다시보기</p>
+            </div>
+            <div>
+              <p>65%</p>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
