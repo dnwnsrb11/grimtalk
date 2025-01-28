@@ -1,12 +1,14 @@
 export const ReplayLectureList = () => {
   return (
     <>
-      <div>
+      <div className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[20px]">
         <div>
           {/* 왼쪽 */}
           <div>
-            <h1>커리큘럼 1. 진짜 시작</h1>
-            <p>커리큘럼 테스트 작성 구역</p>
+            <h1 className="text-[22px] font-semibold text-text-gray-color">
+              커리큘럼 1. 진짜 시작
+            </h1>
+            <p className="mt-[15px] text-text-gray-color">커리큘럼 테스트 작성 구역</p>
           </div>
           <div>
             {/* 하단 정보 */}
