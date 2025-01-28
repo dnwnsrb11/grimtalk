@@ -1,7 +1,9 @@
 export const TestPage = () => {
   return (
     <>
-      <h1>hello</h1>
+      <div className="border">
+        <h1 className="text-[32px] font-bold">hello</h1>
+      </div>
     </>
   );
 };
