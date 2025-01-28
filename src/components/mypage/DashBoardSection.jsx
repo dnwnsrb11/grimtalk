@@ -1,5 +1,5 @@
 import { DashBoardCard } from '@/components/mypage/DashBoardCard';
-import { RecentLectureCurriculumItem } from '@/components/mypage/RecentLectureCurriculmItem';
+import { RecentLectureCurriculumItem } from '@/components/mypage/RecentLectureCurriculumItem';
 import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
 
 export const DashBoardSection = () => {
