@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DashBoardCard } from '@/components/mypage/DashBoardCard';
-import { RecentLectureItem } from '@/components/mypage/RecentLectureItem';
+import { RecentLectureCurriculumItem } from '@/components/mypage/RecentLectureCurriculmItem';
 import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
 
 export const DashBoardSection = () => {
@@ -37,7 +37,7 @@ export const DashBoardSection = () => {
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
           <DashBoardCard title="최근 학습 커리큘럼">
-            <RecentLectureItem
+            <RecentLectureCurriculumItem
               title={recentLecture.title}
               hashTags={recentLecture.hashTags}
               image={recentLecture.image}
