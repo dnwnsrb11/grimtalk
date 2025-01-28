@@ -12,7 +12,6 @@ import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
 import { MainPageLive } from '@/routes/pages/MainPageLive';
 import { AlarmPage } from '@/routes/pages/AlarmPage';
 import { LecturePage } from './pages/LecturePage';
-import { AiSimilarityResultPage } from '@/routes/pages/AiSimilarityResultPage';
 
 const router = createBrowserRouter([
   {
@@ -57,10 +56,6 @@ const router = createBrowserRouter([
       {
         path: '/aisimilarity',
         element: <AiSimilarityPage />,
-      },
-      {
-        path: '/AiSimilarityResultPage',
-        element: <AiSimilarityResultPage />,
       },
       {
         // path 후에 /:id를 붙이면 id라는 파라미터를 받을 수 있음 아직 미구현.
