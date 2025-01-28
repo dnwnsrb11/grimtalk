@@ -6,7 +6,7 @@ export const CurriculumLecture = () => {
     <>
       <div className="mt-[60px]">
         <h1 className="text-[32px] font-bold">커리큘럼</h1>
-        <div className="mt-[10px]">
+        <div className="mt-[10px] flex flex-col gap-[30px]">
           <CurriculumLectureLIstDeactive />
           <CurriculumLectureLIstActive />
         </div>
