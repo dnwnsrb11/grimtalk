@@ -96,7 +96,7 @@ export const DashBoardSection = () => {
       <div className="grid grid-cols-2 gap-3">
         <DashBoardCard title="최근 구독한 강사">
           <button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-5">
               <img
                 src={recentInstructor.image}
                 alt="recent-instructor"
