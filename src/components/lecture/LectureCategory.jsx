@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 
-export const LectureCategory = ({ sendDatetoParent }) => {
+export const LectureCategory = ({ setSelectedCategory }) => {
   const liTextactive = 'text-[22px] font-bold cursor-pointer';
   const liTextDeactive = 'text-[22px] font-light text-[#828282] cursor-pointer';
 
   const [categoryActive, setCategoryActive] = useState('강의소개');
 
   const sendData = () => {
-    sendDatetoParent(categoryActive);
+    setSelectedCategory(categoryActive);
   };
   // 여기서 받은 값을 부모인 강의페이지로 넘김니다.
   // 비동기 함수라 문제 발생

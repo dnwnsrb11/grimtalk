@@ -27,7 +27,7 @@ export const LecturePage = () => {
           <LectureProfile />
         </div>
         <div className="mt-[60px]">
-          <LectureCategory sendDatetoParent={handleCatagory} />
+          <LectureCategory setSelectedCategory={handleCatagory} />
         </div>
         <div>{MENU_COMPONENTS[selectedCategory]}</div>
       </div>
