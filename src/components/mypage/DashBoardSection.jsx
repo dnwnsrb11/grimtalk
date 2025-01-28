@@ -43,7 +43,15 @@ export const DashBoardSection = () => {
               image={recentLecture.image}
             />
           </DashBoardCard>
-          <DashBoardCard title="나의 가장 높은 유사도"></DashBoardCard>
+          <DashBoardCard
+            title="나의 가장 높은 유사도"
+            subtitle={`수업: ${myHighestSimilarityLectureTitle}`}
+          >
+            <div className="flex items-end justify-end">
+              <span className="text-5xl font-bold text-primary-color">{myHighestSimilarity}</span>
+              <span className="text-2xl font-bold text-black">%</span>
+            </div>
+          </DashBoardCard>
         </div>
         <DashBoardCard title="예정 커리큘럼">
           {upcomingLectureList.map((lecture) => (
