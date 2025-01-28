@@ -16,11 +16,8 @@ export const CurriculumLectureLIstActive = () => {
         </div>
         <div className="mt-[15px] flex gap-3">
           {/* 하단 정보  */}
-          <div className="border-'gray-border-color' rounded-full border bg-bg-gray-color px-[10px] py-[5px]">
-            <p className="text-[16px] font-semibold">수업예정</p>
-          </div>
-          <div className="rounded-full bg-primary-color px-[10px] py-[5px]">
-            <p className="text-[16px] font-semibold text-white">2025.05.15 12:00</p>
+          <div className="border-'gray-border-color' rounded-full border bg-black px-[10px] py-[5px]">
+            <p className="text-[16px] font-semibold text-white">수업완료</p>
           </div>
         </div>
       </div>
