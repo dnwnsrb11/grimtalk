@@ -34,4 +34,77 @@ const StudentLogo = ({ className, width, height }) => (
   </svg>
 );
 
-export { DefaultBadge, InstructorLogo, StudentLogo };
+// 즐겨찾기 아이콘 추가
+const SubscribeIcon = ({
+  className = '',
+  width = 20,
+  height = 20,
+  stroke = 'black',
+  strokeWidth = 2,
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M4.5 5.5C4.5 5.76522 4.60536 6.01957 4.79289 6.20711C4.98043 6.39464 5.23478 6.5 5.5 6.5C5.76522 6.5 6.01957 6.39464 6.20711 6.20711C6.39464 6.01957 6.5 5.76522 6.5 5.5C6.5 5.23478 6.39464 4.98043 6.20711 4.79289C6.01957 4.60536 5.76522 4.5 5.5 4.5C5.23478 4.5 4.98043 4.60536 4.79289 4.79289C4.60536 4.98043 4.5 5.23478 4.5 5.5Z"
+      stroke={stroke}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M1 4V9.172C1.00011 9.70239 1.2109 10.211 1.586 10.586L9.296 18.296C9.74795 18.7479 10.3609 19.0017 11 19.0017C11.6391 19.0017 12.252 18.7479 12.704 18.296L18.296 12.704C18.7479 12.252 19.0017 11.6391 19.0017 11C19.0017 10.3609 18.7479 9.74795 18.296 9.296L10.586 1.586C10.211 1.2109 9.70239 1.00011 9.172 1H4C3.20435 1 2.44129 1.31607 1.87868 1.87868C1.31607 2.44129 1 3.20435 1 4Z"
+      stroke={stroke}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// 즐겨찾기 아이콘
+const FavoritIcon = ({
+  className = '',
+  width = 15,
+  height = 19,
+  stroke = 'black',
+  strokeWidth = 2,
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 15 19"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M14 18L7.5 13.2778L1 18V2.88889C1 2.38792 1.19566 1.90748 1.54394 1.55324C1.89223 1.19901 2.3646 1 2.85714 1H12.1429C12.6354 1 13.1078 1.19901 13.4561 1.55324C13.8043 1.90748 14 2.38792 14 2.88889V18Z"
+      stroke={stroke}
+      stroke-width={strokeWidth}
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+const LoginHi = ({ className = '', width = 134, height = 163, fill = '#FF5C38' }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 134 163"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M65.3659 0C74.3537 0 81.7073 7.335 81.7073 16.3C81.7073 25.265 74.3537 32.6 65.3659 32.6C56.378 32.6 49.0244 25.265 49.0244 16.3C49.0244 7.335 56.378 0 65.3659 0ZM97.2317 49.715C93.9634 46.455 88.2439 40.75 77.6219 40.75H57.1951C34.3171 40.75 16.3415 22.82 16.3415 0H0C0 26.08 17.1585 47.27 40.8537 54.605V163H57.1951V114.1H73.5366V163H89.878V66.015L122.561 97.8L134 86.39L97.2317 49.715Z"
+      fill={fill}
+    />
+  </svg>
+);
+
+export { DefaultBadge, InstructorLogo, StudentLogo, SubscribeIcon, FavoritIcon, LoginHi };
