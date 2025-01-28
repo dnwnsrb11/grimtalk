@@ -68,7 +68,7 @@ const SubscribeIcon = ({
 );
 
 // 즐겨찾기 아이콘
-const FavoritIcon = ({
+const FavoriteIcon = ({
   className = '',
   width = 15,
   height = 19,
@@ -107,4 +107,4 @@ const LoginHi = ({ className = '', width = 134, height = 163, fill = '#FF5C38' }
   </svg>
 );
 
-export { DefaultBadge, InstructorLogo, StudentLogo, SubscribeIcon, FavoritIcon, LoginHi };
+export { DefaultBadge, InstructorLogo, StudentLogo, SubscribeIcon, FavoriteIcon, LoginHi };
