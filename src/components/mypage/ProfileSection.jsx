@@ -64,7 +64,12 @@ export const ProfileSection = ({
         </div>
       </div>
       {/* 네비게이션 메뉴 컴포넌트 */}
-      <NavigationMenu selectedMenu={selectedMenu} onMenuSelect={onMenuSelect} />
+      <NavigationMenu
+        selectedMenu={selectedMenu}
+        selectedProfileMenu={selectedProfileMenu}
+        onMenuSelect={onMenuSelect}
+        onProfileMenuSelect={onProfileMenuSelect}
+      />
     </div>
   );
 };
