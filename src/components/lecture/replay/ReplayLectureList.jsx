@@ -1,6 +1,8 @@
 import { truncateText } from '@/components/common/truncateText';
 // 강의 다시보기 버튼
 import { ReplayLectureListPlayButton } from './ReplayLectureListPlayButton';
+// 이미지 유사도 확인 버튼
+import { ReplayLectuecheckImageSimilarityButton } from './ReplayLectuecheckImageSimilarityButton';
 
 export const ReplayLectureList = () => {
   const testText =
@@ -33,9 +35,7 @@ export const ReplayLectureList = () => {
           {/* 오른쪽 */}
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-[40px]">
             <ReplayLectureListPlayButton isActive={true} />
-            <div className="w-full rounded-2xl border bg-primary-color py-[10px] text-center">
-              <p className="text-[18px] font-semibold text-white">65%</p>
-            </div>
+            <ReplayLectuecheckImageSimilarityButton isActive={true} />
           </div>
         </div>
       </div>
