@@ -16,7 +16,8 @@ pipeline {
             steps {
                 configFileProvider([configFile(fileId: 'env-file', targetLocation: '.env')]) {
                     sh '''
-                    export $(cat .env | xargs)  # 이 부분에서 .env 파일을 읽고 환경변수를 설정
+                    export $(cat .env | xargs)  # 환경 변수 설정
+                    npm install -g pnpm  # 🔹 pnpm 설치 추가
                     '''
                 }
             }
@@ -24,13 +25,13 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pnpm install'  // pnpm을 사용하는 프론트엔드 설치
+                sh 'pnpm install'  // pnpm을 사용하여 의존성 설치
             }
         }
 
         stage('Build Frontend') {
             steps {
-                sh 'pnpm run build'  // 빌드 작업
+                sh 'pnpm run build'  // 빌드 실행
             }
         }
 
