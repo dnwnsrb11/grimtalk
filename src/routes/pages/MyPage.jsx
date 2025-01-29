@@ -30,8 +30,8 @@ export const MyPage = () => {
         <ProfileSection
           selectedMenu={selectedMenu}
           selectedProfileMenu={selectedProfileMenu}
-          onMenuSelect={setSelectedMenu}
-          onProfileMenuSelect={setSelectedProfileMenu}
+          setSelectedMenu={setSelectedMenu}
+          setSelectedProfileMenu={setSelectedProfileMenu}
         />
       </div>
 
