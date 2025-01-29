@@ -1,14 +1,14 @@
-import { CurriculumLectureLIstActive } from './curriculum/CurriculumLectureLIstActive';
-import { CurriculumLectureLIstDeactive } from './curriculum/CurriculumLectureLIstDeactive';
+import { CurriculumLectureCardActive } from './curriculum/CurriculumLectureCardActive';
+import { CurriculumLectureCardDeActive } from './curriculum/CurriculumLectureCardDeActive';
 
 export const CurriculumLecture = () => {
   // 받은 값이 ture, false에 따라 출력되는 컴포넌트가 다름
   //   index 추가
   const selectListComponents = (boolean, index) => {
     if (boolean === false) {
-      return <CurriculumLectureLIstDeactive key={index} />;
+      return <CurriculumLectureCardDeActive key={index} />;
     } else {
-      return <CurriculumLectureLIstActive key={index} />;
+      return <CurriculumLectureCardActive key={index} />;
     }
   };
   // 테스트를 위한 배열 생성
