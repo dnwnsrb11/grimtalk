@@ -14,7 +14,7 @@ export const MyPageContentLayout = ({
       {!isEditing && (
         <button
           onClick={() => setIsEditing(true)}
-          className="rounded-lg bg-bg-gray-color px-2 py-1 text-lg"
+          className="rounded-lg bg-bg-gray-color px-2 py-1 text-lg font-semibold"
         >
           수정하기
         </button>
