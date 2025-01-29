@@ -31,6 +31,7 @@ export const QuestionLectureCard = (isActive) => {
               <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
                 <p className="text-[14px] font-semibold">2025.05.21</p>
               </div>
+              {isActive ? <QuestionActive /> : <QuestionDeActive />}
             </div>
             <div>
               <div>
