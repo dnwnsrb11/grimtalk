@@ -6,6 +6,7 @@ import { MemberIntroSection } from '@/components/mypage/MemberIntroSection';
 import { MyBoardSection } from '@/components/mypage/MyBoardSection';
 import { MemberSettingsSection } from '@/components/mypage/MemberSettingsSection';
 import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
+import { InstructorDashboardSection } from '@/components/mypage/InstructorDashboardSection';
 
 export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
@@ -26,6 +27,7 @@ export const MyPage = () => {
     },
     강사: {
       ...COMMON_MENU,
+      대시보드: <InstructorDashboardSection />,
     },
     default: <div>준비 중입니다.</div>,
   };
