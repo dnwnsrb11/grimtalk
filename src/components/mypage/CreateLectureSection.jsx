@@ -1,21 +1,25 @@
 import { useState } from 'react';
 
 export const CreateLectureSection = () => {
+  // 초기 커리큘럼 상태 정의
   const initialCurriculumState = {
     title: '',
     description: '',
     date: '',
     time: '',
   };
-  const [lectureTitle, setLectureTitle] = useState('');
-  const [lectureContent, setLectureContent] = useState('');
-  const [BannerImage, setBannerImage] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [curriculums, setCurriculums] = useState([]);
-  const [curriculumForm, setCurriculumForm] = useState(initialCurriculumState);
-  const [tags, setTags] = useState([]);
-  const [tagInput, setTagInput] = useState('');
 
+  // 상태 관리
+  const [lectureTitle, setLectureTitle] = useState(''); // 강의 제목
+  const [lectureContent, setLectureContent] = useState(''); // 강의 내용
+  const [BannerImage, setBannerImage] = useState(''); // 배너 이미지 이름
+  const [selectedFile, setSelectedFile] = useState(null); // 실제 선택된 파일
+  const [curriculums, setCurriculums] = useState([]); // 커리큘럼 목록
+  const [curriculumForm, setCurriculumForm] = useState(initialCurriculumState); // 커리큘럼 입력 폼
+  const [tags, setTags] = useState([]); // 태그 목록
+  const [tagInput, setTagInput] = useState(''); // 태그 입력값
+
+  // 이미지 업로드 핸들러
   const handleImageSelect = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -30,7 +34,9 @@ export const CreateLectureSection = () => {
     input.click();
   };
 
+  // 커리큘럼 관련 핸들러
   const handleAddCurriculum = () => {
+    // 모든 필드가 입력되었는지 확인
     if (
       !curriculumForm.title ||
       !curriculumForm.description ||
@@ -41,19 +47,21 @@ export const CreateLectureSection = () => {
       return;
     }
 
+    // 새 커리큘럼 추가
     const newCurriculum = {
       id: Date.now(),
       ...curriculumForm,
     };
 
     setCurriculums([...curriculums, newCurriculum]);
-    setCurriculumForm(initialCurriculumState);
+    setCurriculumForm(initialCurriculumState); // 폼 초기화
   };
 
   const handleDeleteCurriculum = (id) => {
     setCurriculums(curriculums.filter((curriculum) => curriculum.id !== id));
   };
 
+  // 태그 관련 핸들러
   const handleAddTag = () => {
     if (!tagInput.trim()) return;
     setTags([...tags, { id: Date.now(), text: tagInput.trim() }]);
@@ -71,7 +79,9 @@ export const CreateLectureSection = () => {
     }
   };
 
+  // 강의 생성 제출 핸들러
   const handleSubmit = async () => {
+    // 필수 필드 검증
     if (!lectureTitle || !lectureContent || !selectedFile || curriculums.length === 0) {
       alert('모든 필드를 입력해주세요. 최소 1개 이상의 커리큘럼이 필요합니다.');
       return;
@@ -93,6 +103,7 @@ export const CreateLectureSection = () => {
 
   return (
     <div className="flex w-full flex-col gap-6">
+      {/* 강의 제목 입력 섹션 */}
       <div>
         <input
           type="text"
@@ -103,6 +114,7 @@ export const CreateLectureSection = () => {
         />
       </div>
 
+      {/* 커리큘럼 입력 폼 섹션 */}
       <div className="flex flex-col gap-3">
         <label className="text-xl font-bold">커리큘럼 작성</label>
         <input
@@ -144,6 +156,7 @@ export const CreateLectureSection = () => {
 
       <hr className="border-divider-color" />
 
+      {/* 커리큘럼 목록 표시 섹션 */}
       <div className="grid grid-cols-1 gap-3">
         {curriculums.map((curriculum) => (
           <div
@@ -171,6 +184,7 @@ export const CreateLectureSection = () => {
         ))}
       </div>
 
+      {/* 강의 내용 입력 섹션 */}
       <div className="flex flex-col gap-3">
         <p className="text-xl font-bold">강의 내용</p>
         <textarea
@@ -180,6 +194,7 @@ export const CreateLectureSection = () => {
         />
       </div>
 
+      {/* 배너 이미지 업로드 섹션 */}
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <label className="text-xl font-bold">배너 이미지</label>
@@ -255,6 +270,7 @@ export const CreateLectureSection = () => {
 
       <hr className="border-divider-color" />
 
+      {/* 제출 버튼 섹션 */}
       <div className="flex justify-end gap-6">
         <button className="rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-bg-gray-color/60">
           뒤로가기
