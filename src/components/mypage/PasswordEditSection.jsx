@@ -12,6 +12,20 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
 
+  // api 호출 필요(DB 변경 로직)
+  const handlePasswordEditClick = () => {
+    if (currentPassword === memberPassword) {
+      if (newPassword.length >= 8 && newPassword === newPasswordConfirm) {
+        alert('비밀번호 변경 완료');
+        onGoBack();
+      } else {
+        alert('새로운 비밀번호가 일치하지 않거나 규칙을 충족하지 않습니다.');
+      }
+    } else {
+      alert('현재 비밀번호가 일치하지 않습니다.');
+    }
+  };
+
   return (
     <div className="flex w-[65%] flex-col gap-5">
       <div className="flex flex-col gap-4">
@@ -92,7 +106,10 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
         >
           뒤로가기
         </button>
-        <button className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80 focus:bg-primary-color/80 active:bg-primary-color/80">
+        <button
+          className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80 focus:bg-primary-color/80 active:bg-primary-color/80"
+          onClick={handlePasswordEditClick}
+        >
           변경하기
         </button>
       </div>
