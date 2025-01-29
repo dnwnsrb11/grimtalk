@@ -10,6 +10,7 @@ export const MemberSettingsSection = () => {
   };
   const [memberProfileImage, setMemberProfileImage] = useState('MYPROFILEIMAGE.jpg');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
 
   const handleImageSelect = () => {
     const input = document.createElement('input');
@@ -43,6 +44,19 @@ export const MemberSettingsSection = () => {
     }
   };
 
+  const handlePasswordEditClick = () => {
+    setIsPasswordEditMode(true);
+  };
+
+  if (isPasswordEditMode) {
+    return (
+      <PasswordEditSection
+        onGoBack={() => setIsPasswordEditMode(false)}
+        memberPassword={memberPassword}
+      />
+    );
+  }
+
   return (
     <div className="flex w-[65%] flex-col gap-5">
       <div className="flex flex-col gap-2">
@@ -63,7 +77,10 @@ export const MemberSettingsSection = () => {
             className="flex-[80%] rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
             value={memberPassword}
           />
-          <button className="flex-[20%] rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-primary-color hover:text-white focus:bg-primary-color focus:text-white active:bg-primary-color active:text-white">
+          <button
+            onClick={handlePasswordEditClick}
+            className="flex-[20%] rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-primary-color hover:text-white focus:bg-primary-color focus:text-white active:bg-primary-color active:text-white"
+          >
             비밀번호 변경
           </button>
         </div>
