@@ -18,15 +18,19 @@ services:
     image: backend-server
     container_name: backend-1
     restart: always
+    env_file:
+      - backend-server.env  # 📌 환경 변수 적용
     ports:
       - "8090:8090"
     networks:
       - backend_network
 
-  backend-2:
+    backend-2:
     image: backend-server
     container_name: backend-2
     restart: always
+    env_file:
+      - backend-server.env  # 📌 환경 변수 적용
     ports:
       - "8091:8090"
     networks:
