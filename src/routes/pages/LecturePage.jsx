@@ -1,3 +1,4 @@
+import { CurriculumLecture } from '@/components/lecture/CurriculumLecture';
 import { IntroductionLecture } from '@/components/lecture/IntroductionLecture';
 import { LectureBanner } from '@/components/lecture/LectureBanner';
 import { LectureCategory } from '@/components/lecture/LectureCategory';
@@ -17,6 +18,7 @@ export const LecturePage = () => {
   const MENU_COMPONENTS = {
     강의소개: <IntroductionLecture />,
     다시보기: <ReplayLecture />,
+    커리큘럼: <CurriculumLecture />,
     default: <p>now Tesing</p>,
   };
   return (
