@@ -14,12 +14,18 @@ pipeline {
             }
         }
 
-        stage('Build Frontend') {
+        stage('Install Dependencies') {
             steps {
                 sh '''
-                npm install
-                npm run build
+                npm install -g pnpm || true  # pnpm이 없으면 설치
+                pnpm install
                 '''
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                sh 'pnpm run build'
             }
         }
 
