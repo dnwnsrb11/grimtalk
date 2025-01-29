@@ -14,7 +14,7 @@ export const LectureQuestions = () => {
         </div>
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
-          <QuestionLectureCard />
+          <QuestionLectureCard isActive={false} />
         </div>
       </div>
     </>
