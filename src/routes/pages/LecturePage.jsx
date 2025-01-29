@@ -3,6 +3,7 @@ import { IntroductionLecture } from '@/components/lecture/IntroductionLecture';
 import { LectureBanner } from '@/components/lecture/LectureBanner';
 import { LectureCategory } from '@/components/lecture/LectureCategory';
 import { LectureProfile } from '@/components/lecture/LectureProfile';
+import { LectureQuestions } from '@/components/lecture/LectureQuestions';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
@@ -20,7 +21,7 @@ export const LecturePage = () => {
     커리큘럼: <CurriculumLecture />,
     default: <p>now Tesing</p>,
     공지사항: '',
-    질문사항: '',
+    질문사항: <LectureQuestions />,
   };
   return (
     <>
