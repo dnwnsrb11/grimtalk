@@ -25,7 +25,7 @@ export const ReplayLectureList = () => {
             </div>
           </div>
         </div>
-        <div className="w-[20%] border-l border-gray-border-color">
+        <div className="ml-[25px] w-[20%] border-l border-gray-border-color">
           {/* 오른쪽 */}
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-[40px]">
             <div className="w-full rounded-2xl border bg-primary-color py-[10px] text-center">
