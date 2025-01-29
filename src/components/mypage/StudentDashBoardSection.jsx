@@ -1,6 +1,6 @@
 import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
+import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { ResponsiveBar } from '@nivo/bar';
 
@@ -84,7 +84,7 @@ export const StudentDashboardSection = () => {
         </div>
         <DashboardCard title="예정 커리큘럼">
           {upcomingLectureList.map((lecture) => (
-            <UpcomingLectureItem
+            <DatedLectureCurriculumItem
               key={lecture.title}
               title={lecture.title}
               image={lecture.image}
