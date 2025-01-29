@@ -184,6 +184,7 @@ export const DashBoardSection = () => {
                 },
               },
             }}
+            layout={'vertical'}
           />
         </div>
       </DashBoardCard>
