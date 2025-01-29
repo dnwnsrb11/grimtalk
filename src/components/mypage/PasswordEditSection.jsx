@@ -12,10 +12,14 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
 
+  // 비밀번호 유효성 검사 로직(추후 변경)
+  const isPasswordValid = (password) => {
+    return password.length >= 8;
+  };
   // api 호출 필요(DB 변경 로직)
   const handlePasswordEditClick = () => {
     if (currentPassword === memberPassword) {
-      if (newPassword.length >= 8 && newPassword === newPasswordConfirm) {
+      if (isPasswordValid(newPassword) && newPassword === newPasswordConfirm) {
         alert('비밀번호 변경 완료');
         onGoBack();
       } else {
@@ -63,7 +67,7 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
               className="w-full rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-semibold"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              {newPassword.length >= 8 ? <CheckIcon /> : <WrongIcon />}
+              {isPasswordValid(newPassword) ? <CheckIcon /> : <WrongIcon />}
             </div>
           </div>
           <p className="text-[18px] text-text-gray-color">
@@ -83,16 +87,10 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
               className="w-full rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-semibold"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              {newPassword.length >= 8 && newPassword === newPasswordConfirm ? (
-                <CheckIcon />
-              ) : (
-                <WrongIcon />
-              )}
+              {isPasswordValid(newPasswordConfirm) ? <CheckIcon /> : <WrongIcon />}
             </div>
           </div>
-          {newPassword.length < 8 ? (
-            <p className="text-[18px] text-red-500">비밀번호는 8자리 이상이어야 합니다.</p>
-          ) : newPassword === newPasswordConfirm ? (
+          {isPasswordValid(newPasswordConfirm) && newPassword === newPasswordConfirm ? (
             <p className="text-[18px] text-check-color">비밀번호가 일치합니다.</p>
           ) : (
             <p className="text-[18px] text-red-500">비밀번호가 일치하지 않습니다.</p>
