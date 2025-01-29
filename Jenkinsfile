@@ -8,48 +8,35 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://lab.ssafy.com/hoonixox/grimtalkfront.git',
-                    credentialsId: 'gitlab-credentials'
+                git branch: 'main', url: 'https://lab.ssafy.com/hoonixox/grimtalkfront.git', credentialsId: 'gitlab-credentials'
             }
         }
 
-        stage('Setup Node.js & pnpm') {
+        stage('Setup Environment') {
             steps {
-                sh '''
-                if ! command -v node &> /dev/null
-                then
-                    echo "Node.js not found. Installing..."
-                    apt update
-                    apt install -y nodejs npm
-                fi
-
-                if ! command -v pnpm &> /dev/null
-                then
-                    echo "pnpm not found. Installing..."
-                    npm install -g pnpm
-                fi
-                '''
+                configFileProvider([configFile(fileId: 'env-file', targetLocation: '.env')]) {
+                    sh '''
+                    export $(cat .env | xargs)  # 이 부분에서 .env 파일을 읽고 환경변수를 설정
+                    '''
+                }
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'pnpm install'
+                sh 'pnpm install'  // pnpm을 사용하는 프론트엔드 설치
             }
         }
 
         stage('Build Frontend') {
             steps {
-                sh 'pnpm run build'
+                sh 'pnpm run build'  // 빌드 작업
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh '''
-                docker build -t $IMAGE_NAME .
-                '''
+                sh 'docker build -t $IMAGE_NAME .'  // Docker 이미지 빌드
             }
         }
 
