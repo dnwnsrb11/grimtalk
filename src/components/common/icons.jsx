@@ -119,4 +119,45 @@ const LoginHi = ({ className = '', width = 134, height = 163, fill = '#FF5C38' }
   </svg>
 );
 
-export { DefaultBadge, InstructorLogo, StudentLogo, SubscribeIcon, FavoriteIcon, LoginHi };
+const StatisticsIcon = ({ className = '', width = 42, height = 53 }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 42 53"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M38 49.3333V21"
+      stroke="black"
+      strokeWidth="7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M21 49.3333V4"
+      stroke="black"
+      strokeWidth="7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M4 49.334V32.334"
+      stroke="black"
+      strokeWidth="7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export {
+  DefaultBadge,
+  InstructorLogo,
+  StudentLogo,
+  SubscribeIcon,
+  FavoriteIcon,
+  LoginHi,
+  StatisticsIcon,
+};
