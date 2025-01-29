@@ -4,7 +4,7 @@ import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { ResponsiveBar } from '@nivo/bar';
 
-export const DashBoardSection = () => {
+export const StudentDashBoardSection = () => {
   // 임시 데모 데이터
   const recentCurriculum = {
     title: '이모티콘을 배우고 싶은 당신을 위한 강의',
