@@ -8,8 +8,8 @@ const QuestionActive = () => {
 
 const QuestionDeActive = () => {
   return (
-    <div className="rounded-full border border-gray-border-color bg-primary-color px-[15px] py-[5px]">
-      <p className="text-[14px] font-semibold text-white">해결</p>
+    <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
+      <p className="text-[14px] font-semibold text-[#AEAEAE]">미해결</p>
     </div>
   );
 };
