@@ -4,15 +4,15 @@ export const ReplayLectuecheckImageSimilarityButton = ({
 }) => {
   if (isActive) {
     return (
-      <div className="w-full rounded-2xl border bg-primary-color py-[10px] text-center">
+      <button className="w-full rounded-2xl border bg-primary-color py-[10px] text-center">
         <p className="text-[18px] font-semibold text-white">{imageScore}</p>
-      </div>
+      </button>
     );
   } else {
     return (
-      <div className="w-full rounded-2xl border bg-primary-color py-[10px] text-center">
+      <button className="w-full rounded-2xl border bg-primary-color py-[10px] text-center">
         <p className="text-[18px] font-semibold text-white">{imageScore}</p>
-      </div>
+      </button>
     );
   }
 };
