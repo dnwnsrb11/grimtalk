@@ -1,7 +1,7 @@
 import PopularIMG1 from '@/assets/banner/PopularIMG_1.svg';
 import testImg from '@/assets/banner/Test/TestImg.png';
 import starSVG from '@/assets/banner/star.svg';
-export const StructorList = () => {
+export const LectureItem = () => {
   // 추후 score 값을 받아와서 저장할 장소
   const score = 4.4;
   return (
