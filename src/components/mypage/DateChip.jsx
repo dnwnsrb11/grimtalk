@@ -7,7 +7,7 @@ export const DateChip = ({ date }) => {
   return (
     <div className="flex items-center gap-2">
       <div className="rounded-full bg-primary-color px-3 py-0 text-white">{date}</div>
-      <p className="text-lg font-semibold text-primary-color">D-{daysRemaining}</p>
+      <p className="text-base font-semibold text-primary-color">D-{daysRemaining}</p>
     </div>
   );
 };
