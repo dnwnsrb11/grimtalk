@@ -44,8 +44,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf  # 📌 수정된 Nginx 설정 적용
-      - /etc/letsencrypt:/etc/letsencrypt  # 📌 SSL 인증서 마운트
+      - ./nginx.conf:/etc/nginx/nginx.conf  # ✅ 올바른 설정 (전체 Nginx 설정 파일)
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf  # ✅ 추가 설정 (개별 사이트 설정)
+      - /etc/letsencrypt:/etc/letsencrypt  # ✅ SSL 인증서 마운트 유지
     depends_on:
       - frontend
       - backend-1
