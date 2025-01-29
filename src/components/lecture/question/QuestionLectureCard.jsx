@@ -15,6 +15,13 @@ const QuestionDeActive = () => {
 };
 
 export const QuestionLectureCard = (isActive) => {
+  const checkActive = (isActive) => {
+    if (isActive) {
+      return QuestionActive;
+    } else {
+      return QuestionDeActive;
+    }
+  };
   return (
     <>
       <div className="cursor-pointer rounded-2xl border border-gray-border-color px-[20px] py-[15px]">
@@ -31,9 +38,7 @@ export const QuestionLectureCard = (isActive) => {
               <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
                 <p className="text-[14px] font-semibold">2025.05.21</p>
               </div>
-              <div className="rounded-full border border-gray-border-color bg-primary-color px-[15px] py-[5px]">
-                <p className="text-[14px] font-semibold text-white">해결</p>
-              </div>
+              {checkActive(isActive)}
             </div>
             <div>
               <div>
