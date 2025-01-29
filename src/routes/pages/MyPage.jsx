@@ -7,10 +7,12 @@ import { MyBoardSection } from '@/components/mypage/MyBoardSection';
 import { MemberSettingsSection } from '@/components/mypage/MemberSettingsSection';
 import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
 import { InstructorDashboardSection } from '@/components/mypage/InstructorDashboardSection';
+import { MyLectureSection } from '@/components/mypage/myLectureSection';
 
 export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
+  const [isMyLectureCreate, setIsMyLectureCreate] = useState(false);
 
   const COMMON_MENU = {
     유저소개: <MemberIntroSection />,
@@ -28,6 +30,7 @@ export const MyPage = () => {
     강사: {
       ...COMMON_MENU,
       대시보드: <InstructorDashboardSection />,
+      '내 강의': <MyLectureSection />,
     },
     default: <div>준비 중입니다.</div>,
   };
@@ -48,7 +51,19 @@ export const MyPage = () => {
       </div>
 
       <div className="col-span-8 flex flex-col gap-3 pl-6">
-        <MyPageContentLayout navMenuTitle={selectedMenu}>
+        <MyPageContentLayout
+          navMenuTitle={selectedMenu}
+          navMenuSubButton={
+            selectedMenu === '내 강의' && (
+              <button
+                className="rounded-[10px] bg-primary-color px-3 py-1 text-white hover:bg-primary-color/80"
+                onClick={() => setIsMyLectureCreate(true)}
+              >
+                생성하기
+              </button>
+            )
+          }
+        >
           {selectedMenuContent()}
         </MyPageContentLayout>
       </div>
