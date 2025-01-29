@@ -33,6 +33,7 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
   return (
     <div className="flex w-[65%] flex-col gap-5">
       <div className="flex flex-col gap-4">
+        <p className="my-6 text-3xl font-bold">비밀번호 변경</p>
         <div className="flex flex-col items-baseline gap-2">
           <div className="flex flex-row items-center gap-2">
             <LockIcon />
