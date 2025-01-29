@@ -1,9 +1,8 @@
-import { HashTagChip } from '@/components/mypage/HashTagChip';
-
-export const RecentLectureCurriculumItem = ({ title, hashTags, image }) => {
+import { DateChip } from '@/components/mypage/DateChip';
+export const DatedLectureCurriculumItem = ({ title, image, date }) => {
   return (
     // 커리큘럼 이미지가 70px이기 때문에 컬럼 너비를 70px로 고정
-    <div className="grid grid-cols-[70px_1fr_110px] items-center justify-between gap-5">
+    <div className="mb-7 grid grid-cols-[70px_1fr_110px] items-center justify-between gap-5">
       <img
         src={image}
         alt="lecture-curriculum"
@@ -12,11 +11,7 @@ export const RecentLectureCurriculumItem = ({ title, hashTags, image }) => {
 
       <div className="flex flex-col items-start truncate">
         <p className="w-full truncate text-lg font-bold">{title}</p>
-        <div className="flex items-center gap-2">
-          {hashTags.map((hashTag) => (
-            <HashTagChip key={hashTag} hashTag={hashTag} />
-          ))}
-        </div>
+        <DateChip date={date} />
       </div>
 
       <button className="text-lg font-semibold text-detail-text-color">자세히 보기 ＞</button>

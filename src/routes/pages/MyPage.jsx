@@ -5,23 +5,35 @@ import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFav
 import { MemberIntroSection } from '@/components/mypage/MemberIntroSection';
 import { MyBoardSection } from '@/components/mypage/MyBoardSection';
 import { MemberSettingsSection } from '@/components/mypage/MemberSettingsSection';
-import { DashBoardSection } from '@/components/mypage/DashBoardSection';
+import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
+import { InstructorDashboardSection } from '@/components/mypage/InstructorDashboardSection';
 
 export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
 
-  const MENU_COMPONENTS = {
-    '구독, 즐겨찾기': <SubscriptionFavoriteSection />,
+  const COMMON_MENU = {
     유저소개: <MemberIntroSection />,
-    '내가 쓴 글': <MyBoardSection />,
     '마이 페이지': <MemberSettingsSection />,
-    대시보드: <DashBoardSection />,
+  };
+
+  const MENU_COMPONENTS = {
+    공통메뉴: COMMON_MENU,
+    수강생: {
+      ...COMMON_MENU,
+      '구독, 즐겨찾기': <SubscriptionFavoriteSection />,
+      '내가 쓴 글': <MyBoardSection />,
+      대시보드: <StudentDashboardSection />,
+    },
+    강사: {
+      ...COMMON_MENU,
+      대시보드: <InstructorDashboardSection />,
+    },
     default: <div>준비 중입니다.</div>,
   };
 
   const selectedMenuContent = () => {
-    return MENU_COMPONENTS[selectedMenu] || MENU_COMPONENTS.default;
+    return MENU_COMPONENTS[selectedProfileMenu][selectedMenu] || MENU_COMPONENTS.default;
   };
 
   return (
@@ -30,8 +42,8 @@ export const MyPage = () => {
         <ProfileSection
           selectedMenu={selectedMenu}
           selectedProfileMenu={selectedProfileMenu}
-          onMenuSelect={setSelectedMenu}
-          onProfileMenuSelect={setSelectedProfileMenu}
+          setSelectedMenu={setSelectedMenu}
+          setSelectedProfileMenu={setSelectedProfileMenu}
         />
       </div>
 

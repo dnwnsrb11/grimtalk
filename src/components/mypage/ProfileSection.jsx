@@ -5,8 +5,8 @@ import { NavigationMenu } from '@/components/mypage/NavigationMenu';
 export const ProfileSection = ({
   selectedMenu, // 현재 선택된 네비게이션 메뉴
   selectedProfileMenu, // 현재 선택된 프로필 메뉴 (수강생/강사)
-  onMenuSelect, // 네비게이션 메뉴 선택 핸들러
-  onProfileMenuSelect, // 프로필 메뉴 선택 핸들러
+  setSelectedMenu, // 네비게이션 메뉴 선택 핸들러
+  setSelectedProfileMenu, // 프로필 메뉴 선택 핸들러
 }) => {
   return (
     <div className="flex flex-col items-start">
@@ -23,7 +23,7 @@ export const ProfileSection = ({
         <div className="mt-2 flex gap-3 text-lg font-semibold">
           {/* 수강생 버튼 */}
           <button
-            onClick={() => onProfileMenuSelect('수강생')}
+            onClick={() => setSelectedProfileMenu('수강생')}
             className={`group flex items-center gap-1 rounded-lg border px-3 py-1 
               ${
                 selectedProfileMenu === '수강생'
@@ -44,7 +44,7 @@ export const ProfileSection = ({
           </button>
           {/* 강사 버튼 */}
           <button
-            onClick={() => onProfileMenuSelect('강사')}
+            onClick={() => setSelectedProfileMenu('강사')}
             className={`group flex items-center gap-1 rounded-lg border px-3 py-1 
               ${
                 selectedProfileMenu === '강사'
@@ -64,7 +64,11 @@ export const ProfileSection = ({
         </div>
       </div>
       {/* 네비게이션 메뉴 컴포넌트 */}
-      <NavigationMenu selectedMenu={selectedMenu} onMenuSelect={onMenuSelect} />
+      <NavigationMenu
+        selectedMenu={selectedMenu}
+        selectedProfileMenu={selectedProfileMenu}
+        setSelectedMenu={setSelectedMenu}
+      />
     </div>
   );
 };
