@@ -88,7 +88,13 @@ export const MemberSettingsSection = () => {
       <div className="flex flex-col gap-2">
         <label className="text-lg font-semibold">뱃지</label>
         <div className="flex flex-row gap-2 rounded-md border border-[#000000] border-opacity-20 p-4">
-          <BadgeInformation memberName="우준규" memberSubscribeNumber={memberSubscribeNumber} />
+          <BadgeInformation
+            nickname="우준규"
+            subscribeNumber={memberSubscribeNumber}
+            badgeWidth={40}
+            badgeHeight={40}
+            textSize="sm"
+          />
         </div>
       </div>
       <hr className="mt-5 border-divider-color" />
