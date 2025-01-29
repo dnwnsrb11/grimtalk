@@ -1,3 +1,4 @@
+// 활성화 버튼
 const QuestionActive = () => {
   return (
     <div className="rounded-full border border-gray-border-color bg-primary-color px-[15px] py-[5px]">
@@ -5,7 +6,7 @@ const QuestionActive = () => {
     </div>
   );
 };
-
+// 비활성화 버튼
 const QuestionDeActive = () => {
   return (
     <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
