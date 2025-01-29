@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
 // 마이페이지의 유저 소개 섹션을 담당하는 컴포넌트
-export const MemberIntroSection = ({ isEditing, setIsEditing }) => {
+export const MemberIntroSection = () => {
+  const [isEditing, setIsEditing] = useState(false);
   const [introText, setIntroText] =
     useState(`안녕하세요! 저는 프로그래밍을 사랑하는 열정적인 개발자입니다.
 새로운 기술을 배우는 것을 즐기며, 특히 웹 개발에 큰 관심이 있습니다.
@@ -20,34 +21,54 @@ React와 TypeScript를 주로 사용하고 있으며, 클린 코드와 사용자
     // 여기에 API 호출 로직 추가
   };
 
-  if (isEditing) {
-    return (
-      <div className="flex flex-col gap-2">
+  const handleEditClick = () => {
+    setEditingText(introText); // 수정 모드 진입 시 현재 저장된 텍스트로 초기화
+    setIsEditing(true);
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="relative">
         <textarea
           value={editingText}
           onChange={(e) => setEditingText(e.target.value)}
-          className="h-[40vh] w-full resize-none overflow-auto rounded-[20px] border border-[#000000] border-opacity-20 p-5 focus:outline-none"
+          className={`absolute inset-0 h-[40vh] w-full resize-none overflow-auto rounded-[20px] border p-5 transition-[border-color] duration-300 focus:outline-none ${
+            isEditing ? 'visible z-10 border-[#000000] border-opacity-20' : 'invisible z-0'
+          }`}
         />
-        <div className="flex justify-end gap-2">
+        <p
+          className={`h-[40vh] w-full overflow-auto whitespace-pre-wrap break-all rounded-[20px] border p-5 text-base transition-[border-color] duration-300 ${
+            isEditing ? 'invisible z-0' : 'visible z-10 border-divider-color'
+          }`}
+        >
+          {introText}
+        </p>
+      </div>
+      <div className="flex justify-end gap-2">
+        {isEditing ? (
+          <>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-bg-gray-color/60"
+            >
+              뒤로가기
+            </button>
+            <button
+              onClick={handleSave}
+              className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80"
+            >
+              수정완료
+            </button>
+          </>
+        ) : (
           <button
-            onClick={() => setIsEditing(false)}
-            className="rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color 
-            hover:bg-bg-gray-color/60 
-            focus:bg-bg-gray-color/60 
-            active:bg-bg-gray-color/60"
-          >
-            뒤로가기
-          </button>
-          <button
-            onClick={handleSave}
-            className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80 focus:bg-primary-color/80 active:bg-primary-color/80"
+            onClick={() => handleEditClick()}
+            className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80"
           >
             수정하기
           </button>
-        </div>
+        )}
       </div>
-    );
-  }
-
-  return <p className="whitespace-pre-wrap break-all text-base">{introText}</p>;
+    </div>
+  );
 };
