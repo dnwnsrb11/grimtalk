@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  frontend:
+    image: frontend-app
+    container_name: frontend
+    restart: always
+    build: .
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+
+  backend-1:
+    image: backend-server
+    container_name: backend-1
+    restart: always
+    ports:
+      - "8090:8090"
+    networks:
+      - app-network
+    environment:
+      - DB_URL=jdbc:mysql://database-grimtalk.crwwoay8m30g.ap-northeast-2.rds.amazonaws.com/grim_talk
+      - DB_USERNAME=root
+      - DB_PASSWORD=Tkvl123!
+      - SECRET_KEY=jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword
+
+  backend-2:
+    image: backend-server
+    container_name: backend-2
+    restart: always
+    ports:
+      - "8091:8090"
+    networks:
+      - app-network
+    environment:
+      - DB_URL=jdbc:mysql://database-grimtalk.crwwoay8m30g.ap-northeast-2.rds.amazonaws.com/grim_talk
+      - DB_USERNAME=root
+      - DB_PASSWORD=Tkvl123!
+      - SECRET_KEY=jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword
+
+networks:
+  app-network:
+    driver: bridge
