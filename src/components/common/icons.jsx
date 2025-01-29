@@ -119,7 +119,7 @@ const LoginHi = ({ className = '', width = 134, height = 163, fill = '#FF5C38' }
   </svg>
 );
 
-const StatisticsIcon = ({ className = '', width = 42, height = 53 }) => (
+const StatisticsIcon = ({ className = '', width = 65, height = 65 }) => (
   <svg
     width={width}
     height={height}
