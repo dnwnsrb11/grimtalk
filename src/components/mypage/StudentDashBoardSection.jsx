@@ -1,10 +1,10 @@
-import { DashBoardCard } from '@/components/mypage/DashBoardCard';
+import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { RecentLectureCurriculumItem } from '@/components/mypage/RecentLectureCurriculumItem';
 import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { ResponsiveBar } from '@nivo/bar';
 
-export const StudentDashBoardSection = () => {
+export const StudentDashboardSection = () => {
   // 임시 데모 데이터
   const recentCurriculum = {
     title: '이모티콘을 배우고 싶은 당신을 위한 강의',
@@ -65,14 +65,14 @@ export const StudentDashBoardSection = () => {
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
-          <DashBoardCard title="최근 학습 커리큘럼">
+          <DashboardCard title="최근 학습 커리큘럼">
             <RecentLectureCurriculumItem
               title={recentCurriculum.title}
               hashTags={recentCurriculum.hashTags}
               image={recentCurriculum.image}
             />
-          </DashBoardCard>
-          <DashBoardCard
+          </DashboardCard>
+          <DashboardCard
             title="나의 가장 높은 유사도"
             subtitle={`수업: ${myHighestSimilarityLectureTitle}`}
           >
@@ -80,9 +80,9 @@ export const StudentDashBoardSection = () => {
               <span className="text-7xl font-bold text-primary-color">{myHighestSimilarity}</span>
               <span className="text-4xl font-bold text-black">%</span>
             </div>
-          </DashBoardCard>
+          </DashboardCard>
         </div>
-        <DashBoardCard title="예정 커리큘럼">
+        <DashboardCard title="예정 커리큘럼">
           {upcomingLectureList.map((lecture) => (
             <UpcomingLectureItem
               key={lecture.title}
@@ -91,10 +91,10 @@ export const StudentDashBoardSection = () => {
               date={lecture.date}
             />
           ))}
-        </DashBoardCard>
+        </DashboardCard>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <DashBoardCard title="최근 구독한 강사">
+        <DashboardCard title="최근 구독한 강사">
           <button>
             <div className="flex items-center gap-5">
               <img
@@ -114,16 +114,16 @@ export const StudentDashBoardSection = () => {
               </div>
             </div>
           </button>
-        </DashBoardCard>
-        <DashBoardCard title="최근 구독한 강의">
+        </DashboardCard>
+        <DashboardCard title="최근 구독한 강의">
           <RecentLectureCurriculumItem
             title={recentLecture.title}
             hashTags={recentLecture.hashTags}
             image={recentLecture.image}
           />
-        </DashBoardCard>
+        </DashboardCard>
       </div>
-      <DashBoardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
+      <DashboardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
         <div className="h-[250px]">
           <ResponsiveBar
             // 차트 데이터
@@ -187,7 +187,7 @@ export const StudentDashBoardSection = () => {
             layout={'vertical'}
           />
         </div>
-      </DashBoardCard>
+      </DashboardCard>
     </div>
   );
 };
