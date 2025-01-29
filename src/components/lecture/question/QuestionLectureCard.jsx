@@ -1,11 +1,11 @@
 export const QuestionLectureCard = (isActive) => {
   return (
     <>
-      <div>
+      <div className="rounded-2xl border border-gray-border-color px-[20px] py-[15px]">
         <div>
           {/* 왼쪽 */}
           <div>
-            <h1>질문이 있습니다.</h1>
+            <h1 className="text-[22px] font-semibold ">질문이 있습니다.</h1>
           </div>
           <div>
             <div>

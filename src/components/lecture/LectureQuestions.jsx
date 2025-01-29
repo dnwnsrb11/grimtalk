@@ -1,3 +1,5 @@
+import { QuestionLectureCard } from './question/QuestionLectureCard';
+
 export const LectureQuestions = () => {
   return (
     <>
@@ -11,7 +13,9 @@ export const LectureQuestions = () => {
           </div>
         </div>
         <hr className="border border-divider-color" />
-        <div className="mt-[40px]"></div>
+        <div className="mt-[40px]">
+          <QuestionLectureCard />
+        </div>
       </div>
     </>
   );
