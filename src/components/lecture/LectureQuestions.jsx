@@ -2,15 +2,16 @@ export const LectureQuestions = () => {
   return (
     <>
       <div className="mt-[60px]">
-        <h1 className="text-[32px] font-bold">질문하기</h1>
-        <div>
-          <button>
-            <p>질문하기</p>
-          </button>
+        <div className="mb-[20px] flex gap-6">
+          <h1 className="text-[32px] font-bold">질문하기</h1>
+          <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
+            <button>
+              <p className="text-[18px] font-semibold text-white">질문하기</p>
+            </button>
+          </div>
         </div>
-        <div className="mt-[40px]">
-          {/* 강의 소개는 임시 텍스트로 변수에 넣어 작성하였습니다. */}
-        </div>
+        <hr className="border border-divider-color" />
+        <div className="mt-[40px]"></div>
       </div>
     </>
   );
