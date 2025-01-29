@@ -44,7 +44,7 @@ nginx:
     - "80:80"
     - "443:443"
   volumes:
-    - /home/ubuntu/grimtalkfront/nginx.conf:/etc/nginx/conf.d/default.conf  # 올바른 경로로 설정
+    - /home/ubuntu/grimtalkfront/nginx.conf:/etc/nginx/nginx.conf
     - /etc/letsencrypt:/etc/letsencrypt  # SSL 인증서 마운트
   depends_on:
     - frontend
