@@ -1,5 +1,5 @@
 import { DashboardCard } from '@/components/mypage/DashboardCard';
-import { RecentLectureCurriculumItem } from '@/components/mypage/RecentLectureCurriculumItem';
+import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
 import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { ResponsiveBar } from '@nivo/bar';
@@ -66,7 +66,7 @@ export const StudentDashboardSection = () => {
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
           <DashboardCard title="최근 학습 커리큘럼">
-            <RecentLectureCurriculumItem
+            <HashTaggedLectureCurriculumItem
               title={recentCurriculum.title}
               hashTags={recentCurriculum.hashTags}
               image={recentCurriculum.image}
@@ -116,7 +116,7 @@ export const StudentDashboardSection = () => {
           </button>
         </DashboardCard>
         <DashboardCard title="최근 구독한 강의">
-          <RecentLectureCurriculumItem
+          <HashTaggedLectureCurriculumItem
             title={recentLecture.title}
             hashTags={recentLecture.hashTags}
             image={recentLecture.image}
