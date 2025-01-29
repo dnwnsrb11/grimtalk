@@ -33,7 +33,9 @@ export const MyPage = () => {
       </div>
 
       <div className="col-span-8 flex flex-col gap-3 pl-6">
-        <MyPageContentLayout navMenuTitle={selectedMenu} navMenuContent={selectedMenuContent()} />
+        <MyPageContentLayout navMenuTitle={selectedMenu}>
+          {selectedMenuContent()}
+        </MyPageContentLayout>
       </div>
     </div>
   );
