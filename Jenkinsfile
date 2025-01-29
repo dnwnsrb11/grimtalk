@@ -14,12 +14,28 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Setup Node.js & pnpm') {
             steps {
                 sh '''
-                npm install -g pnpm || true  # pnpm이 없으면 설치
-                pnpm install
+                if ! command -v node &> /dev/null
+                then
+                    echo "Node.js not found. Installing..."
+                    apt update
+                    apt install -y nodejs npm
+                fi
+
+                if ! command -v pnpm &> /dev/null
+                then
+                    echo "pnpm not found. Installing..."
+                    npm install -g pnpm
+                fi
                 '''
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'pnpm install'
             }
         }
 
