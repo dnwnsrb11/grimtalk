@@ -1,7 +1,7 @@
 export const CurriculumLectureCardActive = () => {
   return (
     <>
-      <div className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[20px]">
+      <div className="cursor-pointer rounded-2xl border border-gray-border-color bg-bg-gray-color p-[20px]">
         <div>
           {/* 제목 및 내용 */}
           <h1 className="text-[22px] font-semibold text-replay-disable-btn-font-color">
