@@ -1,14 +1,21 @@
 import { ReplayLectureCard } from '@/components/lecture/replay/ReplayLectureCard';
+import { ReplayLectureDetail } from './replay/ReplayLectureDetail';
+import { useState } from 'react';
 
 export const ReplayLecture = () => {
+  const [isActive, setIsActive] = useState(false);
   return (
     <>
-      <div className="mt-[60px]">
-        <h1 className="text-[32px] font-bold">다시보기</h1>
-        <div className="mt-[10px]">
-          <ReplayLectureCard />
+      {!isActive ? (
+        <div className="mt-[60px]">
+          <h1 className="text-[32px] font-bold">다시보기</h1>
+          <div className="mt-[10px]">
+            <ReplayLectureCard />
+          </div>
         </div>
-      </div>
+      ) : (
+        <ReplayLectureDetail />
+      )}
     </>
   );
 };
