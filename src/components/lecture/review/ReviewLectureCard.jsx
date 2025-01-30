@@ -9,7 +9,7 @@ export const ReviewLectureCard = () => {
             <h1>리뷰 입니다.</h1>
           </div>
           <div>
-            <ReviewLectureCard />
+            <StarReviewIcon />
           </div>
         </div>
       </div>

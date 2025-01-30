@@ -1,6 +1,7 @@
 import { StarReviewIcon } from '@/components/common/icons';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { ReviewLectureCard } from './review/ReviewLectureCard';
 
 export const LectureReview = () => {
   const [score, setScore] = useState(0);
@@ -65,7 +66,13 @@ export const LectureReview = () => {
         <div>
           <div className="mt-[40px]">
             <h1 className="text-[32px] font-bold">전체 리뷰</h1>
-            <div className="mt-[10px]"></div>
+            <div className="mt-[10px] grid grid-cols-4 gap-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index}>
+                  <ReviewLectureCard />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
