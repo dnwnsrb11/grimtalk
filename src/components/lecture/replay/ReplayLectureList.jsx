@@ -34,7 +34,7 @@ export const ReplayLectureList = () => {
           {/* 오른쪽 */}
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-[40px]">
             <ReplayLectureListPlayButton isActive={true} />
-            <ReplayLectuecheckImageSimilarityButton isActive={true} />
+            <ReplayLectuecheckImageSimilarityButton />
           </div>
         </div>
       </div>
