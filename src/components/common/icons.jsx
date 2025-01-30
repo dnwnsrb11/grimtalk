@@ -267,9 +267,9 @@ const StarReviewIcon = ({
       d="M18.5 1L23.9075 11.8612L36 13.6136L27.25 22.0631L29.315 34L18.5 28.3612L7.685 34L9.75 22.0631L1 13.6136L13.0925 11.8612L18.5 1Z"
       fill={fill}
       stroke={stroke}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
