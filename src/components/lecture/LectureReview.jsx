@@ -62,7 +62,12 @@ export const LectureReview = () => {
             </div>
           </div>
         </div>
-        <div>{/* 리뷰 모음 */}</div>
+        <div>
+          <div className="mt-[40px]">
+            <h1 className="text-[32px] font-bold">전체 리뷰</h1>
+            <div className="mt-[10px]"></div>
+          </div>
+        </div>
       </div>
     </>
   );
