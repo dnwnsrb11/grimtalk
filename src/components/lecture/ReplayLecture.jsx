@@ -1,4 +1,4 @@
-import { ReplayLectureList } from './replay/ReplayLectureList';
+import { ReplayLectureCard } from '@/components/lecture/replay/ReplayLectureCard';
 
 export const ReplayLecture = () => {
   return (
@@ -6,7 +6,7 @@ export const ReplayLecture = () => {
       <div className="mt-[60px]">
         <h1 className="text-[32px] font-bold">다시보기</h1>
         <div className="mt-[10px]">
-          <ReplayLectureList />
+          <ReplayLectureCard />
         </div>
       </div>
     </>
