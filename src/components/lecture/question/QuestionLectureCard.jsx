@@ -1,21 +1,20 @@
-// 활성화 버튼
-const QuestionActive = () => {
-  return (
-    <div className="rounded-full border border-gray-border-color bg-primary-color px-[15px] py-[5px]">
-      <p className="text-[14px] font-semibold text-white">해결</p>
-    </div>
-  );
-};
-// 비활성화 버튼
-const QuestionDeActive = () => {
-  return (
-    <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
-      <p className="text-[14px] font-semibold text-[#AEAEAE]">미해결</p>
-    </div>
-  );
-};
-
 export const QuestionLectureCard = (isActive) => {
+  // 활성화 버튼
+  const QuestionActive = () => {
+    return (
+      <div className="rounded-full border border-gray-border-color bg-primary-color px-[15px] py-[5px]">
+        <p className="text-[14px] font-semibold text-white">해결</p>
+      </div>
+    );
+  };
+  // 비활성화 버튼
+  const QuestionDeActive = () => {
+    return (
+      <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
+        <p className="text-[14px] font-semibold text-[#AEAEAE]">미해결</p>
+      </div>
+    );
+  };
   return (
     <>
       <div className="cursor-pointer rounded-2xl border border-gray-border-color px-[20px] py-[15px]">
