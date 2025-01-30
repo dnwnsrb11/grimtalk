@@ -49,6 +49,12 @@ export const LectureCategory = ({ setSelectedCategory, selectedCategory }) => {
           >
             질문사항
           </li>
+          <li
+            className={`${selectedCategory === '리뷰하기' ? liTextactive : liTextDeactive}`}
+            onClick={() => clickCateogry('리뷰하기')}
+          >
+            리뷰하기
+          </li>
         </ul>
       </div>
       <hr />
