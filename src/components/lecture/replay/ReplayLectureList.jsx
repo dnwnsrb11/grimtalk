@@ -1,8 +1,8 @@
 import { truncateText } from '@/components/common/truncateText';
 // 강의 다시보기 버튼
-import { ReplayLectureListPlayButton } from './ReplayLectureListPlayButton';
+import { ReplayLectureListPlayButton } from '@/components/lecture/replay/ReplayLectureListPlayButton';
 // 이미지 유사도 확인 버튼
-import { ReplayLectuecheckImageSimilarityButton } from './ReplayLectuecheckImageSimilarityButton';
+import { ReplayLectuecheckImageSimilarityButton } from '@/components/lecture/replay/ReplayLectuecheckImageSimilarityButton';
 
 export const ReplayLectureList = () => {
   const testText =
