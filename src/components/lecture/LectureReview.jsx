@@ -50,6 +50,9 @@ export const LectureReview = () => {
             <textarea
               name=""
               id=""
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="강의에 대한 리뷰를 알려주세요~!"
               className="min-h-[200px] w-full resize-none rounded-2xl border p-5 transition-all duration-200 focus:border-primary-color focus:outline-none"
             ></textarea>
           </div>
