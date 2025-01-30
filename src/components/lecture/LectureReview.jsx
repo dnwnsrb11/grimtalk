@@ -17,7 +17,7 @@ export const LectureReview = () => {
     <>
       <div className="mt-[60px]">
         <div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-1">
             {Array.from({ length: 5 }).map((_, index) => (
               <div key={index} onClick={() => checkScore(index, score)}>
                 {index < score ? (
