@@ -13,6 +13,8 @@ export const LectureReview = () => {
     }
   };
 
+  const [reviewText, setReviewText] = useState('');
+
   return (
     <>
       <div className="mt-[60px]">
