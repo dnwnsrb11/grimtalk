@@ -44,7 +44,13 @@ export const LectureReview = () => {
               </p>
             </div>
           </div>
-          <div>{/* 리뷰작성 */}</div>
+          <div className="mt-[25px]">
+            <textarea
+              name=""
+              id=""
+              className="min-h-[200px] w-full resize-none rounded-2xl border p-5 transition-all duration-200 focus:border-primary-color focus:outline-none"
+            ></textarea>
+          </div>
         </div>
         <div>{/* 리뷰 모음 */}</div>
       </div>
