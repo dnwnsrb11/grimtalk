@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 
 export const LectureCategory = ({ setSelectedCategory, selectedCategory }) => {
-  const liTextactive = 'text-[22px] font-bold cursor-pointer';
+  const liTextactive = 'text-[22px] font-bold cursor-pointer text-primary-color';
   const liTextDeactive = 'text-[22px] font-light text-[#828282] cursor-pointer';
 
   // 전달받은 함수 실행 함수
