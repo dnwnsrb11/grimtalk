@@ -13,7 +13,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive }) => {
         </div>
       </div>
       <hr className="mt-[40px] border border-divider-color" />
-      <div>
+      <div className="mt-[20px] flex justify-end">
         <button
           className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
           onClick={() => setIsActive(false)}
