@@ -53,8 +53,13 @@ export const LectureReview = () => {
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               placeholder="강의에 대한 리뷰를 알려주세요~!"
-              className="min-h-[200px] w-full resize-none rounded-2xl border p-5 transition-all duration-200 focus:border-primary-color focus:outline-none"
+              className="min-h-[200px] w-full resize-none rounded-2xl border border-gray-border-color p-5 transition-all duration-200 focus:border-primary-color focus:outline-none"
             ></textarea>
+            <div className="mt-[10px] flex justify-end">
+              <button className="rounded-2xl bg-primary-color px-[30px] py-[10px]">
+                <p className="text-[18px] font-semibold text-white">리뷰 작성하기</p>
+              </button>
+            </div>
           </div>
         </div>
         <div>{/* 리뷰 모음 */}</div>
