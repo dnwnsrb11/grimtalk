@@ -7,6 +7,7 @@ import { MyBoardSection } from '@/components/mypage/MyBoardSection';
 import { MemberSettingsSection } from '@/components/mypage/MemberSettingsSection';
 import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
 import { InstructorDashboardSection } from '@/components/mypage/InstructorDashboardSection';
+import { CheckBoardSection } from '@/components/mypage/CheckBoardSection';
 import { MyLectureSection } from '@/components/mypage/myLectureSection';
 import { CreateLectureSection } from '@/components/mypage/CreateLectureSection';
 
@@ -30,6 +31,8 @@ export const MyPage = () => {
     강사: {
       ...COMMON_MENU,
       대시보드: <InstructorDashboardSection />,
+      '질문 확인': <CheckBoardSection />,
+
       '내 강의': <MyLectureSection />,
       '내 강의 생성하기': <CreateLectureSection />,
     },
