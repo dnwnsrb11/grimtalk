@@ -19,7 +19,11 @@ export const LectureReview = () => {
         <div>
           <div className="flex items-center gap-1">
             {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} onClick={() => checkScore(index, score)}>
+              <div
+                key={index}
+                onClick={() => checkScore(index, score)}
+                className="cursor-pointer transition-all duration-300 ease-in-out hover:scale-125"
+              >
                 {index < score ? (
                   <StarReviewIcon />
                 ) : (
@@ -28,7 +32,16 @@ export const LectureReview = () => {
               </div>
             ))}
             <div className="ml-[15px]">
-              <p className="text-[22px] text-[#828282]">{score} / 5</p>
+              <p
+                className={`text-[22px] text-[#828282] transition-all duration-500 ease-in-out ${score === 0 ? 'opacity-10' : `opacity-100`}`}
+              >
+                <span
+                  className={`font-semibold ${score === 0 ? 'text-text-gray-color' : 'text-primary-color'}`}
+                >
+                  {score}
+                </span>
+                / 5
+              </p>
             </div>
           </div>
           <div>{/* 리뷰작성 */}</div>
