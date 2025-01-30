@@ -17,7 +17,7 @@ export const LectureReview = () => {
     <>
       <div className="mt-[60px]">
         <div>
-          <div className="flex">
+          <div className="flex items-center">
             {Array.from({ length: 5 }).map((_, index) => (
               <div key={index} onClick={() => checkScore(index, score)}>
                 {index < score ? (
@@ -27,6 +27,9 @@ export const LectureReview = () => {
                 )}
               </div>
             ))}
+            <div className="ml-[15px]">
+              <p className="text-[22px] text-[#828282]">{score} / 5</p>
+            </div>
           </div>
           <div>{/* 리뷰작성 */}</div>
         </div>
