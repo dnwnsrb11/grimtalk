@@ -9,7 +9,7 @@ export const ReplayLectureCard = () => {
 
   return (
     <>
-      <div className="flex w-full rounded-2xl border border-gray-border-color bg-bg-gray-color p-[20px]">
+      <div className="mb-[15px] flex w-full rounded-2xl border border-gray-border-color bg-bg-gray-color p-[20px]">
         <div className="w-[80%]">
           {/* 왼쪽 */}
           <div>
