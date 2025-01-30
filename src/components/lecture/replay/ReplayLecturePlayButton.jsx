@@ -3,7 +3,7 @@ const confirmRewatch = () => {
   alert('현재 다시보기가 활성화가 안되어 있습니다.');
 };
 
-export const ReplayLectureListPlayButton = (isActive) => {
+export const ReplayLecturePlayButton = (isActive) => {
   if (isActive) {
     // 강의 버튼 활성화
     return (
