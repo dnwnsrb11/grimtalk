@@ -1,4 +1,4 @@
-export const ReplayDetail = () => {
+export const ReplayLectureDetail = () => {
   return (
     <>
       <div className="mt-[60px]">
