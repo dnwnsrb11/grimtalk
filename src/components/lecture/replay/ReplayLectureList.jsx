@@ -1,4 +1,3 @@
-import { truncateText } from '@/components/common/truncateText';
 // 강의 다시보기 버튼
 import { ReplayLectureListPlayButton } from '@/components/lecture/replay/ReplayLectureListPlayButton';
 // 이미지 유사도 확인 버튼
@@ -18,7 +17,7 @@ export const ReplayLectureList = () => {
               <h1 className="text-[22px] font-semibold text-text-gray-color">
                 커리큘럼 1. 진짜 시작
               </h1>
-              <p className="mt-[15px] text-text-gray-color">{truncateText(testText)}</p>
+              <p className="mt-[15px] line-clamp-2 text-text-gray-color">{testText}</p>
             </div>
             <div className="mt-[15px] flex gap-3">
               {/* 하단 정보 */}
