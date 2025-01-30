@@ -1,7 +1,7 @@
 // 강의 다시보기 버튼
 import { ReplayLecturePlayButton } from '@/components/lecture/replay/ReplayLecturePlayButton';
 // 이미지 유사도 확인 버튼
-import { ReplayLectuecheckImageSimilarityButton } from '@/components/lecture/replay/ReplayLectuecheckImageSimilarityButton';
+import { CheckImageSimilarityButton } from '@/components/lecture/replay/CheckImageSimilarityButton';
 
 export const ReplayLectureCard = () => {
   const testText =
@@ -34,7 +34,7 @@ export const ReplayLectureCard = () => {
           {/* 오른쪽 */}
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-[40px]">
             <ReplayLecturePlayButton isActive={true} />
-            <ReplayLectuecheckImageSimilarityButton />
+            <CheckImageSimilarityButton />
           </div>
         </div>
       </div>
