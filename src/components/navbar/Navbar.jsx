@@ -17,7 +17,7 @@ export const Navbar = () => {
   const handleSearchClick = () => {
     try {
       if (search.trim()) {
-        navigate(`/search/${search}`);
+        navigate(`/category/${search}`);
       }
     } catch (error) {
       console.log(error);
@@ -44,7 +44,7 @@ export const Navbar = () => {
   };
 
   return (
-    <div className="h-[105px] w-full max-w-[1920px] border-b bg-white">
+    <div className="h-[105px] w-full  border-b bg-white">
       <div className="mx-auto grid grid-cols-14 gap-4 py-4">
         <div className="col-span-2"></div>
         <div className="col-span-10 flex items-center">
@@ -83,6 +83,11 @@ export const Navbar = () => {
               placeholder="관심 카테고리, 강의 찾기"
               value={search}
               onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearchClick();
+                }
+              }}
             />
             <button onClick={handleSearchClick} className="focus:outline-none">
               <ReadingGlassesIcon />
