@@ -1,5 +1,6 @@
 import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectureCard';
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
+import { QuestionLectureWrite } from '@/components/lecture/question/QuestionLectureWrite';
 import { useState, useEffect } from 'react';
 
 export const LectureQuestions = () => {
@@ -11,7 +12,7 @@ export const LectureQuestions = () => {
   // 상세페이지, 질문작성 페이지
   const pageComponents = {
     '질문 상세페이지': <QuestionLectureDetail />,
-    '질문 작성페이지'
+    '질문 작성페이지': <QuestionLectureWrite />,
   };
   // 뒤로가기 버튼 기능
   useEffect(() => {
