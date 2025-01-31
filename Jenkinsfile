@@ -12,6 +12,12 @@ pipeline {
             }
         }
 
+        stage('Prepare Nginx Config') {
+            steps {
+                sh 'cp /home/ubuntu/nginx.conf $WORKSPACE/nginx.conf'  // ✅ 빌드 전 `nginx.conf` 복사
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 sh """
