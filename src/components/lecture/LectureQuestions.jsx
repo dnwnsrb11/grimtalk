@@ -9,6 +9,10 @@ export const LectureQuestions = () => {
   const [isActive, setIsActive] = useState(false);
   const [questionData, setQuestionData] = useState('');
 
+  if (isActive) {
+    return <QuestionLectureDetail setIsActive={setIsActive} questionData={questionData} />;
+  }
+
   return (
     <>
       <div className="mt-[60px]">
@@ -22,7 +26,11 @@ export const LectureQuestions = () => {
         </div>
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
-          <QuestionLectureCard isActive={false} />
+          {testList.map((testData, index) => (
+            <div key={index} onClick={() => setIsActive(true)} className="mb-3">
+              <QuestionLectureCard isActive={false} testData={testData} />
+            </div>
+          ))}
         </div>
       </div>
     </>
