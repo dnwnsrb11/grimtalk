@@ -6,6 +6,7 @@ import { LectureNotice } from '@/components/lecture/LectureNotice';
 import { LectureProfile } from '@/components/lecture/LectureProfile';
 import { ReplayLecture } from '@/components/lecture/ReplayLecture';
 import { LectureQuestions } from '@/components/lecture/LectureQuestions';
+import { LectureReview } from '@/components/lecture/LectureReview';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
@@ -24,6 +25,7 @@ export const LecturePage = () => {
     default: <p>now Tesing</p>,
     공지사항: <LectureNotice />,
     질문사항: <LectureQuestions />,
+    리뷰하기: <LectureReview />,
   };
   return (
     <>

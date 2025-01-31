@@ -320,6 +320,31 @@ const ReadingGlassesIcon = ({ className = 'mr-[25px]', width = 25, height = 25 }
     />
   </svg>
 );
+const StarReviewIcon = ({
+  className = '',
+  width = 35,
+  height = 33,
+  stroke = '#FF5353',
+  fill = '#FF5353',
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 37 35"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M18.5 1L23.9075 11.8612L36 13.6136L27.25 22.0631L29.315 34L18.5 28.3612L7.685 34L9.75 22.0631L1 13.6136L13.0925 11.8612L18.5 1Z"
+      fill={fill}
+      stroke={stroke}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 export {
   DefaultBadge,
@@ -337,4 +362,5 @@ export {
   AlarmIcon,
   LogoIcon,
   ReadingGlassesIcon,
+  StarReviewIcon,
 };
