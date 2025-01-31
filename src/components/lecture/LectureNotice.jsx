@@ -1,13 +1,19 @@
 import { LectureNoticeCard } from './notice/LectureNoticeCard';
 
 export const LectureNotice = () => {
+  // test
+  const testList = ['one', 'two', 'three'];
   return (
     <>
       <div className="mt-[60px]">
         <h1 className="text-[32px] font-bold">공지사항</h1>
         {/* 공지사항 내용 */}
         <div className="mt-[40px]">
-          <LectureNoticeCard />
+          {testList.map((testData, index) => (
+            <div key={index} className="mb-3">
+              <LectureNoticeCard />
+            </div>
+          ))}
         </div>
       </div>
     </>
