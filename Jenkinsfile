@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://lab.ssafy.com/moda2047/grimtalkfront.git', credentialsId: 'gitlab-credentials'
+                git branch: 'main', url: 'https://lab.ssafy.com/hoonixox/grimtalkfront.git', credentialsId: 'gitlab-credentials'
             }
         }
 
