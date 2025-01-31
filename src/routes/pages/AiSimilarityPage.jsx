@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AiSimilarityResultPage } from '@/components/aiPages/AiSimilarityResult';
 import { DefaultBadge, SubscribeIcon, FavoriteIcon } from '@/components/common/icons';
 export const AiSimilarityPage = () => {
+  // 라우터
   // 이미지 렌더링 url 상태 추가
   const [imageSrc, setImageSrc] = useState(null);
   // 비교 결과 또는 표시
@@ -87,19 +88,27 @@ export const AiSimilarityPage = () => {
       </div>
       <div className="flex flex-row items-center gap-[15px]">
         <label className="flex h-[63px] w-[1235px] items-center rounded-lg border-[1px] border-solid bg-[#E6E6E6] pl-[20px]  text-center text-[18px] font-semibold text-[#C6C6C6]">
-          {fileName ? fileName : '동영상을 선택해 주세요.'}
+          {fileName ? fileName : '사진을을 선택해 주세요.'}
         </label>
         <label
           htmlFor="file-upload"
           className="flex h-[63px] w-[119px] cursor-pointer items-center justify-center rounded-xl bg-[#EFEFEF] px-4 py-2 text-[18px] font-semibold text-black transition duration-300 "
         >
-          영상 찾기
+          사진 찾기
         </label>
         <input id="file-upload" type="file" className="hidden" onChange={handleFileChange} />
       </div>
       <hr className="mb-[15px] mt-[15px]" />
       <div className="flex flex-row justify-end gap-[10px]">
-        <button className="h-[41px] w-[88px] rounded-xl bg-bg-gray-color">뒤로가기</button>
+        {showComparison && (
+          <button
+            onClick={() => window.location.reload()}
+            className="h-[41px] w-[88px] rounded-xl bg-bg-gray-color"
+          >
+            뒤로가기
+          </button>
+        )}
+
         <button
           className="h-[41px] w-[88px] rounded-xl bg-blue-500 text-white"
           onClick={() => setShowComparison(true)}
@@ -109,7 +118,7 @@ export const AiSimilarityPage = () => {
       </div>
       <div>
         {/* 아래 similarity부분은 ai 분석 퍼센트가 들어올 자리 입니다. */}
-        {showComparison && <AiSimilarityResultPage imageSrc={imageSrc} similarity={100} />}
+        {showComparison && <AiSimilarityResultPage imageSrc={imageSrc} similarity={50} />}
       </div>
     </div>
   );

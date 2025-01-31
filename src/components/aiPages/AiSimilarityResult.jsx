@@ -3,13 +3,6 @@ import { useEffect, useState } from 'react';
 export const AiSimilarityResultPage = ({ imageSrc, similarity }) => {
   console.log(imageSrc);
 
-  const getBarColor = (percentage) => {
-    if (percentage >= 80) return 'bg-green-500 transition-all duration-500'; // 초록색 (높은 유사도)
-    if (percentage >= 50) return 'bg-orange-500 transition-all duration-500'; // 주황색 (중간)
-    return 'bg-red-500 transition-all duration-500'; // 빨간색 (낮은 유사도)
-  };
-  const barColor = getBarColor(similarity); // 유사도에 맞는 색상 결정
-
   const [animatedSimilarity, setAnimatedSimilarity] = useState(0);
   useEffect(() => {
     let interval;
@@ -46,12 +39,18 @@ export const AiSimilarityResultPage = ({ imageSrc, similarity }) => {
         />
       </div>
       <div className="mt-4">
-        <div className="relative flex h-[83px] w-full rounded-full bg-gray-200">
+        <div className="relative flex h-[83px] w-full overflow-hidden rounded-full bg-gray-200">
+          {/* 진행 바 */}
           <div
-            className={`flex h-[83px] rounded-full ${barColor}`}
-            style={{ width: `${animatedSimilarity}%` }} // 유사도에 맞게 바 길이 조정
+            className={`absolute left-0 top-0 h-full rounded-full`}
+            style={{
+              width: `${animatedSimilarity}%`,
+              transition: `width ${animatedSimilarity * 0.02}s ease-in-out`, // ✅ 속도 조절 (3%당 0.03초)
+              background: `linear-gradient(to right, #FF5C38, #FFA38F)`,
+            }}
           ></div>
-          {/* % 텍스트를 중앙 정렬 */}
+
+          {/* % 텍스트 중앙 정렬 */}
           <div className="absolute inset-0 flex items-center justify-center font-bold">
             {animatedSimilarity}%
           </div>
