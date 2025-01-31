@@ -37,8 +37,11 @@ export const LectureQuestions = () => {
     };
   }, [isActive]);
 
+  // 컴포넌트 생성 분기
   if (isActive === '질문 상세페이지') {
     return <QuestionLectureDetail setIsActive={setIsActive} questionData={questionData} />;
+  } else if (isActive === '질문 작성페이지') {
+    return <QuestionLectureWrite setIsActive={setIsActive} />;
   }
 
   return (
@@ -47,7 +50,7 @@ export const LectureQuestions = () => {
         <div className="mb-[20px] flex gap-6">
           <h1 className="text-[32px] font-bold">질문하기</h1>
           <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
-            <button>
+            <button onClick={() => setIsActive('질문 작성페이지')}>
               <p className="text-[18px] font-semibold text-white">질문하기</p>
             </button>
           </div>
