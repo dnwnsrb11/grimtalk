@@ -6,7 +6,7 @@ import { ReplayLectureDetail } from '@/components/lecture/replay/ReplayLectureDe
 export const ReplayLecture = () => {
   // test
   const testList = ['one', 'two', 'three'];
-  const [replayDate, setreplayDate] = useState('');
+  const [replayDate, setReplayDate] = useState('');
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const ReplayLecture = () => {
                 key={index}
                 onClick={() => {
                   setIsActive(true);
-                  setreplayDate(test);
+                  setReplayDate(test);
                 }}
               >
                 <ReplayLectureCard test={test} />

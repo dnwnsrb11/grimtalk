@@ -7,7 +7,7 @@ export const Navbar = () => {
   const [search, setSearch] = useState('');
   const [notificationCount, setNotificationCount] = useState(3);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLogined, setIsLogined] = useState(true);
+  const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -97,7 +97,7 @@ export const Navbar = () => {
 
           {/* 로그인 / 회원가입 / 마이페이지 버튼 */}
           <div className="ml-auto flex items-center text-[15px]">
-            {!isLogined ? (
+            {!isLogin ? (
               <>
                 <button onClick={() => navigate('/signup')} className="focus:outline-none">
                   회원가입
@@ -126,7 +126,7 @@ export const Navbar = () => {
             )}
 
             {/* 알림 버튼 */}
-            {isLogined && (
+            {isLogin && (
               <button
                 onClick={toggleModal}
                 className="relative ml-[15px] flex h-[41px] w-[41px] items-center justify-center rounded-xl bg-[#EFEFEF] focus:outline-none"

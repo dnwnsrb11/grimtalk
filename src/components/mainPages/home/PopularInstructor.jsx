@@ -7,7 +7,7 @@ export const PopularInstructor = () => {
       <div className="flex items-center justify-between rounded-2xl border p-[20px]">
         <div className="flex items-center gap-4">
           <div>
-            <img src={PopularIMG1} alt="imgf" className="h-[38px] w-[38px]" />
+            <img src={PopularIMG1} alt="img" className="h-[38px] w-[38px]" />
           </div>
           <div>
             <div className="h-[80px] w-[80px] overflow-hidden rounded-full">
