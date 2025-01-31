@@ -1,5 +1,6 @@
 import { ReplayLectureCard } from '@/components/lecture/replay/ReplayLectureCard';
-import { ReplayLectureDetail } from './replay/ReplayLectureDetail';
+import { ReplayLectureDetail } from '@/components/lecture/replay/ReplayLectureDetail';
+
 import { useState } from 'react';
 import { useEffect } from 'react';
 
