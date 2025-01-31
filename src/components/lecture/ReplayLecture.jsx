@@ -9,9 +9,6 @@ export const ReplayLecture = () => {
   const testList = ['one', 'two', 'three'];
   const [replayDate, setreplayDate] = useState('');
   const [isActive, setIsActive] = useState(false);
-  useEffect(() => {
-    console.log('값이 변경', replayDate);
-  }, [isActive, replayDate]);
 
   useEffect(() => {
     const handlePopState = (event) => {
