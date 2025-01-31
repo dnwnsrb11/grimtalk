@@ -7,7 +7,7 @@ export const LectureReview = () => {
   const [score, setScore] = useState(0);
   //  1에서 다시 클릭하면 값이 0으로 변경되게
   const checkScore = (index, score) => {
-    if (index === 0 && score === 1) {
+    if (index === score - 1) {
       setScore(0);
     } else {
       setScore(index + 1);
