@@ -7,7 +7,7 @@ export const LectureNoticeDetail = ({ noticeDate, setIsActive }) => {
       <div className="mt-[60px]">
         <h1 className="text-[32px] font-bold">공지사항 제목목</h1>
         <div className="mt-[10px]">
-          <p className="text-[18px]">ehllo</p>
+          <p className="text-[18px]">{noticeDate}</p>
         </div>
       </div>
       <hr />
