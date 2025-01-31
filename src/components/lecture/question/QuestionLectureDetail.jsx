@@ -1,4 +1,7 @@
-export const QuestionLectureDetail = () => {
+export const QuestionLectureDetail = ({ setIsActive, testData }) => {
+  const changeActive = () => {
+    setIsActive(false);
+  };
   return (
     <>
       <div className="mt-[60px]">
@@ -16,6 +19,14 @@ export const QuestionLectureDetail = () => {
         <div className="mt-[10px]">hello</div>
       </div>
       <hr />
+      <div className="mt-[20px] flex justify-end">
+        <button
+          className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
+          onClick={() => changeActive()}
+        >
+          <p className="text-[18px] font-semibold">뒤로가기</p>
+        </button>
+      </div>
     </>
   );
 };
