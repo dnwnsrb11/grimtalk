@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        COMPOSE_FILE_PATH = "/home/ubuntu/docker-compose.yml"
         IMAGE_NAME = "frontend-app"
     }
 
@@ -12,37 +13,33 @@ pipeline {
             }
         }
 
-        stage('Setup Environment') {
-            steps {
-                configFileProvider([configFile(fileId: 'env-file', targetLocation: '.env')]) {
-                    sh 'export $(cat .env | xargs)'
-                }
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'  // 🔥 Dockerfile을 사용해 빌드
+                sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
         stage('Deploy') {
             steps {
-                sh '''
-                docker stop frontend || true
-                docker rm frontend || true
-                docker run -d --name frontend -p 80:80 $IMAGE_NAME
-                '''
+                sshagent(['ubuntu-ssh-key']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ubuntu@i12d202.p.ssafy.io <<EOF
+                    cd /home/ubuntu
+                    docker-compose down
+                    docker-compose up -d --build
+                    EOF
+                    '''
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'Frontend Deployment Successful!'
+            echo '✅ Frontend Deployment Successful!'
         }
         failure {
-            echo 'Frontend Deployment Failed.'
+            echo '❌ Frontend Deployment Failed.'
         }
     }
 }
