@@ -1,6 +1,4 @@
-import { useEffect } from 'react';
 import testImg from '@/assets/banner/Test/TestImg.png';
-import testImg2 from '@/assets/banner/BannerIMG.png';
 
 export const LiveList = () => {
   return (

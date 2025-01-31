@@ -7,7 +7,6 @@ import { LectureProfile } from '@/components/lecture/LectureProfile';
 import { ReplayLecture } from '@/components/lecture/ReplayLecture';
 import { LectureQuestions } from '@/components/lecture/LectureQuestions';
 import { LectureReview } from '@/components/lecture/LectureReview';
-import { useEffect } from 'react';
 import { useState } from 'react';
 
 export const LecturePage = () => {
