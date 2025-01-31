@@ -1,9 +1,14 @@
 import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectureCard';
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
+import { useState } from 'react';
 
 export const LectureQuestions = () => {
   // test
   const testList = ['one', 'two', 'three'];
+  // 상세 페이지 기능
+  const [isActive, setIsActive] = useState(false);
+  const [questionData, setQuestionData] = useState('');
+
   return (
     <>
       <div className="mt-[60px]">
