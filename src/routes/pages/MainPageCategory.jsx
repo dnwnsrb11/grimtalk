@@ -1,6 +1,6 @@
 import { Banner } from '@/components/mainPages/home/Banner';
 import { CategoryList } from '@/components/mainPages/home/category/CategoryList';
-import { StructorList } from '@/components/mainPages/home/category/LectureList';
+import { LectureItem } from '@/components/mainPages/home/category/LectureItem';
 import { useState } from 'react';
 export const MainPageCategory = () => {
   // 반복용으로 나둔 요소 추후 변경 예정
@@ -28,7 +28,7 @@ export const MainPageCategory = () => {
         <hr />
         <div className="mt-[40px] flex gap-3">
           {count.map((c, index) => (
-            <StructorList key={index} />
+            <LectureItem key={index} />
           ))}
         </div>
       </div>
