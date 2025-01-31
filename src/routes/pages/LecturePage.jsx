@@ -2,6 +2,7 @@ import { CurriculumLecture } from '@/components/lecture/CurriculumLecture';
 import { IntroductionLecture } from '@/components/lecture/IntroductionLecture';
 import { LectureBanner } from '@/components/lecture/LectureBanner';
 import { LectureCategory } from '@/components/lecture/LectureCategory';
+import { LectureNotice } from '@/components/lecture/LectureNotice';
 import { LectureProfile } from '@/components/lecture/LectureProfile';
 import { ReplayLecture } from '@/components/lecture/ReplayLecture';
 import { LectureQuestions } from '@/components/lecture/LectureQuestions';
@@ -21,7 +22,7 @@ export const LecturePage = () => {
     다시보기: <ReplayLecture />,
     커리큘럼: <CurriculumLecture />,
     default: <p>now Tesing</p>,
-    공지사항: '',
+    공지사항: <LectureNotice />,
     질문사항: <LectureQuestions />,
   };
   return (
