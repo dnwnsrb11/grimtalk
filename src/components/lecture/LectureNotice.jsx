@@ -19,7 +19,14 @@ export const LectureNotice = () => {
         {/* 공지사항 내용 */}
         <div className="mt-[40px]">
           {testList.map((testData, index) => (
-            <div key={index} className="mb-3" onClick={() => setIsActive(true)}>
+            <div
+              key={index}
+              className="mb-3"
+              onClick={() => {
+                setIsActive(true);
+                setNoticeDate(testData);
+              }}
+            >
               <LectureNoticeCard />
             </div>
           ))}
