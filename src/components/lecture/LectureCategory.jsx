@@ -1,6 +1,3 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
-
 export const LectureCategory = ({ setSelectedCategory, selectedCategory }) => {
   const liTextactive = 'text-[22px] font-bold cursor-pointer';
   const liTextDeactive = 'text-[22px] font-light text-[#828282] cursor-pointer';

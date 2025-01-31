@@ -1,4 +1,3 @@
-import PopularIMG1 from '@/assets/banner/PopularIMG_1.svg';
 import testImg from '@/assets/banner/Test/TestImg.png';
 import starSVG from '@/assets/banner/star.svg';
 

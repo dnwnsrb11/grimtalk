@@ -1,5 +1,5 @@
-import { CurriculumLectureCardActive } from './curriculum/CurriculumLectureCardActive';
-import { CurriculumLectureCardDeActive } from './curriculum/CurriculumLectureCardDeActive';
+import { CurriculumLectureCardActive } from '@/components/lecture/curriculum/CurriculumLectureCardActive';
+import { CurriculumLectureCardDeActive } from '@/components/lecture/curriculum/CurriculumLectureCardDeActive';
 
 export const CurriculumLecture = () => {
   // 받은 값이 ture, false에 따라 출력되는 컴포넌트가 다름

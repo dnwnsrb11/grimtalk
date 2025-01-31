@@ -4,7 +4,6 @@ import { LectureBanner } from '@/components/lecture/LectureBanner';
 import { LectureCategory } from '@/components/lecture/LectureCategory';
 import { LectureProfile } from '@/components/lecture/LectureProfile';
 import { LectureQuestions } from '@/components/lecture/LectureQuestions';
-import { useEffect } from 'react';
 import { useState } from 'react';
 
 export const LecturePage = () => {
