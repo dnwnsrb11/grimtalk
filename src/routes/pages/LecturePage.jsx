@@ -4,6 +4,7 @@ import { LectureBanner } from '@/components/lecture/LectureBanner';
 import { LectureCategory } from '@/components/lecture/LectureCategory';
 import { LectureProfile } from '@/components/lecture/LectureProfile';
 import { ReplayLecture } from '@/components/lecture/ReplayLecture';
+import { LectureQuestions } from '@/components/lecture/LectureQuestions';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
@@ -20,6 +21,8 @@ export const LecturePage = () => {
     다시보기: <ReplayLecture />,
     커리큘럼: <CurriculumLecture />,
     default: <p>now Tesing</p>,
+    공지사항: '',
+    질문사항: <LectureQuestions />,
   };
   return (
     <>
