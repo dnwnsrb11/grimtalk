@@ -1,7 +1,7 @@
 export const CurriculumLectureCardDeActive = () => {
   return (
     <>
-      <div className="rounded-2xl border border-gray-border-color p-[20px]">
+      <div className="cursor-pointer rounded-2xl border border-gray-border-color p-[20px]">
         <div>
           {/* 제목 및 내용 */}
           <h1 className="text-[22px] font-semibold">커리큘럼 1. 이제 시작입니다.</h1>

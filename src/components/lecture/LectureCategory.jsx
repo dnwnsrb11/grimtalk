@@ -1,5 +1,5 @@
 export const LectureCategory = ({ setSelectedCategory, selectedCategory }) => {
-  const liTextactive = 'text-[22px] font-bold cursor-pointer';
+  const liTextactive = 'text-[22px] font-bold cursor-pointer text-primary-color';
   const liTextDeactive = 'text-[22px] font-light text-[#828282] cursor-pointer';
 
   // 전달받은 함수 실행 함수
@@ -45,6 +45,12 @@ export const LectureCategory = ({ setSelectedCategory, selectedCategory }) => {
             onClick={() => clickCateogry('질문사항')}
           >
             질문사항
+          </li>
+          <li
+            className={`${selectedCategory === '리뷰하기' ? liTextactive : liTextDeactive}`}
+            onClick={() => clickCateogry('리뷰하기')}
+          >
+            리뷰하기
           </li>
         </ul>
       </div>
