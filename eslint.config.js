@@ -64,6 +64,7 @@ export default [
       'no-relative-import-paths': noRelativeImportPaths,
     },
     rules: {
+      // 정의되지 않은 변수 검사 비활성화 -> 아래 unused-imports/no-unused-vars로 대체
       'no-undef': 'off',
       // var 키워드 사용 금지
       'no-var': 'error',
@@ -71,7 +72,7 @@ export default [
       'prefer-const': 'error',
       // 정의되기 전에 변수 사용 금지
       'no-use-before-define': 'error',
-      // 사용하지 않는 변수 경고 비활성화
+      // 사용하지 않는 변수 경고 비활성화 -> 아래 unused-imports/no-unused-vars로 대체
       'no-unused-vars': 'off',
       // Prettier 포매팅 규칙 적용 (줄 끝 문자 자동 처리)
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
@@ -112,9 +113,6 @@ export default [
       react, // React 관련 규칙 플러그인
     },
     rules: {
-      'no-undef': 'off', // 정의되지 않은 변수 검사 비활성화
-      'no-unused-vars': 'off', // 사용하지 않는 변수 검사 비활성화 (unused-imports로 대체)
-      '@typescript-eslint/no-unused-vars': 'off', // TypeScript의 사용하지 않는 변수 검사 비활성화
       'unused-imports/no-unused-imports': 'error', // 사용하지 않는 import 구문 금지
       'unused-imports/no-unused-vars': [
         'warn',
