@@ -10,7 +10,7 @@ RUN pnpm run build
 # 2️⃣ Nginx로 정적 파일 제공
 FROM nginx:alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
-COPY /home/ubuntu/nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf  # ✅ nginx.conf 위치 변경
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
