@@ -7,6 +7,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import prettier from 'eslint-plugin-prettier';
 import tailwindcss from 'eslint-plugin-tailwindcss';
 import prettierConfig from 'eslint-config-prettier';
+import unusedImports from 'eslint-plugin-unused-imports';
 import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -81,6 +82,31 @@ export default [
           prefix: '@',
         },
       ],
+    },
+  },
+  // unused-imports 전용 설정
+  {
+    // 사용하지 않는 import 관련 플러그인 설정
+    plugins: {
+      'unused-imports': unusedImports, // 사용하지 않는 import 검사 플러그인
+      react, // React 관련 규칙 플러그인
+    },
+    rules: {
+      'no-undef': 'off', // 정의되지 않은 변수 검사 비활성화
+      'no-unused-vars': 'off', // 사용하지 않는 변수 검사 비활성화 (unused-imports로 대체)
+      '@typescript-eslint/no-unused-vars': 'off', // TypeScript의 사용하지 않는 변수 검사 비활성화
+      'unused-imports/no-unused-imports': 'error', // 사용하지 않는 import 구문 금지
+      'unused-imports/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all', // 모든 변수 검사
+          varsIgnorePattern: '^_', // '_'로 시작하는 변수는 무시
+          args: 'after-used', // 사용된 매개변수 이후의 매개변수만 검사
+          argsIgnorePattern: '^_', // '_'로 시작하는 매개변수는 무시
+        },
+      ],
+      'react/jsx-uses-react': 'error', // JSX에서 React 사용 여부 검사
+      'react/jsx-uses-vars': 'error', // JSX에서 변수 사용 여부 검사
     },
   },
 ];
