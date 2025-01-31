@@ -11,6 +11,7 @@ export const LectureQuestions = () => {
   // 상세페이지, 질문작성 페이지
   const pageComponents = {
     '질문 상세페이지': <QuestionLectureDetail />,
+    '질문 작성페이지'
   };
   // 뒤로가기 버튼 기능
   useEffect(() => {
