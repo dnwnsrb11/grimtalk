@@ -1,16 +1,14 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import logo from '@/assets/navbar/logo.svg';
-import readingGlasses from '@/assets/navbar/reading_glasses.svg';
-import alarm from '@/assets/navbar/alarm.svg';
+import { LogoIcon, AlarmIcon, ReadingGlassesIcon } from '@/components/common/icons';
 
 export const Navbar = () => {
   const [search, setSearch] = useState('');
-  const [notificationCount, setNotificationCount] = useState(3); // 예시로 3개의 알림이 있다고 가정
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열기/닫기 상태 관리
-  const [isLogined, setIsLogined] = useState(true); // 로그인 상태 (예시로 true로 설정)
+  const [notificationCount, setNotificationCount] = useState(3);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLogined, setIsLogined] = useState(true);
   const navigate = useNavigate();
-  const location = useLocation(); // 현재 URL 경로 가져오기
+  const location = useLocation();
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
@@ -28,28 +26,21 @@ export const Navbar = () => {
   };
 
   const toggleModal = () => {
-    setIsModalOpen(!isModalOpen); // 모달 상태를 반전시켜서 열거나 닫기
+    setIsModalOpen(!isModalOpen);
   };
 
-  const getButtonStyle = (path) => {
-    switch (path) {
-      case '/':
-        return '#FF5C38'; // 홈 페이지는 빨간색
-      case '/category':
-        return '#FFCA11'; // 카테고리 페이지는 노란색
-      case '/community':
-        return '#23C4F7'; // 커뮤니티 페이지는 파란색
-      case '/live':
-        return '#8F00FF'; // 라이브 페이지는 보라색
-      default:
-        return '#000000'; // 기본 색상은 검은색
-    }
-  };
+  const getNavItemClasses = (path) => {
+    const baseClasses = 'transition-colors duration-200';
+    const isCurrentPath = location.pathname === path;
 
-  const isActive = (path) => {
-    return location.pathname === path
-      ? { fontWeight: 'bold', color: getButtonStyle(path) }
-      : { color: '#B0B0B0' }; // 비활성화된 경우 회색
+    const colorClasses = {
+      '/': isCurrentPath ? 'text-[#FF5C38] font-bold' : 'text-gray-400',
+      '/category': isCurrentPath ? 'text-[#FFCA11] font-bold' : 'text-gray-400',
+      '/community': isCurrentPath ? 'text-[#23C4F7] font-bold' : 'text-gray-400',
+      '/live': isCurrentPath ? 'text-[#8F00FF] font-bold' : 'text-gray-400',
+    };
+
+    return `${baseClasses} ${colorClasses[path] || 'text-gray-400'}`;
   };
 
   return (
@@ -58,28 +49,34 @@ export const Navbar = () => {
         <div className="col-span-2"></div>
         <div className="col-span-10 flex items-center">
           {/* 로고 */}
-          <button onClick={() => navigate('/')}>
-            <img src={logo} alt="로고" className="h-[72px] w-[66px]" />
+          <button onClick={() => navigate('/')} className="focus:outline-none">
+            <LogoIcon />
           </button>
 
           {/* 네비게이션 메뉴 */}
           <div className="ml-[50px] flex flex-row gap-[25px] text-[15px]">
-            <button onClick={() => navigate('/')} style={isActive('/')}>
+            <button onClick={() => navigate('/')} className={getNavItemClasses('/')}>
               홈
             </button>
-            <button onClick={() => navigate('/category')} style={isActive('/category')}>
+            <button
+              onClick={() => navigate('/category')}
+              className={getNavItemClasses('/category')}
+            >
               카테고리
             </button>
-            <button onClick={() => navigate('/community')} style={isActive('/community')}>
+            <button
+              onClick={() => navigate('/community')}
+              className={getNavItemClasses('/community')}
+            >
               커뮤니티
             </button>
-            <button onClick={() => navigate('/live')} style={isActive('/live')}>
+            <button onClick={() => navigate('/live')} className={getNavItemClasses('/live')}>
               라이브
             </button>
           </div>
 
           {/* 검색창 */}
-          <div className="ml-[70px] flex h-[60px] w-[400px] place-content-between items-center rounded-xl border-[1px] border-solid bg-[#EFEFEF]">
+          <div className="ml-[70px] flex h-[60px] w-[400px] items-center justify-between rounded-xl border border-solid bg-[#EFEFEF]">
             <input
               type="text"
               className="ml-[25px] h-full w-full bg-[#EFEFEF] outline-none"
@@ -87,8 +84,8 @@ export const Navbar = () => {
               value={search}
               onChange={handleSearchChange}
             />
-            <button onClick={handleSearchClick}>
-              <img src={readingGlasses} alt="돋보기" className="mr-[25px] h-[25px] w-[25px]" />
+            <button onClick={handleSearchClick} className="focus:outline-none">
+              <ReadingGlassesIcon />
             </button>
           </div>
 
@@ -96,25 +93,29 @@ export const Navbar = () => {
           <div className="ml-auto flex items-center text-[15px]">
             {!isLogined ? (
               <>
-                <button onClick={() => navigate('/signup')}>회원가입</button>
-                <div className="ml-[20px]">|</div>
+                <button onClick={() => navigate('/signup')} className="focus:outline-none">
+                  회원가입
+                </button>
+                <div className="mx-5">|</div>
                 <button
                   onClick={() => navigate('/login')}
-                  className="ml-[20px] h-[35px] w-[70px] rounded-xl border-solid bg-bg-gray-color"
+                  className="h-[35px] w-[70px] rounded-xl bg-[#EFEFEF] focus:outline-none"
                 >
                   로그인
                 </button>
               </>
             ) : (
-              <div className="flex flex-row items-center gap-[20px]">
+              <div className="flex flex-row items-center gap-5">
                 <button
                   onClick={() => navigate('/mypage')}
-                  className="ml-[20px] h-[35px] w-[90px] rounded-xl border-solid bg-bg-gray-color"
+                  className="h-[35px] w-[90px] rounded-xl bg-[#EFEFEF] focus:outline-none"
                 >
                   마이페이지
                 </button>
                 <div>|</div>
-                <button onClick={() => navigate('/logout')}>로그아웃</button>
+                <button onClick={() => navigate('/logout')} className="focus:outline-none">
+                  로그아웃
+                </button>
               </div>
             )}
 
@@ -122,11 +123,11 @@ export const Navbar = () => {
             {isLogined && (
               <button
                 onClick={toggleModal}
-                className="relative ml-[15px] flex h-[41px] w-[41px] items-center justify-center rounded-xl border-solid bg-bg-gray-color"
+                className="relative ml-[15px] flex h-[41px] w-[41px] items-center justify-center rounded-xl bg-[#EFEFEF] focus:outline-none"
               >
-                <img src={alarm} alt="알림" className="h-[25px] w-[25px]" />
+                <AlarmIcon />
                 {notificationCount > 0 && (
-                  <div className="absolute right-[-5px] top-[-5px] flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                  <div className="absolute -right-1.5 -top-1.5 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-500 text-xs text-white">
                     {notificationCount}
                   </div>
                 )}
@@ -135,17 +136,19 @@ export const Navbar = () => {
 
             {/* 알림 모달 */}
             {isModalOpen && (
-              <div className="absolute z-10 mt-[240px] w-[350px] rounded-2xl border border-gray-border-color bg-white shadow-lg">
+              <div className="absolute z-10 mt-[240px] w-[350px] rounded-2xl border border-gray-200 bg-white shadow-lg">
                 <div className="p-6">
                   <div className="mb-3 flex items-center justify-between">
                     <h3 className="text-[18px]">알림</h3>
-                    <button onClick={() => navigate('/alarm')} className="text-lg text-gray-600">
+                    <button
+                      onClick={() => navigate('/alarm')}
+                      className="text-lg text-gray-600 focus:outline-none"
+                    >
                       {'>'}
                     </button>
                   </div>
                   <hr className="border-solid border-[#D9D9D9]" />
                   <div className="max-h-[300px] overflow-y-auto">
-                    {/* 알림 목록 */}
                     <ul>
                       {[...Array(notificationCount)].map((_, index) => (
                         <li key={index} className="border-b py-2">
@@ -159,7 +162,7 @@ export const Navbar = () => {
             )}
           </div>
         </div>
-        <div className="col-span-2"></div> {/* 우측 빈 공간 */}
+        <div className="col-span-2"></div>
       </div>
     </div>
   );

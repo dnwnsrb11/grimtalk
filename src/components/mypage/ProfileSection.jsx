@@ -8,6 +8,11 @@ export const ProfileSection = ({
   setSelectedMenu, // 네비게이션 메뉴 선택 핸들러
   setSelectedProfileMenu, // 프로필 메뉴 선택 핸들러
 }) => {
+  const handleProfileMenuClick = (menu) => {
+    setSelectedMenu('유저소개');
+    setSelectedProfileMenu(menu);
+  };
+
   return (
     <div className="flex flex-col items-start">
       {/* 프로필 정보 영역 */}
@@ -23,7 +28,7 @@ export const ProfileSection = ({
         <div className="mt-2 flex gap-3 text-lg font-semibold">
           {/* 수강생 버튼 */}
           <button
-            onClick={() => setSelectedProfileMenu('수강생')}
+            onClick={() => handleProfileMenuClick('수강생')}
             className={`group flex items-center gap-1 rounded-lg border px-3 py-1 
               ${
                 selectedProfileMenu === '수강생'
@@ -44,7 +49,7 @@ export const ProfileSection = ({
           </button>
           {/* 강사 버튼 */}
           <button
-            onClick={() => setSelectedProfileMenu('강사')}
+            onClick={() => handleProfileMenuClick('강사')}
             className={`group flex items-center gap-1 rounded-lg border px-3 py-1 
               ${
                 selectedProfileMenu === '강사'
