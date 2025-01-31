@@ -74,8 +74,8 @@ export const AiSimilarityPage = () => {
           <div className=" flex h-[128px] w-[195px] flex-col items-center justify-center space-x-0 ">
             <span className="m-0 p-0 text-[24px] font-medium text-[#565252]">2024.01.24</span>
             <span className="m-0 mb-[15px] p-0 text-[30px] font-bold">09:00</span>
-            <button className="h-[41px] w-[195px] rounded-lg bg-[#EFEFEF] text-[18px] font-semibold">
-              라이브가 종료되었습니다.
+            <button className="rounded-lg bg-[#EFEFEF] px-[30px] py-[10px] text-[18px] font-semibold">
+              라이브 종료
             </button>
           </div>
         </div>
