@@ -66,8 +66,7 @@ pipeline {
 
                     echo "✅ 프론트엔드 배포 완료! 현재 컨테이너 상태:"
                     docker ps -a
-                    
-                    EOF
+
                     '''
                 }
             }
