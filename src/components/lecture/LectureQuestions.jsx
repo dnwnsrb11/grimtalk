@@ -1,4 +1,5 @@
 import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectureCard';
+import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
 
 export const LectureQuestions = () => {
   return (
