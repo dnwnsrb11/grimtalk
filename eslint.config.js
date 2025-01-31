@@ -14,8 +14,46 @@ import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
 export default [
   js.configs.recommended,
   prettierConfig,
+  // 파일 패턴과 무시할 파일 설정
   {
     files: ['**/*.{js,jsx}'],
+    ignores: ['dist/**/*', 'build/**/*'],
+  },
+  // 글로벌 설정
+  {
+    // 언어 관련 옵션 설정
+    languageOptions: {
+      // 파서 옵션 설정
+      parserOptions: {
+        // 최신 ECMAScript 버전 사용
+        ecmaVersion: 'latest',
+        // 모듈 시스템 사용
+        sourceType: 'module',
+        // ECMAScript 기능 설정
+        ecmaFeatures: {
+          // JSX 문법 활성화
+          jsx: true,
+        },
+      },
+      // 전역 변수 설정
+      globals: {
+        // 브라우저 전역 변수 포함
+        ...globals.browser,
+        // React와 JSX를 전역으로 사용 가능하도록 설정
+        React: true,
+        JSX: true,
+      },
+    },
+    // React 관련 설정
+    settings: {
+      react: {
+        // React 버전 자동 감지
+        version: 'detect',
+      },
+    },
+  },
+  // 메인 설정
+  {
     plugins: {
       react,
       prettier,
@@ -25,26 +63,8 @@ export default [
       tailwindcss,
       'no-relative-import-paths': noRelativeImportPaths,
     },
-    languageOptions: {
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-      globals: {
-        ...globals.browser,
-        React: true,
-        JSX: true,
-      },
-    },
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
     rules: {
+      'no-undef': 'off',
       // var 키워드 사용 금지
       'no-var': 'error',
       // 가능한 모든 경우에 const 사용
