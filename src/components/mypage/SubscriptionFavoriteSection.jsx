@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { SubscriptionCard } from '@/components/mypage/SubscriptionCard';
+
 import { Lecture } from '@/components/mainPages/home/Lecture';
+import { SubscriptionCard } from '@/components/mypage/SubscriptionCard';
 
 export const SubscriptionFavoriteSection = () => {
   // 현재 선택된 탭을 관리하는 상태 (기본값: '구독')

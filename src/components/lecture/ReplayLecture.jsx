@@ -1,8 +1,7 @@
+import { useEffect, useState } from 'react';
+
 import { ReplayLectureCard } from '@/components/lecture/replay/ReplayLectureCard';
 import { ReplayLectureDetail } from '@/components/lecture/replay/ReplayLectureDetail';
-
-import { useState } from 'react';
-import { useEffect } from 'react';
 
 export const ReplayLecture = () => {
   // test

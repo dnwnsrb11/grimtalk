@@ -1,7 +1,8 @@
+import { useEffect, useState } from 'react';
+
 import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectureCard';
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
 import { QuestionLectureWrite } from '@/components/lecture/question/QuestionLectureWrite';
-import { useState, useEffect } from 'react';
 
 export const LectureQuestions = () => {
   // test

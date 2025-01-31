@@ -1,6 +1,7 @@
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { LogoIcon, AlarmIcon, ReadingGlassesIcon } from '@/components/common/icons';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { AlarmIcon, LogoIcon, ReadingGlassesIcon } from '@/components/common/icons';
 
 export const Navbar = () => {
   const [search, setSearch] = useState('');

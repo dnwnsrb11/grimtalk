@@ -1,13 +1,14 @@
+import { useState } from 'react';
+
 import { CurriculumLecture } from '@/components/lecture/CurriculumLecture';
 import { IntroductionLecture } from '@/components/lecture/IntroductionLecture';
 import { LectureBanner } from '@/components/lecture/LectureBanner';
 import { LectureCategory } from '@/components/lecture/LectureCategory';
 import { LectureNotice } from '@/components/lecture/LectureNotice';
 import { LectureProfile } from '@/components/lecture/LectureProfile';
-import { ReplayLecture } from '@/components/lecture/ReplayLecture';
 import { LectureQuestions } from '@/components/lecture/LectureQuestions';
 import { LectureReview } from '@/components/lecture/LectureReview';
-import { useState } from 'react';
+import { ReplayLecture } from '@/components/lecture/ReplayLecture';
 
 export const LecturePage = () => {
   const [selectedCategory, setSelectedCategory] = useState('강의소개');

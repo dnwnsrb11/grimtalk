@@ -1,5 +1,5 @@
-import testImg from '@/assets/banner/Test/TestImg.png';
 import starSVG from '@/assets/banner/star.svg';
+import testImg from '@/assets/banner/Test/TestImg.png';
 
 export const Lecture = () => {
   const score = 4.4;

@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { ProfileSection } from '@/components/mypage/ProfileSection';
-import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
-import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFavoriteSection';
-import { MemberIntroSection } from '@/components/mypage/MemberIntroSection';
-import { MyBoardSection } from '@/components/mypage/MyBoardSection';
-import { MemberSettingsSection } from '@/components/mypage/MemberSettingsSection';
-import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
-import { InstructorDashboardSection } from '@/components/mypage/InstructorDashboardSection';
+
 import { CheckBoardSection } from '@/components/mypage/CheckBoardSection';
-import { MyLectureSection } from '@/components/mypage/myLectureSection';
 import { CreateLectureSection } from '@/components/mypage/CreateLectureSection';
+import { InstructorDashboardSection } from '@/components/mypage/InstructorDashboardSection';
+import { MemberIntroSection } from '@/components/mypage/MemberIntroSection';
+import { MemberSettingsSection } from '@/components/mypage/MemberSettingsSection';
+import { MyBoardSection } from '@/components/mypage/MyBoardSection';
+import { MyLectureSection } from '@/components/mypage/myLectureSection';
+import { ProfileSection } from '@/components/mypage/ProfileSection';
+import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
+import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFavoriteSection';
+import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
 
 export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');

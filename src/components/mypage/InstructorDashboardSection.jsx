@@ -1,9 +1,10 @@
-import { DashboardCard } from '@/components/mypage/DashboardCard';
-import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
-import { BadgeInformation } from '@/components/mypage/BadgeInformation';
-import { StatisticsIcon } from '@/components/common/icons';
 import { ResponsiveBar } from '@nivo/bar';
+
+import { StatisticsIcon } from '@/components/common/icons';
+import { BadgeInformation } from '@/components/mypage/BadgeInformation';
+import { DashboardCard } from '@/components/mypage/DashboardCard';
+import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
+import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
 
 export const InstructorDashboardSection = () => {
   // 임시 데모 데이터

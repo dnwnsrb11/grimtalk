@@ -1,7 +1,8 @@
+import { useState } from 'react';
+
 import { Banner } from '@/components/mainPages/home/Banner';
 import { CategoryList } from '@/components/mainPages/home/category/CategoryList';
 import { LectureItem } from '@/components/mainPages/home/category/LectureItem';
-import { useState } from 'react';
 export const MainPageCategory = () => {
   // 반복용으로 나둔 요소 추후 변경 예정
   const [count, setCount] = useState([1, 2, 3, 4]);

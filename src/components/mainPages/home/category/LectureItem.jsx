@@ -1,5 +1,5 @@
-import testImg from '@/assets/banner/Test/TestImg.png';
 import starSVG from '@/assets/banner/star.svg';
+import testImg from '@/assets/banner/Test/TestImg.png';
 
 export const LectureItem = ({ isMyPage = false }) => {
   // 추후 score 값을 받아와서 저장할 장소

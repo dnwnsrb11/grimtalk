@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
+import { useEffect, useState } from 'react';
+
 import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard';
+import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 
 export const LectureNotice = () => {
   // test

@@ -1,6 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useDemoStore } from '@/store/useDemoStore';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
 import { _axios } from '@/api/instance';
+import { useDemoStore } from '@/store/useDemoStore';
 
 export const DemoPage = () => {
   const queryClient = useQueryClient();

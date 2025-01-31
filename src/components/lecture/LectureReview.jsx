@@ -1,7 +1,7 @@
-import { StarReviewIcon } from '@/components/common/icons';
-import { useEffect } from 'react';
 import { useState } from 'react';
-import { ReviewLectureCard } from './review/ReviewLectureCard';
+
+import { StarReviewIcon } from '@/components/common/icons';
+import { ReviewLectureCard } from '@/components/lecture/review/ReviewLectureCard';
 
 export const LectureReview = () => {
   const [score, setScore] = useState(0);

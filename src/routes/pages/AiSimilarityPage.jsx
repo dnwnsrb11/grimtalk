@@ -1,6 +1,7 @@
 import { useState } from 'react';
+
 import { AiSimilarityResultPage } from '@/components/aiPages/AiSimilarityResult';
-import { DefaultBadge, SubscribeIcon, FavoriteIcon } from '@/components/common/icons';
+import { DefaultBadge, SubscribeIcon } from '@/components/common/icons';
 export const AiSimilarityPage = () => {
   // 라우터
   // 이미지 렌더링 url 상태 추가

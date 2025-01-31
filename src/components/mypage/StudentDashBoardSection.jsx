@@ -1,8 +1,9 @@
+import { ResponsiveBar } from '@nivo/bar';
+
 import { DashboardCard } from '@/components/mypage/DashboardCard';
-import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
-import { ResponsiveBar } from '@nivo/bar';
+import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
 
 export const StudentDashboardSection = () => {
   // 임시 데모 데이터

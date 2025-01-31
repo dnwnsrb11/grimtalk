@@ -1,17 +1,18 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
 import { RootLayout } from '@/layouts/RootLayout';
-import { DemoPage } from '@/routes/pages/DemoPage';
-import { MyPage } from '@/routes/pages/MyPage';
-import { MainPage } from '@/routes/pages/MainPage';
-import { LoginPage } from '@/routes/pages/LoginPage';
-import { SignupPage } from '@/routes/pages/SignupPage';
-import { MainPageCategory } from '@/routes/pages/MainPageCategory';
-import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
 import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
+import { AlarmPage } from '@/routes/pages/AlarmPage';
+import { DemoPage } from '@/routes/pages/DemoPage';
+import { LecturePage } from '@/routes/pages/LecturePage';
+import { LoginPage } from '@/routes/pages/LoginPage';
+import { MainPage } from '@/routes/pages/MainPage';
+import { MainPageCategory } from '@/routes/pages/MainPageCategory';
 import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
 import { MainPageLive } from '@/routes/pages/MainPageLive';
-import { AlarmPage } from '@/routes/pages/AlarmPage';
-import { LecturePage } from '@/routes/pages/LecturePage';
+import { MyPage } from '@/routes/pages/MyPage';
+import { SignupPage } from '@/routes/pages/SignupPage';
+import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
 
 const router = createBrowserRouter([
   {

@@ -1,7 +1,7 @@
 // 강의 다시보기 버튼
-import { ReplayLecturePlayButton } from '@/components/lecture/replay/ReplayLecturePlayButton';
 // 이미지 유사도 확인 버튼
 import { CheckImageSimilarityButton } from '@/components/lecture/replay/CheckImageSimilarityButton';
+import { ReplayLecturePlayButton } from '@/components/lecture/replay/ReplayLecturePlayButton';
 
 export const ReplayLectureCard = ({ test }) => {
   const testText =

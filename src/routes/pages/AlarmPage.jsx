@@ -1,5 +1,6 @@
-import CatogoryBannerIMG from '@/assets/community/communityBannerIMG.png';
 import { useState } from 'react';
+
+import CatogoryBannerIMG from '@/assets/community/communityBannerIMG.png';
 // 사진 뭘 넣어야 할 지 몰라서 일단 넣어둠
 export const AlarmPage = () => {
   const [alarmList, setAlarmList] = useState([
