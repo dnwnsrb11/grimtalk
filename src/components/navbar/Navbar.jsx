@@ -17,7 +17,7 @@ export const Navbar = () => {
   const handleSearchClick = () => {
     try {
       if (search.trim()) {
-        navigate(`/search/${search}`);
+        navigate(`/category/${search}`);
       }
     } catch (error) {
       console.log(error);
@@ -83,6 +83,11 @@ export const Navbar = () => {
               placeholder="관심 카테고리, 강의 찾기"
               value={search}
               onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearchClick();
+                }
+              }}
             />
             <button onClick={handleSearchClick} className="focus:outline-none">
               <ReadingGlassesIcon />
