@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "frontend-app"
+        CONTAINER_NAME = "frontend"
     }
 
     stages {
@@ -14,7 +15,10 @@ pipeline {
 
         stage('Prepare Nginx Config') {
             steps {
-                sh 'cp /home/ubuntu/nginx.conf $WORKSPACE/nginx.conf'  // ✅ 빌드 전 `nginx.conf` 복사
+                sh '''
+                echo "🔧 Nginx 설정 준비 중..."
+                cp /home/ubuntu/nginx.conf ./nginx.conf
+                '''
             }
         }
 
@@ -35,15 +39,15 @@ pipeline {
                     cd /home/ubuntu
 
                     echo "🛑 기존 프론트엔드 컨테이너 삭제"
-                    docker stop frontend || true
-                    docker rm frontend || true
+                    docker stop ${CONTAINER_NAME} || true
+                    docker rm ${CONTAINER_NAME} || true
 
                     echo "🗑️ 불필요한 Docker 이미지 및 볼륨 삭제"
                     docker rmi $(docker images -f "dangling=true" -q) || true
                     docker volume prune -f
 
                     echo "🚀 프론트엔드 컨테이너 다시 실행"
-                    docker-compose up -d --build frontend
+                    docker run -d --name ${CONTAINER_NAME} -p 80:80 ${IMAGE_NAME}
 
                     echo "✅ 프론트엔드 배포 완료! 현재 컨테이너 상태:"
                     docker ps -a
