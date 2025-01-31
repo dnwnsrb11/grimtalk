@@ -103,6 +103,8 @@ export default [
           prefix: '@',
         },
       ],
+      // 중복 import 금지
+      'no-duplicate-imports': 'error',
     },
   },
   // unused-imports 전용 설정
