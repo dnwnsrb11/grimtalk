@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BadgeInformation } from '@/components/mypage/BadgeInformation';
+import { HashTagChip } from './components/mypage/HashTagChip';
 
 export const MemberSettingsSection = () => {
   // api로 호출 예정

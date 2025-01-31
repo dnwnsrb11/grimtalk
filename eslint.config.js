@@ -7,6 +7,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import prettier from 'eslint-plugin-prettier';
 import tailwindcss from 'eslint-plugin-tailwindcss';
 import prettierConfig from 'eslint-config-prettier';
+import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -21,6 +22,7 @@ export default [
       'react-refresh': reactRefresh,
       'jsx-a11y': jsxA11y,
       tailwindcss,
+      'no-relative-import-paths': noRelativeImportPaths,
     },
     languageOptions: {
       parserOptions: {
@@ -68,6 +70,15 @@ export default [
       'tailwindcss/no-contradicting-classname': 'error',
       // 카멜케이스 네이밍 규칙 (속성 이름 제외)
       camelcase: ['error', { properties: 'never' }],
+      // no-relative-import-paths 규칙만 사용
+      'no-relative-import-paths/no-relative-import-paths': [
+        'error',
+        {
+          allowSameFolder: false,
+          rootDir: 'src',
+          prefix: '@',
+        },
+      ],
     },
   },
 ];
