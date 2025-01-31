@@ -70,6 +70,8 @@ export default [
       'tailwindcss/no-contradicting-classname': 'error',
       // 카멜케이스 네이밍 규칙 (속성 이름 제외)
       camelcase: ['error', { properties: 'never' }],
+      // console 사용 금지
+      'no-console': 'warn',
       // no-relative-import-paths 규칙만 사용
       'no-relative-import-paths/no-relative-import-paths': [
         'error',
