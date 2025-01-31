@@ -5,23 +5,46 @@ import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFav
 import { MemberIntroSection } from '@/components/mypage/MemberIntroSection';
 import { MyBoardSection } from '@/components/mypage/MyBoardSection';
 import { MemberSettingsSection } from '@/components/mypage/MemberSettingsSection';
-import { DashBoardSection } from '@/components/mypage/DashBoardSection';
+import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
+import { InstructorDashboardSection } from '@/components/mypage/InstructorDashboardSection';
+import { CheckBoardSection } from '@/components/mypage/CheckBoardSection';
+import { MyLectureSection } from '@/components/mypage/myLectureSection';
+import { CreateLectureSection } from '@/components/mypage/CreateLectureSection';
 
 export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
 
-  const MENU_COMPONENTS = {
-    '구독, 즐겨찾기': <SubscriptionFavoriteSection />,
+  const COMMON_MENU = {
     유저소개: <MemberIntroSection />,
-    '내가 쓴 글': <MyBoardSection />,
     '마이 페이지': <MemberSettingsSection />,
-    대시보드: <DashBoardSection />,
+  };
+
+  const MENU_COMPONENTS = {
+    공통메뉴: COMMON_MENU,
+    수강생: {
+      ...COMMON_MENU,
+      '구독, 즐겨찾기': <SubscriptionFavoriteSection />,
+      '내가 쓴 글': <MyBoardSection />,
+      대시보드: <StudentDashboardSection />,
+    },
+    강사: {
+      ...COMMON_MENU,
+      대시보드: <InstructorDashboardSection />,
+      '질문 확인': <CheckBoardSection />,
+
+      '내 강의': <MyLectureSection />,
+      '내 강의 생성하기': <CreateLectureSection />,
+    },
     default: <div>준비 중입니다.</div>,
   };
 
   const selectedMenuContent = () => {
-    return MENU_COMPONENTS[selectedMenu] || MENU_COMPONENTS.default;
+    return MENU_COMPONENTS[selectedProfileMenu][selectedMenu] || MENU_COMPONENTS.default;
+  };
+
+  const handleCreateLecture = () => {
+    setSelectedMenu('내 강의 생성하기');
   };
 
   return (
@@ -30,13 +53,27 @@ export const MyPage = () => {
         <ProfileSection
           selectedMenu={selectedMenu}
           selectedProfileMenu={selectedProfileMenu}
-          onMenuSelect={setSelectedMenu}
-          onProfileMenuSelect={setSelectedProfileMenu}
+          setSelectedMenu={setSelectedMenu}
+          setSelectedProfileMenu={setSelectedProfileMenu}
         />
       </div>
 
       <div className="col-span-8 flex flex-col gap-3 pl-6">
-        <MyPageContentLayout navMenuTitle={selectedMenu} navMenuContent={selectedMenuContent()} />
+        <MyPageContentLayout
+          navMenuTitle={selectedMenu}
+          navMenuSubButton={
+            selectedMenu === '내 강의' && (
+              <button
+                className="rounded-[10px] bg-primary-color px-3 py-1 text-white hover:bg-primary-color/80"
+                onClick={handleCreateLecture}
+              >
+                생성하기
+              </button>
+            )
+          }
+        >
+          {selectedMenuContent()}
+        </MyPageContentLayout>
       </div>
     </div>
   );

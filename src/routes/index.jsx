@@ -11,7 +11,7 @@ import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
 import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
 import { MainPageLive } from '@/routes/pages/MainPageLive';
 import { AlarmPage } from '@/routes/pages/AlarmPage';
-import { LecturePage } from './pages/LecturePage';
+import { LecturePage } from '@/routes/pages/LecturePage';
 
 const router = createBrowserRouter([
   {

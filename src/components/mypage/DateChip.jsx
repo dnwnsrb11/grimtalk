@@ -4,10 +4,12 @@ export const DateChip = ({ date }) => {
 
   const diffDate = targetDate - today;
   const daysRemaining = Math.ceil(diffDate / (1000 * 60 * 60 * 24));
+  const dDayText = daysRemaining > 0 ? `D-${daysRemaining}` : `D+${Math.abs(daysRemaining)}`;
+
   return (
     <div className="flex items-center gap-2">
       <div className="rounded-full bg-primary-color px-3 py-0 text-white">{date}</div>
-      <p className="text-lg font-semibold text-primary-color">D-{daysRemaining}</p>
+      <p className="text-base font-semibold text-primary-color">{dDayText}</p>
     </div>
   );
 };

@@ -1,49 +1,39 @@
-import { DashBoardCard } from '@/components/mypage/DashBoardCard';
-import { RecentLectureCurriculumItem } from '@/components/mypage/RecentLectureCurriculumItem';
-import { UpcomingLectureItem } from '@/components/mypage/UpcomingLectureItem';
-import { HashTagChip } from '@/components/mypage/HashTagChip';
+import { DashboardCard } from '@/components/mypage/DashboardCard';
+import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
+import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
+import { BadgeInformation } from '@/components/mypage/BadgeInformation';
+import { StatisticsIcon } from '@/components/common/icons';
 import { ResponsiveBar } from '@nivo/bar';
 
-export const DashBoardSection = () => {
+export const InstructorDashboardSection = () => {
   // 임시 데모 데이터
-  const recentCurriculum = {
+  const recentLive = {
     title: '이모티콘을 배우고 싶은 당신을 위한 강의',
     image: 'https://picsum.photos/200/300', // demo image
-    hashTags: ['일러스트', '신입환영'],
+    date: '2025-01-27',
   };
 
-  const upcomingLectureList = [
+  const myLectureList = [
     {
       title: '이모티콘을 배우고 싶은 당신을 위한 강의',
       image: 'https://picsum.photos/200/300', // demo image
-      date: '2025-02-01',
+      hashTags: ['일러스트', '신입환영'],
     },
     {
       title: '이모티콘을 배우고 싶은 당신을 위한 강의',
       image: 'https://picsum.photos/200/300', // demo image
-      date: '2025-02-01',
+      hashTags: ['일러스트', '신입환영'],
     },
     {
       title: '이모티콘을 배우고 싶은 당신을 위한 강의',
       image: 'https://picsum.photos/200/300', // demo image
-      date: '2025-02-01',
+      hashTags: ['일러스트', '신입환영'],
     },
   ];
 
-  const myHighestSimilarity = 90;
-  const myHighestSimilarityLectureTitle = '이모티콘을 배우고 싶은 당신을 위한 강의';
+  const subscribeNumber = 2;
 
-  const recentInstructor = {
-    image: 'https://picsum.photos/200/300', // demo image
-    nickname: '김싸피',
-    memberTag: ['일러스트', '신입환영'],
-  };
-
-  const recentLecture = {
-    title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-    hashTags: ['일러스트', '신입환영'],
-    image: 'https://picsum.photos/200/300', // demo image
-  };
+  const nickname = '우준규';
 
   // 월간 진척도 데모 데이터
   const monthlyProgressData = [
@@ -61,69 +51,64 @@ export const DashBoardSection = () => {
     { month: '12월', count: 23 },
   ];
 
+  const mostViewedLive = '이모티콘을 배우고 싶은 당신을 위한 강의';
+
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
-          <DashBoardCard title="최근 학습 커리큘럼">
-            <RecentLectureCurriculumItem
-              title={recentCurriculum.title}
-              hashTags={recentCurriculum.hashTags}
-              image={recentCurriculum.image}
+          <DashboardCard title="최근 나의 라이브">
+            <DatedLectureCurriculumItem
+              title={recentLive.title}
+              image={recentLive.image}
+              date={recentLive.date}
             />
-          </DashBoardCard>
-          <DashBoardCard
-            title="나의 가장 높은 유사도"
-            subtitle={`수업: ${myHighestSimilarityLectureTitle}`}
-          >
-            <div className="flex items-end justify-end">
-              <span className="text-7xl font-bold text-primary-color">{myHighestSimilarity}</span>
-              <span className="text-4xl font-bold text-black">%</span>
+          </DashboardCard>
+          <DashboardCard title="총 구독자 수" subtitle="강사님의 전체 구독자 수입니다.">
+            <div className="flex items-baseline justify-end">
+              <span className="text-7xl font-bold text-primary-color">{subscribeNumber}</span>
+              <span className="text-4xl font-bold text-black">명</span>
             </div>
-          </DashBoardCard>
+          </DashboardCard>
         </div>
-        <DashBoardCard title="예정 커리큘럼">
-          {upcomingLectureList.map((lecture) => (
-            <UpcomingLectureItem
-              key={lecture.title}
-              title={lecture.title}
-              image={lecture.image}
-              date={lecture.date}
-            />
-          ))}
-        </DashBoardCard>
+        <DashboardCard title="나의 강의" subInfo={`전체 ${myLectureList.length}`}>
+          <div className="flex flex-col gap-7">
+            {myLectureList.map((lecture) => (
+              <HashTaggedLectureCurriculumItem
+                key={lecture.title}
+                title={lecture.title}
+                hashTags={lecture.hashTags}
+                image={lecture.image}
+              />
+            ))}
+          </div>
+        </DashboardCard>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <DashBoardCard title="최근 구독한 강사">
-          <button>
-            <div className="flex items-center gap-5">
-              <img
-                src={recentInstructor.image}
-                alt="recent-instructor"
-                className="h-[70px] w-[70px] rounded-full"
-              />
-              <div className="flex flex-col items-start">
-                <p className="text-lg font-bold text-common-font-color">
-                  {recentInstructor.nickname}
-                </p>
-                <div className="flex items-center gap-2">
-                  {recentInstructor.memberTag.map((tag) => (
-                    <HashTagChip key={tag} hashTag={tag} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </button>
-        </DashBoardCard>
-        <DashBoardCard title="최근 구독한 강의">
-          <RecentLectureCurriculumItem
-            title={recentLecture.title}
-            hashTags={recentLecture.hashTags}
-            image={recentLecture.image}
+        <DashboardCard>
+          <BadgeInformation
+            nickname={nickname}
+            subscribeNumber={subscribeNumber}
+            badgeWidth={65}
+            badgeHeight={65}
+            textSize="xl"
           />
-        </DashBoardCard>
+        </DashboardCard>
+        <DashboardCard>
+          <div className="flex h-full w-full flex-row items-center gap-5">
+            <div className="rounded-md bg-bg-gray-color p-3">
+              <StatisticsIcon />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className="text-xl text-[#6E6E6E]">가장 많은 라이브 시청수를 가진 방송은</p>
+              <p className="text-xl text-[#6E6E6E]">
+                <span className="font-semibold text-black">{mostViewedLive}</span> 입니다!
+              </p>
+            </div>
+          </div>
+        </DashboardCard>
       </div>
-      <DashBoardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
+      <DashboardCard title="월간 진척도" subtitle="라이브 수업 기준입니다.">
         <div className="h-[250px]">
           <ResponsiveBar
             // 차트 데이터
@@ -187,7 +172,7 @@ export const DashBoardSection = () => {
             layout={'vertical'}
           />
         </div>
-      </DashBoardCard>
+      </DashboardCard>
     </div>
   );
 };

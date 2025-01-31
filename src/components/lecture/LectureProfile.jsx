@@ -1,6 +1,3 @@
-import badge from '@/assets/Group_825.png';
-import subscribe from '@/assets/Group.png';
-import favoritesSVG from '@/assets/favorites.svg';
 import { useState } from 'react';
 // 아이콘 가져오기
 import { DefaultBadge, SubscribeIcon, FavoriteIcon } from '@/components/common/icons';
