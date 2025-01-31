@@ -36,7 +36,7 @@ export const LectureReview = () => {
             ))}
             <div className="ml-[15px]">
               <p
-                className={`text-[22px] text-[#828282] transition-all duration-500 ease-in-out ${score === 0 ? 'opacity-10' : `opacity-100`}`}
+                className={`text-[22px] text-[#828282] transition-all duration-500 ease-in-out ${score === 0 ? 'opacity-50' : `opacity-100`}`}
               >
                 <span
                   className={`font-semibold ${score === 0 ? 'text-text-gray-color' : 'text-primary-color'}`}
