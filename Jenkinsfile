@@ -2,46 +2,21 @@ pipeline {
     agent any
 
     environment {
-        COMPOSE_FILE_PATH = "/home/ubuntu/docker-compose.yml"
         IMAGE_NAME = "frontend-app"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://lab.ssafy.com/hoonixox/grimtalkfront.git', credentialsId: 'gitlab-credentials'
-            }
-        }
-
-        stage('Setup pnpm') {
-            steps {
-                sh '''
-                echo "🛠️ pnpm 설치 확인..."
-                if ! command -v pnpm &> /dev/null
-                then
-                    echo "📦 pnpm이 설치되지 않았습니다. 설치를 진행합니다..."
-                    npm install -g pnpm
-                else
-                    echo "✅ pnpm이 이미 설치되어 있습니다."
-                fi
-                '''
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
-                sh '''
-                echo "📦 Installing dependencies with pnpm..."
-                pnpm install
-                echo "⚡ Building frontend with pnpm..."
-                pnpm build
-                '''
+                git branch: 'main', url: 'https://lab.ssafy.com/moda2047/grimtalkfront.git', credentialsId: 'gitlab-credentials'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${IMAGE_NAME} ."
+                sh """
+                docker build -t ${IMAGE_NAME} .
+                """
             }
         }
 
@@ -61,12 +36,13 @@ pipeline {
                     docker rmi $(docker images -f "dangling=true" -q) || true
                     docker volume prune -f
 
-                    echo "🚀 프론트엔드 컨테이너만 다시 실행"
+                    echo "🚀 프론트엔드 컨테이너 다시 실행"
                     docker-compose up -d --build frontend
 
                     echo "✅ 프론트엔드 배포 완료! 현재 컨테이너 상태:"
                     docker ps -a
-
+                    
+                    EOF
                     '''
                 }
             }
