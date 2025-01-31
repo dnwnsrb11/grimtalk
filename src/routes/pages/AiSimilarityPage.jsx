@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { AiSimilarityResultPage } from '@/components/aiPages/AiSimilarityResult';
-import { DefaultBadge, SubscribeIcon } from '@/components/common/icons';
+import { DefaultBadgeIcon, SubscribeIcon } from '@/components/common/icons';
 export const AiSimilarityPage = () => {
   // 라우터
   // 이미지 렌더링 url 상태 추가
@@ -36,7 +36,7 @@ export const AiSimilarityPage = () => {
             <div className="relative h-[162px] w-[162px] rounded-full bg-[#565252]">
               <div className="absolute bottom-0 right-0 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-disabled-font-color">
                 {/* 뱃지 svg로 초기화 */}
-                <DefaultBadge />
+                <DefaultBadgeIcon />
               </div>
             </div>
           </div>

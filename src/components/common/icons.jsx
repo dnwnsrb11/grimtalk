@@ -1,4 +1,4 @@
-const DefaultBadge = ({ className, width = 19, height = 24 }) => (
+const DefaultBadgeIcon = ({ className, width = 19, height = 24 }) => (
   <svg
     width={width}
     height={height}
@@ -14,7 +14,7 @@ const DefaultBadge = ({ className, width = 19, height = 24 }) => (
   </svg>
 );
 
-const InstructorLogo = ({ className, width = 20, height = 20 }) => (
+const InstructorIcon = ({ className, width = 20, height = 20 }) => (
   <svg
     width={width}
     height={height}
@@ -30,7 +30,7 @@ const InstructorLogo = ({ className, width = 20, height = 20 }) => (
   </svg>
 );
 
-const StudentLogo = ({ className, width = 21, height = 18 }) => (
+const StudentIcon = ({ className, width = 21, height = 18 }) => (
   <svg
     width={width}
     height={height}
@@ -349,9 +349,9 @@ const StarReviewIcon = ({
 export {
   AlarmIcon,
   CheckIcon,
-  DefaultBadge,
+  DefaultBadgeIcon,
   FavoriteIcon,
-  InstructorLogo,
+  InstructorIcon,
   LockIcon,
   LockKeyIcon,
   LockOpenIcon,
@@ -360,7 +360,7 @@ export {
   ReadingGlassesIcon,
   StarReviewIcon,
   StatisticsIcon,
-  StudentLogo,
+  StudentIcon,
   SubscribeIcon,
   WrongIcon,
 };

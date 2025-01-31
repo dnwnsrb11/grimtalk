@@ -1,4 +1,4 @@
-import { DefaultBadge, InstructorLogo, StudentLogo } from '@/components/common/icons';
+import { DefaultBadgeIcon, InstructorIcon, StudentIcon } from '@/components/common/icons';
 import { NavigationMenu } from '@/components/mypage/NavigationMenu';
 
 // 마이페이지의 프로필 섹션을 담당하는 컴포넌트
@@ -21,7 +21,7 @@ export const ProfileSection = ({
         <div className="h-24 w-24 rounded-full bg-gray-600"></div>
         {/* 사용자 이름과 뱃지 */}
         <div className="flex items-center gap-1">
-          <DefaultBadge className="" width={20} height={20} />
+          <DefaultBadgeIcon className="" width={20} height={20} />
           <span className="text-2xl font-bold">Woojungyu</span>
         </div>
         {/* 수강생/강사 전환 버튼 */}
@@ -36,7 +36,7 @@ export const ProfileSection = ({
                   : 'bg-bg-gray-color text-black hover:bg-primary-color hover:text-white'
               }`}
           >
-            <StudentLogo
+            <StudentIcon
               className={`${
                 selectedProfileMenu === '수강생'
                   ? 'fill-white'
@@ -57,7 +57,7 @@ export const ProfileSection = ({
                   : 'bg-bg-gray-color text-black hover:bg-primary-color hover:text-white'
               }`}
           >
-            <InstructorLogo
+            <InstructorIcon
               className={`${
                 selectedProfileMenu === '강사' ? 'fill-white' : 'fill-black group-hover:fill-white'
               }`}
