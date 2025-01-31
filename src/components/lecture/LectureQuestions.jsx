@@ -2,6 +2,8 @@ import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectu
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
 
 export const LectureQuestions = () => {
+  // test
+  const testList = ['one', 'two', 'three'];
   return (
     <>
       <div className="mt-[60px]">
