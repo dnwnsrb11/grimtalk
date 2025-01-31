@@ -6,15 +6,19 @@ export const LectureQuestions = () => {
   // test
   const testList = ['one', 'two', 'three'];
   // 상세 페이지 기능
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState('/');
   const [questionData, setQuestionData] = useState('');
+  // 상세페이지, 질문작성 페이지
+  const pageComponents = {
+    '질문 상세페이지': <QuestionLectureDetail />,
+  };
   // 뒤로가기 버튼 기능
   useEffect(() => {
     const handlePopState = (event) => {
       event.preventDefault();
-      setIsActive(false);
+      setIsActive('/');
     };
-    if (isActive) {
+    if (isActive !== '/') {
       // popstate 이벤트 리스너 등록
       window.addEventListener('popstate', handlePopState);
 
@@ -31,7 +35,7 @@ export const LectureQuestions = () => {
     };
   }, [isActive]);
 
-  if (isActive) {
+  if (isActive === '질문 상세페이지') {
     return <QuestionLectureDetail setIsActive={setIsActive} questionData={questionData} />;
   }
 
@@ -49,7 +53,7 @@ export const LectureQuestions = () => {
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
           {testList.map((testData, index) => (
-            <div key={index} onClick={() => setIsActive(true)} className="mb-3">
+            <div key={index} onClick={() => setIsActive('질문 상세페이지')} className="mb-3">
               <QuestionLectureCard setIsActive={setIsActive} testData={testData} />
             </div>
           ))}
