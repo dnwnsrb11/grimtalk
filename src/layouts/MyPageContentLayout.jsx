@@ -1,7 +1,10 @@
-export const MyPageContentLayout = ({ navMenuTitle, children }) => {
+export const MyPageContentLayout = ({ navMenuTitle, navMenuSubButton, children }) => {
   return (
     <>
-      <div className="text-2xl font-bold">{navMenuTitle}</div>
+      <div className="flex flex-row items-center gap-2">
+        <div className="text-2xl font-bold">{navMenuTitle}</div>
+        {navMenuSubButton && navMenuSubButton}
+      </div>
       <hr className="w-full" />
       {children}
     </>

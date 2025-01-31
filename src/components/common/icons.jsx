@@ -345,6 +345,7 @@ const StarReviewIcon = ({
     />
   </svg>
 );
+
 export {
   DefaultBadge,
   InstructorLogo,
