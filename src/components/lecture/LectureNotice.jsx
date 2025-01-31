@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard';
 
@@ -8,6 +8,28 @@ export const LectureNotice = () => {
   // 상세페이지 기능 구현
   const [noticeDate, setNoticeDate] = useState('');
   const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    const handlePopState = (event) => {
+      event.preventDefault();
+      setIsActive(false);
+    };
+    if (isActive) {
+      // popstate 이벤트 리스너 등록
+      window.addEventListener('popstate', handlePopState);
+
+      // 초기 상태로 히스토리를 추가하여 뒤로가기 기능을 막음
+      // 이를 통해 뒤로가기 버튼을 클릭하면 isActive 값만 변경됨
+      history.pushState(null, document.title);
+    } else {
+      // isActive가 false일 때는 popstate 이벤트 리스너 제거
+      window.removeEventListener('popstate', handlePopState);
+    }
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isActive]);
 
   if (isActive) {
     return <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />;
