@@ -13,15 +13,6 @@ pipeline {
             }
         }
 
-        stage('Prepare Nginx Config') {
-            steps {
-                sh '''
-                echo "🔧 Nginx 설정 준비 중..."
-                cp /home/ubuntu/nginx.conf ./nginx.conf
-                '''
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh """
@@ -39,15 +30,15 @@ pipeline {
                     cd /home/ubuntu
 
                     echo "🛑 기존 프론트엔드 컨테이너 삭제"
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm ${CONTAINER_NAME} || true
+                    docker-compose stop frontend || true
+                    docker-compose rm -f frontend || true
 
                     echo "🗑️ 불필요한 Docker 이미지 및 볼륨 삭제"
                     docker rmi $(docker images -f "dangling=true" -q) || true
                     docker volume prune -f
 
                     echo "🚀 프론트엔드 컨테이너 다시 실행"
-                    docker run -d --name ${CONTAINER_NAME} -p 80:80 ${IMAGE_NAME}
+                    docker-compose up -d --build frontend
 
                     echo "✅ 프론트엔드 배포 완료! 현재 컨테이너 상태:"
                     docker ps -a
