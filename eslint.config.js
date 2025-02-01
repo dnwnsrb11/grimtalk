@@ -136,8 +136,8 @@ export default [
       'simple-import-sort': simpleImportSort,
     },
     rules: {
-      'simple-import-sort/imports': 'error',
-      'simple-import-sort/exports': 'error',
+      'simple-import-sort/imports': 'error', // import 순서 정렬
+      'simple-import-sort/exports': 'error', // export 순서 정렬
     },
   },
 ];
