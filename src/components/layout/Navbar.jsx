@@ -55,7 +55,7 @@ export const Navbar = () => {
           </button>
 
           {/* 네비게이션 메뉴 */}
-          <div className="ml-[50px] flex flex-row gap-[25px] text-[15px]">
+          <div className="ml-[50px] flex flex-row gap-[25px] text-[18px]">
             <button onClick={() => navigate('/')} className={getNavItemClasses('/')}>
               홈
             </button>
