@@ -46,7 +46,7 @@ export const Navbar = () => {
 
   return (
     <div className="h-[105px] w-full  border-b bg-white">
-      <div className="mx-auto grid grid-cols-14 gap-4 py-4">
+      <div className="mx-auto grid max-w-[1920px] grid-cols-14 gap-4 py-4">
         <div className="col-span-2"></div>
         <div className="col-span-10 flex items-center">
           {/* 로고 */}
@@ -74,25 +74,24 @@ export const Navbar = () => {
             <button onClick={() => navigate('/live')} className={getNavItemClasses('/live')}>
               라이브
             </button>
-          </div>
-
-          {/* 검색창 */}
-          <div className="ml-[70px] flex h-[60px] w-[400px] items-center justify-between rounded-xl border border-solid bg-[#EFEFEF]">
-            <input
-              type="text"
-              className="ml-[25px] h-full w-full bg-[#EFEFEF] outline-none"
-              placeholder="관심 카테고리, 강의 찾기"
-              value={search}
-              onChange={handleSearchChange}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSearchClick();
-                }
-              }}
-            />
-            <button onClick={handleSearchClick} className="focus:outline-none">
-              <ReadingGlassesIcon />
-            </button>
+            {/* 검색창 */}
+            <div className=" flex h-[50px] w-[400px] items-center justify-between rounded-xl border border-solid bg-[#EFEFEF]">
+              <input
+                type="text"
+                className="ml-[25px] h-full w-full bg-[#EFEFEF] outline-none"
+                placeholder="관심 카테고리, 강의 찾기"
+                value={search}
+                onChange={handleSearchChange}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearchClick();
+                  }
+                }}
+              />
+              <button onClick={handleSearchClick} className="focus:outline-none">
+                <ReadingGlassesIcon width={20} height={20} />
+              </button>
+            </div>
           </div>
 
           {/* 로그인 / 회원가입 / 마이페이지 버튼 */}
