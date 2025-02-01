@@ -45,8 +45,8 @@ export const Navbar = () => {
   };
 
   return (
-    <div className="h-[105px] w-full  border-b bg-white">
-      <div className="mx-auto grid max-w-[1920px] grid-cols-14 gap-4 py-4">
+    <div className="w-full border-b  bg-white py-[0px]">
+      <div className="grid max-w-[1920px] grid-cols-14 gap-4 py-1">
         <div className="col-span-2"></div>
         <div className="col-span-10 flex items-center">
           {/* 로고 */}
@@ -104,9 +104,9 @@ export const Navbar = () => {
                 <div className="mx-5">|</div>
                 <button
                   onClick={() => navigate('/login')}
-                  className="h-[35px] w-[70px] rounded-xl bg-[#EFEFEF] focus:outline-none"
+                  className="h-[35px] w-[70px]  rounded-xl bg-[#EFEFEF] focus:outline-none"
                 >
-                  로그인
+                  <p className="text-text-gray-color">로그인</p>
                 </button>
               </>
             ) : (
@@ -119,7 +119,7 @@ export const Navbar = () => {
                 </button>
                 <div>|</div>
                 <button onClick={() => navigate('/logout')} className="focus:outline-none">
-                  로그아웃
+                  <p className="text-text-gray-color">로그아웃</p>
                 </button>
               </div>
             )}
