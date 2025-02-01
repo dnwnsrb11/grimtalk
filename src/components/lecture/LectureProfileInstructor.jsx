@@ -54,9 +54,9 @@ export const LectureProfileInstructor = () => {
               {/* 라이브 카드 부분 */}
               <h3 className="text-[24px] font-medium text-[#565252]">2024.01.24</h3>
               <h2 className="text-[30px] font-bold">09:00</h2>
-              <div className="rounded-xl bg-bg-gray-color p-3 px-5">
-                <button className="font-semibold">라이브 시작 전 입니다.</button>
-              </div>
+              <button className="rounded-xl bg-primary-color p-3 px-5 text-white transition-all duration-200 hover:bg-bg-gray-color hover:text-black">
+                <p className="font-semibold">라이브 시작하기</p>
+              </button>
             </div>
           </div>
         </div>
