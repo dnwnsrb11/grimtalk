@@ -6,7 +6,7 @@ import { InstructorDashboardSection } from '@/components/mypage/InstructorDashbo
 import { MemberIntroSection } from '@/components/mypage/MemberIntroSection';
 import { MemberSettingsSection } from '@/components/mypage/MemberSettingsSection';
 import { MyBoardSection } from '@/components/mypage/MyBoardSection';
-import { MyLectureSection } from '@/components/mypage/myLectureSection';
+import { MyLectureSection } from '@/components/mypage/MyLectureSection';
 import { ProfileSection } from '@/components/mypage/ProfileSection';
 import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
 import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFavoriteSection';
