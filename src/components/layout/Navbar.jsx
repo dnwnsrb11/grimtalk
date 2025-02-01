@@ -137,34 +137,33 @@ export const Navbar = () => {
                       {notificationCount}
                     </div>
                   )}
+                  {/* 알림 모달 */}
+                  {isModalOpen && (
+                    <div className="absolute -bottom-56 right-0 z-10 mt-[240px] w-[350px] rounded-2xl border border-gray-200 bg-white shadow-lg">
+                      <div className="p-6">
+                        <div className="mb-3 flex items-center justify-between">
+                          <h3 className="text-[18px]">알림</h3>
+                          <button
+                            onClick={() => navigate('/alarm')}
+                            className="text-lg text-gray-600 focus:outline-none"
+                          >
+                            {'>'}
+                          </button>
+                        </div>
+                        <hr className="border-solid border-[#D9D9D9]" />
+                        <div className="max-h-[300px] overflow-y-auto">
+                          <ul>
+                            {[...Array(notificationCount)].map((_, index) => (
+                              <li key={index} className="border-b py-2">
+                                <span>알림 내용 {index + 1}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </button>
-              )}
-
-              {/* 알림 모달 */}
-              {isModalOpen && (
-                <div className="absolute z-10 mt-[240px] w-[350px] rounded-2xl border border-gray-200 bg-white shadow-lg ">
-                  <div className="p-6">
-                    <div className="mb-3 flex items-center justify-between">
-                      <h3 className="text-[18px]">알림</h3>
-                      <button
-                        onClick={() => navigate('/alarm')}
-                        className="text-lg text-gray-600 focus:outline-none"
-                      >
-                        {'>'}
-                      </button>
-                    </div>
-                    <hr className="border-solid border-[#D9D9D9]" />
-                    <div className="max-h-[300px] overflow-y-auto">
-                      <ul>
-                        {[...Array(notificationCount)].map((_, index) => (
-                          <li key={index} className="border-b py-2">
-                            <span>알림 내용 {index + 1}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
               )}
             </div>
           </div>
