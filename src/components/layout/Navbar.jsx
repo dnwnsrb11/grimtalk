@@ -129,11 +129,11 @@ export const Navbar = () => {
               {isLogin && (
                 <button
                   onClick={toggleModal}
-                  className="relative ml-[15px] flex h-[41px] w-[41px] items-center justify-center rounded-xl bg-[#EFEFEF] focus:outline-none"
+                  className="group relative ml-[15px] flex h-[41px] w-[41px] items-center justify-center rounded-xl bg-[#EFEFEF] transition-all duration-200 hover:bg-primary-color focus:outline-none"
                 >
-                  <AlarmIcon />
+                  <AlarmIcon className="group-hover:stroke-white" />
                   {notificationCount > 0 && (
-                    <div className="absolute -right-1.5 -top-1.5 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                    <div className="absolute -right-1.5 -top-1.5 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-500 text-xs text-white transition-all duration-200 group-hover:border group-hover:bg-white group-hover:text-black">
                       {notificationCount}
                     </div>
                   )}
@@ -142,7 +142,7 @@ export const Navbar = () => {
 
               {/* 알림 모달 */}
               {isModalOpen && (
-                <div className="absolute z-10 mt-[240px] w-[350px] rounded-2xl border border-gray-200 bg-white shadow-lg">
+                <div className="absolute z-10 mt-[240px] w-[350px] rounded-2xl border border-gray-200 bg-white shadow-lg ">
                   <div className="p-6">
                     <div className="mb-3 flex items-center justify-between">
                       <h3 className="text-[18px]">알림</h3>
