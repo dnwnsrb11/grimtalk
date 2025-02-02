@@ -44,7 +44,7 @@ export const ReplayLecture = ({ checkInstructor }) => {
                   setReplayDate(test);
                 }}
               >
-                <ReplayLectureCard test={test} />
+                <ReplayLectureCard test={test} checkInstructor={checkInstructor} />
               </div>
             ))}
           </div>
