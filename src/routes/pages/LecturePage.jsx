@@ -6,7 +6,6 @@ import { LectureBanner } from '@/components/lecture/LectureBanner';
 import { LectureCategory } from '@/components/lecture/LectureCategory';
 import { LectureNotice } from '@/components/lecture/LectureNotice';
 import { LectureProfile } from '@/components/lecture/LectureProfile';
-import { LectureProfileInstructor } from '@/components/lecture/LectureProfileInstructor';
 import { LectureQuestions } from '@/components/lecture/LectureQuestions';
 import { LectureReview } from '@/components/lecture/LectureReview';
 import { ReplayLecture } from '@/components/lecture/ReplayLecture';
@@ -39,11 +38,7 @@ export const LecturePage = () => {
           <LectureBanner />
         </div>
         <div>
-          {checkInstructor ? (
-            <LectureProfileInstructor />
-          ) : (
-            <LectureProfile checkInstructor={checkInstructor} />
-          )}
+          <LectureProfile checkInstructor={checkInstructor} />
         </div>
         <div className="mt-[60px]">
           <LectureCategory
