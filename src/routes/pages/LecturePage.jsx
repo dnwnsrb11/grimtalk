@@ -38,7 +38,13 @@ export const LecturePage = () => {
         <div>
           <LectureBanner />
         </div>
-        <div>{checkInstructor ? <LectureProfileInstructor /> : <LectureProfile />}</div>
+        <div>
+          {checkInstructor ? (
+            <LectureProfileInstructor />
+          ) : (
+            <LectureProfile checkInstructor={checkInstructor} />
+          )}
+        </div>
         <div className="mt-[60px]">
           <LectureCategory
             setSelectedCategory={handleCatagory}
