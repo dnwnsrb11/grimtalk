@@ -6,16 +6,18 @@ export const RootLayout = () => {
   return (
     <>
       <div className="mx-auto min-h-screen max-w-[1920px]">
-        <div className="grid grid-cols-14 gap-4">
-          <div className="col-span-2"></div>
-          <div className="col-span-10">
-            <header>
-              <Navbar />
-            </header>
+        <div className="sticky top-0 z-50 bg-white bg-opacity-70 backdrop-blur-sm">
+          <div className="grid grid-cols-14 gap-4">
+            <div className="col-span-2"></div>
+            <div className="col-span-10">
+              <header>
+                <Navbar />
+              </header>
+            </div>
+            <div className="col-span-2"></div>
           </div>
-          <div className="col-span-2"></div>
+          <hr className="w-full border-gray-200" />
         </div>
-        <hr className="w-full border-gray-200" />
         <div className="grid grid-cols-14 gap-4">
           <div className="col-span-2"></div>
           <div className="col-span-10">
