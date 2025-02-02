@@ -9,6 +9,8 @@ export const LectureNotice = ({ checkInstructor }) => {
   // 상세페이지 기능 구현
   const [noticeDate, setNoticeDate] = useState('');
   const [isActive, setIsActive] = useState(false);
+  // 작성 공지사항
+  const [createNoticeDate, setCreateNoticeDate] = useState('');
 
   useEffect(() => {
     const handlePopState = (event) => {
