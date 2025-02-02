@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { LectureCreateWrite } from '@/components/lecture/notice/LectureCreateWrite';
 import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard';
 import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 
@@ -14,7 +15,7 @@ export const LectureNotice = ({ checkInstructor }) => {
   // 상세페이지, 공지사항 작성페이지
   const pageComponents = {
     '공지사항 상세페이지': <LectureNoticeDetail />,
-    // '공지사항 작성페이지': <QuestionLectureWrite />,
+    '공지사항 작성페이지': <LectureCreateWrite />,
   };
   useEffect(() => {
     const handlePopState = (event) => {
@@ -40,6 +41,10 @@ export const LectureNotice = ({ checkInstructor }) => {
 
   if (isActive === '공지사항 상세페이지') {
     return <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />;
+  } else if (isActive === '공지사항 작성페이지') {
+    return (
+      <LectureCreateWrite setIsActive={setIsActive} setCreateNoticeDate={setCreateNoticeDate} />
+    );
   }
   return (
     <>
@@ -47,7 +52,7 @@ export const LectureNotice = ({ checkInstructor }) => {
         <div className="mb-[20px] flex gap-6">
           <h1 className="text-[32px] font-bold">공지사항</h1>
           <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
-            <button onClick={() => setIsActive('질문 작성페이지')}>
+            <button onClick={() => setIsActive('공지사항 작성페이지')}>
               <p className="text-[18px] font-semibold text-white">공지사항 작성</p>
             </button>
           </div>
