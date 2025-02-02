@@ -39,10 +39,16 @@ export const DemoPage = () => {
 
   // 게시물 조회 쿼리
   // https://tanstack.com/query/latest/docs/framework/react/reference/useQuery
+  // data를 posts라는 이름으로 변경해서 받음 (구조 분해 할당 + 이름 변경)
+  // 이렇게 받은 posts는 아래 JSX에서 사용됨
   const { data: posts, isLoading } = useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
+      // axios 응답에서 data 속성만 추출 (axios의 응답 구조: { data, status, headers, ... })
       const { data } = await _axios.get('https://jsonplaceholder.typicode.com/posts?_limit=5');
+
+      // 추출한 data를 반환하면 자동으로 useQuery의 data 속성에 저장됨
+      // 이 data가 위에서 posts라는 이름으로 받아짐
       return data;
     },
   });
@@ -111,8 +117,9 @@ export const DemoPage = () => {
               >
                 {addPostMutation.isPending ? '게시물 추가 중...' : '새 게시물 추가'}
               </button>
-
+              {/* JSX에서 위에서 받은 posts 사용 */}
               <div className="space-y-2">
+                {/* posts는 위에서 data: posts로 받은 데이터 */}
                 {posts?.map((post) => (
                   <div key={post.id} className="border p-2">
                     <h3 className="font-bold">{post.title}</h3>
