@@ -18,11 +18,10 @@ export const LectureQuestions = () => {
     '질문 작성페이지': <QuestionLectureWrite />,
   };
   // 목록 조회
-  const { data: posts, isLoading } = useQuery({
+  const { data: posts } = useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
       const { data } = await _axios.get('/board');
-      console.log(data);
       return data;
     },
   });
@@ -71,7 +70,14 @@ export const LectureQuestions = () => {
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
           {posts?.body?.data?.list?.map((post, index) => (
-            <div key={index} onClick={() => setIsActive('질문 상세페이지')} className="mb-3">
+            <div
+              key={index}
+              onClick={() => {
+                setIsActive('질문 상세페이지');
+                setQuestionData(post.boardId);
+              }}
+              className="mb-3"
+            >
               <QuestionLectureCard setIsActive={setIsActive} post={post} />
             </div>
           ))}

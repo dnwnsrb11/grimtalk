@@ -1,13 +1,26 @@
-export const QuestionLectureDetail = ({ setIsActive, testData }) => {
+import { useQuery } from '@tanstack/react-query';
+
+import { _axios } from '@/api/instance';
+export const QuestionLectureDetail = ({ setIsActive, questionData }) => {
+  // 받은 boardId로 데이터를 조회한다.
+  const { data: board } = useQuery({
+    queryKey: ['post', questionData],
+    queryFn: async () => {
+      const { data } = await _axios.get(`/board/${questionData}`);
+      console.log(data);
+      return data;
+    },
+  });
+  console.log(board.body.data);
   const changeActive = () => {
     setIsActive(false);
   };
   return (
     <>
       <div className="mt-[60px] min-h-[200px]">
-        <h1 className="text-[32px] font-bold">공지사항 입니다!!</h1>
+        <h1 className="text-[32px] font-bold">{board?.body?.data?.subject}</h1>
         <div className="mt-[10px]">
-          <p className="text-[18px]">hello</p>
+          <p className="text-[18px]">{board?.body?.data?.content}</p>
         </div>
       </div>
       <hr />
@@ -19,7 +32,9 @@ export const QuestionLectureDetail = ({ setIsActive, testData }) => {
           </div>
         </div>
         <div className="mt-[10px] min-h-[100px]">
-          <p className="text-[18px]">hello</p>
+          {board?.body?.data?.comment?.map((comment, index) => (
+            <p className="text-[18px]">{comment}</p>
+          ))}
         </div>
       </div>
       <hr />

@@ -1,22 +1,19 @@
 export const QuestionLectureCard = ({ isActive, post }) => {
-  // 날짜 까지만 나오게 하기 & 제목, 커리큘럼이름, 날짜, 닉네임
+  // 날짜 까지만 나오게 하기, 제목, 커리큘럼이름, 닉네임
   const formattedDate = new Date(post?.updatedAt).toISOString().split('T')[0];
   const postSubject = post?.subject;
   const postCurriculumSubject = post?.curriculumSubject;
   const nickname = post?.nickname;
-  // 활성화 버튼
-  const QuestionActive = () => {
+
+  const QuestionStatus = ({ picked }) => {
+    console.log(picked);
     return (
-      <div className="rounded-full border border-gray-border-color bg-primary-color px-[15px] py-[5px]">
-        <p className="text-[14px] font-semibold text-white">해결</p>
-      </div>
-    );
-  };
-  // 비활성화 버튼
-  const QuestionDeActive = () => {
-    return (
-      <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
-        <p className="text-[14px] font-semibold text-[#AEAEAE]">미해결</p>
+      <div
+        className={`rounded-full border px-[15px] py-[5px] ${picked ? 'border-primary-color bg-primary-color' : 'border-gray-border-color bg-bg-gray-color'}`}
+      >
+        <p className={`text-[14px] font-semibold ${picked ? 'text-white' : 'text-[#AEAEAE]'}`}>
+          {picked ? '해결' : '미해결'}
+        </p>
       </div>
     );
   };
@@ -37,7 +34,7 @@ export const QuestionLectureCard = ({ isActive, post }) => {
               <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
                 <p className="text-[14px] font-semibold">{formattedDate}</p>
               </div>
-              {isActive ? <QuestionActive /> : <QuestionDeActive />}
+              <QuestionStatus picked={post.picked} />
             </div>
             <div>
               <div>
