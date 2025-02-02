@@ -25,8 +25,8 @@ export const AiSimilarityPage = () => {
     }
   };
   return (
-    <div>
-      <p className="mb-[30px] mt-[60px] text-[32px] font-bold">
+    <div className="mt-10">
+      <p className="mb-[30px] text-[32px] font-bold">
         간단한 드로잉을 통한 이모티콘 그리기 연습해요 !
       </p>
       <div className="flex h-full gap-5">

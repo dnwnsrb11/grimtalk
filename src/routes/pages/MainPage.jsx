@@ -10,7 +10,7 @@ export const MainPage = () => {
   const [count, setCount] = useState([1, 2, 3, 4]);
   return (
     <>
-      <div className="mt-[40px]">
+      <div className="mt-10">
         <div>
           <h2 className="text-2xl font-bold">
             인기 있는 <span className="text-primary-color">라이브</span>
