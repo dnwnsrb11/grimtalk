@@ -56,11 +56,14 @@ export const LectureQuestions = ({ checkInstructor }) => {
       <div className="mt-[60px]">
         <div className="mb-[20px] flex gap-6">
           <h1 className="text-[32px] font-bold">질문하기</h1>
-          <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
-            <button onClick={() => setIsActive('질문 작성페이지')}>
-              <p className="text-[18px] font-semibold text-white">질문하기</p>
-            </button>
-          </div>
+          {/* 강사일 경우 질문하기 버튼 안보이게 처리 */}
+          {!checkInstructor && (
+            <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
+              <button onClick={() => setIsActive('질문 작성페이지')}>
+                <p className="text-[18px] font-semibold text-white">질문하기</p>
+              </button>
+            </div>
+          )}
         </div>
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
