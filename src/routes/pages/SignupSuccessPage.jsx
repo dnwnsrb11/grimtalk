@@ -2,7 +2,7 @@ import { LoginHi } from '@/components/common/icons';
 
 export const SignupSuccessPage = () => {
   return (
-    <div className="mx-auto flex h-full flex-col items-center justify-center">
+    <div className="mx-auto mt-[250px] flex h-full flex-col items-center justify-center">
       <div className="flex flex-col  justify-center">
         {/* 문장 전체를 감싸는 flex 컨테이너 */}
         <div className="flex flex-row">
