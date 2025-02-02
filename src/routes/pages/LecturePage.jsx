@@ -16,17 +16,21 @@ export const LecturePage = () => {
   const handleCatagory = (childData) => {
     setSelectedCategory(childData);
   };
+  // 강사 여부 체크
+  const [checkInstructor, setCheckInstructor] = useState(true);
+
   // 여기에 해당하는 컴포넌트를 저장한다.
   // 자식 컴포넌트인 LectureCategory에서 값을 받아 catagory에 값을 넣어주면 값이 변경되어 아래에 다른 컴포넌트가 리랜더링 된다.
   const MENU_COMPONENTS = {
     강의소개: <IntroductionLecture />,
-    다시보기: <ReplayLecture />,
-    커리큘럼: <CurriculumLecture />,
+    다시보기: <ReplayLecture checkInstructor={checkInstructor} />,
+    커리큘럼: <CurriculumLecture checkInstructor={checkInstructor} />,
     default: <p>now Tesing</p>,
-    공지사항: <LectureNotice />,
-    질문사항: <LectureQuestions />,
+    공지사항: <LectureNotice checkInstructor={checkInstructor} />,
+    질문사항: <LectureQuestions checkInstructor={checkInstructor} />,
     리뷰하기: <LectureReview />,
   };
+
   return (
     <>
       <div>
@@ -34,7 +38,7 @@ export const LecturePage = () => {
           <LectureBanner />
         </div>
         <div>
-          <LectureProfile />
+          <LectureProfile checkInstructor={checkInstructor} />
         </div>
         <div className="mt-[60px]">
           <LectureCategory
