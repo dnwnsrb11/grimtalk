@@ -4,7 +4,7 @@ import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectu
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
 import { QuestionLectureWrite } from '@/components/lecture/question/QuestionLectureWrite';
 
-export const LectureQuestions = () => {
+export const LectureQuestions = ({ checkInstructor }) => {
   // test
   const testList = ['one', 'two', 'three'];
   // 상세 페이지 기능
