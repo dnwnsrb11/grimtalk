@@ -19,7 +19,7 @@ export const ProfileSection = ({
       <div className="flex flex-col items-center gap-1">
         {/* 프로필 이미지 */}
         <img
-          className="h-24 w-24 rounded-full bg-gray-600"
+          className="h-40 w-40 rounded-full bg-gray-600"
           src="https://picsum.photos/200"
           alt="profile"
         />
