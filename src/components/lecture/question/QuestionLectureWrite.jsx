@@ -24,7 +24,7 @@ export const QuestionLectureWrite = ({ setIsActive }) => {
               className="rounded-2xl border border-gray-border-color bg-bg-gray-color px-[30px] py-[10px]"
               onClick={() => changeActive()}
             >
-              <p className="font-semibol text-[18px]">뒤로가기</p>
+              <p className="text-[18px] font-semibold">뒤로가기</p>
             </button>
             <button className="rounded-2xl bg-primary-color px-[30px] py-[10px]">
               <p className="text-[18px] font-semibold text-white">수정하기</p>
