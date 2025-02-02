@@ -40,7 +40,13 @@ export const LectureQuestions = ({ checkInstructor }) => {
 
   // 컴포넌트 생성 분기
   if (isActive === '질문 상세페이지') {
-    return <QuestionLectureDetail setIsActive={setIsActive} questionData={questionData} />;
+    return (
+      <QuestionLectureDetail
+        setIsActive={setIsActive}
+        questionData={questionData}
+        checkInstructor={checkInstructor}
+      />
+    );
   } else if (isActive === '질문 작성페이지') {
     return <QuestionLectureWrite setIsActive={setIsActive} />;
   }
