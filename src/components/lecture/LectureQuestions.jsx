@@ -1,5 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
+import { _axios } from '@/api/instance';
 import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectureCard';
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
 import { QuestionLectureWrite } from '@/components/lecture/question/QuestionLectureWrite';
@@ -15,6 +17,15 @@ export const LectureQuestions = () => {
     '질문 상세페이지': <QuestionLectureDetail />,
     '질문 작성페이지': <QuestionLectureWrite />,
   };
+  // 목록 조회
+  const { data: posts, isLoading } = useQuery({
+    queryKey: ['posts'],
+    queryFn: async () => {
+      const { data } = await _axios.get('/board');
+      console.log(data.body.data);
+      return data;
+    },
+  });
   // 뒤로가기 버튼 기능
   useEffect(() => {
     const handlePopState = (event) => {
