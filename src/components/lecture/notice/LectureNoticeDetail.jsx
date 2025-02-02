@@ -1,6 +1,6 @@
 export const LectureNoticeDetail = ({ noticeDate, setIsActive }) => {
   const changeActive = () => {
-    setIsActive(false);
+    setIsActive('/');
   };
   return (
     <>
