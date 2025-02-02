@@ -1,4 +1,4 @@
-export const LectureCreateNotice = () => {
+export const LectureCreateWrite = () => {
   return (
     <>
       <div></div>
