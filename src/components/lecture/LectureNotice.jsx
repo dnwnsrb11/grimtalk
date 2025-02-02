@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard';
 import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 
-export const LectureNotice = () => {
+export const LectureNotice = ({ checkInstructor }) => {
   // test
   const testList = ['one', 'two', 'three'];
   // 상세페이지 기능 구현
