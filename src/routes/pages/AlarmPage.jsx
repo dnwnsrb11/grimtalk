@@ -11,7 +11,7 @@ export const AlarmPage = () => {
     '새로운리더_전승기',
   ]);
   return (
-    <div>
+    <>
       <div className="relative overflow-hidden rounded-lg">
         <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-r from-black via-transparent to-transparent opacity-100"></div>
         <div className="absolute left-[5%] top-1/2 -translate-y-1/2 transform">
@@ -55,6 +55,6 @@ export const AlarmPage = () => {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };
