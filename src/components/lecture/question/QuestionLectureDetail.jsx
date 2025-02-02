@@ -4,7 +4,7 @@ import { _axios } from '@/api/instance';
 export const QuestionLectureDetail = ({ setIsActive, questionData }) => {
   // 받은 boardId로 데이터를 조회한다.
   const { data: board } = useQuery({
-    queryKey: ['post', questionData],
+    queryKey: ['board', questionData],
     queryFn: async () => {
       const { data } = await _axios.get(`/board/${questionData}`);
       return data;
