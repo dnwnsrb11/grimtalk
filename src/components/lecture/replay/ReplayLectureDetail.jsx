@@ -1,4 +1,4 @@
-export const ReplayLectureDetail = ({ replayDate, setIsActive }) => {
+export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }) => {
   return (
     <>
       <div className="mt-[60px]">

@@ -54,6 +54,7 @@ export const ReplayLecture = ({ checkInstructor }) => {
           isActive={isActive}
           setIsActive={setIsActive}
           replayDate={replayDate}
+          checkInstructor={checkInstructor}
         />
       )}
     </>
