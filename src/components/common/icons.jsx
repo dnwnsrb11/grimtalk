@@ -274,6 +274,7 @@ const AlarmIcon = ({ className = '', width = 20, height = 22 }) => (
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className={className}
     />
   </svg>
 );
