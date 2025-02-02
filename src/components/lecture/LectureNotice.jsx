@@ -8,14 +8,18 @@ export const LectureNotice = ({ checkInstructor }) => {
   const testList = ['one', 'two', 'three'];
   // 상세페이지 기능 구현
   const [noticeDate, setNoticeDate] = useState('');
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState('/');
   // 작성 공지사항
   const [createNoticeDate, setCreateNoticeDate] = useState('');
-
+  // 상세페이지, 공지사항 작성페이지
+  const pageComponents = {
+    '공지사항 상세페이지': <LectureNoticeDetail />,
+    // '공지사항 작성페이지': <QuestionLectureWrite />,
+  };
   useEffect(() => {
     const handlePopState = (event) => {
       event.preventDefault();
-      setIsActive(false);
+      setIsActive('/');
     };
     if (isActive) {
       // popstate 이벤트 리스너 등록
@@ -34,7 +38,7 @@ export const LectureNotice = ({ checkInstructor }) => {
     };
   }, [isActive]);
 
-  if (isActive) {
+  if (isActive === '공지사항 상세페이지') {
     return <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />;
   }
   return (
@@ -55,7 +59,7 @@ export const LectureNotice = ({ checkInstructor }) => {
               key={index}
               className="mb-3"
               onClick={() => {
-                setIsActive(true);
+                setIsActive('공지사항 상세페이지');
                 setNoticeDate(testData);
               }}
             >
