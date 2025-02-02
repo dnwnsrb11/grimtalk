@@ -6,7 +6,6 @@ export const QuestionLectureCard = ({ isActive, post }) => {
   const nickname = post?.nickname;
 
   const QuestionStatus = ({ picked }) => {
-    console.log(picked);
     return (
       <div
         className={`rounded-full border px-[15px] py-[5px] ${picked ? 'border-primary-color bg-primary-color' : 'border-gray-border-color bg-bg-gray-color'}`}

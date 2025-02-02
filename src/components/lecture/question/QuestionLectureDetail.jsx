@@ -7,11 +7,9 @@ export const QuestionLectureDetail = ({ setIsActive, questionData }) => {
     queryKey: ['post', questionData],
     queryFn: async () => {
       const { data } = await _axios.get(`/board/${questionData}`);
-      console.log(data);
       return data;
     },
   });
-  console.log(board.body.data);
   const changeActive = () => {
     setIsActive(false);
   };
