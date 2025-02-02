@@ -11,7 +11,7 @@ export const RootLayout = () => {
           <header className="border-b bg-white">
             <Navbar />
           </header>
-          <main className="mt-8">
+          <main>
             <Outlet />
           </main>
         </div>
