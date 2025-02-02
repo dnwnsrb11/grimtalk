@@ -18,7 +18,11 @@ export const ProfileSection = ({
       {/* 프로필 정보 영역 */}
       <div className="flex flex-col items-center gap-1">
         {/* 프로필 이미지 */}
-        <div className="h-24 w-24 rounded-full bg-gray-600"></div>
+        <img
+          className="h-24 w-24 rounded-full bg-gray-600"
+          src="https://picsum.photos/200"
+          alt="profile"
+        />
         {/* 사용자 이름과 뱃지 */}
         <div className="flex items-center gap-1">
           <DefaultBadgeIcon className="" width={20} height={20} />
