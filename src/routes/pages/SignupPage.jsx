@@ -1,6 +1,6 @@
 export const SignupPage = () => {
   return (
-    <div className="relative flex h-full items-center justify-center gap-2 pb-[250px]">
+    <div className="relative flex h-full items-center justify-center gap-2 mt-[150px] pb-[250px]">
       <div className="relative z-10 w-80 rounded-lg bg-white bg-opacity-80 p-5 shadow-lg">
         <div className="mb-1 flex flex-row justify-between">
           <p className="text-xl">회원가입</p>
