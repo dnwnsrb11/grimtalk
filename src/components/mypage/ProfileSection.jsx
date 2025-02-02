@@ -14,7 +14,7 @@ export const ProfileSection = ({
   };
 
   return (
-    <div className="flex flex-col items-start">
+    <div className="mt-10 flex flex-col items-start">
       {/* 프로필 정보 영역 */}
       <div className="flex flex-col items-center gap-1">
         {/* 프로필 이미지 */}
