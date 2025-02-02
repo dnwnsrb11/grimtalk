@@ -22,10 +22,11 @@ export const LectureQuestions = () => {
     queryKey: ['posts'],
     queryFn: async () => {
       const { data } = await _axios.get('/board');
-      console.log(data.body.data);
+      console.log(data);
       return data;
     },
   });
+
   // 뒤로가기 버튼 기능
   useEffect(() => {
     const handlePopState = (event) => {
@@ -69,9 +70,9 @@ export const LectureQuestions = () => {
         </div>
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
-          {testList.map((testData, index) => (
+          {posts?.body?.data?.list?.map((post, index) => (
             <div key={index} onClick={() => setIsActive('질문 상세페이지')} className="mb-3">
-              <QuestionLectureCard setIsActive={setIsActive} testData={testData} />
+              <QuestionLectureCard setIsActive={setIsActive} post={post} />
             </div>
           ))}
         </div>
