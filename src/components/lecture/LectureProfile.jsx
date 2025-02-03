@@ -23,6 +23,7 @@ export const LectureProfile = ({ checkInstructor }) => {
             <div>
               {/* 프로필 이미지 */}
               <div className="relative h-[162px] w-[162px] rounded-full bg-[#565252]">
+                {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
                 <div className="overflow-hidden rounded-full">
                   <img src={nonImage} alt="profileimg" />
                 </div>
