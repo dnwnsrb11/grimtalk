@@ -25,7 +25,7 @@ export const LecturePage = () => {
     강의소개: <IntroductionLecture />,
     다시보기: <ReplayLecture checkInstructor={checkInstructor} />,
     커리큘럼: <CurriculumLecture checkInstructor={checkInstructor} />,
-    default: <p>now Tesing</p>,
+    default: <p>now Testing</p>,
     공지사항: <LectureNotice checkInstructor={checkInstructor} />,
     질문사항: <LectureQuestions checkInstructor={checkInstructor} />,
     리뷰하기: <LectureReview />,
