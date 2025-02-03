@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { _axios } from '@/api/instance';
 import { useDemoStore } from '@/store/useDemoStore';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 
 export const DemoPage = () => {
   const queryClient = useQueryClient();
@@ -89,7 +90,16 @@ export const DemoPage = () => {
     },
   });
 
+  // 로딩 여부에 따라 로딩 컴포넌트를 랜더링 - 테스트
+  const check = false
+  if (check) {
+    return (
+      <LoadingComponents />
+    )
+  }
+
   return (
+    
     <div className="col-span-14">
       <h1 className="text-2xl font-bold">DemoPage (React Query + Zustand)</h1>
       <div className="flex flex-col items-baseline gap-4">
@@ -131,6 +141,7 @@ export const DemoPage = () => {
           )}
         </div>
       </div>
+      <LoadingComponents />
     </div>
   );
 };
