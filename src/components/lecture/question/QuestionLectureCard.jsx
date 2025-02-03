@@ -1,42 +1,43 @@
-export const QuestionLectureCard = (isActive) => {
-  // 활성화 버튼
-  const QuestionActive = () => {
-    return (
-      <div className="rounded-full border border-gray-border-color bg-primary-color px-[15px] py-[5px]">
-        <p className="text-[14px] font-semibold text-white">해결</p>
-      </div>
-    );
-  };
-  // 비활성화 버튼
-  const QuestionDeActive = () => {
-    return (
-      <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
-        <p className="text-[14px] font-semibold text-[#AEAEAE]">미해결</p>
-      </div>
-    );
-  };
+export const QuestionLectureCard = ({ isActive, question }) => {
+  // 날짜 까지만 나오게 하기, 제목, 커리큘럼이름, 닉네임
+  const formattedDate = new Date(question.updatedAt).toISOString().split('T')[0];
+  const postSubject = question.subject;
+  const postCurriculumSubject = question.curriculumSubject;
+  const nickname = question.nickname;
+  const picked = question.picked;
+
+  const QuestionStatus = (
+    <div
+      className={`rounded-full border px-[15px] py-[5px] ${picked ? 'border-primary-color bg-primary-color' : 'border-gray-border-color bg-bg-gray-color'}`}
+    >
+      <p className={`text-[14px] font-semibold ${picked ? 'text-white' : 'text-[#AEAEAE]'}`}>
+        {picked ? '해결' : '미해결'}
+      </p>
+    </div>
+  );
+
   return (
     <>
       <div className="cursor-pointer rounded-2xl border border-gray-border-color px-[20px] py-[15px] transition-all duration-300 hover:border-primary-color">
         <div>
           {/* 왼쪽 */}
           <div>
-            <h1 className="text-[22px] font-semibold ">질문이 있습니다.</h1>
+            <h1 className="text-[22px] font-semibold ">{postSubject}</h1>
           </div>
           <div className="mt-[12px] flex justify-between">
             <div className="flex gap-2">
               <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
-                <p className="text-[14px] font-semibold">이모티콘으로 부자가 되는 법</p>
+                <p className="text-[14px] font-semibold">{postCurriculumSubject}</p>
               </div>
               <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
-                <p className="text-[14px] font-semibold">2025.05.21</p>
+                <p className="text-[14px] font-semibold">{formattedDate}</p>
               </div>
-              {isActive ? <QuestionActive /> : <QuestionDeActive />}
+              {QuestionStatus}
             </div>
             <div>
               <div>
                 <div className="rounded-full border border-gray-border-color px-[15px] py-[5px]">
-                  <p className="text-[14px] font-semibold">크와와와왕</p>
+                  <p className="text-[14px] font-semibold">{nickname}</p>
                 </div>
               </div>
             </div>
