@@ -1,7 +1,7 @@
 import PopularIMG1 from '@/assets/banner/PopularIMG_1.svg';
 import testImg from '@/assets/banner/Test/TestImg.png';
 
-export const PopularInstructor = () => {
+export const PopularInstructor = (Array) => {
   return (
     <>
       <div className="flex items-center justify-between rounded-2xl border p-[20px]">
