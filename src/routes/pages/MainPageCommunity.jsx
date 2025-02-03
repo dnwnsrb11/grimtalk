@@ -11,8 +11,6 @@ export const MainPageCommunity = () => {
   const {
     data: communities,
     isLoading,
-    isError,
-    error,
   } = useQuery({
     queryKey: ['communities'],
     queryFn: async () => {
