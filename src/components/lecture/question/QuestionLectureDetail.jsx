@@ -1,24 +1,39 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { _axios } from '@/api/instance';
-export const QuestionLectureDetail = ({ setIsActive, questionData }) => {
+export const QuestionLectureDetail = ({ setIsActive, questionId }) => {
   // 받은 boardId로 데이터를 조회한다.
-  const { data: board } = useQuery({
-    queryKey: ['board', questionData],
+  const {
+    data: board,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['board', questionId],
     queryFn: async () => {
-      const { data } = await _axios.get(`/board/${questionData}`);
-      return data;
+      const { data } = await _axios.get(`/board/${questionId}`);
+
+      if (!data.body.data) {
+        throw new Error('데이터가 없습니다.');
+      }
+
+      return data.body.data;
     },
+    onError: (error) => {},
   });
+
   const changeActive = () => {
     setIsActive(false);
   };
+
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>에러가 발생했습니다.</div>;
+
   return (
     <>
       <div className="mt-[60px] min-h-[200px]">
-        <h1 className="text-[32px] font-bold">{board?.body?.data?.subject}</h1>
+        <h1 className="text-[32px] font-bold">{board.subject || ''}</h1>
         <div className="mt-[10px]">
-          <p className="text-[18px]">{board?.body?.data?.content}</p>
+          <p className="text-[18px]">{board.content || ''}</p>
         </div>
       </div>
       <hr />
@@ -30,8 +45,10 @@ export const QuestionLectureDetail = ({ setIsActive, questionData }) => {
           </div>
         </div>
         <div className="mt-[10px] min-h-[100px]">
-          {board?.body?.data?.comment?.map((comment, index) => (
-            <p className="text-[18px]">{comment}</p>
+          {board.comments?.map((comment, index) => (
+            <p key={index} className="text-[18px]">
+              {comment}
+            </p>
           ))}
         </div>
       </div>

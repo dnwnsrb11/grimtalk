@@ -1,21 +1,20 @@
-export const QuestionLectureCard = ({ isActive, post }) => {
+export const QuestionLectureCard = ({ isActive, question }) => {
   // 날짜 까지만 나오게 하기, 제목, 커리큘럼이름, 닉네임
-  const formattedDate = new Date(post?.updatedAt).toISOString().split('T')[0];
-  const postSubject = post?.subject;
-  const postCurriculumSubject = post?.curriculumSubject;
-  const nickname = post?.nickname;
+  const formattedDate = new Date(question.updatedAt).toISOString().split('T')[0];
+  const postSubject = question.subject;
+  const postCurriculumSubject = question.curriculumSubject;
+  const nickname = question.nickname;
+  const picked = question.picked;
 
-  const QuestionStatus = ({ picked }) => {
-    return (
-      <div
-        className={`rounded-full border px-[15px] py-[5px] ${picked ? 'border-primary-color bg-primary-color' : 'border-gray-border-color bg-bg-gray-color'}`}
-      >
-        <p className={`text-[14px] font-semibold ${picked ? 'text-white' : 'text-[#AEAEAE]'}`}>
-          {picked ? '해결' : '미해결'}
-        </p>
-      </div>
-    );
-  };
+  const QuestionStatus = (
+    <div
+      className={`rounded-full border px-[15px] py-[5px] ${picked ? 'border-primary-color bg-primary-color' : 'border-gray-border-color bg-bg-gray-color'}`}
+    >
+      <p className={`text-[14px] font-semibold ${picked ? 'text-white' : 'text-[#AEAEAE]'}`}>
+        {picked ? '해결' : '미해결'}
+      </p>
+    </div>
+  );
 
   return (
     <>
@@ -33,7 +32,7 @@ export const QuestionLectureCard = ({ isActive, post }) => {
               <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
                 <p className="text-[14px] font-semibold">{formattedDate}</p>
               </div>
-              <QuestionStatus picked={post.picked} />
+              {QuestionStatus}
             </div>
             <div>
               <div>

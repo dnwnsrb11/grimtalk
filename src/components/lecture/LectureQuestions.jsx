@@ -7,23 +7,27 @@ import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLec
 import { QuestionLectureWrite } from '@/components/lecture/question/QuestionLectureWrite';
 
 export const LectureQuestions = () => {
-  // test
-  const testList = ['one', 'two', 'three'];
   // 상세 페이지 기능
   const [isActive, setIsActive] = useState('/');
-  const [questionData, setQuestionData] = useState('');
-  // 상세페이지, 질문작성 페이지
-  const pageComponents = {
-    '질문 상세페이지': <QuestionLectureDetail />,
-    '질문 작성페이지': <QuestionLectureWrite />,
-  };
+  const [questionId, setQuestionId] = useState('');
+
   // 목록 조회
-  const { data: posts } = useQuery({
-    queryKey: ['posts'],
+  const {
+    data: questions,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['questions'],
     queryFn: async () => {
       const { data } = await _axios.get('/board');
-      return data;
+
+      if (!data.body.data.list) {
+        throw new Error('데이터가 없습니다.');
+      }
+
+      return data.body.data.list;
     },
+    onError: (error) => {},
   });
 
   // 뒤로가기 버튼 기능
@@ -49,9 +53,12 @@ export const LectureQuestions = () => {
     };
   }, [isActive]);
 
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>에러가 발생했습니다.</div>;
+
   // 컴포넌트 생성 분기
   if (isActive === '질문 상세페이지') {
-    return <QuestionLectureDetail setIsActive={setIsActive} questionData={questionData} />;
+    return <QuestionLectureDetail setIsActive={setIsActive} questionId={questionId} />;
   } else if (isActive === '질문 작성페이지') {
     return <QuestionLectureWrite setIsActive={setIsActive} />;
   }
@@ -69,16 +76,16 @@ export const LectureQuestions = () => {
         </div>
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
-          {posts?.body?.data?.list?.map((post, index) => (
+          {questions.map((question, index) => (
             <div
               key={index}
               onClick={() => {
                 setIsActive('질문 상세페이지');
-                setQuestionData(post.boardId);
+                setQuestionId(question.boardId);
               }}
               className="mb-3"
             >
-              <QuestionLectureCard setIsActive={setIsActive} post={post} />
+              <QuestionLectureCard setIsActive={setIsActive} question={question} />
             </div>
           ))}
         </div>
