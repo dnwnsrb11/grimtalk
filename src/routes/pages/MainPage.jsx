@@ -1,13 +1,23 @@
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
+import { _axios } from '@/api/instance';
 import { Banner } from '@/components/mainPages/home/Banner';
 import { Lecture } from '@/components/mainPages/home/Lecture';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { PopularInstructor } from '@/components/mainPages/home/PopularInstructor';
-
 export const MainPage = () => {
-  const [LiveLists, setLiveLists] = useState([]);
-  const [count, setCount] = useState([1, 2, 3, 4]);
+  // const [LiveLists, setLiveLists] = useState([]);
+  // const [count, setCount] = useState([1, 2, 3, 4]);
+  const count = [1, 2, 3, 4];
+  const { data: popularLectures, isLoading } = useQuery({
+    queryKey: ['popularLectures'],
+    queryFn: async () => {
+      const { data } = await _axios.get(`/home/popular-lecture`);
+
+      return data.body.data.list;
+    },
+  });
+
   return (
     <>
       <div className="mt-10">
@@ -51,9 +61,10 @@ export const MainPage = () => {
             <span className="text-primary-color">인기</span> 있는 강의
           </h2>
           <div className="mt-3 flex gap-3">
-            {count.map((c, index) => (
-              <Lecture key={index} />
+            {popularLectures?.map((popularLecture, index) => (
+              <Lecture key={index} lecture={popularLecture} />
             ))}
+            {/* {popularLecture.subject} */}
           </div>
         </div>
       </div>
