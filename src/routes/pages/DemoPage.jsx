@@ -91,7 +91,7 @@ export const DemoPage = () => {
   });
 
   // 로딩 여부에 따라 로딩 컴포넌트를 랜더링 - 테스트
-  const check = false
+  const check = true
   if (check) {
     return (
       <LoadingComponents />
