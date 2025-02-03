@@ -1,4 +1,6 @@
 // 상수 정의
+// 📌 백엔드 오류 코드 참고
+// https://lab.ssafy.com/moda2047/grimtalkback/-/blob/develop/src/main/java/com/example/grimtalk/controller/common/ResponseStatus.java
 const ERROR_CODES = {
   // 4000번대: 클라이언트 요청 오류
   DUPLICATE_EMAIL: 4001,
