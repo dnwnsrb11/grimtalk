@@ -6,7 +6,7 @@ import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectu
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
 import { QuestionLectureWrite } from '@/components/lecture/question/QuestionLectureWrite';
 
-export const LectureQuestions = () => {
+export const LectureQuestions = ({ checkInstructor }) => {
   // 상세 페이지 기능
   const [isActive, setIsActive] = useState('/');
   const [questionId, setQuestionId] = useState('');
@@ -58,7 +58,13 @@ export const LectureQuestions = () => {
 
   // 컴포넌트 생성 분기
   if (isActive === '질문 상세페이지') {
-    return <QuestionLectureDetail setIsActive={setIsActive} questionId={questionId} />;
+    return (
+      <QuestionLectureDetail
+        setIsActive={setIsActive}
+        questionId={questionId}
+        checkInstructor={checkInstructor}
+      />
+    );
   } else if (isActive === '질문 작성페이지') {
     return <QuestionLectureWrite setIsActive={setIsActive} />;
   }
@@ -68,11 +74,14 @@ export const LectureQuestions = () => {
       <div className="mt-[60px]">
         <div className="mb-[20px] flex gap-6">
           <h1 className="text-[32px] font-bold">질문하기</h1>
-          <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
-            <button onClick={() => setIsActive('질문 작성페이지')}>
-              <p className="text-[18px] font-semibold text-white">질문하기</p>
-            </button>
-          </div>
+          {/* 강사일 경우 질문하기 버튼 안보이게 처리 */}
+          {!checkInstructor && (
+            <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
+              <button onClick={() => setIsActive('질문 작성페이지')}>
+                <p className="text-[18px] font-semibold text-white">질문하기</p>
+              </button>
+            </div>
+          )}
         </div>
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
