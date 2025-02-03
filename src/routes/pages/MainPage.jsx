@@ -5,6 +5,7 @@ import { Banner } from '@/components/mainPages/home/Banner';
 import { Lecture } from '@/components/mainPages/home/Lecture';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { PopularInstructor } from '@/components/mainPages/home/PopularInstructor';
+
 export const MainPage = () => {
   // const [LiveLists, setLiveLists] = useState([]);
   // const [count, setCount] = useState([1, 2, 3, 4]);
