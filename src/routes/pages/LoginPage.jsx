@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { usePostLogin } from '@/api/auth';
+import { useLogin } from '@/api/auth';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const handleLogin = usePostLogin({ email, password });
+  const handleLogin = useLogin({ email, password });
 
   return (
     <div className="flex h-full items-center justify-center gap-2 pb-[250px]">
