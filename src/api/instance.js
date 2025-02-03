@@ -13,8 +13,38 @@ import axios from 'axios';
 // - 예시: 서버 응답이 늦어질 경우
 //   throw AxiosError: timeout of 5000ms exceeded
 //   이와 같은 에러가 발생하며 요청이 중단됨
-export const _axios = axios.create({
+const _axios = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 5000,
   withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
+
+// 로그인 후 사용되는 axios 인스턴스(access token 포함)
+const _axiosAuth = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 5000,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// 요청 인터셉터 추가
+_axiosAuth.interceptors.request.use(
+  (config) => {
+    // 요청 직전에 항상 최신 토큰을 가져옴
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
+export { _axios, _axiosAuth };
