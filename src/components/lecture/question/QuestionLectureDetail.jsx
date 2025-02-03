@@ -1,16 +1,42 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
-export const QuestionLectureDetail = ({ setIsActive, testData, checkInstructor }) => {
+import { _axios } from '@/api/instance';
+
+export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor }) => {
+  const [answer, setAnswer] = useState('현재 답변이 없습니다.');
+
+  const {
+    data: board,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['board', questionId],
+    queryFn: async () => {
+      const { data } = await _axios.get(`/board/${questionId}`);
+
+      if (!data.body.data) {
+        throw new Error('데이터가 없습니다.');
+      }
+
+      return data.body.data;
+    },
+    onError: (error) => {},
+  });
+
   const changeActive = () => {
     setIsActive(false);
   };
-  const [answer, setAnswer] = useState('현재 답변이 없습니다.');
+
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>에러가 발생했습니다.</div>;
+
   return (
     <>
       <div className="mt-[60px] min-h-[200px]">
-        <h1 className="text-[32px] font-bold">공지사항 입니다!!</h1>
+        <h1 className="text-[32px] font-bold">{board.subject || ''}</h1>
         <div className="mt-[10px]">
-          <p className="text-[18px]">hello</p>
+          <p className="text-[18px]">{board.content || ''}</p>
         </div>
       </div>
       <hr />
@@ -23,6 +49,11 @@ export const QuestionLectureDetail = ({ setIsActive, testData, checkInstructor }
         </div>
         <div className="mt-[10px] min-h-[100px]">
           <p className="text-[18px]">{answer}</p>
+          {board.comments?.map((comment, index) => (
+            <p key={index} className="text-[18px]">
+              {comment}
+            </p>
+          ))}
         </div>
       </div>
       <hr className="border-gray-border-color" />

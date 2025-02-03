@@ -1,19 +1,19 @@
-export const QuestionLectureWrite = ({ setIsActive }) => {
+export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate }) => {
   const changeActive = () => {
     setIsActive('/');
   };
   return (
     <>
-      <div>
+      <div className="mt-[40px]">
         <div className="flex flex-col gap-[15px]">
           <input
             type="text"
             className="min-h-[60px] rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
-            placeholder="질문 제목을 입려해주세요."
+            placeholder="공지사항 제목을 입려해주세요."
           />
           <textarea
             className="min-h-[300px] resize-none rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
-            placeholder="질문 내용을 입력해주세요."
+            placeholder="공지사항 내용을 입력해주세요."
           ></textarea>
         </div>
         <hr className="mt-[20px] border-gray-border-color" />

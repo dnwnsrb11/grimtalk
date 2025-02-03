@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { ReplayLectureCard } from '@/components/lecture/replay/ReplayLectureCard';
 import { ReplayLectureDetail } from '@/components/lecture/replay/ReplayLectureDetail';
 
-export const ReplayLecture = () => {
+export const ReplayLecture = ({ checkInstructor }) => {
   // test
   const testList = ['one', 'two', 'three'];
   const [replayDate, setReplayDate] = useState('');
@@ -44,7 +44,7 @@ export const ReplayLecture = () => {
                   setReplayDate(test);
                 }}
               >
-                <ReplayLectureCard test={test} />
+                <ReplayLectureCard test={test} checkInstructor={checkInstructor} />
               </div>
             ))}
           </div>
@@ -54,6 +54,7 @@ export const ReplayLecture = () => {
           isActive={isActive}
           setIsActive={setIsActive}
           replayDate={replayDate}
+          checkInstructor={checkInstructor}
         />
       )}
     </>
