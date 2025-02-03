@@ -8,7 +8,6 @@ export const Lecture = ({ index, lecture }) => {
   const lectureTags = lecture.tags;
   const lectureCategory = lecture.category ?? null;
   const lectureStar = lecture.start ?? `0.0`;
-  console.log(lectureSubject);
   return (
     <>
       <div>
