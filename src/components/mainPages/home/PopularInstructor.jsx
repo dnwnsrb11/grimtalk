@@ -1,10 +1,14 @@
 import PopularIMG1 from '@/assets/banner/PopularIMG_1.svg';
 import posterNoneImg from '@/assets/posterNoneImg.png';
 
-export const PopularInstructor = (instroductor) => {
-  const instroductorNickname = instroductor.nickname || '더미닉네임';
-  const instroductorImg = instroductor.image || posterNoneImg;
-  const instroductorTags = instroductor.tags || ['더미태그1', '더미태그2'];
+export const PopularInstructor = ({ index, instroductor }) => {
+  const instroductorNickname = instroductor?.nickname || '더미닉네임';
+  const instroductorImg = instroductor?.image || posterNoneImg;
+  const instroductorTags =
+    Array.isArray(instroductor?.tags) && instroductor?.tags.length > 0
+      ? instroductor?.tags
+      : ['더미태그1', '더미태그2'];
+
   return (
     <>
       <div className="flex items-center justify-between rounded-2xl border p-[20px]">
