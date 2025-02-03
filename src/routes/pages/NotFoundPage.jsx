@@ -1,4 +1,4 @@
-export const NotfoundPage = () => {
+export const NotFoundPage = () => {
   return (
     <>
       <div className="w-full h-[calc(100vh-50px)] flex justify-center items-center">

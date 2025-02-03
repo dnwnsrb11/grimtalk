@@ -13,7 +13,7 @@ import { MainPageLive } from '@/routes/pages/MainPageLive';
 import { MyPage } from '@/routes/pages/MyPage';
 import { SignupPage } from '@/routes/pages/SignupPage';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
-import { NotfoundPage } from '@/routes/pages/NotfoundPage';
+import { NotFoundPage } from '@/routes/pages/NotFoundPage';
 
 const router = createBrowserRouter([
   {
@@ -70,7 +70,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/notfound',
-        element: <NotfoundPage />,
+        element: <NotFoundPage />,
       },
     ],
   },
