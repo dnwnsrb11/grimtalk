@@ -21,8 +21,10 @@ const _axios = axios.create({
 // [토큰 만료 시 자동 갱신 흐름]
 // 1. 클라이언트가 만료된 access token으로 API 요청
 // 2. 서버가 토큰 만료 확인하고 5001 커스텀 코드 응답
-// 3. 서버는 쿠키의 유효한 refresh token을 확인
-// 4. 새로운 access token을 발급하여 클라이언트에 전달,
+// 3. /auth/token으로 새로운 access token 요청(refresh token 자동 전송)
+// 4. 서버는 쿠키의 유효한 refresh token을 확인
+// 5. 새로운 access token을 발급하여 클라이언트에 전달, 토큰 헤더 업데이트
+// 6. 클라이언트는 원래 요청 재시도
 
 // [모든 토큰 만료 시 흐름]
 // 1. 클라이언트가 만료된 access token으로 API 요청
@@ -48,7 +50,7 @@ _axiosAuth.interceptors.request.use((config) => {
 
 _axiosAuth.interceptors.response.use(
   // 응답 인터셉터 설정
-  (response) => {
+  async (response) => {
     // 응답의 커스텀 코드 확인
     const customCode = response.data?.body?.code;
 
@@ -56,10 +58,37 @@ _axiosAuth.interceptors.response.use(
     if (customCode === ERROR_CODES.EXPIRED_ACCESS_TOKEN) {
       const originalRequest = response.config;
 
+      // 이 요청이 이미 재시도된 적이 없는지 확인
       if (!originalRequest._retry) {
-        // 원래 요청을 다시 시도 (쿠키의 refresh token은 자동으로 전송됨)
+        // 재시도 표시를 true로 설정하여 다음에는 재시도하지 않도록 함
         originalRequest._retry = true;
-        return _axiosAuth(originalRequest); // 원래 요청을 다시 시도
+        try {
+          // 새로운 access token 요청
+          // 쿠키에 저장된 refresh token을 자동으로 전송(access token이 없으니 Auth가 아닌 일반 axios 인스턴스 사용)
+          const tokenResponse = await _axios.post('/auth/token');
+
+          const BEARER_PREFIX = 'Bearer '; // 토큰 접두사
+          const newAccessToken =
+            tokenResponse.headers['authorization']?.substring(BEARER_PREFIX.length) ||
+            tokenResponse.headers['Authorization']?.substring(BEARER_PREFIX.length);
+
+          // 토큰 헤더가 있고, 토큰 접두사로 시작하는 경우
+          if (newAccessToken) {
+            // 새로운 토큰을 로컬 스토리지에 저장
+            useAuthStore.getState().loginAuth(newAccessToken);
+          }
+
+          // 새로운 토큰으로 헤더 업데이트
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+          // 원래 요청 재시도
+          return _axiosAuth(originalRequest);
+        } catch (error) {
+          // 토큰 갱신 실패 시 로그인 페이지로 리다이렉트
+          useAuthStore.getState().logoutAuth();
+          window.location.href = '/login';
+          return Promise.reject(error);
+        }
       }
     }
 
@@ -70,7 +99,7 @@ _axiosAuth.interceptors.response.use(
       customCode === ERROR_CODES.INVALID_REFRESH_TOKEN ||
       customCode === ERROR_CODES.NOT_FOUND_REFRESH_TOKEN
     ) {
-      useAuthStore.getState().clearAuth();
+      useAuthStore.getState().logoutAuth();
       window.location.href = '/login'; // 로그인 페이지로 리다이렉트
       return Promise.reject(response); // 오류 반환
     }
