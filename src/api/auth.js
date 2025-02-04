@@ -1,0 +1,53 @@
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+
+import { _axiosAuth } from '@/api/instance';
+import { useAuthStore } from '@/store/useAuthStore';
+import { handleApiError } from '@/utils/errorHandler';
+
+// 로그인 API 호출 함수
+const useLogin = ({ email, password }) => {
+  const navigate = useNavigate();
+
+  return useMutation({
+    // 로그인 API 호출 함수
+    mutationFn: async () => {
+      const response = await _axiosAuth.post('/user/login', {
+        email: email,
+        password: password,
+      });
+      return response;
+    },
+
+    // API 호출 성공 시 실행되는 콜백
+    onSuccess: (data) => {
+      const responseBody = data.data.body;
+
+      // 성공 코드 200 처리
+      if (responseBody.code === 200) {
+        // 토큰 헤더 확인
+        const authHeader = data.headers['authorization'] || data.headers['Authorization'];
+        const BEARER_PREFIX = 'Bearer '; // 토큰 접두사
+
+        // 토큰 헤더가 있고, 토큰 접두사로 시작하는 경우
+        if (authHeader?.startsWith(BEARER_PREFIX)) {
+          const accessToken = authHeader.substring(BEARER_PREFIX.length); // 토큰 추출
+          useAuthStore.getState().loginAuth(accessToken); // 토큰 저장
+          navigate('/'); // 홈 페이지로 이동
+        }
+      }
+
+      // 커스텀 실패 코드 처리
+      else {
+        handleApiError(responseBody);
+      }
+    },
+
+    // API 호출 실패 시 실행되는 콜백 NotFound Page로 이동
+    onError: () => {
+      navigate('/notfound');
+    },
+  });
+};
+
+export { useLogin };
