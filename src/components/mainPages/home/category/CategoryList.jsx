@@ -21,7 +21,6 @@ export const CategoryList = ({ onCategoryChange }) => {
   const [categoryNameHover, setCategoryNameHover] = useState('');
   const changeCategory = (name) => {
     // 현재 위치를 알리는 콘솔로그
-    console.log('현재 카테고리 선택 위치: ', name);
     setCategoryName(name);
     onCategoryChange(name);
   };
