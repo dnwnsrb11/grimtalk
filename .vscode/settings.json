@@ -10,19 +10,5 @@
   // JavaScript 파일의 import 경로를 절대 경로로 설정
   "javascript.preferences.importModuleSpecifier": "non-relative",
   // TypeScript 파일의 import 경로를 절대 경로로 설정
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  // ESLint 검증 대상 언어 설정
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  // 탭 크기 설정
-  "editor.tabSize": 2,
-  // 들여쓰기에 탭 대신 스페이스 사용
-  "editor.insertSpaces": true,
-  // 저장 시 마지막 줄 자동 추가
-  "files.insertFinalNewline": true,
-  // 저장 시 마지막 공백 제거
-  "files.trimTrailingWhitespace": true,
-  // 파일 인코딩을 UTF-8로 설정
-  "files.encoding": "utf8",
-  // 줄바꿈 문자 설정
-  "files.eol": "\n"
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }
