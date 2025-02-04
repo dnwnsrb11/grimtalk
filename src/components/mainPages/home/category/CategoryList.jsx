@@ -29,7 +29,6 @@ export const CategoryList = () => {
     setCategoryNameHover(name);
   };
   const leaveCategory = () => {
-    console.log('out');
     setCategoryNameHover('');
   };
 
