@@ -19,8 +19,6 @@ import webtoonDeactiveSVG from '@/assets/category/webtoon-deactive.svg';
 export const CategoryList = ({ onCategoryChange }) => {
   const [categoryName, setCategoryName] = useState('');
   const [categoryNameHover, setCategoryNameHover] = useState('');
-  // console.log(categoryName);
-  console.log(categoryNameHover);
   const changeCategory = (name) => {
     // 현재 위치를 알리는 콘솔로그
     setCategoryName(name);
