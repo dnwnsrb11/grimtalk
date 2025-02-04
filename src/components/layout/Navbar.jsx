@@ -18,11 +18,12 @@ export const Navbar = () => {
   const handleSearchClick = () => {
     try {
       if (search.trim()) {
-        navigate(`/category/${search}`);
+        console.log(search);
+        navigate(`/category`, { state: { search: search } });
       }
     } catch (error) {
-      console.log(error);
       navigate('/');
+      alert(error);
     }
   };
 
@@ -75,7 +76,7 @@ export const Navbar = () => {
             onChange={handleSearchChange}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                handleSearchClick();
+                handleSearchClick(e);
               }
             }}
           />

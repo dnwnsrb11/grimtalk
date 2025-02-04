@@ -7,7 +7,7 @@ export const Lecture = ({ index, lecture }) => {
   const lectureNickname = lecture.nickname;
   const lectureTags = lecture.tags;
   const lectureCategory = lecture.category ?? null;
-  const lectureStar = lecture.start ?? `0.0`;
+  const lectureStar = lecture.start || 0;
   const lectureImg = lecture.image || posterNoneImg;
 
   const handleImageError = (e) => {
