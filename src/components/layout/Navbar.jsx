@@ -17,9 +17,10 @@ export const Navbar = () => {
 
   const handleSearchClick = () => {
     try {
-      if (search.trim()) {
-        console.log(search);
+      if (search.trim() && search) {
         navigate(`/category`, { state: { search: search } });
+      } else if (!search) {
+        alert('검색어를 입력해주세요.');
       }
     } catch (error) {
       navigate('/');
