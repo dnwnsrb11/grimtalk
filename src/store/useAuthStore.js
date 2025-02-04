@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 export const useAuthStore = create((set) => ({
   // userData만 전역 상태 관리
-  userData: null, // const {email, nickname} = useAuthStore((state) => state.userData) 형식으로 사용
+  userData: null, // const {id, email, nickname} = useAuthStore((state) => state.userData) 형식으로 사용
 
   // 토큰 저장 및 userData 업데이트
   loginAuth: (token) => {
