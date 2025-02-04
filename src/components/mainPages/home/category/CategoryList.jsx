@@ -19,9 +19,12 @@ import webtoonDeactiveSVG from '@/assets/category/webtoon-deactive.svg';
 export const CategoryList = ({ onCategoryChange }) => {
   const [categoryName, setCategoryName] = useState('');
   const [categoryNameHover, setCategoryNameHover] = useState('');
+  // console.log(categoryName);
+  console.log(categoryNameHover);
   const changeCategory = (name) => {
     // 현재 위치를 알리는 콘솔로그
     setCategoryName(name);
+    setCategoryNameHover(name);
     onCategoryChange(name);
   };
   const hoverCategory = (name) => {
@@ -42,14 +45,14 @@ export const CategoryList = ({ onCategoryChange }) => {
             onMouseLeave={() => leaveCategory()}
             className={`max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === '' || categoryNameHover === '' ? 'shadow-md' : ''}`}
           >
-            {categoryName === '' || categoryNameHover === '' ? (
+            {categoryName === '' && categoryNameHover === '' ? (
               <img src={allActiveSVG} alt="" />
             ) : (
               <img src={allDeactiveSVG} alt="" />
             )}
           </div>
           <div className="mt-1">
-            {categoryName === '' || categoryNameHover === '' ? (
+            {categoryName === '' && categoryNameHover === '' ? (
               <h3 className="text-lg font-bold text-primary-color">전체</h3>
             ) : (
               <h3 className="text-lg font-medium ">전체</h3>
