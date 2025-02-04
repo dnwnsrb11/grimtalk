@@ -1,36 +1,51 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
 import { Banner } from '@/components/mainPages/home/Banner';
 import { CategoryList } from '@/components/mainPages/home/category/CategoryList';
 import { LectureItem } from '@/components/mainPages/home/category/LectureItem';
-export const MainPageCategory = () => {
-  // 반복용으로 나둔 요소 추후 변경 예정
-  const [count, setCount] = useState([1, 2, 3, 4]);
-  const Location = useLocation();
-  const searchQuery = Location.state?.search;
 
+export const MainPageCategory = () => {
+  // 카테고리 상태
+  const [selectedCategory, setSelectCategory] = useState('');
+  // Location을 통해 URL 상태 가져오기
+  const Location = useLocation();
+  const [searchKeywordQuery, setSearchKeywordQuery] = useState('');
+
+  // 새로고침 시 searchKeywordQuery와 selectedCategory 초기화
+  useEffect(() => {
+    // 검색어 초기화
+    const searchQueryFromState = Location.state?.search || ''; // 빈 문자열 처리
+    setSearchKeywordQuery(searchQueryFromState);
+    setSelectCategory(''); // 카테고리 초기화
+  }, [Location.state?.search]);
+
+  // 조회 API
   const { data: categorySearch } = useQuery({
-    queryKey: ['categorySearch', searchQuery], // 🔥 페이지네이션 적용
+    queryKey: ['categorySearch', selectedCategory, searchKeywordQuery || ''],
     queryFn: async () => {
-      if (!searchQuery) return null;
-      const { data } = await _axios.get(`/lecture/search?keyword=${searchQuery}&page=1`);
-      console.log(data);
+      // 검색어가 없다면 빈 배열을 반환
+      const { data } = await _axios.get(
+        `/lecture/search/combined?keyword=${searchKeywordQuery}&category=${selectedCategory}&page=1&size=12`,
+      );
       return data.body.data.list;
     },
-    enabled: !!searchQuery,
+    enabled: true,
   });
-  console.log(searchQuery, '검색어 커리');
-  console.log(categorySearch, '카테고리 검색어');
+
+  // 카테고리 변경
+  const handleCategoryChange = (category) => {
+    setSelectCategory(category);
+  };
 
   return (
     <div className="mt-10">
       <Banner />
       <div className="mt-[40px] flex items-center justify-center">
         <div>
-          <CategoryList />
+          <CategoryList onCategoryChange={handleCategoryChange} />
         </div>
       </div>
       <div className="flex flex-col items-end pb-2 pt-[40px]">

@@ -19,6 +19,8 @@ export const Navbar = () => {
     try {
       if (search.trim() && search) {
         navigate(`/category`, { state: { search: search } });
+        // setSearch(null);
+        // console.log(search, '이건 네브바 search');
       } else if (!search) {
         alert('검색어를 입력해주세요.');
       }
