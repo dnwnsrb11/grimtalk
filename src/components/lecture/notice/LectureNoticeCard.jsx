@@ -7,6 +7,7 @@ export const LectureNoticeCard = () => {
         </div>
         <div className="flex">
           <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
+            {/* common에 있는 formatDate 함수를 사용하여 출력하기 */}
             <p className="font-semibold">2025.05.01</p>
           </div>
         </div>

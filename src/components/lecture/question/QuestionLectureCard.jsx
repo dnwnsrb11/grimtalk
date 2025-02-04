@@ -1,3 +1,5 @@
+import { formatDate } from '@/components/common/formatDate';
+
 export const QuestionLectureCard = ({ isActive, question }) => {
   // 날짜 까지만 나오게 하기, 제목, 커리큘럼이름, 닉네임
   const formattedDate = new Date(question.updatedAt).toISOString().split('T')[0];
@@ -30,7 +32,8 @@ export const QuestionLectureCard = ({ isActive, question }) => {
                 <p className="text-[14px] font-semibold">{postCurriculumSubject}</p>
               </div>
               <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
-                <p className="text-[14px] font-semibold">{formattedDate}</p>
+                {/* common에 있는 formatDate 함수를 사용하여 출력하기 */}
+                <p className="text-[14px] font-semibold">{formatDate(formattedDate)}</p>
               </div>
               {QuestionStatus}
             </div>
