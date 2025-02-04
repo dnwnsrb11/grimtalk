@@ -1,7 +1,7 @@
-import { DefaultBadgeIcon, InstructorIcon, StudentIcon } from '@/components/common/icons';
-import { NavigationMenu } from '@/components/mypage/NavigationMenu';
 // nonImage 가져오기
 import nonImage from '@/assets/nonProfileImg.png';
+import { DefaultBadgeIcon, InstructorIcon, StudentIcon } from '@/components/common/icons';
+import { NavigationMenu } from '@/components/mypage/NavigationMenu';
 
 // 마이페이지의 프로필 섹션을 담당하는 컴포넌트
 export const ProfileSection = ({

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
+// nonImage 가져오기
+import nonImage from '@/assets/nonProfileImg.png';
 // 아이콘 가져오기
 import { DefaultBadgeIcon, FavoriteIcon, SubscribeIcon } from '@/components/common/icons';
-// nonImage 가졍오기
-import nonImage from '@/assets/nonProfileImg.png';
 
 export const LectureProfile = ({ checkInstructor }) => {
   const testtext =
