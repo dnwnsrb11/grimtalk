@@ -48,7 +48,7 @@ export const LecturePage = () => {
   const MENU_COMPONENTS = {
     강의소개: <IntroductionLecture lecture={lecture} />,
     다시보기: <ReplayLecture checkInstructor={checkInstructor} />,
-    커리큘럼: <CurriculumLecture checkInstructor={checkInstructor} />,
+    커리큘럼: <CurriculumLecture checkInstructor={checkInstructor} lectuerId={lecture.id} />,
     default: <p>now Testing</p>,
     공지사항: <LectureNotice checkInstructor={checkInstructor} />,
     질문사항: <LectureQuestions checkInstructor={checkInstructor} />,
