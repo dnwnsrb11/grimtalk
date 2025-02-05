@@ -1,8 +1,8 @@
-import { dateFormatter } from '@/utils/dateFormatter';
+import { formatDateOnly } from '@/utils/dateFormatter';
 
 export const QuestionLectureCard = ({ isActive, question }) => {
   // 날짜 까지만 나오게 하기, 제목, 커리큘럼이름, 닉네임
-  const formattedDate = dateFormatter(question.updatedAt, 'DATE_ONLY');
+  const formattedDateOnly = formatDateOnly(question.updatedAt);
   const postSubject = question.subject;
   const postCurriculumSubject = question.curriculumSubject;
   const nickname = question.nickname;
@@ -33,7 +33,7 @@ export const QuestionLectureCard = ({ isActive, question }) => {
               </div>
               <div className="rounded-full border border-gray-border-color bg-bg-gray-color px-[15px] py-[5px]">
                 {/* common에 있는 formatDate 함수를 사용하여 출력하기 */}
-                <p className="text-[14px] font-semibold">{formattedDate}</p>
+                <p className="text-[14px] font-semibold">{formattedDateOnly}</p>
               </div>
               {QuestionStatus}
             </div>
