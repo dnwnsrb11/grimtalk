@@ -1,5 +1,9 @@
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { _axios } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { CurriculumLecture } from '@/components/lecture/CurriculumLecture';
 import { IntroductionLecture } from '@/components/lecture/IntroductionLecture';
 import { LectureBanner } from '@/components/lecture/LectureBanner';
@@ -30,6 +34,30 @@ export const LecturePage = () => {
     질문사항: <LectureQuestions checkInstructor={checkInstructor} />,
     리뷰하기: <LectureReview />,
   };
+
+  // api 기능(강의 정보)
+  const navigate = useNavigate();
+  const { lectuerId } = useParams();
+
+  const {
+    data: lecture,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['lecture'],
+    queryFn: async () => {
+      const { data } = await _axios.get(`/lecture/intro/${lectuerId}`);
+      return data.body.data;
+    },
+    onError: (error) => {
+      navigate('/notfound');
+    },
+  });
+
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
 
   return (
     <>
