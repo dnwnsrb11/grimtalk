@@ -66,7 +66,7 @@ export const LecturePage = () => {
           <LectureBanner />
         </div>
         <div>
-          <LectureProfile checkInstructor={checkInstructor} />
+          <LectureProfile checkInstructor={checkInstructor} lecture={lecture} />
         </div>
         <div className="mt-[60px]">
           <LectureCategory
