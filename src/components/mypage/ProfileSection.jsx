@@ -1,3 +1,5 @@
+// nonImage 가져오기
+import nonImage from '@/assets/nonProfileImg.png';
 import { DefaultBadgeIcon, InstructorIcon, StudentIcon } from '@/components/common/icons';
 import { NavigationMenu } from '@/components/mypage/NavigationMenu';
 
@@ -14,11 +16,12 @@ export const ProfileSection = ({
   };
 
   return (
-    <div className="flex flex-col items-start">
+    <div className="mt-10 flex flex-col items-start">
       {/* 프로필 정보 영역 */}
       <div className="flex flex-col items-center gap-1">
         {/* 프로필 이미지 */}
-        <div className="h-24 w-24 rounded-full bg-gray-600"></div>
+        {/* 프로필 이미지 -> 값이 없을 경우 랜더링 유무 체크 */}
+        <img className="h-40 w-40 rounded-full bg-gray-600" src={nonImage} alt="profile" />
         {/* 사용자 이름과 뱃지 */}
         <div className="flex items-center gap-1">
           <DefaultBadgeIcon className="" width={20} height={20} />

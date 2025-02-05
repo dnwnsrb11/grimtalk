@@ -1,20 +1,35 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
+import { _axios } from '@/api/instance';
 import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectureCard';
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
 import { QuestionLectureWrite } from '@/components/lecture/question/QuestionLectureWrite';
 
-export const LectureQuestions = () => {
-  // test
-  const testList = ['one', 'two', 'three'];
+export const LectureQuestions = ({ checkInstructor }) => {
   // 상세 페이지 기능
   const [isActive, setIsActive] = useState('/');
-  const [questionData, setQuestionData] = useState('');
-  // 상세페이지, 질문작성 페이지
-  const pageComponents = {
-    '질문 상세페이지': <QuestionLectureDetail />,
-    '질문 작성페이지': <QuestionLectureWrite />,
-  };
+  const [questionId, setQuestionId] = useState('');
+
+  // 목록 조회
+  const {
+    data: questions,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['questions'],
+    queryFn: async () => {
+      const { data } = await _axios.get('/board');
+
+      if (!data.body.data.list) {
+        throw new Error('데이터가 없습니다.');
+      }
+
+      return data.body.data.list;
+    },
+    onError: (error) => {},
+  });
+
   // 뒤로가기 버튼 기능
   useEffect(() => {
     const handlePopState = (event) => {
@@ -38,9 +53,18 @@ export const LectureQuestions = () => {
     };
   }, [isActive]);
 
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>에러가 발생했습니다.</div>;
+
   // 컴포넌트 생성 분기
   if (isActive === '질문 상세페이지') {
-    return <QuestionLectureDetail setIsActive={setIsActive} questionData={questionData} />;
+    return (
+      <QuestionLectureDetail
+        setIsActive={setIsActive}
+        questionId={questionId}
+        checkInstructor={checkInstructor}
+      />
+    );
   } else if (isActive === '질문 작성페이지') {
     return <QuestionLectureWrite setIsActive={setIsActive} />;
   }
@@ -50,17 +74,27 @@ export const LectureQuestions = () => {
       <div className="mt-[60px]">
         <div className="mb-[20px] flex gap-6">
           <h1 className="text-[32px] font-bold">질문하기</h1>
-          <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
-            <button onClick={() => setIsActive('질문 작성페이지')}>
-              <p className="text-[18px] font-semibold text-white">질문하기</p>
-            </button>
-          </div>
+          {/* 강사일 경우 질문하기 버튼 안보이게 처리 */}
+          {!checkInstructor && (
+            <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
+              <button onClick={() => setIsActive('질문 작성페이지')}>
+                <p className="text-[18px] font-semibold text-white">질문하기</p>
+              </button>
+            </div>
+          )}
         </div>
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
-          {testList.map((testData, index) => (
-            <div key={index} onClick={() => setIsActive('질문 상세페이지')} className="mb-3">
-              <QuestionLectureCard setIsActive={setIsActive} testData={testData} />
+          {questions.map((question, index) => (
+            <div
+              key={index}
+              onClick={() => {
+                setIsActive('질문 상세페이지');
+                setQuestionId(question.boardId);
+              }}
+              className="mb-3"
+            >
+              <QuestionLectureCard setIsActive={setIsActive} question={question} />
             </div>
           ))}
         </div>

@@ -16,20 +16,20 @@ import emoticonDeactiveSVG from '@/assets/category/emoticon-deactive.svg';
 import webtoonActiveSVG from '@/assets/category/webtoon-active.svg';
 import webtoonDeactiveSVG from '@/assets/category/webtoon-deactive.svg';
 
-export const CategoryList = () => {
-  const [categoryName, setCategoryName] = useState('all');
+export const CategoryList = ({ onCategoryChange }) => {
+  const [categoryName, setCategoryName] = useState('');
   const [categoryNameHover, setCategoryNameHover] = useState('');
   const changeCategory = (name) => {
     // 현재 위치를 알리는 콘솔로그
-    console.log('현재 카테고리 선택 위치: ', name);
     setCategoryName(name);
+    setCategoryNameHover(name);
+    onCategoryChange(name);
   };
   const hoverCategory = (name) => {
     // 호버시에도 동일하게 변경을 주고 싶음
     setCategoryNameHover(name);
   };
   const leaveCategory = () => {
-    console.log('out');
     setCategoryNameHover('');
   };
 
@@ -38,19 +38,19 @@ export const CategoryList = () => {
       <div className="flex gap-7">
         <div className="flex flex-col items-center">
           <div
-            onClick={() => changeCategory('all')}
-            onMouseEnter={() => hoverCategory('all')}
+            onClick={() => changeCategory('')}
+            onMouseEnter={() => hoverCategory('')}
             onMouseLeave={() => leaveCategory()}
-            className={`max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'all' || categoryNameHover === 'all' ? 'shadow-md' : ''}`}
+            className={`max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === '' || categoryNameHover === '' ? 'shadow-md' : ''}`}
           >
-            {categoryName === 'all' || categoryNameHover === 'all' ? (
+            {categoryName === '' && categoryNameHover === '' ? (
               <img src={allActiveSVG} alt="" />
             ) : (
               <img src={allDeactiveSVG} alt="" />
             )}
           </div>
           <div className="mt-1">
-            {categoryName === 'all' || categoryNameHover === 'all' ? (
+            {categoryName === '' && categoryNameHover === '' ? (
               <h3 className="text-lg font-bold text-primary-color">전체</h3>
             ) : (
               <h3 className="text-lg font-medium ">전체</h3>
@@ -60,19 +60,19 @@ export const CategoryList = () => {
         {/* 캐릭터 */}
         <div className="flex flex-col items-center">
           <div
-            onClick={() => changeCategory('character')}
-            onMouseEnter={() => hoverCategory('character')}
+            onClick={() => changeCategory('CHARACTER')}
+            onMouseEnter={() => hoverCategory('CHARACTER')}
             onMouseLeave={() => leaveCategory()}
-            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'character' || categoryNameHover === 'character' ? 'shadow-md' : ''}`}
+            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'CHARACTER' || categoryNameHover === 'CHARACTER' ? 'shadow-md' : ''}`}
           >
-            {categoryName === 'character' || categoryNameHover === 'character' ? (
+            {categoryName === 'CHARACTER' || categoryNameHover === 'CHARACTER' ? (
               <img src={characterActiveSVG} alt="" />
             ) : (
               <img src={characterDeactiveSVG} alt="" />
             )}
           </div>
           <div className="mt-1">
-            {categoryName === 'character' || categoryNameHover === 'character' ? (
+            {categoryName === 'CHARACTER' || categoryNameHover === 'CHARACTER' ? (
               <h3 className="text-lg font-bold text-primary-color">캐릭터</h3>
             ) : (
               <h3 className="text-lg font-medium ">캐릭터</h3>
@@ -82,19 +82,19 @@ export const CategoryList = () => {
         {/* 이모티콘 */}
         <div className="flex flex-col items-center">
           <div
-            onClick={() => changeCategory('emoticon')}
-            onMouseEnter={() => hoverCategory('emoticon')}
+            onClick={() => changeCategory('EMOTICON')}
+            onMouseEnter={() => hoverCategory('EMOTICON')}
             onMouseLeave={() => leaveCategory()}
-            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'emoticon' || categoryNameHover === 'emoticon' ? 'shadow-md' : ''}`}
+            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'EMOTICON' || categoryNameHover === 'EMOTICON' ? 'shadow-md' : ''}`}
           >
-            {categoryName === 'emoticon' || categoryNameHover === 'emoticon' ? (
+            {categoryName === 'EMOTICON' || categoryNameHover === 'EMOTICON' ? (
               <img src={emoticonActiveSVG} alt="" />
             ) : (
               <img src={emoticonDeactiveSVG} alt="" />
             )}
           </div>
           <div className="mt-1">
-            {categoryName === 'emoticon' || categoryNameHover === 'emoticon' ? (
+            {categoryName === 'EMOTICON' || categoryNameHover === 'EMOTICON' ? (
               <h3 className="text-lg font-bold text-primary-color">이모티콘</h3>
             ) : (
               <h3 className="text-lg font-medium ">이모티콘</h3>
@@ -104,19 +104,19 @@ export const CategoryList = () => {
         {/* 드로잉 */}
         <div className="flex flex-col items-center">
           <div
-            onClick={() => changeCategory('drawing')}
-            onMouseEnter={() => hoverCategory('drawing')}
+            onClick={() => changeCategory('DRAWING')}
+            onMouseEnter={() => hoverCategory('DRAWING')}
             onMouseLeave={() => leaveCategory()}
-            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'drawing' || categoryNameHover === 'drawing' ? 'shadow-md' : ''}`}
+            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'DRAWING' || categoryNameHover === 'DRAWING' ? 'shadow-md' : ''}`}
           >
-            {categoryName === 'drawing' || categoryNameHover === 'drawing' ? (
+            {categoryName === 'DRAWING' || categoryNameHover === 'DRAWING' ? (
               <img src={drawingActiveSVG} alt="" />
             ) : (
               <img src={drawingDeactiveSVG} alt="" />
             )}
           </div>
           <div className="mt-1">
-            {categoryName === 'drawing' || categoryNameHover === 'drawing' ? (
+            {categoryName === 'DRAWING' || categoryNameHover === 'DRAWING' ? (
               <h3 className="text-lg font-bold text-primary-color">드로잉</h3>
             ) : (
               <h3 className="text-lg font-medium ">드로잉</h3>
@@ -126,19 +126,19 @@ export const CategoryList = () => {
         {/* 컬러링 */}
         <div className="flex flex-col items-center">
           <div
-            onClick={() => changeCategory('coloring')}
-            onMouseEnter={() => hoverCategory('coloring')}
+            onClick={() => changeCategory('COLORING')}
+            onMouseEnter={() => hoverCategory('COLORING')}
             onMouseLeave={() => leaveCategory()}
-            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'coloring' || categoryNameHover === 'coloring' ? 'shadow-md' : ''}`}
+            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'COLORING' || categoryNameHover === 'COLORING' ? 'shadow-md' : ''}`}
           >
-            {categoryName === 'coloring' || categoryNameHover === 'coloring' ? (
+            {categoryName === 'COLORING' || categoryNameHover === 'COLORING' ? (
               <img src={coloringActiveSVG} alt="" />
             ) : (
               <img src={coloringDeactiveSVG} alt="" />
             )}
           </div>
           <div className="mt-1">
-            {categoryName === 'coloring' || categoryNameHover === 'coloring' ? (
+            {categoryName === 'COLORING' || categoryNameHover === 'COLORING' ? (
               <h3 className="text-lg font-bold text-primary-color">컬러링</h3>
             ) : (
               <h3 className="text-lg font-medium ">컬러링</h3>
@@ -148,19 +148,19 @@ export const CategoryList = () => {
         {/* 웹툰 */}
         <div className="flex flex-col items-center">
           <div
-            onClick={() => changeCategory('webtoon')}
-            onMouseEnter={() => hoverCategory('webtoon')}
+            onClick={() => changeCategory('WEBTOON')}
+            onMouseEnter={() => hoverCategory('WEBTOON')}
             onMouseLeave={() => leaveCategory()}
-            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'webtoon' || categoryNameHover === 'webtoon' ? 'shadow-md' : ''}`}
+            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'WEBTOON' || categoryNameHover === 'WEBTOON' ? 'shadow-md' : ''}`}
           >
-            {categoryName === 'webtoon' || categoryNameHover === 'webtoon' ? (
+            {categoryName === 'WEBTOON' || categoryNameHover === 'WEBTOON' ? (
               <img src={webtoonActiveSVG} alt="" />
             ) : (
               <img src={webtoonDeactiveSVG} alt="" />
             )}
           </div>
           <div className="mt-1">
-            {categoryName === 'webtoon' || categoryNameHover === 'webtoon' ? (
+            {categoryName === 'WEBTOON' || categoryNameHover === 'WEBTOON' ? (
               <h3 className="text-lg font-bold text-primary-color">웹툰</h3>
             ) : (
               <h3 className="text-lg font-medium ">웹툰</h3>
@@ -170,19 +170,19 @@ export const CategoryList = () => {
         {/* 컨셉 아트 */}
         <div className="flex flex-col items-center">
           <div
-            onClick={() => changeCategory('art')}
-            onMouseEnter={() => hoverCategory('art')}
+            onClick={() => changeCategory('CONCEPT_ART')}
+            onMouseEnter={() => hoverCategory('CONCEPT_ART')}
             onMouseLeave={() => leaveCategory()}
-            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'art' || categoryNameHover === 'art' ? 'shadow-md' : ''}`}
+            className={`flex  max-h-[70px] rounded-xl border border-[#C6C6C6] p-5 ${categoryName === 'CONCEPT_ART' || categoryNameHover === 'CONCEPT_ART' ? 'shadow-md' : ''}`}
           >
-            {categoryName === 'art' || categoryNameHover === 'art' ? (
+            {categoryName === 'CONCEPT_ART' || categoryNameHover === 'CONCEPT_ART' ? (
               <img src={artActiveSVG} alt="" />
             ) : (
               <img src={artDeactiveSVG} alt="" />
             )}
           </div>
           <div className="mt-1">
-            {categoryName === 'art' || categoryNameHover === 'art' ? (
+            {categoryName === 'CONCEPT_ART' || categoryNameHover === 'CONCEPT_ART' ? (
               <h3 className="text-lg font-bold text-primary-color">컨셉 아트</h3>
             ) : (
               <h3 className="text-lg font-medium ">컨셉 아트</h3>

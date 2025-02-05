@@ -1,4 +1,12 @@
+import { useState } from 'react';
+
+import { useLogin } from '@/api/auth';
+
 export const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const handleLogin = useLogin({ email, password });
+
   return (
     <div className="flex h-full items-center justify-center gap-2 pb-[250px]">
       {' '}
@@ -14,14 +22,19 @@ export const LoginPage = () => {
             type="text"
             placeholder="이메일을 입력하세요"
             className="h-10 rounded-md border border-gray-border-color pl-3"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
-            type="text"
+            type="password"
             placeholder="비밀번호를 입력하세요"
             className="h-10 rounded-md border border-gray-border-color pl-3"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <div className="flex justify-center">
             <button
+              onClick={() => handleLogin.mutate()}
               type="submit"
               className="h-10 w-full rounded-full bg-primary-color text-center text-white"
             >

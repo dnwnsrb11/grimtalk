@@ -1,19 +1,26 @@
 import { useEffect, useState } from 'react';
 
+import { LectureCreateWrite } from '@/components/lecture/notice/LectureCreateWrite';
 import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard';
 import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 
-export const LectureNotice = () => {
+export const LectureNotice = ({ checkInstructor }) => {
   // test
   const testList = ['one', 'two', 'three'];
   // 상세페이지 기능 구현
   const [noticeDate, setNoticeDate] = useState('');
-  const [isActive, setIsActive] = useState(false);
-
+  const [isActive, setIsActive] = useState('/');
+  // 작성 공지사항
+  const [createNoticeDate, setCreateNoticeDate] = useState('');
+  // 상세페이지, 공지사항 작성페이지
+  const pageComponents = {
+    '공지사항 상세페이지': <LectureNoticeDetail />,
+    '공지사항 작성페이지': <LectureCreateWrite />,
+  };
   useEffect(() => {
     const handlePopState = (event) => {
       event.preventDefault();
-      setIsActive(false);
+      setIsActive('/');
     };
     if (isActive) {
       // popstate 이벤트 리스너 등록
@@ -32,13 +39,24 @@ export const LectureNotice = () => {
     };
   }, [isActive]);
 
-  if (isActive) {
+  if (isActive === '공지사항 상세페이지') {
     return <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />;
+  } else if (isActive === '공지사항 작성페이지') {
+    return (
+      <LectureCreateWrite setIsActive={setIsActive} setCreateNoticeDate={setCreateNoticeDate} />
+    );
   }
   return (
     <>
       <div className="mt-[60px]">
-        <h1 className="text-[32px] font-bold">공지사항</h1>
+        <div className="mb-[20px] flex gap-6">
+          <h1 className="text-[32px] font-bold">공지사항</h1>
+          <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
+            <button onClick={() => setIsActive('공지사항 작성페이지')}>
+              <p className="text-[18px] font-semibold text-white">공지사항 작성</p>
+            </button>
+          </div>
+        </div>
         {/* 공지사항 내용 */}
         <div className="mt-[40px]">
           {testList.map((testData, index) => (
@@ -46,7 +64,7 @@ export const LectureNotice = () => {
               key={index}
               className="mb-3"
               onClick={() => {
-                setIsActive(true);
+                setIsActive('공지사항 상세페이지');
                 setNoticeDate(testData);
               }}
             >
