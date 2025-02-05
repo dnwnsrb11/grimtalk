@@ -63,7 +63,7 @@ export const LecturePage = () => {
     <>
       <div>
         <div>
-          <LectureBanner />
+          <LectureBanner lecture={lecture} />
         </div>
         <div>
           <LectureProfile checkInstructor={checkInstructor} lecture={lecture} />
