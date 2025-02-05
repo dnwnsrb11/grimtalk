@@ -6,6 +6,7 @@ export const MyPageContentLayout = ({ navMenuTitle, navMenuSubButton, children }
         {navMenuSubButton && navMenuSubButton}
       </div>
       <hr className="w-full" />
+
       {children}
     </>
   );
