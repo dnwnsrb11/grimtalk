@@ -1,6 +1,11 @@
+// import { dateFormatter } from '@/utils/dateFormatter.js';
+import { formatDateOnly } from '@/utils/dateFormatter';
+
 export const DateChip = ({ date }) => {
+  const formattedDate = formatDateOnly(date);
+  console.log(date);
   const today = new Date();
-  const targetDate = new Date(date);
+  const targetDate = new Date(formattedDate);
 
   const diffDate = targetDate - today;
   const daysRemaining = Math.ceil(diffDate / (1000 * 60 * 60 * 24));
@@ -8,8 +13,10 @@ export const DateChip = ({ date }) => {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="rounded-full bg-primary-color px-3 py-0 text-white">{date}</div>
-      <p className="text-base font-semibold text-primary-color">{dDayText}</p>
+      <div className="rounded-full bg-primary-color px-3 py-0 text-white">{formattedDate}</div>
+      <p className="text-base font-semibold text-primary-color">
+        {dDayText === 0 ? 'DAY' : dDayText}
+      </p>
     </div>
   );
 };
