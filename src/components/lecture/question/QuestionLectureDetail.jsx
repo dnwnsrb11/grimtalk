@@ -1,10 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { _axios } from '@/api/instance';
+import { _axios, _axiosAuth } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 
 export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor }) => {
-  const [answer, setAnswer] = useState('현재 답변이 없습니다.');
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [answer, setAnswer] = useState('');
 
   const {
     data: board,
@@ -21,14 +25,42 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
 
       return data.body.data;
     },
-    onError: (error) => {},
+    onError: () => {
+      navigate('/notfound');
+    },
+  });
+
+  // 작성 api
+  const addCommentMutation = useMutation({
+    mutationFn: async () => {
+      if (answer === '') {
+        alert('댓글을 작성해주세요.');
+        throw new Error('답변이 비어 있음');
+      }
+      const { data } = await _axiosAuth.post('/board/answer', {
+        boardId: questionId,
+        answerContent: answer,
+      });
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['board', questionId], (oldBoard) => {
+        return {
+          ...oldBoard,
+          comment: data.body.data.answerContent,
+        };
+      });
+      setAnswer('');
+    },
   });
 
   const changeActive = () => {
     setIsActive(false);
   };
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
   if (isError) return <div>에러가 발생했습니다.</div>;
 
   return (
@@ -43,17 +75,22 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       <div className="mt-[20px]">
         <div className="flex items-center gap-3">
           <h1 className="text-[32px] font-bold">답변</h1>
-          <div className="rounded-full bg-bg-gray-color px-[10px] py-[5px]">
-            <p className="text-[14px] font-semibold text-text-gray-color">미답변</p>
-          </div>
+          {board.comment ? (
+            <div className="rounded-full bg-primary-color px-[10px] py-[5px]">
+              <p className="text-[14px] font-semibold text-white">답변</p>
+            </div>
+          ) : (
+            <div className="rounded-full bg-bg-gray-color px-[10px] py-[5px]">
+              <p className="text-[14px] font-semibold text-text-gray-color">미답변</p>
+            </div>
+          )}
         </div>
         <div className="mt-[10px] min-h-[100px]">
-          <p className="text-[18px]">{answer}</p>
-          {board.comments?.map((comment, index) => (
-            <p key={index} className="text-[18px]">
-              {comment}
-            </p>
-          ))}
+          {board.comment ? (
+            <p className="text-[18px]">{board.comment}</p>
+          ) : (
+            <p className="text-[18px] font-medium text-text-gray-color">현재 답변이 없습니다.</p>
+          )}
         </div>
       </div>
       <hr className="border-gray-border-color" />
@@ -87,7 +124,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
         {checkInstructor && (
           <button
             className="rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
-            // onClick={() => 답변 저장()}
+            onClick={() => addCommentMutation.mutate()}
           >
             <p className="text-[18px] font-semibold text-white">작성하기</p>
           </button>

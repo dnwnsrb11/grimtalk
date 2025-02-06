@@ -2,11 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 import { _axios } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectureCard';
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
 import { QuestionLectureWrite } from '@/components/lecture/question/QuestionLectureWrite';
 
-export const LectureQuestions = ({ checkInstructor }) => {
+export const LectureQuestions = ({ checkInstructor, lecture }) => {
   // 상세 페이지 기능
   const [isActive, setIsActive] = useState('/');
   const [questionId, setQuestionId] = useState('');
@@ -19,7 +20,7 @@ export const LectureQuestions = ({ checkInstructor }) => {
   } = useQuery({
     queryKey: ['questions'],
     queryFn: async () => {
-      const { data } = await _axios.get('/board');
+      const { data } = await _axios.get(`/lecture/board/${lecture.lectureId}`);
 
       if (!data.body.data.list) {
         throw new Error('데이터가 없습니다.');
@@ -27,7 +28,9 @@ export const LectureQuestions = ({ checkInstructor }) => {
 
       return data.body.data.list;
     },
-    onError: (error) => {},
+    onError: (error) => {
+      alert('에러');
+    },
   });
 
   // 뒤로가기 버튼 기능
@@ -53,7 +56,9 @@ export const LectureQuestions = ({ checkInstructor }) => {
     };
   }, [isActive]);
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
   if (isError) return <div>에러가 발생했습니다.</div>;
 
   // 컴포넌트 생성 분기
