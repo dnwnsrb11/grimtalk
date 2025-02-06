@@ -33,11 +33,9 @@ export const StudentDashboardSection = () => {
 
   // 최근 구독한 강사
   const recentSubscribedInstructor = data?.recentSubscribedInstructor;
-  const recentInstructor = {
-    image: 'https://picsum.photos/200/300', // demo image
-    nickname: '김싸피',
-    memberTag: ['일러스트', '신입환영'],
-  };
+
+  // 최근 구독한 강의
+  const recentFavoriteLecture = data?.recentFavoriteLecture;
 
   const recentLecture = {
     title: '이모티콘을 배우고 싶은 당신을 위한 강의',
@@ -122,9 +120,9 @@ export const StudentDashboardSection = () => {
         </DashboardCard>
         <DashboardCard title="최근 구독한 강의">
           <HashTaggedLectureCurriculumItem
-            title={recentLecture.title}
-            hashTags={recentLecture.hashTags}
-            image={recentLecture.image}
+            title={recentFavoriteLecture?.subject}
+            hashTags={recentFavoriteLecture?.hashtags}
+            image={recentFavoriteLecture?.image}
           />
         </DashboardCard>
       </div>
