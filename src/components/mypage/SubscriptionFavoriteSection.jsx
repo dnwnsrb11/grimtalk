@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import { _axiosAuth } from '@/api/instance';
+import { Lecture } from '@/components/mainPages/home/Lecture';
 import { SubscriptionCard } from '@/components/mypage/SubscriptionCard';
 
 export const SubscriptionFavoriteSection = () => {
@@ -71,12 +72,7 @@ export const SubscriptionFavoriteSection = () => {
       {selectedTab === '즐겨찾기' && (
         <div className=" grid grid-cols-3 gap-2">
           {myFavorite?.map((subscription, index) => (
-            <SubscriptionCard
-              key={index}
-              nickname={subscription.nickname}
-              memberTagContent={subscription.hashtags}
-              image={subscription.image}
-            />
+            <Lecture key={index} lecture={subscription} />
           ))}
         </div>
       )}

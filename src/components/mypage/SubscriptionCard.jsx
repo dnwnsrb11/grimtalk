@@ -7,7 +7,6 @@ export const SubscriptionCard = ({
   image, // 사용자 프로필 이미지
 }) => {
   const profileImage = image || posterNoneImg; // 이미지가 없으면 기본 이미지 사용
-  console.log('image', profileImage);
 
   return (
     <div className="flex flex-row items-center rounded-xl border border-gray-border-color p-4">
