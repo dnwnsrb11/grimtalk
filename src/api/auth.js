@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
@@ -33,6 +34,8 @@ const useLogin = ({ email, password }) => {
         if (authHeader?.startsWith(BEARER_PREFIX)) {
           const accessToken = authHeader.substring(BEARER_PREFIX.length); // 토큰 추출
           useAuthStore.getState().loginAuth(accessToken); // 토큰 저장
+
+          toast('로그인 되었습니다.');
           navigate('/'); // 홈 페이지로 이동
         }
       }
@@ -66,7 +69,7 @@ const useLogout = () => {
       if (responseBody.code === 200) {
         useAuthStore.getState().logoutAuth();
         navigate('/');
-        alert('로그아웃 되었습니다.'); // TODO: 대체할 예정
+        toast('로그아웃 되었습니다.');
       } else {
         handleApiError(responseBody);
       }
