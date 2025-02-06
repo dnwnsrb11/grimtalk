@@ -11,9 +11,9 @@ import { MainPageCategory } from '@/routes/pages/MainPageCategory';
 import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
 import { MainPageLive } from '@/routes/pages/MainPageLive';
 import { MyPage } from '@/routes/pages/MyPage';
+import { NotFoundPage } from '@/routes/pages/NotFoundPage';
 import { SignupPage } from '@/routes/pages/SignupPage';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
-import { NotFoundPage } from '@/routes/pages/NotFoundPage';
 
 const router = createBrowserRouter([
   {
@@ -65,7 +65,7 @@ const router = createBrowserRouter([
         element: <AlarmPage />,
       },
       {
-        path: '/lecture',
+        path: '/lecture/:lectuerId',
         element: <LecturePage />,
       },
       {
