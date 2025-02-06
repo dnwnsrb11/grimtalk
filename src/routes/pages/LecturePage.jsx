@@ -27,7 +27,7 @@ export const LecturePage = () => {
     isError,
     error,
   } = useQuery({
-    queryKey: ['lecture'],
+    queryKey: ['lecture', lectuerId],
     queryFn: async () => {
       const { data } = await _axios.get(`/lecture/intro/${lectuerId}`);
       // 내부에서 데이터를 받고 바로 강사, 수강생 체크
