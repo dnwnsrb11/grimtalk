@@ -1,5 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
+import { _axiosAuth } from '@/api/instance';
 import { Lecture } from '@/components/mainPages/home/Lecture';
 import { SubscriptionCard } from '@/components/mypage/SubscriptionCard';
 
@@ -14,6 +16,13 @@ export const SubscriptionFavoriteSection = () => {
     { nickname: '박싸피', memberTagContent: ['열정 있는', '배우기 쉬운'] },
   ];
 
+  const { data: mySubscription } = useQuery({
+    queryKey: ['mySubscription'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get('/favorite');
+      return data.body.data.list;
+    },
+  });
   return (
     <div className="flex flex-col gap-3">
       {/* 탭 버튼 영역 */}
