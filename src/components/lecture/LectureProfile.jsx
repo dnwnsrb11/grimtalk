@@ -1,7 +1,10 @@
 import { useState } from 'react';
 
+// nonImage 가져오기
+import nonImage from '@/assets/nonProfileImg.png';
 // 아이콘 가져오기
 import { DefaultBadgeIcon, FavoriteIcon, SubscribeIcon } from '@/components/common/icons';
+
 export const LectureProfile = ({ checkInstructor }) => {
   const testtext =
     '사회적 특수계급의 제도는 인정되지 아니하며, 어떠한 형태로도 이를 창설할 수 없다. 대법원과 각급법원의 조직은 법률로 정한다. 누구든지 체포 또는 구속을 당한 때에는 즉시 변호인의 조력을 받을 권리를 가진다. 다만, 형사피고인이 스스로 변호인을 구할 수 없을 때에는 법률이 정하는 바에 의하여 국가가 변호인을 붙인다.';
@@ -20,6 +23,10 @@ export const LectureProfile = ({ checkInstructor }) => {
             <div>
               {/* 프로필 이미지 */}
               <div className="relative h-[162px] w-[162px] rounded-full bg-[#565252]">
+                {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
+                <div className="overflow-hidden rounded-full">
+                  <img src={nonImage} alt="profileimg" />
+                </div>
                 <div className="absolute bottom-0 right-0 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-disabled-font-color">
                   {/* 뱃지 svg로 초기화 */}
                   <DefaultBadgeIcon />

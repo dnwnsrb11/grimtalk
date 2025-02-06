@@ -20,6 +20,7 @@ export const CurriculumLectureCardDeActive = () => {
             <p className="text-[16px] font-semibold">수업예정</p>
           </div>
           <div className="rounded-full bg-primary-color px-[10px] py-[5px]">
+            {/* common에 있는 formatDate 함수를 사용하여 출력하기 */}
             <p className="text-[16px] font-semibold text-white">2025.05.15 12:00</p>
           </div>
         </div>
