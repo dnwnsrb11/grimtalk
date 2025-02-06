@@ -14,6 +14,8 @@ export const MainPageCategory = () => {
 
   // ✅ 정렬 기준 상태
   const [sortType, setSortType] = useState('recommendation');
+  const [visibleLecturesCount, setVisibleLecturesCount] = useState(4); // 기본적으로 4개만 표시
+  const [isExpanded, setIsExpanded] = useState(false); // 항목이 확장되었는지 여부
 
   useEffect(() => {
     const searchQueryFromState = location.state?.search || '';
@@ -44,6 +46,11 @@ export const MainPageCategory = () => {
     return [...categorySearch]; // 최신순은 원본 그대로
   }, [categorySearch, sortType]);
 
+  // "더 보기" 버튼 클릭 시 항목 수 4개씩 증가
+  const loadMoreLectures = () => {
+    setVisibleLecturesCount((prevCount) => prevCount + 4); // 4개씩 증가
+  };
+
   return (
     <div className="mt-10">
       <Banner />
@@ -66,11 +73,23 @@ export const MainPageCategory = () => {
       <hr />
 
       {/* ✅ 정렬된 데이터 렌더링 */}
-      <div className="mt-[40px] flex gap-3">
-        {sortedLectures.map((search, index) => (
+      <div className="mt-[40px] flex flex-wrap gap-3">
+        {sortedLectures.slice(0, visibleLecturesCount).map((search, index) => (
           <LectureItem key={index} search={search} />
         ))}
       </div>
+
+      {/* ✅ "더 보기" 버튼 - 4개 이상일 경우만 표시 */}
+      {sortedLectures.length > visibleLecturesCount && (
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={loadMoreLectures}
+            className="rounded bg-primary-color px-4 py-2 text-white"
+          >
+            더 보기
+          </button>
+        </div>
+      )}
     </div>
   );
 };

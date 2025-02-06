@@ -25,9 +25,10 @@ export const LectureItem = ({ isMyPage = false, search }) => {
   return (
     <>
       <div className="relative">
-        <div className="min-h-[160px] overflow-hidden rounded-lg">
-          <img src={searchImage} />
+        <div className="h-[160px] w-full overflow-hidden rounded-lg">
+          <img src={searchImage} className="h-full w-full object-cover" alt="검색 이미지" />
         </div>
+
         <div>
           <h4 className="mt-2 text-lg leading-tight">{searchSubjkect}</h4>
           <div className="mt-2 flex justify-start gap-3 ">

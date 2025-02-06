@@ -3,9 +3,9 @@ import posterNoneImg from '@/assets/posterNoneImg.png';
 
 export const Lecture = ({ index, lecture }) => {
   const score = 4.4;
-  const lectureSubject = lecture.subject || null;
-  const lectureNickname = lecture.nickname || null;
-  const lectureTags = lecture.tags || null;
+  const lectureSubject = lecture.subject;
+  const lectureNickname = lecture.nickname;
+  const lectureTags = lecture.tags;
   const lectureCategory = lecture.category ?? null;
   const lectureStar = lecture.start || 0;
   const lectureImg = lecture.image || posterNoneImg;
