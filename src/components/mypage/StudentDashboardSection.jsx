@@ -28,26 +28,8 @@ export const StudentDashboardSection = () => {
   // 예정 커리큘럼
   const expectedCurriculums = data?.expectedCurriculums;
 
-  const upcomingLectureList = [
-    {
-      title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-      image: 'https://picsum.photos/200/300', // demo image
-      date: '2025-02-01',
-    },
-    {
-      title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-      image: 'https://picsum.photos/200/300', // demo image
-      date: '2025-02-01',
-    },
-    {
-      title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-      image: 'https://picsum.photos/200/300', // demo image
-      date: '2025-02-01',
-    },
-  ];
-
-  const myHighestSimilarity = 90;
-  const myHighestSimilarityLectureTitle = '이모티콘을 배우고 싶은 당신을 위한 강의';
+  // 가장 높은 유사도
+  const similarity = data?.similarity;
 
   const recentInstructor = {
     image: 'https://picsum.photos/200/300', // demo image
@@ -92,10 +74,12 @@ export const StudentDashboardSection = () => {
           </DashboardCard>
           <DashboardCard
             title="나의 가장 높은 유사도"
-            subtitle={`수업: ${myHighestSimilarityLectureTitle}`}
+            subtitle={`수업: ${similarity.curriculumSubject}`}
           >
             <div className="flex items-end justify-end">
-              <span className="text-7xl font-bold text-primary-color">{myHighestSimilarity}</span>
+              <span className="text-7xl font-bold text-primary-color">
+                {similarity.imageSimilarityPercent}
+              </span>
               <span className="text-4xl font-bold text-black">%</span>
             </div>
           </DashboardCard>
