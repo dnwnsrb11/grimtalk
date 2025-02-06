@@ -1,14 +1,33 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { _axios } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { LectureCreateWrite } from '@/components/lecture/notice/LectureCreateWrite';
 import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard';
 import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 
-export const LectureNotice = ({ checkInstructor }) => {
-  // test
-  const testList = ['one', 'two', 'three'];
+export const LectureNotice = ({ checkInstructor, lecture }) => {
+  const navigate = useNavigate();
+  // api 추가
+  const {
+    data: notices,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['notices'],
+    queryFn: async () => {
+      const { data } = await _axios.get(`/notice/${lecture.lectureId}`);
+      return data.body.data.list;
+    },
+    onError: (error) => {
+      navigate('/notfound');
+    },
+  });
   // 상세페이지 기능 구현
-  const [noticeDate, setNoticeDate] = useState('');
+  const [noticeDate, setNoticeDate] = useState(null);
   const [isActive, setIsActive] = useState('/');
   // 작성 공지사항
   const [createNoticeDate, setCreateNoticeDate] = useState('');
@@ -43,8 +62,16 @@ export const LectureNotice = ({ checkInstructor }) => {
     return <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />;
   } else if (isActive === '공지사항 작성페이지') {
     return (
-      <LectureCreateWrite setIsActive={setIsActive} setCreateNoticeDate={setCreateNoticeDate} />
+      <LectureCreateWrite
+        setIsActive={setIsActive}
+        setCreateNoticeDate={setCreateNoticeDate}
+        lecture={lecture}
+      />
     );
+  }
+
+  if (isLoading) {
+    return <LoadingComponents />;
   }
   return (
     <>
@@ -59,16 +86,16 @@ export const LectureNotice = ({ checkInstructor }) => {
         </div>
         {/* 공지사항 내용 */}
         <div className="mt-[40px]">
-          {testList.map((testData, index) => (
+          {notices.map((notice, index) => (
             <div
               key={index}
               className="mb-3"
               onClick={() => {
                 setIsActive('공지사항 상세페이지');
-                setNoticeDate(testData);
+                setNoticeDate(notice);
               }}
             >
-              <LectureNoticeCard />
+              <LectureNoticeCard noticeDate={notice} />
             </div>
           ))}
         </div>
