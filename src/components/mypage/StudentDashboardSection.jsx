@@ -14,7 +14,6 @@ export const StudentDashboardSection = () => {
     queryKey: ['recentCurriculum'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get('/dashboard/common');
-      console.log(data.body.data);
       return data.body.data;
     },
   });
@@ -22,8 +21,12 @@ export const StudentDashboardSection = () => {
   if (recentCurriculumLoading) {
     return <LoadingComponents />;
   }
+  // 최근 학습 커리큘럼
   const recentCurriculum = data?.recentCurriculum;
   // console.log(recentCurriculum.subject);
+
+  // 예정 커리큘럼
+  const expectedCurriculums = data?.expectedCurriculums;
 
   const upcomingLectureList = [
     {
@@ -98,12 +101,13 @@ export const StudentDashboardSection = () => {
           </DashboardCard>
         </div>
         <DashboardCard title="예정 커리큘럼">
-          {upcomingLectureList.map((lecture) => (
+          {expectedCurriculums.map((expectedCurriculum) => (
             <DatedLectureCurriculumItem
-              key={lecture.title}
-              title={lecture.title}
-              image={lecture.image}
-              date={lecture.date}
+              key={expectedCurriculum.subject}
+              title={expectedCurriculum.subject}
+              image={expectedCurriculum.image}
+              createdAt={expectedCurriculum.createdAt}
+              expectedLiveTime={expectedCurriculum.expectedLiveTime}
             />
           ))}
         </DashboardCard>
