@@ -31,6 +31,8 @@ export const StudentDashboardSection = () => {
   // 가장 높은 유사도
   const similarity = data?.similarity;
 
+  // 최근 구독한 강사
+  const recentSubscribedInstructor = data?.recentSubscribedInstructor;
   const recentInstructor = {
     image: 'https://picsum.photos/200/300', // demo image
     nickname: '김싸피',
@@ -101,16 +103,16 @@ export const StudentDashboardSection = () => {
           <button>
             <div className="flex items-center gap-5">
               <img
-                src={recentInstructor.image}
+                src={recentSubscribedInstructor.image}
                 alt="recent-instructor"
                 className="h-[70px] w-[70px] rounded-full"
               />
               <div className="flex flex-col items-start">
                 <p className="text-lg font-bold text-common-font-color">
-                  {recentInstructor.nickname}
+                  {recentSubscribedInstructor.nickname}
                 </p>
                 <div className="flex items-center gap-2">
-                  {recentInstructor.memberTag.map((tag) => (
+                  {recentSubscribedInstructor?.memberTags?.map((tag) => (
                     <HashTagChip key={tag} hashTag={tag} />
                   ))}
                 </div>
