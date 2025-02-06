@@ -1,17 +1,29 @@
 import { ResponsiveBar } from '@nivo/bar';
+import { useQuery } from '@tanstack/react-query';
 
+import { _axiosAuth } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-
+// import { LoadingComponents } from '@/components/common/LoadingComponents';
 export const StudentDashboardSection = () => {
   // 임시 데모 데이터
-  const recentCurriculum = {
-    title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-    image: 'https://picsum.photos/200/300', // demo image
-    hashTags: ['일러스트', '신입환영'],
-  };
+  const { data: data, isLoading: recentCurriculumLoading } = useQuery({
+    queryKey: ['recentCurriculum'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get('/dashboard/common');
+      console.log(data.body.data);
+      return data.body.data;
+    },
+  });
+
+  if (recentCurriculumLoading) {
+    return <LoadingComponents />;
+  }
+  const recentCurriculum = data?.recentCurriculum;
+  // console.log(recentCurriculum.subject);
 
   const upcomingLectureList = [
     {
@@ -67,11 +79,13 @@ export const StudentDashboardSection = () => {
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
           <DashboardCard title="최근 학습 커리큘럼">
-            <HashTaggedLectureCurriculumItem
-              title={recentCurriculum.title}
-              hashTags={recentCurriculum.hashTags}
-              image={recentCurriculum.image}
-            />
+            {recentCurriculum && (
+              <HashTaggedLectureCurriculumItem
+                title={recentCurriculum?.subject}
+                hashTags={recentCurriculum?.hashtags}
+                image={recentCurriculum?.image}
+              />
+            )}
           </DashboardCard>
           <DashboardCard
             title="나의 가장 높은 유사도"

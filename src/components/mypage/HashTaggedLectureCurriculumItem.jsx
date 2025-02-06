@@ -13,7 +13,7 @@ export const HashTaggedLectureCurriculumItem = ({ title, hashTags, image }) => {
       <div className="flex flex-col items-start truncate">
         <p className="w-full truncate text-lg font-bold">{title}</p>
         <div className="flex items-center gap-2">
-          {hashTags.map((hashTag) => (
+          {hashTags?.map((hashTag) => (
             <HashTagChip key={hashTag} hashTag={hashTag} />
           ))}
         </div>
