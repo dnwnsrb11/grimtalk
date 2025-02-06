@@ -9,24 +9,27 @@ export const SubscriptionFavoriteSection = () => {
   // 현재 선택된 탭을 관리하는 상태 (기본값: '구독')
   const [selectedTab, setSelectedTab] = useState('구독');
 
-  // 구독 목록 데이터 (임시 데이터)
-  const subscriptionList = [
-    { nickname: '김싸피', memberTagContent: ['열정 있는', '배우기 쉬운'] },
-    { nickname: '이싸피', memberTagContent: ['열정 있는', '배우기 쉬운'] },
-    { nickname: '박싸피', memberTagContent: ['열정 있는', '배우기 쉬운'] },
-  ];
-
-  const { data: mySubscription } = useQuery({
-    queryKey: ['mySubscription'],
+  // 즐겨찾기 목록 데이터
+  const { data: myFavorite } = useQuery({
+    queryKey: ['myFavorite'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get('/favorite');
       return data.body.data.list;
     },
   });
+
+  // 구독 목록 데이터
+  const { data: mySubscription } = useQuery({
+    queryKey: ['mySubscription'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get('/subscribe');
+      return data.body.data;
+    },
+  });
   return (
     <div className="flex flex-col gap-3">
       {/* 탭 버튼 영역 */}
-      <div className="flex gap-3">
+      <div className="mb-[15px] flex gap-3">
         {/* 구독 탭 버튼 */}
         <button
           onClick={() => setSelectedTab('구독')}
@@ -56,20 +59,20 @@ export const SubscriptionFavoriteSection = () => {
       {/* 선택된 탭에 따른 컨텐츠 렌더링 */}
       {selectedTab === '구독' && (
         <div className="flex flex-col gap-2">
-          {subscriptionList.map((item) => (
+          {mySubscription?.map((item) => (
             <SubscriptionCard
               key={item.nickname}
               nickname={item.nickname}
-              memberTagContent={item.memberTagContent}
+              memberTagContent={item.memberTags}
             />
           ))}
         </div>
       )}
       {/* 즐겨찾기 컨텐츠 */}
       {selectedTab === '즐겨찾기' && (
-        <div className="mt-5 grid grid-cols-3 gap-2">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Lecture key={index} />
+        <div className=" grid grid-cols-3 gap-2">
+          {myFavorite?.map((subscription, index) => (
+            <Lecture key={index} lecture={subscription} />
           ))}
         </div>
       )}
