@@ -18,6 +18,7 @@ export default function App() {
   }, []);
 
   // 초기화가 완료되지 않았다면 로딩 상태를 보여줌
+  // 깜빡임 현상(Flash of Unauthorized Content, FOUC) 방지
   if (!isInitialized) {
     return <LoadingComponents />;
   }
