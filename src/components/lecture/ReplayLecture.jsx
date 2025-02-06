@@ -1,12 +1,32 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
+import { _axios } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayLectureCard } from '@/components/lecture/replay/ReplayLectureCard';
 import { ReplayLectureDetail } from '@/components/lecture/replay/ReplayLectureDetail';
 
-export const ReplayLecture = ({ checkInstructor }) => {
-  // test
-  const testList = ['one', 'two', 'three'];
-  const [replayDate, setReplayDate] = useState('');
+export const ReplayLecture = ({ checkInstructor, lecture }) => {
+  // api 체크
+  const {
+    data: replays,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['replays', lecture],
+    queryFn: async () => {
+      const { data } = await _axios.get(`/replay/${lecture.lectureId}`);
+      return data.body.data.list;
+    },
+    onError: () => {
+      navigate('/notfound');
+    },
+  });
+
+  // 디테일 페이지에 넘겨줄 데이터
+  const [replayDate, setReplayDate] = useState(null);
+  // 디테일 페이지 활성화 변수
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
@@ -30,21 +50,25 @@ export const ReplayLecture = ({ checkInstructor }) => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [isActive]);
+
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
   return (
     <>
       {!isActive ? (
         <div className="mt-[60px]">
           <h1 className="text-[32px] font-bold">다시보기</h1>
           <div className="mt-[10px]">
-            {testList.map((test, index) => (
+            {replays.map((replay, index) => (
               <div
                 key={index}
                 onClick={() => {
                   setIsActive(true);
-                  setReplayDate(test);
+                  setReplayDate(replay);
                 }}
               >
-                <ReplayLectureCard test={test} checkInstructor={checkInstructor} />
+                <ReplayLectureCard checkInstructor={checkInstructor} replay={replay} />
               </div>
             ))}
           </div>
