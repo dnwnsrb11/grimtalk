@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { _axiosAuth } from '@/api/instance';
+import { _axios } from '@/api/instance';
 import { useAuthStore } from '@/store/useAuthStore';
 import { handleApiError } from '@/utils/errorHandler';
 
@@ -12,7 +12,7 @@ const useLogin = ({ email, password }) => {
   return useMutation({
     // 로그인 API 호출 함수
     mutationFn: async () => {
-      const response = await _axiosAuth.post('/user/login', {
+      const response = await _axios.post('/user/login', {
         email: email,
         password: password,
       });
@@ -26,7 +26,7 @@ const useLogin = ({ email, password }) => {
       // 성공 코드 200 처리
       if (responseBody.code === 200) {
         // 토큰 헤더 확인
-        const authHeader = data.headers['authorization'] || data.headers['Authorization'];
+        const authHeader = data.headers['X-Access-Token'] || data.headers['x-access-token'];
         const BEARER_PREFIX = 'Bearer '; // 토큰 접두사
 
         // 토큰 헤더가 있고, 토큰 접두사로 시작하는 경우
