@@ -65,7 +65,7 @@ const router = createBrowserRouter([
         element: <AlarmPage />,
       },
       {
-        path: '/lecture',
+        path: '/lecture/:lectuerId',
         element: <LecturePage />,
       },
       {
