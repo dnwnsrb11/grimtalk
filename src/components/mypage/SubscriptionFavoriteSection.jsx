@@ -72,7 +72,7 @@ export const SubscriptionFavoriteSection = () => {
       {selectedTab === '즐겨찾기' && (
         <div className=" grid grid-cols-3 gap-2">
           {myFavorite?.map((subscription, index) => (
-            <Lecture key={index} lecture={subscription} />
+            <Lecture key={index} lecture={subscription} showStar={false} />
           ))}
         </div>
       )}

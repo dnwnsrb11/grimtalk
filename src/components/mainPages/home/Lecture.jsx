@@ -1,11 +1,12 @@
 import starSVG from '@/assets/banner/star.svg';
 import posterNoneImg from '@/assets/posterNoneImg.png';
 
-export const Lecture = ({ index, lecture }) => {
+export const Lecture = ({ index, lecture, showStar = true }) => {
+  // showStar prop을 추가
   const score = 4.4;
-  const lectureSubject = lecture.subject || null;
-  const lectureNickname = lecture.nickname || null;
-  const lectureTags = lecture.tags || null;
+  const lectureSubject = lecture.subject;
+  const lectureNickname = lecture.nickname;
+  const lectureTags = lecture.hashtags;
   const lectureCategory = lecture.category ?? null;
   const lectureStar = lecture.start || 0;
   const lectureImg = lecture.image || posterNoneImg;
@@ -15,7 +16,7 @@ export const Lecture = ({ index, lecture }) => {
   };
 
   return (
-    <div>
+    <div className={`${!showStar ? 'mb-8' : ''}`}>
       <div className="min-h-[160px] overflow-hidden rounded-lg">
         <img
           src={lectureImg} // 기본적으로 lectureImg를 사용
@@ -26,7 +27,7 @@ export const Lecture = ({ index, lecture }) => {
       </div>
       <div>
         <h4 className="mt-2 text-lg leading-tight">{lectureSubject}</h4>
-        <div className="mt-2 flex items-center gap-3 ">
+        <div className="mt-2 flex items-center gap-3">
           <h4 className="text-base font-bold">{lectureNickname}</h4>
           <div className="flex gap-1">
             {lectureTags?.map((tag, index) => (
@@ -40,12 +41,16 @@ export const Lecture = ({ index, lecture }) => {
           </div>
         </div>
       </div>
-      <div className="mt-2 flex items-center gap-2">
-        <div>
-          <img src={starSVG} alt="starIcon" />
+
+      {/* star 부분을 조건부로 렌더링 */}
+      {showStar && (
+        <div className="mt-2 flex items-center gap-2">
+          <div>
+            <img src={starSVG} alt="starIcon" />
+          </div>
+          <p className="text-text-gray-color">{lectureStar} / 5</p>
         </div>
-        <p className="text-text-gray-color">{lectureStar} / 5</p>
-      </div>
+      )}
     </div>
   );
 };
