@@ -1,4 +1,27 @@
-export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate }) => {
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+
+import { _axiosAuth } from '@/api/instance';
+
+export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate, lecture }) => {
+  // 저장 내용
+  const [subject, setSubject] = useState('');
+  const [content, setContent] = useState('');
+
+  const addPostMutation = useMutation({
+    mutationFn: async () => {
+      const { data } = await _axiosAuth.post('/notice', {
+        lectureId: lecture.lectureId,
+        subject: subject,
+        content: content,
+      });
+      return data;
+    },
+    onSuccess: () => {
+      alert('업로드 완료');
+      setIsActive(false);
+    },
+  });
   const changeActive = () => {
     setIsActive('/');
   };
@@ -8,10 +31,14 @@ export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate }) => {
         <div className="flex flex-col gap-[15px]">
           <input
             type="text"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
             className="min-h-[60px] rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
             placeholder="공지사항 제목을 입려해주세요."
           />
           <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
             className="min-h-[300px] resize-none rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
             placeholder="공지사항 내용을 입력해주세요."
           ></textarea>
@@ -26,8 +53,11 @@ export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate }) => {
             >
               <p className="text-[18px] font-semibold">뒤로가기</p>
             </button>
-            <button className="rounded-2xl bg-primary-color px-[30px] py-[10px]">
-              <p className="text-[18px] font-semibold text-white">수정하기</p>
+            <button
+              className="rounded-2xl bg-primary-color px-[30px] py-[10px]"
+              onClick={() => addPostMutation.mutate()}
+            >
+              <p className="text-[18px] font-semibold text-white">작성하기</p>
             </button>
           </div>
         </div>
