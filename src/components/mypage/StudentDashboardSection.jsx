@@ -1,44 +1,41 @@
 import { ResponsiveBar } from '@nivo/bar';
+import { useQuery } from '@tanstack/react-query';
 
+import { _axiosAuth } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-
+// import { LoadingComponents } from '@/components/common/LoadingComponents';
 export const StudentDashboardSection = () => {
   // 임시 데모 데이터
-  const recentCurriculum = {
-    title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-    image: 'https://picsum.photos/200/300', // demo image
-    hashTags: ['일러스트', '신입환영'],
-  };
-
-  const upcomingLectureList = [
-    {
-      title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-      image: 'https://picsum.photos/200/300', // demo image
-      date: '2025-02-01',
+  const { data: data, isLoading: recentCurriculumLoading } = useQuery({
+    queryKey: ['recentCurriculum'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get('/dashboard/common');
+      return data.body.data;
     },
-    {
-      title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-      image: 'https://picsum.photos/200/300', // demo image
-      date: '2025-02-01',
-    },
-    {
-      title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-      image: 'https://picsum.photos/200/300', // demo image
-      date: '2025-02-01',
-    },
-  ];
+  });
 
-  const myHighestSimilarity = 90;
-  const myHighestSimilarityLectureTitle = '이모티콘을 배우고 싶은 당신을 위한 강의';
+  if (recentCurriculumLoading) {
+    return <LoadingComponents />;
+  }
+  // 최근 학습 커리큘럼
+  const recentCurriculum = data?.recentCurriculum;
+  // console.log(recentCurriculum.subject);
 
-  const recentInstructor = {
-    image: 'https://picsum.photos/200/300', // demo image
-    nickname: '김싸피',
-    memberTag: ['일러스트', '신입환영'],
-  };
+  // 예정 커리큘럼
+  const expectedCurriculums = data?.expectedCurriculums;
+
+  // 가장 높은 유사도
+  const similarity = data?.similarity;
+
+  // 최근 구독한 강사
+  const recentSubscribedInstructor = data?.recentSubscribedInstructor;
+
+  // 최근 구독한 강의
+  const recentFavoriteLecture = data?.recentFavoriteLecture;
 
   const recentLecture = {
     title: '이모티콘을 배우고 싶은 당신을 위한 강의',
@@ -67,29 +64,34 @@ export const StudentDashboardSection = () => {
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
           <DashboardCard title="최근 학습 커리큘럼">
-            <HashTaggedLectureCurriculumItem
-              title={recentCurriculum.title}
-              hashTags={recentCurriculum.hashTags}
-              image={recentCurriculum.image}
-            />
+            {recentCurriculum && (
+              <HashTaggedLectureCurriculumItem
+                title={recentCurriculum?.subject}
+                hashTags={recentCurriculum?.hashtags}
+                image={recentCurriculum?.image}
+              />
+            )}
           </DashboardCard>
           <DashboardCard
             title="나의 가장 높은 유사도"
-            subtitle={`수업: ${myHighestSimilarityLectureTitle}`}
+            subtitle={`수업: ${similarity.curriculumSubject}`}
           >
             <div className="flex items-end justify-end">
-              <span className="text-7xl font-bold text-primary-color">{myHighestSimilarity}</span>
+              <span className="text-7xl font-bold text-primary-color">
+                {similarity.imageSimilarityPercent}
+              </span>
               <span className="text-4xl font-bold text-black">%</span>
             </div>
           </DashboardCard>
         </div>
         <DashboardCard title="예정 커리큘럼">
-          {upcomingLectureList.map((lecture) => (
+          {expectedCurriculums.map((expectedCurriculum) => (
             <DatedLectureCurriculumItem
-              key={lecture.title}
-              title={lecture.title}
-              image={lecture.image}
-              date={lecture.date}
+              key={expectedCurriculum.subject}
+              title={expectedCurriculum.subject}
+              image={expectedCurriculum.image}
+              createdAt={expectedCurriculum.createdAt}
+              expectedLiveTime={expectedCurriculum.expectedLiveTime}
             />
           ))}
         </DashboardCard>
@@ -99,16 +101,16 @@ export const StudentDashboardSection = () => {
           <button>
             <div className="flex items-center gap-5">
               <img
-                src={recentInstructor.image}
+                src={recentSubscribedInstructor.image}
                 alt="recent-instructor"
                 className="h-[70px] w-[70px] rounded-full"
               />
               <div className="flex flex-col items-start">
                 <p className="text-lg font-bold text-common-font-color">
-                  {recentInstructor.nickname}
+                  {recentSubscribedInstructor.nickname}
                 </p>
                 <div className="flex items-center gap-2">
-                  {recentInstructor.memberTag.map((tag) => (
+                  {recentSubscribedInstructor?.memberTags?.map((tag) => (
                     <HashTagChip key={tag} hashTag={tag} />
                   ))}
                 </div>
@@ -118,9 +120,9 @@ export const StudentDashboardSection = () => {
         </DashboardCard>
         <DashboardCard title="최근 구독한 강의">
           <HashTaggedLectureCurriculumItem
-            title={recentLecture.title}
-            hashTags={recentLecture.hashTags}
-            image={recentLecture.image}
+            title={recentFavoriteLecture?.subject}
+            hashTags={recentFavoriteLecture?.hashtags}
+            image={recentFavoriteLecture?.image}
           />
         </DashboardCard>
       </div>

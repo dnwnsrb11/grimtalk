@@ -14,7 +14,7 @@ const _axios = axios.create({
 });
 
 // [정상 요청 흐름]
-// 1. 클라이언트가 API 요청 시 Authorization 헤더에 access token을 포함
+// 1. 클라이언트가 API 요청 시 X-Access-Token 헤더에 access token을 포함
 // 2. 쿠키에 저장된 refresh token도 자동으로 서버에 전송됨
 // 3. 서버는 유효한 토큰 확인 후 정상 응답
 
@@ -35,7 +35,7 @@ const _axios = axios.create({
 // 로그인 후 사용되는 axios 인스턴스 (access token 포함)
 const _axiosAuth = _axios.create({
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // 토큰 헤더 설정
+    'X-Access-Token': `${localStorage.getItem('accessToken')}`, // 토큰 헤더 설정
   },
 });
 
@@ -43,7 +43,7 @@ const _axiosAuth = _axios.create({
 _axiosAuth.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken'); // 토큰 가져오기
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`; // 토큰 헤더 설정
+    config.headers['X-Access-Token'] = `${token}`; // 토큰 헤더 설정
   }
   return config; // 설정된 헤더를 반환
 });
@@ -69,8 +69,8 @@ _axiosAuth.interceptors.response.use(
 
           const BEARER_PREFIX = 'Bearer '; // 토큰 접두사
           const newAccessToken =
-            tokenResponse.headers['authorization']?.substring(BEARER_PREFIX.length) ||
-            tokenResponse.headers['Authorization']?.substring(BEARER_PREFIX.length);
+            tokenResponse.headers['X-Access-Token']?.substring(BEARER_PREFIX.length) ||
+            tokenResponse.headers['X-Access-Token']?.substring(BEARER_PREFIX.length);
 
           // 토큰 헤더가 있고, 토큰 접두사로 시작하는 경우
           if (newAccessToken) {
@@ -79,7 +79,7 @@ _axiosAuth.interceptors.response.use(
           }
 
           // 새로운 토큰으로 헤더 업데이트
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          originalRequest.headers['X-Access-Token'] = `${newAccessToken}`;
 
           // 원래 요청 재시도
           return _axiosAuth(originalRequest);
