@@ -59,7 +59,7 @@ const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await _axiosAuth.post('/user/logout');
+      const response = await _axios.post('/user/logout');
       return response;
     },
 
