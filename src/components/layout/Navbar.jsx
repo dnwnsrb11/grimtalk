@@ -3,15 +3,19 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useLogout } from '@/api/auth';
 import { AlarmIcon, LogoIcon, ReadingGlassesIcon } from '@/components/common/icons';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { isLogin } = useAuthStore();
+
+  const handleLogout = useLogout();
+
   const [search, setSearch] = useState('');
   const [notificationCount, setNotificationCount] = useState(3);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const handleLogout = useLogout();
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
