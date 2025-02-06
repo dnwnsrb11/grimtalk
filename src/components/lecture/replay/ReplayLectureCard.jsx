@@ -25,6 +25,7 @@ export const ReplayLectureCard = ({ test, checkInstructor }) => {
                 <p className="text-[14px] font-semibold text-white">수업완료</p>
               </div>
               <div className="rounded-full bg-black px-[10px] py-[5px] ">
+                {/* common에 있는 formatDate 함수를 사용하여 출력하기 */}
                 <p className="text-[14px] font-semibold text-white">2025.03.01</p>
               </div>
             </div>

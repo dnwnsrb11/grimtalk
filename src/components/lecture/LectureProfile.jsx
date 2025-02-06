@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+// nonImage 가져오기
+import nonImage from '@/assets/nonProfileImg.png';
 // 아이콘 가져오기
 import { DefaultBadgeIcon, FavoriteIcon, SubscribeIcon } from '@/components/common/icons';
 export const LectureProfile = ({ checkInstructor, lecture }) => {
@@ -18,6 +20,10 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
             <div>
               {/* 프로필 이미지 */}
               <div className="relative h-[162px] w-[162px] rounded-full bg-[#565252]">
+                {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
+                <div className="overflow-hidden rounded-full">
+                  <img src={nonImage} alt="profileimg" />
+                </div>
                 <div className="absolute bottom-0 right-0 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-disabled-font-color">
                   {/* 뱃지 svg로 초기화 */}
                   <DefaultBadgeIcon />
