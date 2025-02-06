@@ -50,4 +50,32 @@ const useLogin = ({ email, password }) => {
   });
 };
 
-export { useLogin };
+// 로그아웃 API 호출 함수
+const useLogout = () => {
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await _axiosAuth.post('/user/logout');
+      return response;
+    },
+
+    onSuccess: (data) => {
+      const responseBody = data.data.body;
+
+      if (responseBody.code === 200) {
+        useAuthStore.getState().logoutAuth();
+        navigate('/');
+        alert('로그아웃 되었습니다.'); // TODO: 대체할 예정
+      } else {
+        handleApiError(responseBody);
+      }
+    },
+
+    onError: () => {
+      navigate('/notfound');
+    },
+  });
+};
+
+export { useLogin, useLogout };

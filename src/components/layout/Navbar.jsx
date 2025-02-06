@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { useLogout } from '@/api/auth';
 import { AlarmIcon, LogoIcon, ReadingGlassesIcon } from '@/components/common/icons';
 
 export const Navbar = () => {
@@ -10,6 +11,7 @@ export const Navbar = () => {
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const handleLogout = useLogout();
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
@@ -111,8 +113,11 @@ export const Navbar = () => {
               마이페이지
             </button>
             <div>|</div>
-            <button onClick={() => navigate('/logout')} className="focus:outline-none">
-              <p className="text-text-gray-color">로그아웃</p>
+            <button
+              onClick={() => handleLogout.mutate()}
+              className="text-text-gray-color focus:outline-none"
+            >
+              로그아웃
             </button>
           </div>
         )}
