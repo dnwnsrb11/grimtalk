@@ -68,30 +68,38 @@ export const StudentDashboardSection = () => {
               <HashTaggedLectureCurriculumItem
                 title={recentCurriculum?.subject}
                 hashTags={recentCurriculum?.hashtags}
-                image={recentCurriculum?.image}
+                image={recentCurriculum?.image ?? null}
               />
             )}
           </DashboardCard>
           <DashboardCard
             title="나의 가장 높은 유사도"
-            subtitle={`수업: ${similarity.curriculumSubject}`}
+            subtitle={
+              similarity?.curriculumSubject
+                ? `수업: ${similarity?.curriculumSubject}`
+                : '수업에 참여해보세요'
+            }
           >
             <div className="flex items-end justify-end">
               <span className="text-7xl font-bold text-primary-color">
-                {similarity.imageSimilarityPercent}
+                {similarity?.imageSimilarityPercent !== undefined &&
+                similarity?.imageSimilarityPercent !== null
+                  ? similarity?.imageSimilarityPercent
+                  : '값을 확인할 수 없습니다'}
               </span>
+
               <span className="text-4xl font-bold text-black">%</span>
             </div>
           </DashboardCard>
         </div>
         <DashboardCard title="예정 커리큘럼">
-          {expectedCurriculums.map((expectedCurriculum) => (
+          {expectedCurriculums?.map((expectedCurriculum) => (
             <DatedLectureCurriculumItem
-              key={expectedCurriculum.subject}
-              title={expectedCurriculum.subject}
-              image={expectedCurriculum.image}
-              createdAt={expectedCurriculum.createdAt}
-              expectedLiveTime={expectedCurriculum.expectedLiveTime}
+              key={expectedCurriculum?.subject}
+              title={expectedCurriculum?.subject}
+              image={expectedCurriculum?.image ?? null}
+              createdAt={expectedCurriculum?.createdAt}
+              expectedLiveTime={expectedCurriculum?.expectedLiveTime}
             />
           ))}
         </DashboardCard>
@@ -101,13 +109,13 @@ export const StudentDashboardSection = () => {
           <button>
             <div className="flex items-center gap-5">
               <img
-                src={recentSubscribedInstructor.image}
+                src={recentSubscribedInstructor?.image ?? null}
                 alt="recent-instructor"
                 className="h-[70px] w-[70px] rounded-full"
               />
               <div className="flex flex-col items-start">
                 <p className="text-lg font-bold text-common-font-color">
-                  {recentSubscribedInstructor.nickname}
+                  {recentSubscribedInstructor?.nickname}
                 </p>
                 <div className="flex items-center gap-2">
                   {recentSubscribedInstructor?.memberTags?.map((tag) => (
@@ -122,7 +130,7 @@ export const StudentDashboardSection = () => {
           <HashTaggedLectureCurriculumItem
             title={recentFavoriteLecture?.subject}
             hashTags={recentFavoriteLecture?.hashtags}
-            image={recentFavoriteLecture?.image}
+            image={recentFavoriteLecture?.image ?? null}
           />
         </DashboardCard>
       </div>
