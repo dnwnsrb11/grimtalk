@@ -1,4 +1,7 @@
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+
+import { _axiosAuth } from '@/api/instance';
 
 export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }) => {
   // 비디오 저장
@@ -14,6 +17,29 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
       setDrawingImg(file);
     }
   };
+
+  // 파일 업로드
+  const addReplayMutation = useMutation({
+    mutationFn: async () => {
+      if (video === null) {
+        alert('현재 다시보기 영상 파일이 없습니다.');
+        return;
+      }
+      const { data } = await _axiosAuth.post('/replay', {
+        curriculumId: replayDate.curriculumId,
+        video: video,
+      });
+      alert('파일 업로드를 완료했습니다.');
+      return data;
+    },
+    onError: (error) => {
+      console.error('Error:', error);
+      alert('오류 발생');
+    },
+  });
+
+  // 완성품 업로드
+  // -> 아직 업로드 안됨
   return (
     <>
       <div className="mt-[60px]">
@@ -27,7 +53,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
           </button>
         </div>
       </div>
-      {/* 강사 일때 랜더링 */}
+      {/* 강사 일때 랜더링  */}
       {checkInstructor && (
         <div className="mt-[50px]">
           <hr className="mt-[40px] border border-divider-color" />
@@ -95,12 +121,18 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
         </div>
       )}
       <hr className="mt-[40px] border border-divider-color" />
-      <div className="mt-[20px] flex justify-end">
+      <div className="mt-[20px] flex justify-end gap-3">
         <button
           className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
           onClick={() => setIsActive(false)}
         >
           <p className="text-[18px] font-semibold">뒤로가기</p>
+        </button>
+        <button
+          className="rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
+          onClick={() => addReplayMutation.mutate()}
+        >
+          <p className="text-[18px] font-semibold text-white">영상 업로드</p>
         </button>
       </div>
     </>
