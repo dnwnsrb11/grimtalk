@@ -29,9 +29,9 @@ export const CurriculumLecture = ({ checkInstructor, lecture }) => {
   //   index 추가
   const selectListComponent = (curriculum, index) => {
     if (curriculum.status === false) {
-      return <CurriculumLectureCardDeActive key={index} />;
+      return <CurriculumLectureCardDeActive key={index} curriculum={curriculum} />;
     } else {
-      return <CurriculumLectureCardActive key={index} />;
+      return <CurriculumLectureCardActive key={index} curriculum={curriculum} />;
     }
   };
 
