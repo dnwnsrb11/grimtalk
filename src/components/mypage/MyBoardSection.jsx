@@ -16,7 +16,7 @@ export const MyBoardSection = () => {
   return (
     <>
       {myQuestions?.map((question, index) => (
-        <CommunityList key={index} />
+        <CommunityList key={index} community={question} />
       ))}
     </>
   );

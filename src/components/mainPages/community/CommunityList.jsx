@@ -1,4 +1,5 @@
 export const CommunityList = ({ community }) => {
+  console.log(community);
   return (
     <>
       <div className="mb-[20px] flex cursor-pointer flex-col rounded-3xl border border-gray-border-color px-[22px] py-[15px] transition-colors duration-300 ease-in-out hover:border-primary-color hover:bg-[#ffd8cf] active:border-primary-color active:bg-[#ffd8cf]">
