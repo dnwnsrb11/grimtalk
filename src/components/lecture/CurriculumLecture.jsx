@@ -1,7 +1,7 @@
 import { CurriculumLectureCardActive } from '@/components/lecture/curriculum/CurriculumLectureCardActive';
 import { CurriculumLectureCardDeActive } from '@/components/lecture/curriculum/CurriculumLectureCardDeActive';
 
-export const CurriculumLecture = () => {
+export const CurriculumLecture = ({ checkInstructor, lecture }) => {
   // 받은 값이 ture, false에 따라 출력되는 컴포넌트가 다름
   //   index 추가
   const selectListComponent = (isActive, index) => {
@@ -11,8 +11,6 @@ export const CurriculumLecture = () => {
       return <CurriculumLectureCardActive key={index} />;
     }
   };
-  // 테스트를 위한 배열 생성
-  const test = [false, true, true];
 
   return (
     <>
