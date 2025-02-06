@@ -28,7 +28,7 @@ export const SubscriptionFavoriteSection = () => {
   return (
     <div className="flex flex-col gap-3">
       {/* 탭 버튼 영역 */}
-      <div className="flex gap-3">
+      <div className="mb-[15px] flex gap-3">
         {/* 구독 탭 버튼 */}
         <button
           onClick={() => setSelectedTab('구독')}
@@ -69,7 +69,7 @@ export const SubscriptionFavoriteSection = () => {
       )}
       {/* 즐겨찾기 컨텐츠 */}
       {selectedTab === '즐겨찾기' && (
-        <div className="mt-5 grid grid-cols-3 gap-2">
+        <div className=" grid grid-cols-3 gap-2">
           {myFavorite?.map((subscription, index) => (
             <SubscriptionCard
               key={index}
