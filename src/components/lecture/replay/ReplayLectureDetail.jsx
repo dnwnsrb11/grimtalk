@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -36,6 +36,30 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
       setDrawingImg(file);
     }
   };
+
+  // 비디오 업로드
+  const addVideoMutaion = useMutation({
+    mutationFn: async () => {
+      if (video === null) {
+        alert('파일을 먼저 업로드 해주세요.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('video', video); // 파일 데이터
+
+      const { data } = await _axiosAuth.put(`/replay/${replayDate.replayId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return data;
+    },
+    onSuccess: () => {
+      alert('업로드 완료');
+      setIsActive(false);
+    },
+  });
 
   if (isLoading) {
     return <LoadingComponents />;
@@ -88,13 +112,21 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
         </div>
       )}
       <hr className="mt-[40px] border border-divider-color" />
-      <div className="mt-[20px] flex justify-end">
+      <div className="mt-[20px] flex justify-end gap-3">
         <button
           className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
           onClick={() => setIsActive(false)}
         >
           <p className="text-[18px] font-semibold">뒤로가기</p>
         </button>
+        {checkInstructor && (
+          <button
+            className="rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
+            onClick={() => addVideoMutaion.mutate()}
+          >
+            <p className="text-[18px] font-semibold text-white">자료 업로드</p>
+          </button>
+        )}
       </div>
     </>
   );
