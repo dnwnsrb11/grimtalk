@@ -133,7 +133,13 @@ export const StudentDashboardSection = () => {
       <div className="grid grid-cols-2 gap-3">
         <DashboardCard title="최근 구독한 강사">
           {recentSubscribedInstructor ? (
-            <button onClick={() => navigate(`/mypage`, { joinId: recentSubscribedInstructor.id })}>
+            <button
+              onClick={() =>
+                navigate(`/mypage/${recentSubscribedInstructor.id}`, {
+                  state: { joinId: recentSubscribedInstructor.id },
+                })
+              }
+            >
               <div className="flex items-center gap-5">
                 <img
                   src={

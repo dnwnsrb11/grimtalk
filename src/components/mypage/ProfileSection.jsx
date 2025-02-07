@@ -12,6 +12,7 @@ export const ProfileSection = ({
   myid, // 조회를 요청한은 사용자의 id
   targetid, // 조회 대상 사용자의 id
 }) => {
+  console.log(targetid);
   const handleProfileMenuClick = (menu) => {
     setSelectedMenu('유저소개');
     setSelectedProfileMenu(menu);

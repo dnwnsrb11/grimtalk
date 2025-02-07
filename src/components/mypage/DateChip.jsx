@@ -3,7 +3,6 @@ import { formatDateOnly } from '@/utils/dateFormatter';
 
 export const DateChip = ({ date }) => {
   const formattedDate = formatDateOnly(date);
-  console.log(date);
   const today = new Date();
   const targetDate = new Date(formattedDate);
 

@@ -112,7 +112,7 @@ export const Navbar = () => {
         ) : (
           <div className="flex flex-row items-center gap-5">
             <button
-              onClick={() => navigate(`/mypage/${userData.id}`, { state: { myid: userData.id } })}
+              onClick={() => navigate(`/mypage/${userData.id}`, { state: { joinId: userData.id } })}
               className="h-[35px] w-[90px] rounded-xl bg-[#EFEFEF] focus:outline-none"
             >
               마이페이지
