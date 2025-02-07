@@ -24,7 +24,7 @@ export const HashTaggedLectureCurriculumItem = ({ title, hashTags, image, id }) 
         </div>
       </div>
 
-      <Link to={`/mypage/${id}`}>
+      <Link to={`/lecture/${id}`}>
         <button className="text-lg font-semibold text-detail-text-color">자세히 보기 ＞</button>
       </Link>
     </div>
