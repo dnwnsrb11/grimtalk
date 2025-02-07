@@ -44,6 +44,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       return data;
     },
     onSuccess: (data) => {
+      console.log('댓글 작성 성공', answer);
       queryClient.setQueryData(['board', questionId], (oldBoard) => {
         return {
           ...oldBoard,
@@ -75,7 +76,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       <div className="mt-[20px]">
         <div className="flex items-center gap-3">
           <h1 className="text-[32px] font-bold">답변</h1>
-          {board.comment ? (
+          {board.comments ? (
             <div className="rounded-full bg-primary-color px-[10px] py-[5px]">
               <p className="text-[14px] font-semibold text-white">답변</p>
             </div>
@@ -86,8 +87,8 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
           )}
         </div>
         <div className="mt-[10px] min-h-[100px]">
-          {board.comment ? (
-            <p className="text-[18px]">{board.comment}</p>
+          {board?.comments?.length > 0 ? (
+            <p className="text-[18px] text-black">{board.comments[0]?.content || ''}</p>
           ) : (
             <p className="text-[18px] font-medium text-text-gray-color">현재 답변이 없습니다.</p>
           )}
