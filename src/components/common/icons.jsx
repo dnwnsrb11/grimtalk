@@ -355,14 +355,15 @@ const StarReviewIcon = ({
   </svg>
 );
 // 1레벨 뱃지
-const LeveloneBadge = ({
-  className = '',
-  width = 35,
-  height = 33,
-  stroke = '#FF5353',
-  fill = '#FF5353',
-}) => (
-  <svg width="15" height="27" viewBox="0 0 15 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+const LeveloneBadge = ({ className = '', width = 35, height = 33 }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 15 27"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
     <path
       d="M6.05911 15V13.67H6.51724V10.33H6L6.32512 9H8.52709V13.67H9V15H6.05911Z"
       fill="black"
@@ -401,14 +402,15 @@ const LeveloneBadge = ({
 );
 
 // 2레벨 벳지
-const LeveltwoBadge = ({
-  className = '',
-  width = 35,
-  height = 33,
-  stroke = '#FF5353',
-  fill = '#FF5353',
-}) => (
-  <svg width="15" height="28" viewBox="0 0 15 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+const LeveltwoBadge = ({ className = '', width = 35, height = 33 }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 15 28"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
     <path
       d="M3.16406 27.0007L7.49739 25.0007L11.8307 27.0007V17.4727C10.6401 18.4583 9.09664 19.0025 7.49739 19.0007C5.89814 19.0025 4.35467 18.4583 3.16406 17.4727V27.0007Z"
       stroke="black"
@@ -455,14 +457,15 @@ const LeveltwoBadge = ({
 );
 
 // 3레벨 뱃지
-const LevelthirdBadge = ({
-  className = '',
-  width = 35,
-  height = 33,
-  stroke = '#FF5353',
-  fill = '#FF5353',
-}) => (
-  <svg width="15" height="28" viewBox="0 0 15 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+const LevelthirdBadge = ({ className = '', width = 35, height = 33 }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 15 28"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
     <path
       d="M3.16406 27.0007L7.49739 25.0007L11.8307 27.0007V17.4727C10.6401 18.4583 9.09664 19.0025 7.49739 19.0007C5.89814 19.0025 4.35467 18.4583 3.16406 17.4727V27.0007Z"
       stroke="black"

@@ -1,9 +1,15 @@
 // nonImage 가져오기
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
-// import { LeveloneBadge, LeveltwoBadge, LevelthirdBadge } from '@/components/common/icons';
 import { _axiosAuth } from '@/api/instance';
-import { DefaultBadgeIcon, InstructorIcon, StudentIcon } from '@/components/common/icons';
+import {
+  InstructorIcon,
+  LeveloneBadge,
+  LevelthirdBadge,
+  LeveltwoBadge,
+  StudentIcon,
+} from '@/components/common/icons';
 import { NavigationMenu } from '@/components/mypage/NavigationMenu';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -16,6 +22,7 @@ export const ProfileSection = ({
   myid, // 조회를 요청한은 사용자의 id
   targetid, // 조회 대상 사용자의 id
 }) => {
+  const [badgeImage, setBadgeImage] = useState(null);
   const handleProfileMenuClick = (menu) => {
     setSelectedMenu('유저소개');
     setSelectedProfileMenu(menu);
@@ -29,6 +36,21 @@ export const ProfileSection = ({
       return data.body.data;
     },
   });
+
+  useEffect(() => {
+    if (profileSectionCheck) {
+      if (profileSectionCheck.subscribeNumber <= 10) {
+        setBadgeImage(LeveloneBadge); // 함수 형태로 저장
+      } else if (profileSectionCheck.subscribeNumber <= 100) {
+        setBadgeImage(LeveltwoBadge);
+      } else if (profileSectionCheck.subscribeNumber > 100) {
+        setBadgeImage(LevelthirdBadge);
+      }
+    }
+    console.log(profileSectionCheck.subscribeNumber);
+    console.log(badgeImage);
+  }, [profileSectionCheck]);
+
   return (
     <div className="mt-10 flex flex-col items-start">
       {/* 프로필 정보 영역 */}
@@ -37,14 +59,17 @@ export const ProfileSection = ({
         {/* 프로필 이미지 -> 값이 없을 경우 랜더링 유무 체크 */}
         <img
           className="h-40 w-40 rounded-full bg-gray-600"
-          src={profileSectionCheck.image}
+          src={profileSectionCheck?.image}
           alt="profile"
         />
         {/* 사용자 이름과 뱃지 */}
         <div className="flex items-center gap-1">
-          <DefaultBadgeIcon className="" width={20} height={20} />
-          <span className="text-2xl font-bold">{profileSectionCheck.nickname}</span>
+          {/* 뱃지 이미지 추가 */}
+          {badgeImage}
+
+          <span className="text-2xl font-bold">{profileSectionCheck?.nickname}</span>
         </div>
+
         {/* 수강생/강사 전환 버튼 */}
         <div className="mt-2 flex gap-3 text-lg font-semibold">
           {/* 수강생 버튼 */}
