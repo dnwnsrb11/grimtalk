@@ -33,17 +33,15 @@ const _axios = axios.create({
 // 4. 클라이언트는 로그인 페이지로 리다이렉트
 
 // 로그인 후 사용되는 axios 인스턴스 (access token 포함)
-const _axiosAuth = _axios.create({
-  headers: {
-    'X-Access-Token': `${localStorage.getItem('accessToken')}`, // 토큰 헤더 설정
-  },
-});
+// 처음 생성될 때 한 번만 실행되므로 자동으로 localStorage에 저장된 access token을 자동으로 업데이트하지 못함
+const _axiosAuth = _axios.create();
 
 // 요청 인터셉터 설정
 _axiosAuth.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken'); // 토큰 가져오기
+  // 인터셉터는 매 HTTP 요청마다 실행되므로 토큰이 있는 경우 헤더에 토큰을 추가
   if (token) {
-    config.headers['X-Access-Token'] = `${token}`; // 토큰 헤더 설정
+    config.headers['X-Access-Token'] = `Bearer ${token}`; // 토큰 헤더 설정
   }
   return config; // 설정된 헤더를 반환
 });
