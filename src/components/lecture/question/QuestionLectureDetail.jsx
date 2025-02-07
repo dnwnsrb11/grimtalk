@@ -44,6 +44,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       return data;
     },
     onSuccess: (data) => {
+      setIsActive(false);
       console.log('댓글 작성 성공', answer);
       queryClient.setQueryData(['board', questionId], (oldBoard) => {
         return {
@@ -52,6 +53,20 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
         };
       });
       setAnswer('');
+    },
+  });
+
+  // 채택 기능
+  const addCommentCheckMutation = useMutation({
+    mutationFn: async () => {
+      const { data } = await _axiosAuth.put('/board/pick', {
+        answerId: questionId,
+      });
+      return data;
+    },
+    onSuccess: () => {
+      alert('답변을 채택하였습니다.');
+      setIsActive(false);
     },
   });
 
@@ -76,7 +91,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       <div className="mt-[20px]">
         <div className="flex items-center gap-3">
           <h1 className="text-[32px] font-bold">답변</h1>
-          {board.comments ? (
+          {board?.comments?.length > 0 ? (
             <div className="rounded-full bg-primary-color px-[10px] py-[5px]">
               <p className="text-[14px] font-semibold text-white">답변</p>
             </div>
@@ -131,7 +146,10 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
           </button>
         )}
         {checkInstructor && (
-          <button className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]">
+          <button
+            className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]"
+            onClick={() => addCommentCheckMutation.mutate()}
+          >
             <p className="text-[18px] font-semibold text-white">답변완료</p>
           </button>
         )}
