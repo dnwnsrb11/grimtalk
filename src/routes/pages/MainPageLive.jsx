@@ -11,7 +11,7 @@ export const MainPageLive = () => {
         </h2>
         <div className="mb-[50px] flex gap-3">
           {Array.from({ length: 4 }, (_, index) => (
-            <LiveList />
+            <LiveList key={index} />
           ))}
         </div>
       </div>
