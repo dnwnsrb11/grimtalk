@@ -22,7 +22,6 @@ export const MyPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { joinId } = location.state || userData.id;
-  console.log('현재 로그인 한 유저:', userData.id, '요청한 유저:', joinId);
   // joinId 감지
   useEffect(() => {
     navigate(`/mypage/${joinId}`, { state: { joinId } });

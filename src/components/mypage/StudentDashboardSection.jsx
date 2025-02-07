@@ -27,7 +27,6 @@ export const StudentDashboardSection = () => {
   }
   // 최근 학습 커리큘럼
   const recentCurriculum = data?.recentCurriculum;
-  // console.log(recentCurriculum.subject);
 
   // 예정 커리큘럼
   const expectedCurriculums = data?.expectedCurriculums;
