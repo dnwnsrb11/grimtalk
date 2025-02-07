@@ -5,6 +5,7 @@ import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
 import { AlarmPage } from '@/routes/pages/AlarmPage';
 import { DemoPage } from '@/routes/pages/DemoPage';
 import { LecturePage } from '@/routes/pages/LecturePage';
+import { LivePage } from '@/routes/pages/LivePage';
 import { LoginPage } from '@/routes/pages/LoginPage';
 import { MainPage } from '@/routes/pages/MainPage';
 import { MainPageCategory } from '@/routes/pages/MainPageCategory';
@@ -16,6 +17,10 @@ import { SignupPage } from '@/routes/pages/SignupPage';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
 
 const router = createBrowserRouter([
+  {
+    path: '/live',
+    element: <LivePage />,
+  },
   {
     element: <RootLayout />,
     children: [
@@ -40,7 +45,7 @@ const router = createBrowserRouter([
         element: <DemoPage />,
       },
       {
-        path: '/mypage',
+        path: '/mypage/:userId',
         element: <MyPage />,
       },
       {

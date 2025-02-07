@@ -9,6 +9,8 @@ export const ProfileSection = ({
   selectedProfileMenu, // 현재 선택된 프로필 메뉴 (수강생/강사)
   setSelectedMenu, // 네비게이션 메뉴 선택 핸들러
   setSelectedProfileMenu, // 프로필 메뉴 선택 핸들러
+  myid, // 조회를 요청한은 사용자의 id
+  targetid, // 조회 대상 사용자의 id
 }) => {
   const handleProfileMenuClick = (menu) => {
     setSelectedMenu('유저소개');
@@ -76,6 +78,8 @@ export const ProfileSection = ({
         selectedMenu={selectedMenu}
         selectedProfileMenu={selectedProfileMenu}
         setSelectedMenu={setSelectedMenu}
+        myid={myid}
+        targetid={targetid}
       />
     </div>
   );

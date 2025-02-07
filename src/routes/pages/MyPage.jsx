@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { CheckBoardSection } from '@/components/mypage/CheckBoardSection';
 import { CreateLectureSection } from '@/components/mypage/CreateLectureSection';
@@ -11,13 +12,22 @@ import { ProfileSection } from '@/components/mypage/ProfileSection';
 import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
 import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFavoriteSection';
 import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
-
+  // 헤더 요청한 사람과로그인 한 살마 id가 같으면 강사로 설정
+  const { userData } = useAuthStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { joinId } = location.state || userData.id;
+  // joinId 감지
+  useEffect(() => {
+    navigate(`/mypage/${joinId}`, { state: { joinId } });
+  }, [joinId]);
   const COMMON_MENU = {
-    유저소개: <MemberIntroSection />,
+    유저소개: <MemberIntroSection joinId={joinId} />,
     '마이 페이지': <MemberSettingsSection />,
   };
 
@@ -56,6 +66,8 @@ export const MyPage = () => {
           selectedProfileMenu={selectedProfileMenu}
           setSelectedMenu={setSelectedMenu}
           setSelectedProfileMenu={setSelectedProfileMenu}
+          myid={userData.id}
+          targetid={joinId}
         />
       </div>
 

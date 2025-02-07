@@ -1,13 +1,14 @@
 import { ResponsiveBar } from '@nivo/bar';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
+import posterNoneImg from '@/assets/posterNoneImg.png';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-// import { LoadingComponents } from '@/components/common/LoadingComponents';
 export const StudentDashboardSection = () => {
   // 임시 데모 데이터
   const { data: data, isLoading: recentCurriculumLoading } = useQuery({
@@ -17,13 +18,15 @@ export const StudentDashboardSection = () => {
       return data.body.data;
     },
   });
+  // 네비게이트 함수
+  const navigate = useNavigate();
 
+  // 로딩시 로딩페이지 출력
   if (recentCurriculumLoading) {
     return <LoadingComponents />;
   }
   // 최근 학습 커리큘럼
   const recentCurriculum = data?.recentCurriculum;
-  // console.log(recentCurriculum.subject);
 
   // 예정 커리큘럼
   const expectedCurriculums = data?.expectedCurriculums;
@@ -37,96 +40,156 @@ export const StudentDashboardSection = () => {
   // 최근 구독한 강의
   const recentFavoriteLecture = data?.recentFavoriteLecture;
 
-  const recentLecture = {
-    title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-    hashTags: ['일러스트', '신입환영'],
-    image: 'https://picsum.photos/200/300', // demo image
-  };
+  // 월간 진척도
+  const studentMonthlyProgress = data?.studentMonthlyProgress?.submissions ?? [];
 
-  // 월간 진척도 데모 데이터
-  const monthlyProgressData = [
-    { month: '1월', count: 13 },
-    { month: '2월', count: 25 },
-    { month: '3월', count: 18 },
-    { month: '4월', count: 22 },
-    { month: '5월', count: 30 },
-    { month: '6월', count: 15 },
-    { month: '7월', count: 20 },
-    { month: '8월', count: 28 },
-    { month: '9월', count: 19 },
-    { month: '10월', count: 24 },
-    { month: '11월', count: 17 },
-    { month: '12월', count: 23 },
-  ];
+  // 서버 응답을 기반으로 데이터 변환
+  const monthlyProgressData = studentMonthlyProgress.map(({ yearMonth, submissionCount }) => {
+    const [, month] = yearMonth.split('-'); // "2024-03" → "03"
+    return {
+      year: yearMonth.split('-')[0], // "2024-03" → "2024"
+      month: `${parseInt(month)}월`, // "03" → "3월"
+      count: submissionCount, // submissionCount 값 그대로 사용
+    };
+  });
+
+  // 이미지 확장자 검사
+  const isValidImage = (url) => {
+    if (!url) return false;
+
+    // 이미지 확장자 검사: jpg, jpeg, png, gif, webp, svg
+    const validExtensions = /\.(jpg|jpeg|png|gif|webp|svg)$/i;
+    if (!validExtensions.test(url)) return false;
+
+    // 이미지 로딩 여부 확인 (비동기 처리 필요)
+    const img = new Image();
+    img.src = url;
+    return img.complete && img.naturalHeight !== 0; // 이미지가 정상적으로 로드되었는지 확인
+  };
 
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
           <DashboardCard title="최근 학습 커리큘럼">
-            {recentCurriculum && (
+            {recentCurriculum ? (
               <HashTaggedLectureCurriculumItem
                 title={recentCurriculum?.subject}
                 hashTags={recentCurriculum?.hashtags}
-                image={recentCurriculum?.image}
+                image={
+                  recentCurriculum?.image && isValidImage(recentCurriculum?.image)
+                    ? recentCurriculum?.image
+                    : posterNoneImg
+                }
+                id={recentCurriculum?.lectureId}
               />
+            ) : (
+              <p className="mt-[85px] flex items-center justify-center text-[20px]">
+                최근 학습한 커리큘럼이 없습니다.
+              </p>
             )}
           </DashboardCard>
+
           <DashboardCard
             title="나의 가장 높은 유사도"
-            subtitle={`수업: ${similarity.curriculumSubject}`}
+            subtitle={
+              similarity?.curriculumSubject
+                ? `수업: ${similarity?.curriculumSubject}`
+                : '수업에 참여해보세요'
+            }
           >
             <div className="flex items-end justify-end">
               <span className="text-7xl font-bold text-primary-color">
-                {similarity.imageSimilarityPercent}
+                {similarity?.imageSimilarityPercent !== undefined &&
+                similarity?.imageSimilarityPercent !== null
+                  ? similarity?.imageSimilarityPercent
+                  : 'NO DATA'}
               </span>
+
               <span className="text-4xl font-bold text-black">%</span>
             </div>
           </DashboardCard>
         </div>
         <DashboardCard title="예정 커리큘럼">
-          {expectedCurriculums.map((expectedCurriculum) => (
-            <DatedLectureCurriculumItem
-              key={expectedCurriculum.subject}
-              title={expectedCurriculum.subject}
-              image={expectedCurriculum.image}
-              createdAt={expectedCurriculum.createdAt}
-              expectedLiveTime={expectedCurriculum.expectedLiveTime}
-            />
-          ))}
+          {expectedCurriculums && expectedCurriculums.length > 0 ? (
+            expectedCurriculums.map((expectedCurriculum) => (
+              <DatedLectureCurriculumItem
+                key={expectedCurriculum?.subject}
+                title={expectedCurriculum?.subject}
+                image={expectedCurriculum?.image ?? null}
+                createdAt={expectedCurriculum?.createdAt}
+                expectedLiveTime={expectedCurriculum?.expectedLiveTime}
+                id={expectedCurriculum?.lectureId}
+              />
+            ))
+          ) : (
+            <p className="mt-[200px] flex items-center justify-center text-[20px]">
+              예정된 강의가 없습니다.
+            </p>
+          )}
         </DashboardCard>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <DashboardCard title="최근 구독한 강사">
-          <button>
-            <div className="flex items-center gap-5">
-              <img
-                src={recentSubscribedInstructor.image}
-                alt="recent-instructor"
-                className="h-[70px] w-[70px] rounded-full"
-              />
-              <div className="flex flex-col items-start">
-                <p className="text-lg font-bold text-common-font-color">
-                  {recentSubscribedInstructor.nickname}
-                </p>
-                <div className="flex items-center gap-2">
-                  {recentSubscribedInstructor?.memberTags?.map((tag) => (
-                    <HashTagChip key={tag} hashTag={tag} />
-                  ))}
+          {recentSubscribedInstructor ? (
+            <button
+              onClick={() =>
+                navigate(`/mypage/${recentSubscribedInstructor.id}`, {
+                  state: { joinId: recentSubscribedInstructor.id },
+                })
+              }
+            >
+              <div className="flex items-center gap-5">
+                <img
+                  src={
+                    recentSubscribedInstructor.image &&
+                    isValidImage(recentSubscribedInstructor.image)
+                      ? recentSubscribedInstructor.image
+                      : posterNoneImg
+                  }
+                  alt="recent-instructor"
+                  className="h-[70px] w-[70px] rounded-full"
+                />
+
+                <div className="flex flex-col items-start">
+                  <p className="text-lg font-bold text-common-font-color">
+                    {recentSubscribedInstructor.nickname}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    {recentSubscribedInstructor.memberTags?.map((tag) => (
+                      <HashTagChip key={tag} hashTag={tag} />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </button>
+            </button>
+          ) : (
+            <p className="mt-[85px] flex items-center justify-center text-[20px]">
+              최근 구독한 강사가 없습니다.
+            </p>
+          )}
         </DashboardCard>
         <DashboardCard title="최근 구독한 강의">
-          <HashTaggedLectureCurriculumItem
-            title={recentFavoriteLecture?.subject}
-            hashTags={recentFavoriteLecture?.hashtags}
-            image={recentFavoriteLecture?.image}
-          />
+          {recentFavoriteLecture ? (
+            <HashTaggedLectureCurriculumItem
+              title={recentFavoriteLecture.subject}
+              hashTags={recentFavoriteLecture.hashtags}
+              image={
+                recentFavoriteLecture?.image && isValidImage(recentFavoriteLecture?.image)
+                  ? recentFavoriteLecture?.image
+                  : posterNoneImg
+              }
+              id={recentFavoriteLecture?.lectureId}
+            />
+          ) : (
+            <p className="mt-[85px] flex items-center justify-center text-[20px]">
+              최근 즐겨찾기한 강의가 없습니다.
+            </p>
+          )}
         </DashboardCard>
       </div>
       <DashboardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
+        <div>{monthlyProgressData?.year}</div>
         <div className="h-[250px]">
           <ResponsiveBar
             // 차트 데이터

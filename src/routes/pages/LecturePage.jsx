@@ -53,11 +53,11 @@ export const LecturePage = () => {
   // 자식 컴포넌트인 LectureCategory에서 값을 받아 catagory에 값을 넣어주면 값이 변경되어 아래에 다른 컴포넌트가 리랜더링 된다.
   const MENU_COMPONENTS = {
     강의소개: <IntroductionLecture lecture={lecture} />,
-    다시보기: <ReplayLecture checkInstructor={checkInstructor} />,
+    다시보기: <ReplayLecture checkInstructor={checkInstructor} lecture={lecture} />,
     커리큘럼: <CurriculumLecture checkInstructor={checkInstructor} lecture={lecture} />,
     default: <p>now Testing</p>,
     공지사항: <LectureNotice checkInstructor={checkInstructor} />,
-    질문사항: <LectureQuestions checkInstructor={checkInstructor} />,
+    질문사항: <LectureQuestions checkInstructor={checkInstructor} lecture={lecture} />,
     리뷰하기: <LectureReview />,
   };
 

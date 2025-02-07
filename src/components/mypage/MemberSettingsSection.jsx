@@ -1,13 +1,28 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
+import { _axiosAuth } from '@/api/instance';
 import { BadgeInformation } from '@/components/mypage/BadgeInformation';
+import { PasswordEditSection } from '@/components/mypage/PasswordEditSection';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const MemberSettingsSection = () => {
-  // api로 호출 예정
-  const { memberId, memberPassword, memberSubscribeNumber } = {
-    memberId: 'WooJunGyu12@naver.com',
+  const { id, email, nickname } = useAuthStore((state) => state.userData);
+  // console.log(id, email, nickname);
+  // 정보 조회회
+  const { data: memberSettings } = useQuery({
+    queryKey: ['memberSettings'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/user/${id}`);
+
+      return data.body.data;
+    },
+  });
+  const { memberId, memberPassword, memberSubscribeNumber, memberIntro } = {
+    memberId: memberSettings?.email,
     memberPassword: 'password',
-    memberSubscribeNumber: 2,
+    memberSubscribeNumber: memberSettings?.subscribeNumber,
+    memberIntro: memberSettings?.intro,
   };
   const [memberProfileImage, setMemberProfileImage] = useState('MYPROFILEIMAGE.jpg');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -27,22 +42,50 @@ export const MemberSettingsSection = () => {
     input.click();
   };
 
-  const handleSubmit = async () => {
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append('profileImage', selectedFile);
+  // 수정 api 요청
+  const memberSettingsChange = useMutation({
+    mutationFn: async (formData) => {
+      console.log('요청 전 FormData 내용:');
+      for (const [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
 
       try {
-        // API 호출 예시
-        // const response = await axios.post('/api/profile/image', formData);
-        // if (response.status === 200) {
-        //   alert('프로필 이미지가 성공적으로 변경되었습니다.');
-        // }
+        const { data } = await _axiosAuth.put(`/user`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data', // 명시적으로 헤더 설정
+          },
+        });
+        console.log('서버 응답:', data);
+        return data;
       } catch (error) {
-        console.error('이미지 업로드 실패:', error);
-        alert('이미지 업로드에 실패했습니다.');
+        console.error('에러 상세:', error.response?.data || error);
+        throw error;
+      }
+    },
+  });
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('nickname', nickname);
+    formData.append('intro', memberSettings?.intro || '');
+    if (selectedFile) {
+      console.log(selectedFile);
+
+      formData.append('image', selectedFile);
+      console.log(formData.get('image'));
+    }
+
+    // FormData 내용 확인 (출력)
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(key, value.name, value.type, value.size);
+      } else {
+        console.log(key, value);
       }
     }
+
+    memberSettingsChange.mutate(formData);
   };
 
   const handlePasswordEditClick = () => {
@@ -50,12 +93,8 @@ export const MemberSettingsSection = () => {
   };
 
   if (isPasswordEditMode) {
-    return (
-      <PasswordEditSection
-        onGoBack={() => setIsPasswordEditMode(false)}
-        memberPassword={memberPassword}
-      />
-    );
+    console.log(isPasswordEditMode);
+    return <PasswordEditSection onGoBack={() => setIsPasswordEditMode(false)} />;
   }
 
   return (
@@ -93,7 +132,7 @@ export const MemberSettingsSection = () => {
             type="text"
             disabled
             className="flex-[80%] rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
-            value={memberProfileImage}
+            value={memberSettings.image}
           />
           <button
             onClick={handleImageSelect}

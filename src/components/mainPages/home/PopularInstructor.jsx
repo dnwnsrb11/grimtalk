@@ -31,7 +31,10 @@ export const PopularInstructor = ({ index, instroductor }) => {
             </div>
             <div className="mt-1">
               {instroductorTags?.map((tag, index) => (
-                <div className="mr-1 inline-block rounded-full border bg-bg-gray-color px-3 py-1">
+                <div
+                  className="mr-1 inline-block rounded-full border bg-bg-gray-color px-3 py-1"
+                  key={index}
+                >
                   <p className="text-text-gray-color">{tag}</p>
                 </div>
               ))}
