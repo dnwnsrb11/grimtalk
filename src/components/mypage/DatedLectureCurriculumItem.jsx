@@ -1,10 +1,20 @@
+import { Link } from 'react-router-dom'; // Link 임포트
+
+import posterNoneImg from '@/assets/posterNoneImg.png';
 import { DateChip } from '@/components/mypage/DateChip';
-export const DatedLectureCurriculumItem = ({ title, image, createdAt, expectedLiveTime }) => {
+
+export const DatedLectureCurriculumItem = ({ title, image, createdAt, expectedLiveTime, id }) => {
+  const isValidImage = (url) => {
+    if (!url) return false;
+    return /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(url);
+  };
+
+  const validImage = isValidImage(image) ? image : posterNoneImg;
+
   return (
-    // 커리큘럼 이미지가 70px이기 때문에 컬럼 너비를 70px로 고정
     <div className="mb-7 grid grid-cols-[70px_1fr_110px] items-center justify-between gap-5">
       <img
-        src={image}
+        src={validImage}
         alt="lecture-curriculum"
         className="h-[70px] w-[70px] flex-shrink-0 rounded-xl"
       />
@@ -14,7 +24,9 @@ export const DatedLectureCurriculumItem = ({ title, image, createdAt, expectedLi
         <DateChip date={expectedLiveTime} />
       </div>
 
-      <button className="text-lg font-semibold text-detail-text-color">자세히 보기 ＞</button>
+      <Link to={`/lecture/${id}`}>
+        <button className="text-lg font-semibold text-detail-text-color">자세히 보기 ＞</button>
+      </Link>
     </div>
   );
 };

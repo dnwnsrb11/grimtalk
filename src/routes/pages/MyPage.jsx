@@ -11,16 +11,22 @@ import { ProfileSection } from '@/components/mypage/ProfileSection';
 import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
 import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFavoriteSection';
 import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
+import { useAuthStore } from '@/store/useAuthStore';
 
-export const MyPage = () => {
+export const MyPage = (joinId) => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
-
+  // 헤더 요청한 사람과로그인 한 살마 id가 같으면 강사로 설정
+  const { userData } = useAuthStore();
+  console.log(userData.id);
+  console.log(joinId);
   const COMMON_MENU = {
     유저소개: <MemberIntroSection />,
     '마이 페이지': <MemberSettingsSection />,
   };
-
+  if (joinId && userData.id !== joinId) {
+    console.log('강사');
+  }
   const MENU_COMPONENTS = {
     공통메뉴: COMMON_MENU,
     수강생: {
@@ -56,6 +62,8 @@ export const MyPage = () => {
           selectedProfileMenu={selectedProfileMenu}
           setSelectedMenu={setSelectedMenu}
           setSelectedProfileMenu={setSelectedProfileMenu}
+          myid={userData.id}
+          targetid={joinId}
         />
       </div>
 

@@ -1,4 +1,9 @@
+import { LoadingComponents } from '@/components/common/LoadingComponents';
+
 export const IntroductionLecture = ({ lecture }) => {
+  if (!lecture) {
+    return <LoadingComponents />;
+  }
   return (
     <>
       <div className="mt-[60px]">
