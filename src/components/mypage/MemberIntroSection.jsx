@@ -1,22 +1,53 @@
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+
+import { _axiosAuth } from '@/api/instance';
 
 // 마이페이지의 유저 소개 섹션을 담당하는 컴포넌트
-export const MemberIntroSection = () => {
+export const MemberIntroSection = ({ joinId }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [introText, setIntroText] = useState('');
+  const [introText, setIntroText] = useState(''); // 초기 소개글 상태
+  const [editingText, setEditingText] = useState(introText); // 수정할 텍스트 상태
 
-  const [editingText, setEditingText] = useState(introText);
+  // 유저소개 조회 api (joinId를 사용해서 해당 유저의 소개글을 가져옴)
+  const {
+    data: userintroduce,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['userintroduce', joinId], // joinId가 변경될 때마다 새로 불러옴
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/user/${joinId}`);
+      return data.body.data.intro; // 해당 유저의 소개글을 반환
+    },
+    enabled: !!joinId, // joinId가 있을 때만 요청
+  });
 
-  const handleSave = () => {
-    setIntroText(editingText);
-    setIsEditing(false);
-    // 여기에 API 호출 로직 추가
+  // 로딩 중일 때와 에러가 발생한 경우 처리
+  useEffect(() => {
+    if (userintroduce) {
+      setIntroText(userintroduce); // 가져온 소개글을 상태에 저장
+      setEditingText(userintroduce); // 수정용 상태에 저장
+    }
+  }, [userintroduce]); // userintroduce가 바뀔 때마다 실행
+
+  const handleSave = async () => {
+    try {
+      await _axiosAuth.put(`/user`, { intro: editingText }); // 소개글 수정 API 호출
+      setIntroText(editingText); // 수정된 소개글 상태 업데이트
+      setIsEditing(false); // 수정 완료 후 편집 모드 종료
+    } catch (error) {
+      console.error('소개글 수정 실패:', error);
+    }
   };
 
   const handleEditClick = () => {
     setEditingText(introText); // 수정 모드 진입 시 현재 저장된 텍스트로 초기화
     setIsEditing(true);
   };
+
+  if (isLoading) return <div>Loading...</div>; // 로딩 중일 때
+  if (isError) return <div>Error occurred while fetching data</div>; // 에러 발생 시
 
   return (
     <div className="flex flex-col gap-2">
@@ -33,7 +64,7 @@ export const MemberIntroSection = () => {
             isEditing ? 'invisible z-0' : 'visible z-10 border-divider-color'
           } ${!introText ? 'text-text-gray-color' : 'text-common-font-color'}`}
         >
-          {introText ? introText : '소개글을 작성해주세요.'}
+          {introText || '소개글을 작성해주세요.'} {/* 기본값 설정 */}
         </p>
       </div>
       <div className="flex justify-end gap-2">
@@ -54,7 +85,7 @@ export const MemberIntroSection = () => {
           </>
         ) : (
           <button
-            onClick={() => handleEditClick()}
+            onClick={handleEditClick}
             className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80"
           >
             수정하기

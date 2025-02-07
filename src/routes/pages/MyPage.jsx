@@ -27,7 +27,7 @@ export const MyPage = () => {
     navigate(`/mypage/${joinId}`, { state: { joinId } });
   }, [joinId]);
   const COMMON_MENU = {
-    유저소개: <MemberIntroSection />,
+    유저소개: <MemberIntroSection joinId={joinId} />,
     '마이 페이지': <MemberSettingsSection />,
   };
 
