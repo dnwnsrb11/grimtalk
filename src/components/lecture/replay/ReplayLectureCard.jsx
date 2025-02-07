@@ -2,6 +2,7 @@
 // 이미지 유사도 확인 버튼
 import { CheckImageSimilarityButton } from '@/components/lecture/replay/CheckImageSimilarityButton';
 import { ReplayLecturePlayButton } from '@/components/lecture/replay/ReplayLecturePlayButton';
+import { formatDateWithTime } from '@/utils/dateFormatter';
 
 export const ReplayLectureCard = ({ replay, checkInstructor }) => {
   const testText =
@@ -14,10 +15,8 @@ export const ReplayLectureCard = ({ replay, checkInstructor }) => {
           {/* 왼쪽 */}
           <div>
             <div>
-              <h1 className="text-[22px] font-semibold text-text-gray-color">
-                커리큘럼 1. 진짜 시작
-              </h1>
-              <p className="mt-[15px] line-clamp-2 text-text-gray-color">{testText}</p>
+              <h1 className="text-[22px] font-semibold text-text-gray-color">{replay.subject}</h1>
+              <p className="mt-[15px] line-clamp-2 text-text-gray-color">{replay.content}</p>
             </div>
             <div className="mt-[15px] flex gap-3">
               {/* 하단 정보 */}
@@ -26,7 +25,9 @@ export const ReplayLectureCard = ({ replay, checkInstructor }) => {
               </div>
               <div className="rounded-full bg-black px-[10px] py-[5px] ">
                 {/* common에 있는 formatDate 함수를 사용하여 출력하기 */}
-                <p className="text-[14px] font-semibold text-white">2025.03.01</p>
+                <p className="text-[14px] font-semibold text-white">
+                  {formatDateWithTime(replay.createdAt)}
+                </p>
               </div>
             </div>
           </div>
