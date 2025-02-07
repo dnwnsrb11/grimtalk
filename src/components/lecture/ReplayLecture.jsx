@@ -22,8 +22,7 @@ export const ReplayLecture = ({ checkInstructor, lecture }) => {
       return data.body.data.list;
     },
   });
-  // test
-  const testList = ['one', 'two', 'three'];
+
   const [replayDate, setReplayDate] = useState('');
   const [isActive, setIsActive] = useState(false);
 
