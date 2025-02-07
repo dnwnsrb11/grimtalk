@@ -9,6 +9,6 @@ import App from '@/App';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
-    <Toaster position="top-right" reverseOrder={false} />
+    <Toaster position="bottom-right" reverseOrder={false} />
   </StrictMode>,
 );
