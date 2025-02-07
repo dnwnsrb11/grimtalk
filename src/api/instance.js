@@ -84,7 +84,7 @@ _axiosAuth.interceptors.response.use(
         } catch (error) {
           // 토큰 갱신 실패 시 로그인 페이지로 리다이렉트
           useAuthStore.getState().logoutAuth();
-          window.location.href = '/login';
+          // window.location.href = '/login';
           return Promise.reject(error);
         }
       }
@@ -98,7 +98,7 @@ _axiosAuth.interceptors.response.use(
       customCode === ERROR_CODES.NOT_FOUND_REFRESH_TOKEN
     ) {
       useAuthStore.getState().logoutAuth();
-      window.location.href = '/login';
+      // window.location.href = '/login';
       return Promise.reject(response); // 오류 반환
     }
 
@@ -106,7 +106,7 @@ _axiosAuth.interceptors.response.use(
   },
   // API 호출 실패 시 실행되는 콜백 NotFound Page로 이동
   (error) => {
-    window.location.href = '/notfound';
+    // window.location.href = '/notfound';
     return Promise.reject(error); // 오류 반환
   },
 );

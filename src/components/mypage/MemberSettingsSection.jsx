@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import { _axiosAuth } from '@/api/instance';
@@ -7,18 +7,22 @@ import { PasswordEditSection } from '@/components/mypage/PasswordEditSection';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export const MemberSettingsSection = () => {
-  const { userData } = useAuthStore();
+  const { id, email, nickname } = useAuthStore((state) => state.userData);
+  console.log(id, email, nickname);
+  // 정보 조회회
   const { data: memberSettings } = useQuery({
     queryKey: ['memberSettings'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/user/${userData.id}`);
+      const { data } = await _axiosAuth.get(`/user/${id}`);
+
       return data.body.data;
     },
   });
-  const { memberId, memberPassword, memberSubscribeNumber } = {
+  const { memberId, memberPassword, memberSubscribeNumber, memberIntro } = {
     memberId: memberSettings?.email,
     memberPassword: 'password',
     memberSubscribeNumber: memberSettings?.subscribeNumber,
+    memberIntro: memberSettings?.intro,
   };
   const [memberProfileImage, setMemberProfileImage] = useState('MYPROFILEIMAGE.jpg');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -38,22 +42,40 @@ export const MemberSettingsSection = () => {
     input.click();
   };
 
-  const handleSubmit = async () => {
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append('profileImage', selectedFile);
+  // 수정 api 요청
+  const memberSettingsChange = useMutation({
+    mutationFn: async (formData) => {
+      const { data } = await _axiosAuth.put(`/user`, formData);
+      return data;
+    },
+    onSuccess: () => {
+      alert('회원정보 수정에 성공했습니다.');
+    },
+    onError: (err) => {
+      alert('회원정보 수정에 실패했습니다.');
+    },
+  });
 
-      try {
-        // API 호출 예시
-        // const response = await axios.post('/api/profile/image', formData);
-        // if (response.status === 200) {
-        //   alert('프로필 이미지가 성공적으로 변경되었습니다.');
-        // }
-      } catch (error) {
-        console.error('이미지 업로드 실패:', error);
-        alert('이미지 업로드에 실패했습니다.');
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('nickname', nickname);
+    formData.append('intro', memberSettings?.intro || '');
+    if (selectedFile) {
+      console.log(selectedFile);
+      formData.append('image', selectedFile);
+      console.log(formData.get('image'));
+    }
+
+    // FormData 내용 확인 (출력)
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(key, value.name, value.type, value.size);
+      } else {
+        console.log(key, value);
       }
     }
+
+    memberSettingsChange.mutate(formData);
   };
 
   const handlePasswordEditClick = () => {
