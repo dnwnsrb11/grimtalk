@@ -1,5 +1,7 @@
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 
+import { _axiosAuth } from '@/api/instance';
 import {
   CheckIcon,
   LockIcon,
@@ -7,29 +9,45 @@ import {
   LockOpenIcon,
   WrongIcon,
 } from '@/components/common/icons';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
-
+  const { email } = useAuthStore((state) => state.userData);
   // 비밀번호 유효성 검사 로직(추후 변경)
   const isPasswordValid = (password) => {
     return password.length >= 8;
   };
+  const { mutate: changePassword, isLoading } = useMutation({
+    mutationFn: async () => {
+      const { data } = await _axiosAuth.put(`/user/password`, {
+        email: email,
+        password: currentPassword,
+        newPassword,
+        newPassword2: newPasswordConfirm,
+      });
+      return data;
+    },
+    onSuccess: () => {
+      alert('비밀번호 변경이 완료되었습니다.');
+      onGoBack();
+    },
+    onError: (error) => {
+      alert('비밀번호 변경에 실패했습니다.:', error);
+    },
+  });
+
   // api 호출 필요(DB 변경 로직)
   const handlePasswordEditClick = () => {
-    if (currentPassword === memberPassword) {
-      if (isPasswordValid(newPassword) && newPassword === newPasswordConfirm) {
-        alert('비밀번호 변경 완료');
-        onGoBack();
-      } else {
-        alert('새로운 비밀번호가 일치하지 않거나 규칙을 충족하지 않습니다.');
-      }
-    } else {
-      alert('현재 비밀번호가 일치하지 않습니다.');
+    if (!isPasswordValid(newPassword) || newPassword !== newPasswordConfirm) {
+      alert('새로운 비밀번호가 일치하지 않거나 규칙을 충족하지 않습니다.');
+      return;
     }
+    changePassword();
   };
+  // 회원 이메일
 
   return (
     <div className="flex w-[65%] flex-col gap-5">
@@ -46,15 +64,15 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
               onChange={(e) => setCurrentPassword(e.target.value)}
               className="w-full rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-semibold"
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            {/* <div className="absolute right-3 top-1/2 -translate-y-1/2">
               {currentPassword === memberPassword ? <CheckIcon /> : <WrongIcon />}
-            </div>
+            </div> */}
           </div>
-          {currentPassword === memberPassword ? (
+          {/* {currentPassword === memberPassword ? (
             <p className="text-[18px] text-check-color">비밀번호가 일치합니다.</p>
           ) : (
             <p className="text-[18px] text-red-500">비밀번호가 일치하지 않습니다.</p>
-          )}
+          )} */}
         </div>
         <div className="flex flex-col items-baseline gap-2">
           <div className="flex flex-row items-center gap-2">

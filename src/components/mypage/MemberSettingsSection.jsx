@@ -1,13 +1,24 @@
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
+import { _axiosAuth } from '@/api/instance';
 import { BadgeInformation } from '@/components/mypage/BadgeInformation';
+import { PasswordEditSection } from '@/components/mypage/PasswordEditSection';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const MemberSettingsSection = () => {
-  // api로 호출 예정
+  const { userData } = useAuthStore();
+  const { data: memberSettings } = useQuery({
+    queryKey: ['memberSettings'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/user/${userData.id}`);
+      return data.body.data;
+    },
+  });
   const { memberId, memberPassword, memberSubscribeNumber } = {
-    memberId: 'WooJunGyu12@naver.com',
+    memberId: memberSettings?.email,
     memberPassword: 'password',
-    memberSubscribeNumber: 2,
+    memberSubscribeNumber: memberSettings?.subscribeNumber,
   };
   const [memberProfileImage, setMemberProfileImage] = useState('MYPROFILEIMAGE.jpg');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -50,12 +61,8 @@ export const MemberSettingsSection = () => {
   };
 
   if (isPasswordEditMode) {
-    return (
-      <PasswordEditSection
-        onGoBack={() => setIsPasswordEditMode(false)}
-        memberPassword={memberPassword}
-      />
-    );
+    console.log(isPasswordEditMode);
+    return <PasswordEditSection onGoBack={() => setIsPasswordEditMode(false)} />;
   }
 
   return (
