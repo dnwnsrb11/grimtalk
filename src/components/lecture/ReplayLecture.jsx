@@ -1,9 +1,26 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { _axios } from '@/api/instance';
 import { ReplayLectureCard } from '@/components/lecture/replay/ReplayLectureCard';
 import { ReplayLectureDetail } from '@/components/lecture/replay/ReplayLectureDetail';
 
-export const ReplayLecture = ({ checkInstructor }) => {
+export const ReplayLecture = ({ checkInstructor, lecture }) => {
+  const navigate = useNavigate();
+  // api 호출
+  const {
+    data: replays,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['replays'],
+    queryFn: async () => {
+      const { data } = await _axios(`/replay/${lecture.lectureId}`);
+      return data.body.data.list;
+    },
+  });
   // test
   const testList = ['one', 'two', 'three'];
   const [replayDate, setReplayDate] = useState('');
