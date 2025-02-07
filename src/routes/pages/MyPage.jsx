@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { CheckBoardSection } from '@/components/mypage/CheckBoardSection';
 import { CreateLectureSection } from '@/components/mypage/CreateLectureSection';
@@ -13,20 +14,23 @@ import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFav
 import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
 import { useAuthStore } from '@/store/useAuthStore';
 
-export const MyPage = (joinId) => {
+export const MyPage = () => {
   const [selectedProfileMenu, setSelectedProfileMenu] = useState('수강생');
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
   // 헤더 요청한 사람과로그인 한 살마 id가 같으면 강사로 설정
   const { userData } = useAuthStore();
-  console.log(userData.id);
-  console.log(joinId);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { joinId } = location.state || userData.id;
+  // joinId 감지
+  useEffect(() => {
+    navigate(`/mypage/${joinId}`, { state: { joinId } });
+  }, [joinId]);
   const COMMON_MENU = {
     유저소개: <MemberIntroSection />,
     '마이 페이지': <MemberSettingsSection />,
   };
-  if (joinId && userData.id !== joinId) {
-    console.log('강사');
-  }
+
   const MENU_COMPONENTS = {
     공통메뉴: COMMON_MENU,
     수강생: {
