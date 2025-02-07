@@ -1,6 +1,28 @@
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { _axios, _axiosAuth } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 
 export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }) => {
+  const navigate = useNavigate();
+  // api 호출
+  const {
+    data: replay,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['replay'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/replay/detail/${replayDate.replayId}`);
+      return data.body.data;
+    },
+    onError: () => {
+      navigate('/notfound');
+    },
+  });
   // 비디오 저장
   const [video, setVideo] = useState(null);
   const [drawingImg, setDrawingImg] = useState(null);
@@ -14,12 +36,16 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
       setDrawingImg(file);
     }
   };
+
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
   return (
     <>
       <div className="mt-[60px]">
         <div className="min-h-[300px]">
-          <h1 className="text-[32px] font-bold">커리큘럼 1. 새로운 시작</h1>
-          <p className="text-[18px] font-medium">{replayDate}</p>
+          <h1 className="text-[32px] font-bold">{replay.subject}</h1>
+          <p className="text-[18px] font-medium">{replay.content}</p>
         </div>
         <div className="mt-[10px] flex items-center justify-center">
           <button className="rounded-2xl border bg-primary-color px-[120px] py-[20px] text-center">
