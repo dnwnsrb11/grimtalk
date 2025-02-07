@@ -35,7 +35,10 @@ export const LectureItem = ({ isMyPage = false, search }) => {
             <div className="flex flex-wrap items-center gap-1">
               <h4 className="mr-2 text-base font-bold">{searchNickname}</h4>
               {searchTags?.map((tag, index) => (
-                <div className="inline-block rounded-full border bg-bg-gray-color px-3 py-1">
+                <div
+                  className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
+                  key={index}
+                >
                   <p className="text-text-gray-color">{tag}</p>
                 </div>
               ))}
