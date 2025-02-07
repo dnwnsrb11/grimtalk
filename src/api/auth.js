@@ -35,7 +35,7 @@ const useLogin = ({ email, password }) => {
           const accessToken = authHeader.substring(BEARER_PREFIX.length); // 토큰 추출
           useAuthStore.getState().loginAuth(accessToken); // 토큰 저장
 
-          toast('로그인 되었습니다.');
+          toast.success('로그인 되었습니다.');
           navigate('/'); // 홈 페이지로 이동
         }
       }
@@ -69,7 +69,7 @@ const useLogout = () => {
       if (responseBody.code === 200) {
         useAuthStore.getState().logoutAuth();
         navigate('/');
-        toast('로그아웃 되었습니다.');
+        toast.success('로그아웃 되었습니다.');
       } else {
         handleApiError(responseBody);
       }
