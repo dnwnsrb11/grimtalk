@@ -1,13 +1,14 @@
 import { ResponsiveBar } from '@nivo/bar';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
+import posterNoneImg from '@/assets/posterNoneImg.png';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-// import { LoadingComponents } from '@/components/common/LoadingComponents';
 export const StudentDashboardSection = () => {
   // 임시 데모 데이터
   const { data: data, isLoading: recentCurriculumLoading } = useQuery({
@@ -17,7 +18,10 @@ export const StudentDashboardSection = () => {
       return data.body.data;
     },
   });
+  // 네비게이트 함수
+  const navigate = useNavigate();
 
+  // 로딩시 로딩페이지 출력
   if (recentCurriculumLoading) {
     return <LoadingComponents />;
   }
@@ -50,6 +54,20 @@ export const StudentDashboardSection = () => {
     };
   });
 
+  // 이미지 확장자 검사
+  const isValidImage = (url) => {
+    if (!url) return false;
+
+    // 이미지 확장자 검사: jpg, jpeg, png, gif, webp, svg
+    const validExtensions = /\.(jpg|jpeg|png|gif|webp|svg)$/i;
+    if (!validExtensions.test(url)) return false;
+
+    // 이미지 로딩 여부 확인 (비동기 처리 필요)
+    const img = new Image();
+    img.src = url;
+    return img.complete && img.naturalHeight !== 0; // 이미지가 정상적으로 로드되었는지 확인
+  };
+
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
@@ -59,7 +77,12 @@ export const StudentDashboardSection = () => {
               <HashTaggedLectureCurriculumItem
                 title={recentCurriculum?.subject}
                 hashTags={recentCurriculum?.hashtags}
-                image={recentCurriculum?.image ?? null}
+                image={
+                  recentCurriculum?.image && isValidImage(recentCurriculum?.image)
+                    ? recentCurriculum?.image
+                    : posterNoneImg
+                }
+                id={recentCurriculum?.lectureId}
               />
             ) : (
               <p className="mt-[85px] flex items-center justify-center text-[20px]">
@@ -67,6 +90,7 @@ export const StudentDashboardSection = () => {
               </p>
             )}
           </DashboardCard>
+
           <DashboardCard
             title="나의 가장 높은 유사도"
             subtitle={
@@ -96,6 +120,7 @@ export const StudentDashboardSection = () => {
                 image={expectedCurriculum?.image ?? null}
                 createdAt={expectedCurriculum?.createdAt}
                 expectedLiveTime={expectedCurriculum?.expectedLiveTime}
+                id={expectedCurriculum?.lectureId}
               />
             ))
           ) : (
@@ -108,13 +133,19 @@ export const StudentDashboardSection = () => {
       <div className="grid grid-cols-2 gap-3">
         <DashboardCard title="최근 구독한 강사">
           {recentSubscribedInstructor ? (
-            <button>
+            <button onClick={() => navigate(`/mypage`, { joinId: recentSubscribedInstructor.id })}>
               <div className="flex items-center gap-5">
                 <img
-                  src={recentSubscribedInstructor.image ?? null}
+                  src={
+                    recentSubscribedInstructor.image &&
+                    isValidImage(recentSubscribedInstructor.image)
+                      ? recentSubscribedInstructor.image
+                      : posterNoneImg
+                  }
                   alt="recent-instructor"
                   className="h-[70px] w-[70px] rounded-full"
                 />
+
                 <div className="flex flex-col items-start">
                   <p className="text-lg font-bold text-common-font-color">
                     {recentSubscribedInstructor.nickname}
@@ -138,7 +169,12 @@ export const StudentDashboardSection = () => {
             <HashTaggedLectureCurriculumItem
               title={recentFavoriteLecture.subject}
               hashTags={recentFavoriteLecture.hashtags}
-              image={recentFavoriteLecture.image ?? null}
+              image={
+                recentFavoriteLecture?.image && isValidImage(recentFavoriteLecture?.image)
+                  ? recentFavoriteLecture?.image
+                  : posterNoneImg
+              }
+              id={recentFavoriteLecture?.lectureId}
             />
           ) : (
             <p className="mt-[85px] flex items-center justify-center text-[20px]">
@@ -148,6 +184,7 @@ export const StudentDashboardSection = () => {
         </DashboardCard>
       </div>
       <DashboardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
+        <div>{monthlyProgressData?.year}</div>
         <div className="h-[250px]">
           <ResponsiveBar
             // 차트 데이터
