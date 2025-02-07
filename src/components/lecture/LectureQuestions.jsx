@@ -19,7 +19,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['questions'],
+    queryKey: ['questions', isActive],
     queryFn: async () => {
       const { data } = await _axios.get(`/lecture/board/${lecture.lectureId}`);
 
@@ -72,7 +72,13 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
       />
     );
   } else if (isActive === '질문 작성페이지') {
-    return <QuestionLectureWrite setIsActive={setIsActive} curriculumId={curriculumId} />;
+    return (
+      <QuestionLectureWrite
+        setIsActive={setIsActive}
+        curriculumId={curriculumId}
+        lecture={lecture}
+      />
+    );
   }
 
   return (

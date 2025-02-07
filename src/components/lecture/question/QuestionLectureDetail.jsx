@@ -9,6 +9,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [answer, setAnswer] = useState('');
+  const [answerId, setAnserId] = useState(null);
 
   const {
     data: board,
@@ -22,7 +23,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       if (!data.body.data) {
         throw new Error('데이터가 없습니다.');
       }
-
+      setAnserId(data?.body?.data?.comments[0]?.commentId);
       return data.body.data;
     },
     onError: () => {
@@ -60,7 +61,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
   const addCommentCheckMutation = useMutation({
     mutationFn: async () => {
       const { data } = await _axiosAuth.put('/board/pick', {
-        answerId: questionId,
+        answerId: answerId,
       });
       return data;
     },
@@ -81,6 +82,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
 
   return (
     <>
+      <p>hell,{answerId}</p>
       <div className="mt-[60px] min-h-[200px]">
         <h1 className="text-[32px] font-bold">{board.subject || ''}</h1>
         <div className="mt-[10px]">
@@ -145,7 +147,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
             <p className="text-[18px] font-semibold text-white">작성하기</p>
           </button>
         )}
-        {checkInstructor && (
+        {!checkInstructor && board?.comments?.length > 0 && (
           <button
             className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]"
             onClick={() => addCommentCheckMutation.mutate()}
