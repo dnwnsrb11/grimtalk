@@ -130,6 +130,11 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
             <p className="text-[18px] font-semibold text-white">작성하기</p>
           </button>
         )}
+        {!checkInstructor && (
+          <button className="rounded-2xl border border-gray-border-color bg-primary-color p-[10px]">
+            <p className="text-[18px] font-semibold text-white">답변완료</p>
+          </button>
+        )}
       </div>
     </>
   );
