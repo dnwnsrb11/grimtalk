@@ -72,7 +72,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
       />
     );
   } else if (isActive === '질문 작성페이지') {
-    return <QuestionLectureWrite setIsActive={setIsActive} />;
+    return <QuestionLectureWrite setIsActive={setIsActive} curriculumId={curriculumId} />;
   }
 
   return (
@@ -97,6 +97,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
               onClick={() => {
                 setIsActive('질문 상세페이지');
                 setQuestionId(question.boardId);
+                setCurriculumId(question.curriculumId);
               }}
               className="mb-3"
             >
