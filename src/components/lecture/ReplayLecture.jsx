@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayLectureCard } from '@/components/lecture/replay/ReplayLectureCard';
 import { ReplayLectureDetail } from '@/components/lecture/replay/ReplayLectureDetail';
 
@@ -47,6 +48,9 @@ export const ReplayLecture = ({ checkInstructor, lecture }) => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [isActive]);
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
   return (
     <>
       {!isActive ? (
