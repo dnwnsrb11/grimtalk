@@ -58,14 +58,13 @@ export const ReplayLecture = ({ checkInstructor, lecture }) => {
           <h1 className="text-[32px] font-bold">다시보기</h1>
           <div className="mt-[10px]">
             {replays.map((replay, index) => (
-              <div
-                key={index}
-                onClick={() => {
-                  setIsActive(true);
-                  setReplayDate(replay);
-                }}
-              >
-                <ReplayLectureCard replay={replay} checkInstructor={checkInstructor} />
+              <div key={index}>
+                <ReplayLectureCard
+                  replay={replay}
+                  checkInstructor={checkInstructor}
+                  setReplayDate={setReplayDate}
+                  setIsActive={setIsActive}
+                />
               </div>
             ))}
           </div>
