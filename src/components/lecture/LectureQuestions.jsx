@@ -11,6 +11,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
   // 상세 페이지 기능
   const [isActive, setIsActive] = useState('/');
   const [questionId, setQuestionId] = useState('');
+  const [curriculumId, setCurriculumId] = useState('');
 
   // 목록 조회
   const {
