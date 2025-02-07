@@ -77,7 +77,7 @@ _axiosAuth.interceptors.response.use(
           }
 
           // 새로운 토큰으로 헤더 업데이트
-          originalRequest.headers['X-Access-Token'] = `${newAccessToken}`;
+          originalRequest.headers['X-Access-Token'] = `Bearer ${newAccessToken}`;
 
           // 원래 요청 재시도
           return _axiosAuth(originalRequest);
@@ -98,13 +98,15 @@ _axiosAuth.interceptors.response.use(
       customCode === ERROR_CODES.NOT_FOUND_REFRESH_TOKEN
     ) {
       useAuthStore.getState().logoutAuth();
-      window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+      window.location.href = '/login';
       return Promise.reject(response); // 오류 반환
     }
 
     return response;
   },
+  // API 호출 실패 시 실행되는 콜백 NotFound Page로 이동
   (error) => {
+    window.location.href = '/notfound';
     return Promise.reject(error); // 오류 반환
   },
 );
