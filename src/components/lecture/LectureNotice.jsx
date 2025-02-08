@@ -27,8 +27,6 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
     },
   });
 
-  // test
-  const testList = ['one', 'two', 'three'];
   // 상세페이지 기능 구현
   const [noticeDate, setNoticeDate] = useState(null);
   const [isActive, setIsActive] = useState('/');
