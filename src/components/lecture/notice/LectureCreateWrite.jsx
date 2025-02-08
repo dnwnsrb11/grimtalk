@@ -1,4 +1,22 @@
-export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate }) => {
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+
+export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate, noticeDate }) => {
+  const navigate = useNavigate();
+  // api 연결
+  const addNoticeMutaion = useMutation({
+    mutationFn: async () => {
+      const { data } = await _axiosAuth.post('/notice', {
+        lectureId: noticeDate.lectureId,
+        subject: 'test',
+        content: 'test',
+      });
+      return data;
+    },
+    onSuccess: () => {
+      navigate('/notfound');
+    },
+  });
   const changeActive = () => {
     setIsActive('/');
   };
