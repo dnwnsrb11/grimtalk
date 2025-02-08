@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 import { _axiosAuth } from '@/api/instance';
+import posterNoneImg from '@/assets/posterNoneImg.png';
 import {
   InstructorIcon,
   LeveloneBadge,
@@ -39,33 +40,31 @@ export const ProfileSection = ({
 
   useEffect(() => {
     if (profileSectionCheck) {
-      if (profileSectionCheck.subscribeNumber <= 10) {
-        setBadgeImage(LeveloneBadge); // 함수 형태로 저장
-      } else if (profileSectionCheck.subscribeNumber <= 100) {
-        setBadgeImage(LeveltwoBadge);
-      } else if (profileSectionCheck.subscribeNumber > 100) {
-        setBadgeImage(LevelthirdBadge);
-      }
+      setBadgeImage(profileSectionCheck.subscribeNumber);
     }
-    console.log(profileSectionCheck.subscribeNumber);
-    console.log(badgeImage);
   }, [profileSectionCheck]);
 
   return (
-    <div className="mt-10 flex flex-col items-start">
+    <div className="mt-10 flex flex-col  items-start">
       {/* 프로필 정보 영역 */}
       <div className="flex flex-col items-center gap-1">
         {/* 프로필 이미지 */}
         {/* 프로필 이미지 -> 값이 없을 경우 랜더링 유무 체크 */}
         <img
           className="h-40 w-40 rounded-full bg-gray-600"
-          src={profileSectionCheck?.image}
+          src={profileSectionCheck?.image || posterNoneImg}
           alt="profile"
         />
         {/* 사용자 이름과 뱃지 */}
         <div className="flex items-center gap-1">
           {/* 뱃지 이미지 추가 */}
-          {badgeImage}
+          {badgeImage <= 10 ? (
+            <LeveloneBadge />
+          ) : badgeImage <= 100 ? (
+            <LeveltwoBadge />
+          ) : (
+            <LevelthirdBadge />
+          )}
 
           <span className="text-2xl font-bold">{profileSectionCheck?.nickname}</span>
         </div>
