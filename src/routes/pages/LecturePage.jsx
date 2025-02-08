@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
@@ -24,7 +24,7 @@ export const LecturePage = () => {
 
   //로그인 체크를 위한 데이터
   const { id } = useAuthStore((state) => state.userData);
-  console.log(id);
+
   const {
     data: lecture,
     isLoading,
@@ -36,17 +36,18 @@ export const LecturePage = () => {
       const { data } = await _axios.get(`/lecture/intro/${lectuerId}`);
       return data.body.data;
     },
-    onSuccess: (data) => {
-      if (id === data.body.data.instructorInfo.id) {
-        setCheckInstructor(true);
-      } else {
-        setCheckInstructor(false);
-      }
-    },
     onError: (error) => {
       navigate('/notfound');
     },
   });
+
+  // useEffect로 체크
+  useEffect(() => {
+    if (lecture && id !== undefined) {
+      // id가 undefined가 아닐 때만 체크
+      setCheckInstructor(id === lecture.instructorInfo.id);
+    }
+  }, [lecture, id]); // lecture나 id가 변경될 때마다 체크
 
   const [selectedCategory, setSelectedCategory] = useState('강의소개');
   //   자식으로 부터 값을 받기 위한 함수
