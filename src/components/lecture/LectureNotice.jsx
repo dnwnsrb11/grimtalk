@@ -78,11 +78,13 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
       <div className="mt-[60px]">
         <div className="mb-[20px] flex gap-6">
           <h1 className="text-[32px] font-bold">공지사항</h1>
-          <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
-            <button onClick={() => setIsActive('공지사항 작성페이지')}>
-              <p className="text-[18px] font-semibold text-white">공지사항 작성</p>
-            </button>
-          </div>
+          {checkInstructor && (
+            <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
+              <button onClick={() => setIsActive('공지사항 작성페이지')}>
+                <p className="text-[18px] font-semibold text-white">공지사항 작성</p>
+              </button>
+            </div>
+          )}
         </div>
         {/* 공지사항 내용 */}
         <div className="mt-[40px]">
