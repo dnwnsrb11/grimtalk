@@ -37,7 +37,7 @@ export const MyPage = () => {
       ...COMMON_MENU,
       '구독, 즐겨찾기': <SubscriptionFavoriteSection />,
       '내가 쓴 글': <MyBoardSection />,
-      대시보드: <StudentDashboardSection />,
+      대시보드: <StudentDashboardSection joinId={joinId} myid={userData.id} />,
     },
     강사: {
       ...COMMON_MENU,

@@ -1,5 +1,6 @@
 // nonImage 가져오기
 import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
 import posterNoneImg from '@/assets/posterNoneImg.png';
@@ -27,13 +28,12 @@ export const ProfileSection = ({
     setSelectedProfileMenu(menu);
   };
   const { id } = useAuthStore((state) => state.userData);
-
+  const { id: urlid } = useParams();
   // 유저 데이터 조회
   const { data: profileSectionCheck } = useQuery({
-    queryKey: ['profileSectionCheck'],
+    queryKey: ['profileSectionCheck', id, targetid],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/user/${id}`);
-
+      const { data } = await _axiosAuth.get(`/user/${targetid}`);
       return data.body.data;
     },
   });
