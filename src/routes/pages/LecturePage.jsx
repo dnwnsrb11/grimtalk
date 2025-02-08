@@ -24,7 +24,7 @@ export const LecturePage = () => {
 
   //로그인 체크를 위한 데이터
   const { id } = useAuthStore((state) => state.userData);
-
+  console.log(id);
   const {
     data: lecture,
     isLoading,
@@ -34,13 +34,14 @@ export const LecturePage = () => {
     queryKey: ['lecture', lectuerId],
     queryFn: async () => {
       const { data } = await _axios.get(`/lecture/intro/${lectuerId}`);
-      // 내부에서 데이터를 받고 바로 강사, 수강생 체크
+      return data.body.data;
+    },
+    onSuccess: (data) => {
       if (id === data.body.data.instructorInfo.id) {
         setCheckInstructor(true);
       } else {
         setCheckInstructor(false);
       }
-      return data.body.data;
     },
     onError: (error) => {
       navigate('/notfound');
