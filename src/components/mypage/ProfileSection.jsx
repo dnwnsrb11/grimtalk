@@ -28,12 +28,11 @@ export const ProfileSection = ({
     setSelectedMenu('유저소개');
     setSelectedProfileMenu(menu);
   };
-  const { id, email, nickname } = useAuthStore((state) => state.userData);
+  const { id } = useAuthStore((state) => state.userData);
   const { data: profileSectionCheck } = useQuery({
     queryKey: ['profileSectionCheck'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/user/${id}`);
-      console.log(data.body.data);
       return data.body.data;
     },
   });
@@ -61,9 +60,9 @@ export const ProfileSection = ({
           {badgeImage <= 10 ? (
             <LeveloneBadge />
           ) : badgeImage <= 100 ? (
-            <LeveltwoBadge />
-          ) : (
             <LevelthirdBadge />
+          ) : (
+            <LeveltwoBadge />
           )}
 
           <span className="text-2xl font-bold">{profileSectionCheck?.nickname}</span>

@@ -8,7 +8,6 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 export const MemberSettingsSection = () => {
   const { id, email, nickname } = useAuthStore((state) => state.userData);
-  // console.log(id, email, nickname);
   // 정보 조회회
   const { data: memberSettings } = useQuery({
     queryKey: ['memberSettings'],
@@ -45,23 +44,12 @@ export const MemberSettingsSection = () => {
   // 수정 api 요청
   const memberSettingsChange = useMutation({
     mutationFn: async (formData) => {
-      console.log('요청 전 FormData 내용:');
-      for (const [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
-
-      try {
-        const { data } = await _axiosAuth.put(`/user`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data', // 명시적으로 헤더 설정
-          },
-        });
-        console.log('서버 응답:', data);
-        return data;
-      } catch (error) {
-        console.error('에러 상세:', error.response?.data || error);
-        throw error;
-      }
+      const { data } = await _axiosAuth.put(`/user`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // 명시적으로 헤더 설정
+        },
+      });
+      return data;
     },
   });
 
@@ -70,19 +58,7 @@ export const MemberSettingsSection = () => {
     formData.append('nickname', nickname);
     formData.append('intro', memberSettings?.intro || '');
     if (selectedFile) {
-      console.log(selectedFile);
-
       formData.append('image', selectedFile);
-      console.log(formData.get('image'));
-    }
-
-    // FormData 내용 확인 (출력)
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(key, value.name, value.type, value.size);
-      } else {
-        console.log(key, value);
-      }
     }
 
     memberSettingsChange.mutate(formData);
@@ -93,7 +69,6 @@ export const MemberSettingsSection = () => {
   };
 
   if (isPasswordEditMode) {
-    console.log(isPasswordEditMode);
     return <PasswordEditSection onGoBack={() => setIsPasswordEditMode(false)} />;
   }
 
@@ -132,7 +107,7 @@ export const MemberSettingsSection = () => {
             type="text"
             disabled
             className="flex-[80%] rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
-            value={memberSettings.image}
+            value={memberSettings?.image}
           />
           <button
             onClick={handleImageSelect}
