@@ -9,6 +9,10 @@ import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard
 import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 
 export const LectureNotice = ({ checkInstructor, lecture }) => {
+  // 상세페이지 기능 구현
+  const [noticeDate, setNoticeDate] = useState(null);
+  const [isActive, setIsActive] = useState('/');
+
   const navigate = useNavigate();
   // api 연결
   const {
@@ -17,7 +21,7 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
     isError,
     error,
   } = useQuery({
-    queryKey: ['notices'],
+    queryKey: ['notices', isActive],
     queryFn: async () => {
       const { data } = await _axios.get(`/notice/${lecture.lectureId}`);
       return data.body.data.list;
@@ -27,9 +31,6 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
     },
   });
 
-  // 상세페이지 기능 구현
-  const [noticeDate, setNoticeDate] = useState(null);
-  const [isActive, setIsActive] = useState('/');
   // 작성 공지사항
   const [createNoticeDate, setCreateNoticeDate] = useState('');
   // 상세페이지, 공지사항 작성페이지
@@ -68,7 +69,7 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
       <LectureCreateWrite
         setIsActive={setIsActive}
         setCreateNoticeDate={setCreateNoticeDate}
-        noticeDate={noticeDate}
+        lecture={lecture}
       />
     );
   }
