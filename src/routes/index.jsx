@@ -18,7 +18,7 @@ import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
 
 const router = createBrowserRouter([
   {
-    path: '/live',
+    path: '/streaming',
     element: <LivePage />,
   },
   {
