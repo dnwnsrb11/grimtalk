@@ -13,6 +13,7 @@ import { LectureProfile } from '@/components/lecture/LectureProfile';
 import { LectureQuestions } from '@/components/lecture/LectureQuestions';
 import { LectureReview } from '@/components/lecture/LectureReview';
 import { ReplayLecture } from '@/components/lecture/ReplayLecture';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const LecturePage = () => {
   // api 기능(강의 정보)
@@ -20,6 +21,9 @@ export const LecturePage = () => {
   const { lectuerId } = useParams();
   // 강사 여부 체크 - 기본 값을 false로
   const [checkInstructor, setCheckInstructor] = useState(false);
+
+  //로그인 체크를 위한 데이터
+  const { id } = useAuthStore((state) => state.userData);
 
   const {
     data: lecture,
@@ -31,7 +35,7 @@ export const LecturePage = () => {
     queryFn: async () => {
       const { data } = await _axios.get(`/lecture/intro/${lectuerId}`);
       // 내부에서 데이터를 받고 바로 강사, 수강생 체크
-      if (data.body.data.lectureId === data.body.data.instructorInfo.id) {
+      if (id === data.body.data.instructorInfo.id) {
         setCheckInstructor(true);
       } else {
         setCheckInstructor(false);
