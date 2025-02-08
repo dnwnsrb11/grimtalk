@@ -1,20 +1,43 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { _axios } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { LectureCreateWrite } from '@/components/lecture/notice/LectureCreateWrite';
 import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard';
 import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 
-export const LectureNotice = ({ checkInstructor }) => {
-  // test
-  const testList = ['one', 'two', 'three'];
+export const LectureNotice = ({ checkInstructor, lecture }) => {
   // 상세페이지 기능 구현
-  const [noticeDate, setNoticeDate] = useState('');
+  const [noticeDate, setNoticeDate] = useState(null);
   const [isActive, setIsActive] = useState('/');
+
+  const navigate = useNavigate();
+  // api 연결
+  const {
+    data: notices,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['notices', isActive],
+    queryFn: async () => {
+      const { data } = await _axios.get(`/notice/${lecture.lectureId}`);
+      return data.body.data.list;
+    },
+    onError: () => {
+      navigate('/notfound');
+    },
+  });
+
   // 작성 공지사항
   const [createNoticeDate, setCreateNoticeDate] = useState('');
   // 상세페이지, 공지사항 작성페이지
   const pageComponents = {
-    '공지사항 상세페이지': <LectureNoticeDetail />,
+    '공지사항 상세페이지': (
+      <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />
+    ),
     '공지사항 작성페이지': <LectureCreateWrite />,
   };
   useEffect(() => {
@@ -43,32 +66,41 @@ export const LectureNotice = ({ checkInstructor }) => {
     return <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />;
   } else if (isActive === '공지사항 작성페이지') {
     return (
-      <LectureCreateWrite setIsActive={setIsActive} setCreateNoticeDate={setCreateNoticeDate} />
+      <LectureCreateWrite
+        setIsActive={setIsActive}
+        setCreateNoticeDate={setCreateNoticeDate}
+        lecture={lecture}
+      />
     );
+  }
+  if (isLoading) {
+    return <LoadingComponents />;
   }
   return (
     <>
       <div className="mt-[60px]">
         <div className="mb-[20px] flex gap-6">
           <h1 className="text-[32px] font-bold">공지사항</h1>
-          <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
-            <button onClick={() => setIsActive('공지사항 작성페이지')}>
-              <p className="text-[18px] font-semibold text-white">공지사항 작성</p>
-            </button>
-          </div>
+          {checkInstructor && (
+            <div className="rounded-2xl border bg-primary-color px-[15px] py-[10px]">
+              <button onClick={() => setIsActive('공지사항 작성페이지')}>
+                <p className="text-[18px] font-semibold text-white">공지사항 작성</p>
+              </button>
+            </div>
+          )}
         </div>
         {/* 공지사항 내용 */}
         <div className="mt-[40px]">
-          {testList.map((testData, index) => (
+          {notices.map((notice, index) => (
             <div
               key={index}
               className="mb-3"
               onClick={() => {
                 setIsActive('공지사항 상세페이지');
-                setNoticeDate(testData);
+                setNoticeDate(notice);
               }}
             >
-              <LectureNoticeCard />
+              <LectureNoticeCard notice={notice} />
             </div>
           ))}
         </div>
