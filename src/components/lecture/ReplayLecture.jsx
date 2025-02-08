@@ -1,11 +1,28 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { _axios } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayLectureCard } from '@/components/lecture/replay/ReplayLectureCard';
 import { ReplayLectureDetail } from '@/components/lecture/replay/ReplayLectureDetail';
 
-export const ReplayLecture = ({ checkInstructor }) => {
-  // test
-  const testList = ['one', 'two', 'three'];
+export const ReplayLecture = ({ checkInstructor, lecture }) => {
+  const navigate = useNavigate();
+  // api 호출
+  const {
+    data: replays,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['replays'],
+    queryFn: async () => {
+      const { data } = await _axios(`/replay/${lecture.lectureId}`);
+      return data.body.data.list;
+    },
+  });
+
   const [replayDate, setReplayDate] = useState('');
   const [isActive, setIsActive] = useState(false);
 
@@ -30,21 +47,23 @@ export const ReplayLecture = ({ checkInstructor }) => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [isActive]);
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
   return (
     <>
       {!isActive ? (
         <div className="mt-[60px]">
           <h1 className="text-[32px] font-bold">다시보기</h1>
           <div className="mt-[10px]">
-            {testList.map((test, index) => (
-              <div
-                key={index}
-                onClick={() => {
-                  setIsActive(true);
-                  setReplayDate(test);
-                }}
-              >
-                <ReplayLectureCard test={test} checkInstructor={checkInstructor} />
+            {replays.map((replay, index) => (
+              <div key={index}>
+                <ReplayLectureCard
+                  replay={replay}
+                  checkInstructor={checkInstructor}
+                  setReplayDate={setReplayDate}
+                  setIsActive={setIsActive}
+                />
               </div>
             ))}
           </div>
