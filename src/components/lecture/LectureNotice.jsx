@@ -9,7 +9,7 @@ import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard
 import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 
 export const LectureNotice = ({ checkInstructor, lecture }) => {
-  navigate = useNavigate;
+  const navigate = useNavigate();
   // api 연결
   const {
     data: notices,
@@ -17,7 +17,7 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
     isError,
     error,
   } = useQuery({
-    queryKey: 'notices',
+    queryKey: ['notices'],
     queryFn: async () => {
       const { data } = await _axios.get(`/notice/${lecture.lectureId}`);
       return data.body.data.list;
@@ -30,13 +30,15 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
   // test
   const testList = ['one', 'two', 'three'];
   // 상세페이지 기능 구현
-  const [noticeDate, setNoticeDate] = useState('');
+  const [noticeDate, setNoticeDate] = useState(null);
   const [isActive, setIsActive] = useState('/');
   // 작성 공지사항
   const [createNoticeDate, setCreateNoticeDate] = useState('');
   // 상세페이지, 공지사항 작성페이지
   const pageComponents = {
-    '공지사항 상세페이지': <LectureNoticeDetail />,
+    '공지사항 상세페이지': (
+      <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />
+    ),
     '공지사항 작성페이지': <LectureCreateWrite />,
   };
   useEffect(() => {
@@ -69,7 +71,7 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
     );
   }
   if (isLoading) {
-    <LoadingComponents />;
+    return <LoadingComponents />;
   }
   return (
     <>
@@ -84,16 +86,16 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
         </div>
         {/* 공지사항 내용 */}
         <div className="mt-[40px]">
-          {testList.map((testData, index) => (
+          {notices.map((notice, index) => (
             <div
               key={index}
               className="mb-3"
               onClick={() => {
                 setIsActive('공지사항 상세페이지');
-                setNoticeDate(testData);
+                setNoticeDate(notice);
               }}
             >
-              <LectureNoticeCard />
+              <LectureNoticeCard notice={notice} />
             </div>
           ))}
         </div>
