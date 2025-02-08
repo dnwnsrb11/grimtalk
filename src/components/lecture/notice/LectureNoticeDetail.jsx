@@ -15,7 +15,7 @@ export const LectureNoticeDetail = ({ noticeDate, setIsActive }) => {
   } = useQuery({
     queryKey: ['noticeDetail', noticeDate?.noticeId],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/notice/detail/1`);
+      const { data } = await _axiosAuth.get(`/notice/detail/${noticeDate.noticeId}`);
       return data.body.data;
     },
     onError: () => {
