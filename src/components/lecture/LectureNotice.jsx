@@ -1,10 +1,32 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { _axios } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { LectureCreateWrite } from '@/components/lecture/notice/LectureCreateWrite';
 import { LectureNoticeCard } from '@/components/lecture/notice/LectureNoticeCard';
 import { LectureNoticeDetail } from '@/components/lecture/notice/LectureNoticeDetail';
 
-export const LectureNotice = ({ checkInstructor }) => {
+export const LectureNotice = ({ checkInstructor, lecture }) => {
+  navigate = useNavigate;
+  // api 연결
+  const {
+    data: notices,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: 'notices',
+    queryFn: async () => {
+      const { data } = await _axios.get(`/notice/${lecture.lectureId}`);
+      return data.body.data.list;
+    },
+    onError: () => {
+      navigate('/notfound');
+    },
+  });
+
   // test
   const testList = ['one', 'two', 'three'];
   // 상세페이지 기능 구현
@@ -45,6 +67,9 @@ export const LectureNotice = ({ checkInstructor }) => {
     return (
       <LectureCreateWrite setIsActive={setIsActive} setCreateNoticeDate={setCreateNoticeDate} />
     );
+  }
+  if (isLoading) {
+    <LoadingComponents />;
   }
   return (
     <>
