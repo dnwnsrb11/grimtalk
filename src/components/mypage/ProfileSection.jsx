@@ -1,7 +1,17 @@
 // nonImage 가져오기
-import nonImage from '@/assets/nonProfileImg.png';
-import { DefaultBadgeIcon, InstructorIcon, StudentIcon } from '@/components/common/icons';
+import { useQuery } from '@tanstack/react-query';
+
+import { _axiosAuth } from '@/api/instance';
+import posterNoneImg from '@/assets/posterNoneImg.png';
+import {
+  InstructorIcon,
+  LeveloneBadgeIcon,
+  LevelthirdBadgeIcon,
+  LeveltwoBadgeIcon,
+  StudentIcon,
+} from '@/components/common/icons';
 import { NavigationMenu } from '@/components/mypage/NavigationMenu';
+import { useAuthStore } from '@/store/useAuthStore';
 
 // 마이페이지의 프로필 섹션을 담당하는 컴포넌트
 export const ProfileSection = ({
@@ -16,19 +26,43 @@ export const ProfileSection = ({
     setSelectedMenu('유저소개');
     setSelectedProfileMenu(menu);
   };
+  const { id } = useAuthStore((state) => state.userData);
+
+  // 유저 데이터 조회
+  const { data: profileSectionCheck } = useQuery({
+    queryKey: ['profileSectionCheck'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/user/${id}`);
+
+      return data.body.data;
+    },
+  });
 
   return (
-    <div className="mt-10 flex flex-col items-start">
+    <div className="mt-10 flex flex-col  items-start">
       {/* 프로필 정보 영역 */}
       <div className="flex flex-col items-center gap-1">
         {/* 프로필 이미지 */}
         {/* 프로필 이미지 -> 값이 없을 경우 랜더링 유무 체크 */}
-        <img className="h-40 w-40 rounded-full bg-gray-600" src={nonImage} alt="profile" />
+        <img
+          className="h-40 w-40 rounded-full bg-gray-600"
+          src={profileSectionCheck?.image || posterNoneImg}
+          alt="profile"
+        />
         {/* 사용자 이름과 뱃지 */}
         <div className="flex items-center gap-1">
-          <DefaultBadgeIcon className="" width={20} height={20} />
-          <span className="text-2xl font-bold">Woojungyu</span>
+          {/* 뱃지 이미지 추가 */}
+          {profileSectionCheck?.subscribeNumber <= 10 ? (
+            <LeveloneBadgeIcon />
+          ) : profileSectionCheck?.subscribeNumber <= 100 ? (
+            <LeveltwoBadgeIcon />
+          ) : profileSectionCheck?.subscribeNumber >= 101 ? (
+            <LevelthirdBadgeIcon />
+          ) : null}
+
+          <span className="text-2xl font-bold">{profileSectionCheck?.nickname}</span>
         </div>
+
         {/* 수강생/강사 전환 버튼 */}
         <div className="mt-2 flex gap-3 text-lg font-semibold">
           {/* 수강생 버튼 */}
