@@ -355,7 +355,7 @@ const StarReviewIcon = ({
   </svg>
 );
 // 1레벨 뱃지
-const LeveloneBadge = ({ className = '', width = 35, height = 33 }) => (
+const LeveloneBadgeIcon = ({ className = '', width = 35, height = 33 }) => (
   <svg
     width={width}
     height={height}
@@ -401,8 +401,8 @@ const LeveloneBadge = ({ className = '', width = 35, height = 33 }) => (
   </svg>
 );
 
-// 2레벨 벳지
-const LeveltwoBadge = ({ className = '', width = 35, height = 33 }) => (
+// 3레벨 벳지
+const LevelthirdBadgeIcon = ({ className = '', width = 35, height = 33 }) => (
   <svg
     width={width}
     height={height}
@@ -456,8 +456,8 @@ const LeveltwoBadge = ({ className = '', width = 35, height = 33 }) => (
   </svg>
 );
 
-// 3레벨 뱃지
-const LevelthirdBadge = ({ className = '', width = 35, height = 33 }) => (
+// 2레벨 뱃지
+const LeveltwoBadgeIcon = ({ className = '', width = 35, height = 33 }) => (
   <svg
     width={width}
     height={height}
@@ -513,9 +513,9 @@ export {
   DefaultBadgeIcon,
   FavoriteIcon,
   InstructorIcon,
-  LeveloneBadge,
-  LevelthirdBadge,
-  LeveltwoBadge,
+  LeveloneBadgeIcon,
+  LevelthirdBadgeIcon,
+  LeveltwoBadgeIcon,
   LockIcon,
   LockKeyIcon,
   LockOpenIcon,

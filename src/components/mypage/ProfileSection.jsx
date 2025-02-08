@@ -5,9 +5,9 @@ import { _axiosAuth } from '@/api/instance';
 import posterNoneImg from '@/assets/posterNoneImg.png';
 import {
   InstructorIcon,
-  LeveloneBadge,
-  LevelthirdBadge,
-  LeveltwoBadge,
+  LeveloneBadgeIcon,
+  LevelthirdBadgeIcon,
+  LeveltwoBadgeIcon,
   StudentIcon,
 } from '@/components/common/icons';
 import { NavigationMenu } from '@/components/mypage/NavigationMenu';
@@ -27,11 +27,13 @@ export const ProfileSection = ({
     setSelectedProfileMenu(menu);
   };
   const { id } = useAuthStore((state) => state.userData);
+
+  // 유저 데이터 조회
   const { data: profileSectionCheck } = useQuery({
     queryKey: ['profileSectionCheck'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/user/${id}`);
-      console.log(data);
+
       return data.body.data;
     },
   });
@@ -51,11 +53,11 @@ export const ProfileSection = ({
         <div className="flex items-center gap-1">
           {/* 뱃지 이미지 추가 */}
           {profileSectionCheck?.subscribeNumber <= 10 ? (
-            <LeveloneBadge />
+            <LeveloneBadgeIcon />
           ) : profileSectionCheck?.subscribeNumber <= 100 ? (
-            <LevelthirdBadge />
+            <LeveltwoBadgeIcon />
           ) : profileSectionCheck?.subscribeNumber >= 101 ? (
-            <LeveltwoBadge />
+            <LevelthirdBadgeIcon />
           ) : null}
 
           <span className="text-2xl font-bold">{profileSectionCheck?.nickname}</span>

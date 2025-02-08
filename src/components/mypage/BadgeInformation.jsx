@@ -1,4 +1,8 @@
-import { LeveloneBadge, LevelthirdBadge, LeveltwoBadge } from '@/components/common/icons';
+import {
+  LeveloneBadgeIcon,
+  LevelthirdBadgeIcon,
+  LeveltwoBadgeIcon,
+} from '@/components/common/icons';
 import { calculateBadgeLevel, calculateNextLevel } from '@/utils/badgeCalculator';
 export const BadgeInformation = ({
   nickname,
@@ -11,11 +15,11 @@ export const BadgeInformation = ({
     <div className="flex h-full w-full flex-row items-center gap-5">
       <div className="rounded-md bg-bg-gray-color p-3">
         {subscribeNumber <= 10 ? (
-          <LeveloneBadge />
+          <LeveloneBadgeIcon />
         ) : subscribeNumber <= 100 ? (
-          <LevelthirdBadge />
+          <LeveltwoBadgeIcon />
         ) : (
-          <LeveltwoBadge />
+          <LevelthirdBadgeIcon />
         )}
       </div>
       <div className="flex flex-col justify-center">
