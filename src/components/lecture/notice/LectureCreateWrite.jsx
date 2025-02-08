@@ -2,7 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate, noticeDate }) => {
+import { _axiosAuth } from '@/api/instance';
+
+export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate, lecture }) => {
   const navigate = useNavigate();
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
@@ -10,14 +12,20 @@ export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate, noticeDat
   const addNoticeMutation = useMutation({
     mutationFn: async () => {
       const { data } = await _axiosAuth.post('/notice', {
-        lectureId: noticeDate.lectureId,
+        lectureId: lecture.lectureId,
         subject: subject,
         content: content,
       });
       return data;
     },
     onSuccess: () => {
-      navigate('/notfound');
+      alert('작성이 완료되었습니다.');
+      setIsActive('/');
+    },
+    onError: (error) => {
+      // 에러 처리
+      console.error('Error:', error);
+      alert('공지사항 등록에 실패했습니다.');
     },
   });
   const changeActive = () => {
