@@ -33,6 +33,7 @@ export const ProfileSection = ({
     queryKey: ['profileSectionCheck'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/user/${id}`);
+      console.log(data);
       return data.body.data;
     },
   });
@@ -57,13 +58,13 @@ export const ProfileSection = ({
         {/* 사용자 이름과 뱃지 */}
         <div className="flex items-center gap-1">
           {/* 뱃지 이미지 추가 */}
-          {badgeImage <= 10 ? (
+          {profileSectionCheck?.subscribeNumber <= 10 ? (
             <LeveloneBadge />
-          ) : badgeImage <= 100 ? (
+          ) : profileSectionCheck?.subscribeNumber <= 100 ? (
             <LevelthirdBadge />
-          ) : (
+          ) : profileSectionCheck?.subscribeNumber >= 101 ? (
             <LeveltwoBadge />
-          )}
+          ) : null}
 
           <span className="text-2xl font-bold">{profileSectionCheck?.nickname}</span>
         </div>

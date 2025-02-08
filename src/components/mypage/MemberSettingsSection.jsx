@@ -49,6 +49,7 @@ export const MemberSettingsSection = () => {
           'Content-Type': 'multipart/form-data', // 명시적으로 헤더 설정
         },
       });
+      console.log(data);
       return data;
     },
   });
