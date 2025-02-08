@@ -1,6 +1,5 @@
 // nonImage 가져오기
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
 
 import { _axiosAuth } from '@/api/instance';
 import posterNoneImg from '@/assets/posterNoneImg.png';
@@ -23,7 +22,6 @@ export const ProfileSection = ({
   myid, // 조회를 요청한은 사용자의 id
   targetid, // 조회 대상 사용자의 id
 }) => {
-  const [badgeImage, setBadgeImage] = useState(null);
   const handleProfileMenuClick = (menu) => {
     setSelectedMenu('유저소개');
     setSelectedProfileMenu(menu);
@@ -37,12 +35,6 @@ export const ProfileSection = ({
       return data.body.data;
     },
   });
-
-  useEffect(() => {
-    if (profileSectionCheck) {
-      setBadgeImage(profileSectionCheck.subscribeNumber);
-    }
-  }, [profileSectionCheck]);
 
   return (
     <div className="mt-10 flex flex-col  items-start">
