@@ -1,16 +1,41 @@
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+
+import { _axiosAuth } from '@/api/instance';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
+
 export const LectureNoticeDetail = ({ noticeDate, setIsActive }) => {
+  const navigate = useNavigate();
+  // api 호출
+  const {
+    data: noticeDetail,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['noticeDetail', noticeDate?.noticeId],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/notice/detail/1`);
+      return data.body.data;
+    },
+    onError: () => {
+      navigate('/notfound');
+    },
+  });
   const changeActive = () => {
     setIsActive('/');
   };
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
   return (
     <>
       <div className="mt-[60px]">
-        <h1 className="text-[32px] font-bold">공지사항 제목목</h1>
+        <h1 className="text-[32px] font-bold">{noticeDetail?.subject}</h1>
         <div className="mt-[10px]">
-          <p className="text-[18px]">{noticeDate}</p>
+          <p className="text-[18px]">{noticeDetail?.content}</p>
         </div>
       </div>
-      <hr />
       <hr className="mt-[40px] border border-divider-color" />
       <div className="mt-[20px] flex justify-end">
         <button
