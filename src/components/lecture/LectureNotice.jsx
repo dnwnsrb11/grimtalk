@@ -67,7 +67,11 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
     return <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />;
   } else if (isActive === '공지사항 작성페이지') {
     return (
-      <LectureCreateWrite setIsActive={setIsActive} setCreateNoticeDate={setCreateNoticeDate} />
+      <LectureCreateWrite
+        setIsActive={setIsActive}
+        setCreateNoticeDate={setCreateNoticeDate}
+        noticeDate={noticeDate}
+      />
     );
   }
   if (isLoading) {
