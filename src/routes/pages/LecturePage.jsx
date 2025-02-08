@@ -60,7 +60,7 @@ export const LecturePage = () => {
     다시보기: <ReplayLecture checkInstructor={checkInstructor} lecture={lecture} />,
     커리큘럼: <CurriculumLecture checkInstructor={checkInstructor} lecture={lecture} />,
     default: <p>now Testing</p>,
-    공지사항: <LectureNotice checkInstructor={checkInstructor} />,
+    공지사항: <LectureNotice checkInstructor={checkInstructor} lecture={lecture} />,
     질문사항: <LectureQuestions checkInstructor={checkInstructor} lecture={lecture} />,
     리뷰하기: <LectureReview />,
   };
