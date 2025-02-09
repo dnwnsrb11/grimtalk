@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,7 @@ import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReviewLectureCard } from '@/components/lecture/review/ReviewLectureCard';
 
 export const LectureReview = ({ lecture }) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   // 리뷰 리스트 받아오기
   const {
@@ -48,6 +49,7 @@ export const LectureReview = ({ lecture }) => {
     },
     onSuccess: () => {
       alert('리뷰 작성 완료');
+      queryClient.invalidateQueries(['reviews']);
     },
   });
   if (isLoading) {
