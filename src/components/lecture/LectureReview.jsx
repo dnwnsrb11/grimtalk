@@ -40,16 +40,28 @@ export const LectureReview = ({ lecture }) => {
   // 강의 작성 로직
   const addReviewMutaion = useMutation({
     mutationFn: async () => {
-      const { data } = _axiosAuth.post('/review', {
+      const { data } = await _axiosAuth.post('/review', {
         lectureId: lecture.lectureId,
         content: reviewText,
         star: score,
       });
+      if (data.body?.code) {
+        // 에러 응답이면 에러를 throw
+        throw { response: { data } };
+      }
       return data;
     },
     onSuccess: () => {
       alert('리뷰 작성 완료');
       queryClient.invalidateQueries(['reviews']);
+    },
+    onError: (error) => {
+      const errorCode = error.response.data.body.code;
+      if (errorCode === 5006 || errorCode === 5001 || errorCode === 5003) {
+        navigate('/login');
+      } else {
+        alert('네트워크 오류 발생');
+      }
     },
   });
   if (isLoading) {
