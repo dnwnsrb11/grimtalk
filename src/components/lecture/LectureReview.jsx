@@ -4,12 +4,18 @@ import { useNavigate } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
 import { StarReviewIcon } from '@/components/common/icons';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReviewLectureCard } from '@/components/lecture/review/ReviewLectureCard';
 
 export const LectureReview = ({ lecture }) => {
   const navigate = useNavigate();
   // 리뷰 리스트 받아오기
-  const { data, isLoading, isError, error } = useQuery({
+  const {
+    data: reviews,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ['reviews'],
     queryFn: async () => {
       const { data } = await _axios.get(`/review/${lecture.lectureId}`);
@@ -30,7 +36,9 @@ export const LectureReview = ({ lecture }) => {
   };
 
   const [reviewText, setReviewText] = useState('');
-
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
   return (
     <>
       <div className="mt-[60px]">
@@ -82,9 +90,9 @@ export const LectureReview = ({ lecture }) => {
           <div className="mt-[40px]">
             <h1 className="text-[32px] font-bold">전체 리뷰</h1>
             <div className="mt-[10px] grid grid-cols-4 gap-3">
-              {Array.from({ length: 5 }).map((_, index) => (
+              {reviews.map((review, index) => (
                 <div key={index}>
-                  <ReviewLectureCard />
+                  <ReviewLectureCard review={review} />
                 </div>
               ))}
             </div>
