@@ -1,9 +1,24 @@
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { _axios } from '@/api/instance';
 import { StarReviewIcon } from '@/components/common/icons';
 import { ReviewLectureCard } from '@/components/lecture/review/ReviewLectureCard';
 
 export const LectureReview = ({ lecture }) => {
+  const navigate = useNavigate();
+  // 리뷰 리스트 받아오기
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['reviews'],
+    queryFn: async () => {
+      const { data } = await _axios.get(`/review/${lecture.lectureId}`);
+      return data.body.data.list;
+    },
+    onError: () => {
+      navigate('/notfound');
+    },
+  });
   const [score, setScore] = useState(0);
   //  1에서 다시 클릭하면 값이 0으로 변경되게
   const checkScore = (index, score) => {
