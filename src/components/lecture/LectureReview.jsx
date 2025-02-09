@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { StarReviewIcon } from '@/components/common/icons';
 import { ReviewLectureCard } from '@/components/lecture/review/ReviewLectureCard';
 
-export const LectureReview = () => {
+export const LectureReview = ({ lecture }) => {
   const [score, setScore] = useState(0);
   //  1에서 다시 클릭하면 값이 0으로 변경되게
   const checkScore = (index, score) => {
