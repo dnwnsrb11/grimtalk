@@ -1,8 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { _axios } from '@/api/instance';
+import { _axios, _axiosAuth } from '@/api/instance';
 import { StarReviewIcon } from '@/components/common/icons';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReviewLectureCard } from '@/components/lecture/review/ReviewLectureCard';
@@ -36,6 +36,20 @@ export const LectureReview = ({ lecture }) => {
   };
 
   const [reviewText, setReviewText] = useState('');
+  // 강의 작성 로직
+  const addReviewMutaion = useMutation({
+    mutationFn: async () => {
+      const { data } = _axiosAuth.post('/review', {
+        lectureId: lecture.lectureId,
+        content: reviewText,
+        star: score,
+      });
+      return data;
+    },
+    onSuccess: () => {
+      alert('리뷰 작성 완료');
+    },
+  });
   if (isLoading) {
     return <LoadingComponents />;
   }
@@ -80,7 +94,10 @@ export const LectureReview = ({ lecture }) => {
               className="min-h-[200px] w-full resize-none rounded-2xl border border-gray-border-color p-5 transition-all duration-200 focus:border-primary-color focus:outline-none"
             ></textarea>
             <div className="mt-[10px] flex justify-end">
-              <button className="rounded-2xl bg-primary-color px-[30px] py-[10px]">
+              <button
+                className="rounded-2xl bg-primary-color px-[30px] py-[10px]"
+                onClick={() => addReviewMutaion.mutate()}
+              >
                 <p className="text-[18px] font-semibold text-white">리뷰 작성하기</p>
               </button>
             </div>
