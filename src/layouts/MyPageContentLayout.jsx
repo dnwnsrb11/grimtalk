@@ -1,4 +1,5 @@
 export const MyPageContentLayout = ({ navMenuTitle, navMenuSubButton, children }) => {
+  console.log(navMenuTitle);
   return (
     <>
       <div className="mt-10 flex flex-row items-center gap-2">

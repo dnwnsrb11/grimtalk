@@ -18,6 +18,7 @@ export const CreateLectureSection = () => {
   const [curriculumForm, setCurriculumForm] = useState(initialCurriculumState); // 커리큘럼 입력 폼
   const [tags, setTags] = useState([]); // 태그 목록
   const [tagInput, setTagInput] = useState(''); // 태그 입력값
+  const [category, setCategorySelect] = useState(''); // 카테고리 저장
 
   // 이미지 업로드 핸들러
   const handleImageSelect = () => {
@@ -257,13 +258,20 @@ export const CreateLectureSection = () => {
 
         <div className="flex flex-col gap-3">
           <p className="text-xl font-bold">카테고리 선택</p>
-          <select className="w-full rounded-md border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal text-text-gray-color">
+          <select
+            className="w-full rounded-md border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal text-text-gray-color"
+            value={category}
+            onChange={(e) => setCategorySelect(e.target.value)}
+          >
             <option value="" disabled selected>
               옵션에서 카테고리를 선택하세요.
             </option>
-            <option value="1">카테고리 1</option>
-            <option value="2">카테고리 2</option>
-            <option value="3">카테고리 3</option>
+            <option value="1">캐릭터</option>
+            <option value="2">이모티콘</option>
+            <option value="3">드로잉</option>
+            <option value="3">컬러링</option>
+            <option value="3">웹툰</option>
+            <option value="3">컨셉 아트</option>
           </select>
         </div>
       </div>
