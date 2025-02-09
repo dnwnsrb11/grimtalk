@@ -64,7 +64,7 @@ export const LecturePage = () => {
     default: <p>now Testing</p>,
     공지사항: <LectureNotice checkInstructor={checkInstructor} lecture={lecture} />,
     질문사항: <LectureQuestions checkInstructor={checkInstructor} lecture={lecture} />,
-    리뷰하기: <LectureReview lecture={lecture} />,
+    리뷰하기: <LectureReview checkInstructor={checkInstructor} lecture={lecture} />,
   };
 
   if (isLoading) {
