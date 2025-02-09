@@ -46,8 +46,9 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
         star: score,
       });
       if (data.body?.code) {
-        // 에러 응답이면 에러를 throw
-        throw { response: { data } };
+        if (data.body?.code && data.body.code !== 200) {
+          throw { response: { data } };
+        }
       }
       return data;
     },
