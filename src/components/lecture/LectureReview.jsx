@@ -7,7 +7,7 @@ import { StarReviewIcon } from '@/components/common/icons';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReviewLectureCard } from '@/components/lecture/review/ReviewLectureCard';
 
-export const LectureReview = ({ lecture }) => {
+export const LectureReview = ({ lecture, checkInstructor }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   // 리뷰 리스트 받아오기
@@ -71,33 +71,35 @@ export const LectureReview = ({ lecture }) => {
     <>
       <div className="mt-[60px]">
         <div>
-          <div className="flex items-center gap-1">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <div
-                key={index}
-                onClick={() => checkScore(index, score)}
-                className="cursor-pointer transition-all duration-300 ease-in-out hover:scale-125"
-              >
-                {index < score ? (
-                  <StarReviewIcon />
-                ) : (
-                  <StarReviewIcon fill="#DBDBDB" stroke="#DBDBDB" />
-                )}
-              </div>
-            ))}
-            <div className="ml-[15px]">
-              <p
-                className={`text-[22px] text-[#828282] transition-all duration-500 ease-in-out ${score === 0 ? 'opacity-50' : `opacity-100`}`}
-              >
-                <span
-                  className={`font-semibold ${score === 0 ? 'text-text-gray-color' : 'text-primary-color'}`}
+          {!checkInstructor && (
+            <div className="flex items-center gap-1">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div
+                  key={index}
+                  onClick={() => checkScore(index, score)}
+                  className="cursor-pointer transition-all duration-300 ease-in-out hover:scale-125"
                 >
-                  {score}
-                </span>
-                / 5
-              </p>
+                  {index < score ? (
+                    <StarReviewIcon />
+                  ) : (
+                    <StarReviewIcon fill="#DBDBDB" stroke="#DBDBDB" />
+                  )}
+                </div>
+              ))}
+              <div className="ml-[15px]">
+                <p
+                  className={`text-[22px] text-[#828282] transition-all duration-500 ease-in-out ${score === 0 ? 'opacity-50' : `opacity-100`}`}
+                >
+                  <span
+                    className={`font-semibold ${score === 0 ? 'text-text-gray-color' : 'text-primary-color'}`}
+                  >
+                    {score}
+                  </span>
+                  / 5
+                </p>
+              </div>
             </div>
-          </div>
+          )}
           <div className="mt-[25px]">
             <textarea
               name=""
