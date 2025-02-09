@@ -123,7 +123,7 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
         <div>
           <div className="mt-[40px]">
             <h1 className="text-[32px] font-bold">전체 리뷰</h1>
-            <div className="mt-[10px] grid grid-cols-4 gap-3">
+            <div className="mt-[10px] grid grid-cols-3 gap-3">
               {reviews.map((review, index) => (
                 <div key={index}>
                   <ReviewLectureCard review={review} />
