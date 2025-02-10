@@ -2,60 +2,38 @@ import '@/styles/live.css';
 
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
-import { Client } from '@stomp/stompjs';
-import { Room, RoomEvent } from 'livekit-client';
 import { useCallback, useEffect, useState } from 'react';
 
+import { liveApi, useRoomList } from '@/api/live';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
 import { VideoComponent } from '@/components/live/VideoComponent';
-
+import { LiveKitService } from '@/services/liveKitService';
+import { StompService } from '@/services/stompService';
+import { useLiveStore } from '@/store/useLiveStore';
+import { participantUtils, TOKEN_TYPES } from '@/utils/participantUtils';
 // 트랙 정보를 저장하기 위한 타입 정의
 // trackPublication: 원격 트랙 정보를 담고 있는 객체
 // participantIdentity: 참가자의 고유 식별자
 
 // 서버 URL 설정
-// APPLICATION_SERVER_URL: 토큰 발급 등 백엔드 서비스를 제공하는 서버 주소
 // LIVEKIT_URL: WebRTC 연결을 위한 LiveKit 서버 주소
-const APPLICATION_SERVER_URL = 'https://www.grimtalk.com/api/';
+// STOMP_URL: Excalidraw 기능을 위한 STOMP 서버 주소
 const LIVEKIT_URL = 'wss://www.grimtalk.com:7443/';
 const STOMP_URL = 'wss://www.grimtalk.com:28080/ws';
 
-// 토큰 설정
-const X_ACCESS_TOKEN =
-  'eyJhbGciOiJIUzM4NCJ9.eyJpZCI6MSwiZW1haWwiOiIxMjM0QGV4YW1wbGUuY29tIiwibmlja25hbWUiOiLqtozsg4Hsm4UiLCJhdXRob3JpdGllcyI6IuydvOuwmOycoOyggCIsImlhdCI6MTczOTE1ODU0MCwiZXhwIjoxNzM5MjE4NTQwfQ.xSbBiYXwEJwJSIRd89jHe0BI5wRhWBbtkiJNQ8apthibHYXdXJoS3wQY3rCASlZ8';
-
-// let APPLICATION_SERVER_URL = "https://www.grimtalk.com/api/";
-// let LIVEKIT_URL = "wss://www.grimtalk.com:7443/";
-// let STOMP_URL = "wss://www.grimtalk.com:28080/ws";
-// configureUrls();
-
-// function configureUrls() {
-//   // If APPLICATION_SERVER_URL is not configured, use default value from OpenVidu Local deployment
-//   if (!APPLICATION_SERVER_URL) {
-//     // if (window.location.hostname === "localhost") {
-//     //   APPLICATION_SERVER_URL = "http://localhost:5555/";
-//     // } else {
-//     //   APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":15555/";
-//     // }
-//     APPLICATION_SERVER_URL = "http://43.202.81.12:5555/";
-//     // APPLICATION_SERVER_URL = "https://jaemoon99.site:15555/";
-
-//   }
-
-//   // If LIVEKIT_URL is not configured, use default value from OpenVidu Local deployment
-//   if (!LIVEKIT_URL) {
-//     // if (window.location.hostname === "localhost") {
-//     //   LIVEKIT_URL = "ws://localhost:7880/";
-//     // } else {
-//     //   LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
-//     // }
-//     LIVEKIT_URL = "ws://43.202.81.12:7880/";
-//     // LIVEKIT_URL = "wss://jaemoon99.site:7443/";
-//   }
-// }
+// 라이브 페이지의 주요 기능:
+// 1. 방 생성/참여 기능
+// 2. 실시간 화상 통화 기능
+// 3. 실시간 채팅 기능
+// 4. 화이트보드 공유 기능
 
 export const LivePage = () => {
+  const liveStore = useLiveStore();
+  const [stompService] = useState(() => new StompService(STOMP_URL));
+  const [liveKitService] = useState(() => new LiveKitService(LIVEKIT_URL));
+
   const [room, setRoom] = useState(''); // 현재 접속한 방 정보
   const [localTrack, setLocalTrack] = useState('');
 
@@ -69,14 +47,7 @@ export const LivePage = () => {
   // 추후 강의 이름 혹은 random 값으로 받아올 예정
   const [roomName, setRoomName] = useState('test'); // 현재 방 이름
 
-  // "방 이름": "rtc 방장이름(token 값)"
-  // {
-  //   "123": "rtc Participant16",
-  //   "test": "rtc Participant74",
-  //   "1223": "rtc Participant42",
-  //   "4234": "rtc Participant93"
-  // }
-  const [availableRooms, setAvailableRooms] = useState([]); // 사용 가능한 방 목록
+  const { data: availableRooms = {}, isLoading, error } = useRoomList();
 
   // 방장 정보는 로컬 스토리지에서 관리
   const [roomCreator, setRoomCreator] = useState('');
@@ -92,43 +63,37 @@ export const LivePage = () => {
   const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
 
   // STOMP 클라이언트 설정
-  const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  // STOMP 연결 설정
-  const connectStomp = () => {
-    const client = new Client({
-      brokerURL: STOMP_URL,
-      onConnect: () => {
-        setIsConnected(true);
-        console.log('Connected to STOMP');
-      },
-      onDisconnect: () => {
-        setIsConnected(false);
-        console.log('Disconnected from STOMP');
-      },
-    });
-
-    try {
-      client.activate();
-      setStompClient(client);
-    } catch (error) {
-      console.error('STOMP connection failed:', error);
+  // LiveKitService 이벤트 리스너 설정
+  useEffect(() => {
+    if (liveKitService) {
+      liveKitService.setupEventListeners({
+        onTrackSubscribed: (track, publication, participant) => {
+          console.log('LivePage - Track subscribed:', participant.identity);
+          setRemoteTracks((prev) => [
+            ...prev,
+            {
+              trackPublication: publication,
+              participantIdentity: participant.identity,
+            },
+          ]);
+        },
+        onTrackUnsubscribed: (track, publication) => {
+          setRemoteTracks((prev) =>
+            prev.filter((track) => track.trackPublication.trackSid !== publication.trackSid),
+          );
+        },
+      });
     }
-
-    return () => {
-      if (client.active) {
-        client.deactivate();
-      }
-    };
-  };
+  }, [liveKitService]);
 
   // 화이트보드 업데이트 함수
   const updateBoard = useCallback(
     (elements, boardType) => {
-      if (stompClient?.active && isConnected) {
+      if (stompService?.active && isConnected) {
         try {
-          stompClient.publish({
+          stompService.publish({
             destination: `/sub/receive/${roomName}`,
             body: JSON.stringify({
               type: 'excalidraw',
@@ -142,13 +107,13 @@ export const LivePage = () => {
         }
       }
     },
-    [stompClient, isConnected, participantName],
+    [stompService, isConnected, participantName],
   );
 
   // STOMP 구독 설정
   useEffect(() => {
-    if (stompClient && isConnected) {
-      const subscription = stompClient.subscribe(`/pub/receive/${roomName}`, (message) => {
+    if (stompService && isConnected) {
+      const subscription = stompService.subscribe(`/pub/receive/${roomName}`, (message) => {
         const data = JSON.parse(message.body);
         console.log('Received data:', data); // 데이터 수신 확인
       });
@@ -158,68 +123,6 @@ export const LivePage = () => {
       };
     }
   }, [roomName]);
-
-  /**
-   * --------------------------------------------
-
-   * 애플리케이션 서버에서 토큰 발급받기
-   * --------------------------------------------
-   * 아래 메서드는 애플리케이션 서버에 토큰 생성을 요청합니다.
-   * 이를 통해 LiveKit API 키와 시크릿을 클라이언트 측에 노출할
-   * 필요가 없어집니다.
-   *
-   * 이 샘플 코드에서는 사용자 제어가 전혀 없습니다.
-   * 누구나 애플리케이션 서버 엔드포인트에 접근할 수 있습니다.
-   * 실제 프로덕션 환경에서는 애플리케이션 서버가 엔드포인트 접근을 허용하기 위해 사용자를 식별해야 합니다.
-   */
-
-  // 방 생성(createRoom 함수) 시 토큰 발급 로직
-  async function getToken(roomName, participantName) {
-    const response = await fetch(APPLICATION_SERVER_URL + 'openvidu/token/instructor', {
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Access-Token': `Bearer ${X_ACCESS_TOKEN}`,
-      },
-      body: JSON.stringify({
-        roomName: roomName,
-        participantName: participantName,
-      }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`Failed to get token: ${error.errorMessage}`);
-    }
-
-    const data = await response.json();
-    return data.token;
-  }
-
-  // 방 참여(joinRoom 함수) 시 토큰 발급 로직
-  async function joinToken(roomName, participantName) {
-    const response = await fetch(APPLICATION_SERVER_URL + 'openvidu/token/student', {
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Access-Token': `Bearer ${X_ACCESS_TOKEN}`,
-      },
-      body: JSON.stringify({
-        roomName: roomName,
-        participantName: participantName,
-      }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`Failed to get token: ${error.errorMessage}`);
-    }
-
-    const data = await response.json();
-    return data.token;
-  }
 
   // 방 나가기 함수
   async function leaveRoom() {
@@ -234,138 +137,135 @@ export const LivePage = () => {
   // TODO: 라이브 종료 함수(백엔드에서 라이브 종료 요청 로직 추가 필요)
   async function endLive() {}
 
-  // 사용 가능한 방 목록을 가져오는 함수
-  async function fetchRoomList() {
-    try {
-      const response = await fetch(APPLICATION_SERVER_URL + 'openvidu/live/rooms', {
-        headers: {
-          'X-Access-Token': `Bearer ${X_ACCESS_TOKEN}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch rooms');
-      }
-
-      const rooms = await response.json();
-      setAvailableRooms(rooms);
-    } catch (error) {
-      console.error('방 목록을 가져오는데 실패했습니다:', error);
-    }
-  }
-
-  useEffect(() => {
-    fetchRoomList();
-  }, []);
-
   // 방 생성 함수
-  async function createRoom(roomName, creator) {
-    connectStomp();
-    setRoomName(roomName);
-    const room = new Room();
-    setRoom(room);
-
-    // 방장 정보 저장 시 'rtc ' 접두사 없이 저장
-    localStorage.setItem('roomCreator', creator);
-    setRoomCreator(creator);
-
-    room.on(RoomEvent.TrackSubscribed, (_track, publication, participant) => {
-      setRemoteTracks((prev) => [
-        ...prev,
-        {
-          trackPublication: publication,
-          participantIdentity: participant.identity,
-        },
-      ]);
-    });
-
-    // TrackUnsubscribed: 트랙 구독이 해제될 때 실행
-    room.on(RoomEvent.TrackUnsubscribed, (_track, publication) => {
-      setRemoteTracks((prev) =>
-        prev.filter((track) => track.trackPublication.trackSid !== publication.trackSid),
-      );
-    });
-
+  const createRoom = async (roomName, creator) => {
     try {
-      // 토큰 발급 로직
-      const createChatTokenResponse = await getToken(roomName, `chat ${participantName}`);
-      const createRtcTokenResponse = await getToken(roomName, `rtc ${participantName}`);
+      // 1. STOMP 연결 (화이트보드용)
+      stompService.connect();
+      liveStore.setRoomName(roomName);
 
-      setChatToken(createChatTokenResponse);
-      setRtcToken(createRtcTokenResponse);
+      // 2. 토큰 발급 (채팅용, 화상통화용)
+      const [chatToken, rtcToken] = await Promise.all([
+        liveApi.getInstructorToken(
+          roomName,
+          participantUtils.getTokenParticipantName(participantName, TOKEN_TYPES.CHAT),
+        ),
+        liveApi.getInstructorToken(
+          roomName,
+          participantUtils.getTokenParticipantName(participantName, TOKEN_TYPES.RTC),
+        ),
+      ]);
 
-      console.log('Chat Token (chat):', createChatTokenResponse);
-      console.log('RTC Token (rtc):', createRtcTokenResponse);
+      // 3. LiveKit 방 연결
+      const newRoom = await liveKitService.connect(rtcToken);
+      liveStore.setRoom(newRoom);
+      setRoom(newRoom);
 
-      // 방에 연결
-      await room.connect(LIVEKIT_URL, createRtcTokenResponse);
+      // 4. 미디어 활성화 (카메라/마이크)
+      const localTrack = await liveKitService.enableMedia();
+      liveStore.setLocalTrack(localTrack);
+      setLocalTrack(localTrack); // 로컬 상태도 업데이트
 
-      // 카메라와 마이크 활성화
-      await room.localParticipant.enableCameraAndMicrophone();
-      setLocalTrack(room.localParticipant.videoTrackPublications.values().next().value?.videoTrack);
+      // 5. 방장 정보 저장
+      localStorage.setItem('roomCreator', participantName);
+      liveStore.setRoomCreator(participantName);
+      setRoomCreator(participantName);
+
+      // 토큰 저장
+      liveStore.setTokens(rtcToken, chatToken);
+      setChatToken(chatToken);
+      setRtcToken(rtcToken);
     } catch (error) {
-      console.log('There was an error connecting to the room:', error.message);
+      console.error('Failed to create room:', error);
       await leaveRoom();
     }
-  }
-
-  // 방 참여 로직
-  async function joinRoom(roomName, creator) {
-    connectStomp();
-    setRoomName(roomName);
-    const room = new Room();
-    setRoom(room);
-
-    localStorage.setItem('roomCreator', creator.replace('rtc ', '')); // rtc 접두사 제거
-    setRoomCreator(creator.replace('rtc ', ''));
-
-    // 이벤트 리스너 설정
-    room.on(RoomEvent.TrackSubscribed, (_track, publication, participant) => {
-      setRemoteTracks((prev) => [
-        ...prev,
-
-        {
-          trackPublication: publication,
-          participantIdentity: participant.identity,
-        },
-      ]);
-    });
-
-    room.on(RoomEvent.TrackUnsubscribed, (_track, publication) => {
-      setRemoteTracks((prev) =>
-        prev.filter((track) => track.trackPublication.trackSid !== publication.trackSid),
-      );
-    });
-
-    try {
-      // RTC 토큰 발급
-      const joinRtcTokenResponse = await joinToken(roomName, `rtc ${participantName}`);
-      const joinChatTokenResponse = await joinToken(roomName, `chat ${participantName}`);
-
-      setRtcToken(joinRtcTokenResponse);
-      setChatToken(joinChatTokenResponse);
-
-      // LiveKit 서버에 연결
-      await room.connect(LIVEKIT_URL, joinRtcTokenResponse);
-
-      // 방장이 아니라면 카메라와 마이크 활성화 필요X
-      // await room.localParticipant.enableCameraAndMicrophone();
-      // setLocalTrack(
-      //   room.localParticipant.videoTrackPublications.values().next().value?.videoTrack
-      // );
-    } catch (error) {
-      console.error('방 참여 중 오류 발생:', error.message);
-      await leaveRoom();
-    }
-  }
-
-  // 방 성생 핸들러
-  const handleCreateRoom = (selectedRoom, creator) => {
-    createRoom(selectedRoom, creator);
   };
 
+  // 방 생성 핸들러
+  const handleCreateRoom = async (selectedRoom, creator) => {
+    try {
+      // 방 이름 유효성 검사
+      if (!selectedRoom || !creator) {
+        alert('방 이름과 참가자 이름을 입력해주세요.');
+        return;
+      }
+
+      // // 이미 존재하는 방인지 확인
+      // if (Object.keys(availableRooms).includes(selectedRoom)) {
+      //   alert('이미 존재하는 방 이름입니다.');
+      //   return;
+      // }
+
+      await createRoom(selectedRoom, creator);
+
+      // 방 생성 성공 메시지
+      console.log(`Room ${selectedRoom} created successfully`);
+    } catch (error) {
+      console.error('방 생성 중 오류 발생:', error);
+      alert('방 생성에 실패했습니다.');
+    }
+  };
+
+  // 방 참여 함수
+  async function joinRoom(roomName, creator) {
+    try {
+      // 1. STOMP 연결 (화이트보드용)
+      stompService.connect();
+      liveStore.setRoomName(roomName);
+      setRoomName(roomName);
+
+      // 2. 토큰 발급 (채팅용, 화상통화용)
+      const [rtcToken, chatToken] = await Promise.all([
+        liveApi.getStudentToken(
+          roomName,
+          participantUtils.getTokenParticipantName(participantName, TOKEN_TYPES.RTC),
+        ),
+        liveApi.getStudentToken(
+          roomName,
+          participantUtils.getTokenParticipantName(participantName, TOKEN_TYPES.CHAT),
+        ),
+      ]);
+
+      // 3. LiveKit 방 연결
+      const newRoom = await liveKitService.connect(rtcToken);
+      liveStore.setRoom(newRoom);
+      setRoom(newRoom);
+
+      // 4. 방장 정보 저장
+      const cleanCreator = participantUtils.getDisplayName(creator);
+      localStorage.setItem('roomCreator', cleanCreator);
+      liveStore.setRoomCreator(cleanCreator);
+      setRoomCreator(cleanCreator);
+
+      // 토큰 저장
+      liveStore.setTokens(rtcToken, chatToken);
+      setRtcToken(rtcToken);
+      setChatToken(chatToken);
+    } catch (error) {
+      console.error('방 참여 중 오류 발생:', error);
+      await leaveRoom();
+      throw error;
+    }
+  }
+
   // 방 참여 핸들러
-  const handleJoinRoom = (selectedRoom, creator) => {
-    joinRoom(selectedRoom, creator);
+  const handleJoinRoom = async (selectedRoom, creator) => {
+    try {
+      // 방 이름 유효성 검사
+      if (!selectedRoom || !creator) {
+        alert('방 정보가 올바르지 않습니다.');
+        return;
+      }
+
+      // 방 참여 시도
+      await joinRoom(selectedRoom, creator);
+
+      // 방 참여 성공 메시지
+      console.log(`Room ${selectedRoom} joined successfully`);
+    } catch (error) {
+      console.error('방 참여 중 오류 발생:', error);
+      alert('방 참여에 실패했습니다.');
+    }
   };
 
   return (
@@ -419,24 +319,32 @@ export const LivePage = () => {
             <div className="live-list-panel">
               <h2>현재 진행중인 라이브</h2>
               <div className="live-list">
-                {Object.entries(availableRooms).map(([room, creator]) => (
-                  <div key={room} className="live-card">
-                    <div className="live-card-content">
-                      <div className="live-info">
-                        <span className="live-badge">LIVE</span>
-                        <h3>{room}</h3>
-                        {/* <p>방장: {creator.replace('rtc ', '')}</p> */}
+                {isLoading ? (
+                  <LoadingComponents />
+                ) : error ? (
+                  <div>방 목록을 불러오는데 실패했습니다.</div>
+                ) : Object.entries(availableRooms).length === 0 ? (
+                  <div>현재 진행중인 라이브가 없습니다.</div>
+                ) : (
+                  Object.entries(availableRooms).map(([room, creator]) => (
+                    <div key={room} className="live-card">
+                      <div className="live-card-content">
+                        <div className="live-info">
+                          <span className="live-badge">LIVE</span>
+                          <h3>{room}</h3>
+                          <p>방장: {participantUtils.getDisplayName(creator)}</p>
+                        </div>
+                        <button
+                          type="button"
+                          className="join-button"
+                          onClick={() => handleJoinRoom(room, creator)}
+                        >
+                          참여하기
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        className="join-button"
-                        onClick={() => handleJoinRoom(room, creator)}
-                      >
-                        참여하기
-                      </button>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -445,7 +353,7 @@ export const LivePage = () => {
         <div id="room">
           <div id="room-header">
             <h2 id="room-title">{roomName}</h2>
-            {room && roomCreator === participantName && (
+            {participantUtils.isCreator(participantName) && (
               <button className="btn btn-large btn-danger" onClick={leaveRoom}>
                 Leave Room
               </button>
@@ -453,7 +361,7 @@ export const LivePage = () => {
           </div>
           <div id="layout-container">
             {/* 방장일 때는 자신의 비디오만 표시 */}
-            {roomCreator === participantName && localTrack && (
+            {participantUtils.isCreator(participantName) && localTrack && (
               <VideoComponent
                 track={localTrack}
                 participantIdentity={participantName}
@@ -461,16 +369,23 @@ export const LivePage = () => {
               />
             )}
             {/* 참여자일 때는 방장의 비디오만 표시 */}
-            {roomCreator !== participantName && remoteTracks.length > 0 && (
+            {participantUtils.isCreator(participantName) === false && remoteTracks.length > 0 && (
               <div>
                 {remoteTracks
-                  .filter((track) => track.participantIdentity === `rtc ${roomCreator}`) // rtc 토큰 접두사 필터링
+                  .filter(
+                    (track) =>
+                      // rtc 토큰으로 방장 트랙 필터링
+                      track.participantIdentity ===
+                      participantUtils.getTokenParticipantName(roomCreator, TOKEN_TYPES.RTC),
+                  )
                   .map((remoteTrack) =>
                     remoteTrack.trackPublication.kind === 'video' ? (
                       <VideoComponent
                         key={remoteTrack.trackPublication.trackSid}
                         track={remoteTrack.trackPublication.videoTrack}
-                        participantIdentity={remoteTrack.participantIdentity.replace('rtc ', '')} // rtc 토큰 접두사 제거
+                        participantIdentity={participantUtils.getDisplayName(
+                          remoteTrack.participantIdentity,
+                        )}
                       />
                     ) : (
                       <AudioComponent
@@ -487,7 +402,7 @@ export const LivePage = () => {
             <CustomChat />
           </LiveKitRoom>
           {/* Excalidraw 컴포넌트 */}
-          {roomCreator === participantName ? (
+          {participantUtils.isCreator(participantName) ? (
             // 방장일 경우 단일 화이트보드
             <div className="excalidraw-wrapper">
               <h3>내 화이트보드</h3>
