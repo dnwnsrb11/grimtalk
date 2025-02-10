@@ -9,6 +9,8 @@ export const ReplayPage = () => {
   const [excalidrawAPI, setExcalidrawAPI] = useState(null);
   // 재생 상태 추적
   const [isPlaying, setIsplaying] = useState(false);
+  // 현재 시간
+  const [currentTime, setCurrentTime] = useState(0);
 
   // Ref 관리
   const timeRef = useRef(0); // 현재 재생 시간을 추적
@@ -32,6 +34,7 @@ export const ReplayPage = () => {
     // 0.1초마다 실행되는 재생 로직을 설정
     intervalRef.current = setInterval(() => {
       timeRef.current += 1; //시간을 0.1초 단위로 증가
+      setCurrentTime(timeRef.current / 10);
 
       // 현재 시간에 해당하는 그림 데이터를 찾음
       // 인덱스 0,1은 초기화 데이터이므로 제외
@@ -85,10 +88,11 @@ export const ReplayPage = () => {
         >
           {isPlaying ? '재생 중...' : '시작하기'}
         </button>
+        <p>{currentTime} 초</p>
       </div>
-      <div className="h-[80vh] w-full">
+      <div className="h-[80vh] w-full opacity-40">
         {/* 엑스칼리드로 api 콜백함수 사용 */}
-        <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)} />
+        <Excalidraw viewModeEnabled={true} excalidrawAPI={(api) => setExcalidrawAPI(api)} />
       </div>
     </>
   );
