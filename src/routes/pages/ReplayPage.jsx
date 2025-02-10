@@ -79,21 +79,47 @@ export const ReplayPage = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <div>
-        <button
-          className="rounded bg-blue-500 px-4 py-2 text-white disabled:bg-gray-300"
-          onClick={updateScene}
-          disabled={isPlaying} //재생시 버튼 비활성화 -> 추후 변경 필요
-        >
-          {isPlaying ? '재생 중...' : '시작하기'}
-        </button>
-        <p>{currentTime} 초</p>
+        <p>따라그리기</p>
       </div>
-      <div className="h-[80vh] w-full opacity-40">
-        {/* 엑스칼리드로 api 콜백함수 사용 */}
-        <Excalidraw viewModeEnabled={true} excalidrawAPI={(api) => setExcalidrawAPI(api)} />
+      <div className="relative h-screen w-full">
+        {/* 컨트롤 버튼 - z-index를 30으로 증가 */}
+        <div className="absolute left-0 top-4 z-30">
+          <button
+            className="rounded bg-blue-500 px-4 py-2 text-white disabled:bg-gray-300"
+            onClick={updateScene}
+            disabled={isPlaying}
+          >
+            {isPlaying ? '재생 중...' : '시작하기'}
+          </button>
+          <p>{currentTime} 초</p>
+        </div>
+
+        {/* 위에 그리는 캔버스 */}
+        <div className="absolute inset-0 z-20 border">
+          <Excalidraw
+            initialData={{
+              appState: {
+                viewBackgroundColor: 'transparent',
+              },
+            }}
+          />
+        </div>
+
+        {/* 아래에 재생되는 캔버스 */}
+        <div className="absolute inset-0 z-10" style={{ opacity: 0.4 }}>
+          <Excalidraw
+            viewModeEnabled={true}
+            excalidrawAPI={(api) => setExcalidrawAPI(api)}
+            initialData={{
+              appState: {
+                viewBackgroundColor: 'transparent',
+              },
+            }}
+          />
+        </div>
       </div>
-    </>
+    </div>
   );
 };
