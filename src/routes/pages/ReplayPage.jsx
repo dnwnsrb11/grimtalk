@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 
 import { _axiosAuth } from '@/api/instance';
-import { StopIcon } from '@/components/common/icons';
+import { PlayingIcon, StopIcon } from '@/components/common/icons';
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 
@@ -17,7 +17,7 @@ export const ReplayPage = () => {
   } = useQuery({
     queryKey: ['replayData'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/stroke/${7}`); //추후 api 요청 하드코딩에서 변경 예정 
+      const { data } = await _axiosAuth.get(`/stroke/${7}`); //추후 api 요청 하드코딩에서 변경 예정
       return data.body.data;
     },
   });
@@ -158,8 +158,22 @@ export const ReplayPage = () => {
                 className="rounded bg-primary-color px-4 py-2 text-white disabled:bg-gray-300"
                 onClick={handlePlayPauseClick}
               >
-                {isPlaying ? '일시정지' : '재생'}
-                <img src={StopIcon} alt="stopIcon" />
+                <div className="relative h-5 w-5">
+                  <div
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
+                    <StopIcon />
+                  </div>
+                  <div
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-0' : 'opacity-100'
+                    }`}
+                  >
+                    <PlayingIcon />
+                  </div>
+                </div>
               </button>
               <div className="rounded-full border border-primary-color px-[15px] py-[5px]">
                 <p className="text-text-gray-color">

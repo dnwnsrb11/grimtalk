@@ -507,7 +507,7 @@ const LeveltwoBadgeIcon = ({ className = '', width = 35, height = 33 }) => (
   </svg>
 );
 
-const PlayingIcon = ({ className = '', width = 24, height = 24, fill = 'white' }) => (
+const PlayingIcon = ({ className = '', width = 20, height = 20, fill = 'white' }) => (
   <svg
     width={width}
     height={height}
@@ -533,11 +533,11 @@ const StopIcon = ({ className = '', width = 20, height = 20, fill = 'white' }) =
     className={className}
   >
     <path
-      d="M9 5H7C6.44772 5 6 5.44772 6 6V18C6 18.5523 6.44772 19 7 19H9C9.55228 19 10 18.5523 10 18V6C10 5.44772 9.55228 5 9 5Z"
+      d="M10 5H6C5.44772 5 5 5.44772 5 6V18C5 18.5523 5.44772 19 6 19H10C10.55228 19 11 18.5523 11 18V6C11 5.44772 10.55228 5 10 5Z"
       fill={fill}
     />
     <path
-      d="M17 5H15C14.4477 5 14 5.44772 14 6V18C14 18.5523 14.4477 19 15 19H17C17.5523 19 18 18.5523 18 18V6C18 5.44772 17.5523 5 17 5Z"
+      d="M18 5H14C13.4477 5 13 5.44772 13 6V18C13 18.5523 13.4477 19 14 19H18C18.5523 19 19 18.5523 19 18V6C19 5.44772 18.5523 5 18 5Z"
       fill={fill}
     />
   </svg>
