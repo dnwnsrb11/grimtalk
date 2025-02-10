@@ -9,7 +9,7 @@ import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-export const StudentDashboardSection = ({ joinId, myid }) => {
+export const StudentDashboardSection = () => {
   // 임시 데모 데이터
   const { data: data, isLoading: recentCurriculumLoading } = useQuery({
     queryKey: ['recentCurriculum'],
@@ -133,15 +133,11 @@ export const StudentDashboardSection = ({ joinId, myid }) => {
         <DashboardCard title="최근 구독한 강사">
           {recentSubscribedInstructor ? (
             <button
-              onClick={() => {
+              onClick={() =>
                 navigate(`/mypage/${recentSubscribedInstructor.id}`, {
-                  state: {
-                    joinId: recentSubscribedInstructor.id,
-                    selectedMenu: '유저소개',
-                    selectedProfileMenu: '수강생',
-                  },
-                });
-              }}
+                  state: { joinId: recentSubscribedInstructor.id },
+                })
+              }
             >
               <div className="flex items-center gap-5">
                 <img

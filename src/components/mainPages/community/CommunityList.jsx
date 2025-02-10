@@ -1,10 +1,16 @@
 import { formatDateWithTime } from '@/utils/dateFormatter';
 
-export const CommunityList = ({ community }) => {
+export const CommunityList = ({ community, onClick }) => {
   const communityCreatedAt = formatDateWithTime(community?.createdAt);
   return (
     <>
-      <div className="mb-[20px] flex cursor-pointer flex-col rounded-3xl border border-gray-border-color px-[22px] py-[15px] transition-colors duration-300 ease-in-out hover:border-primary-color hover:bg-[#ffd8cf] active:border-primary-color active:bg-[#ffd8cf]">
+      <div
+        className="mb-[20px] flex cursor-pointer flex-col rounded-3xl border border-gray-border-color px-[22px] py-[15px] transition-colors duration-300 ease-in-out hover:border-primary-color hover:bg-[#ffd8cf] active:border-primary-color active:bg-[#ffd8cf]"
+        onClick={() => {
+          console.log('클릭됨');
+          onClick();
+        }}
+      >
         <div className="mb-3">
           <h2 className="text-[22px] font-bold">{community?.subject}</h2>
         </div>
