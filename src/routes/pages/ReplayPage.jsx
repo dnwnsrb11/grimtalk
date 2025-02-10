@@ -30,6 +30,11 @@ export const ReplayPage = () => {
   const [isPlaying, setIsplaying] = useState(false);
   // 현재 시간
   const [currentTime, setCurrentTime] = useState(0);
+  // 현재 진행도 리스트로 보여주기
+  const [workList, setWorkList] = useState([]);
+  const addWorkList = (newItem) => {
+    setWorkList((prevWorkList) => [newItem, ...prevWorkList]);
+  };
 
   // Ref 관리
   const timeRef = useRef(0); // 현재 재생 시간을 추적
@@ -56,6 +61,7 @@ export const ReplayPage = () => {
           ...accumulatedElementsRef.current,
           currentTimeData.element,
         ];
+        addWorkList(currentTimeData.element);
         // 이후 해당 값을 excalidraw에 넣어준다
         if (excalidrawAPI) {
           excalidrawAPI.updateScene({
@@ -141,6 +147,7 @@ export const ReplayPage = () => {
   };
   // 전체 시간 (0.1초가 아닌 1초)
   const maxTime = replayData ? Math.max(...replayData.map((data) => data.time)) / 10 : 0;
+
   // 로딩
   if (isLoading) {
     return <LoadingComponents />;
@@ -196,20 +203,20 @@ export const ReplayPage = () => {
                 max={100}
                 step={1}
                 className="
-   h-2 w-40
-   cursor-pointer
-   appearance-none
-   rounded-full
-   bg-white
-   [&::-webkit-slider-thumb]:h-4
-   [&::-webkit-slider-thumb]:w-4
-   [&::-webkit-slider-thumb]:appearance-none
-   [&::-webkit-slider-thumb]:rounded-full
-   [&::-webkit-slider-thumb]:bg-primary-color
-   [&::-webkit-slider-thumb]:transition-all
-   [&::-webkit-slider-thumb]:hover:scale-125
-   [&::-webkit-slider-thumb]:hover:shadow-lg
- "
+                h-2 w-40
+                cursor-pointer
+                appearance-none
+                rounded-full
+                bg-white
+                [&::-webkit-slider-thumb]:h-4
+                [&::-webkit-slider-thumb]:w-4
+                [&::-webkit-slider-thumb]:appearance-none
+                [&::-webkit-slider-thumb]:rounded-full
+                [&::-webkit-slider-thumb]:bg-primary-color
+                [&::-webkit-slider-thumb]:transition-all
+                [&::-webkit-slider-thumb]:hover:scale-125
+                [&::-webkit-slider-thumb]:hover:shadow-lg
+              "
                 onChange={() => changeOpacity()}
               />
             </div>
