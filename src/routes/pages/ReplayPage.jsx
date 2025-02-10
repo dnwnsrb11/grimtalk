@@ -83,30 +83,38 @@ export const ReplayPage = () => {
   // 처음부터 시작하는 함수
   const updateScene = () => {
     setIsplaying(true);
+    // 처음 시작하는 함수 -> 초기 시간 값을 0으로 초기화
     timeRef.current = 0;
     accumulatedElementsRef.current = [];
+    // excalidraw에 넘길 데이터를 초기화
     setElements([]);
 
+    // 처음 시작하는 재생함수이니 -> excalidraw를 초기화 시켜준다.
     if (excalidrawAPI) {
       excalidrawAPI.updateScene({
         elements: [],
       });
     }
-
+    // 이후 시간 함수를 실행하여 재생기능을 활성화 한다.
     startInterval();
   };
 
   // 일시정지 함수
   const pauseScene = () => {
+    // 만약 시간이 흐른다면
     if (intervalRef.current) {
+      // 해당 함수를 배제하고고
       clearInterval(intervalRef.current);
+      // 재생체크를 false로 변경한다
       setIsplaying(false);
     }
   };
 
   // 중간부터 재시작하는 함수
   const resumeScene = () => {
+    // 재생체크를 다시 true 로 변경
     setIsplaying(true);
+    // 다시 재생함수를 실행
     startInterval();
   };
 
@@ -136,13 +144,19 @@ export const ReplayPage = () => {
   }, [replayData]);
 
   // 스타일 ref
+  // 캠버스 ref
   const bottomCanvasRef = useRef(null);
+  // 투명도 조절 ref
   const opacityInputRef = useRef(null);
 
   // 투명도 변경 함수
   const changeOpacity = () => {
+    // 만약 두 ref가 있다면면
     if (bottomCanvasRef.current && opacityInputRef.current) {
+      // 바를 통해 전달받은 value를 저장장
       const value = opacityInputRef.current.value;
+      // 이후 이 값을 캠버스의 투명도 조절에 사용한다
+      // 해당 방법을 사용한다면 리랜더링 없이 css로 투명도 조절이 가능하다 즉 좀더 안전하다.
       bottomCanvasRef.current.style.opacity = value / 100;
     }
   };
