@@ -51,7 +51,7 @@ export const CreateLectureSection = () => {
       !curriculumForm.time
     ) {
       alert('모든 커리큘럼 필드를 입력해주세요.');
-      console.log(curriculumForm);
+
       return;
     }
 
@@ -102,10 +102,8 @@ export const CreateLectureSection = () => {
     },
     onSuccess: (data) => {
       alert('강의가 성공적으로 생성되었습니다!');
-      console.log('생성된 강의:', data);
     },
     onError: (error) => {
-      console.error('강의 생성 실패:', error);
       alert('강의 생성에 실패했습니다.');
     },
   });
