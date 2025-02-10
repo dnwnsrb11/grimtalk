@@ -523,21 +523,22 @@ const PlayingIcon = ({ className = '', width = 24, height = 24, fill = 'white' }
   </svg>
 );
 
-const StopIcon = ({ className = '', width = 15, height = 19, stroke = 'white' }) => (
+const StopIcon = ({ className = '', width = 20, height = 20, fill = 'white' }) => (
   <svg
     width={width}
     height={height}
-    viewBox="0 0 15 19"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
   >
     <path
-      d="M14 18L7.5 13.2778L1 18V2.88889C1 2.38792 1.19566 1.90748 1.54394 1.55324C1.89223 1.19901 2.3646 1 2.85714 1H12.1429C12.6354 1 13.1078 1.19901 13.4561 1.55324C13.8043 1.90748 14 2.38792 14 2.88889V18Z"
-      stroke={stroke}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      d="M9 5H7C6.44772 5 6 5.44772 6 6V18C6 18.5523 6.44772 19 7 19H9C9.55228 19 10 18.5523 10 18V6C10 5.44772 9.55228 5 9 5Z"
+      fill={fill}
+    />
+    <path
+      d="M17 5H15C14.4477 5 14 5.44772 14 6V18C14 18.5523 14.4477 19 15 19H17C17.5523 19 18 18.5523 18 18V6C18 5.44772 17.5523 5 17 5Z"
+      fill={fill}
     />
   </svg>
 );
