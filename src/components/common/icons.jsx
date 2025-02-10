@@ -507,6 +507,41 @@ const LeveltwoBadgeIcon = ({ className = '', width = 35, height = 33 }) => (
   </svg>
 );
 
+const PlayingIcon = ({ className = '', width = 24, height = 24, fill = 'white' }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M21.409 9.35331C21.8893 9.60872 22.291 9.99 22.5712 10.4563C22.8514 10.9226 22.9994 11.4563 22.9994 12.0003C22.9994 12.5443 22.8514 13.078 22.5712 13.5443C22.291 14.0106 21.8893 14.3919 21.409 14.6473L8.597 21.6143C6.534 22.7373 4 21.2773 4 18.9683V5.03331C4 2.72331 6.534 1.26431 8.597 2.38531L21.409 9.35331Z"
+      fill={fill}
+    />
+  </svg>
+);
+
+const StopIcon = ({ className = '', width = 15, height = 19, stroke = 'white' }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 15 19"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M14 18L7.5 13.2778L1 18V2.88889C1 2.38792 1.19566 1.90748 1.54394 1.55324C1.89223 1.19901 2.3646 1 2.85714 1H12.1429C12.6354 1 13.1078 1.19901 13.4561 1.55324C13.8043 1.90748 14 2.38792 14 2.88889V18Z"
+      stroke={stroke}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export {
   AlarmIcon,
   CheckIcon,
@@ -521,9 +556,11 @@ export {
   LockOpenIcon,
   LoginHi,
   LogoIcon,
+  PlayingIcon,
   ReadingGlassesIcon,
   StarReviewIcon,
   StatisticsIcon,
+  StopIcon,
   StudentIcon,
   SubscribeIcon,
   WrongIcon,
