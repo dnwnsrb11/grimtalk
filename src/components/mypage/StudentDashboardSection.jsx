@@ -9,7 +9,6 @@ import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-import { MyPage } from '@/routes/pages/MyPage';
 export const StudentDashboardSection = ({ joinId, myid }) => {
   // 임시 데모 데이터
   const { data: data, isLoading: recentCurriculumLoading } = useQuery({
@@ -74,7 +73,7 @@ export const StudentDashboardSection = ({ joinId, myid }) => {
       window.location.reload();
     }, 0); // 다음 이벤트 루프에서 실행되도록 함
 
-    return <MyPage />;
+    return;
   }
 
   return (
