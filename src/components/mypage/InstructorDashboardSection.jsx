@@ -1,68 +1,48 @@
 import { ResponsiveBar } from '@nivo/bar';
+import { useQuery } from '@tanstack/react-query';
 
+import { _axiosAuth } from '@/api/instance';
+import posterNoneImg from '@/assets/posterNoneImg.png';
 import { StatisticsIcon } from '@/components/common/icons';
-import { BadgeInformation } from '@/components/mypage/BadgeInformation';
 import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
 
 export const InstructorDashboardSection = () => {
   // 임시 데모 데이터
-  const recentLive = {
-    title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-    image: 'https://picsum.photos/200/300', // demo image
-    date: '2025-01-27',
-  };
-
-  const myLectureList = [
-    {
-      title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-      image: 'https://picsum.photos/200/300', // demo image
-      hashTags: ['일러스트', '신입환영'],
+  const { data: instructorDashboard } = useQuery({
+    queryKey: ['recentLive'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/dashboard/instructor`);
+      return data.body.data;
     },
-    {
-      title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-      image: 'https://picsum.photos/200/300', // demo image
-      hashTags: ['일러스트', '신입환영'],
-    },
-    {
-      title: '이모티콘을 배우고 싶은 당신을 위한 강의',
-      image: 'https://picsum.photos/200/300', // demo image
-      hashTags: ['일러스트', '신입환영'],
-    },
-  ];
+  });
 
-  const subscribeNumber = 2;
+  // 나의 최근 라이브 변수
+  const myRecentLive = instructorDashboard?.myRecentLive || null;
 
-  const nickname = '우준규';
+  // 총 구독자 수 변수
+  const subscribeNumber = instructorDashboard?.subscribeNumber || null;
 
-  // 월간 진척도 데모 데이터
-  const monthlyProgressData = [
-    { month: '1월', count: 13 },
-    { month: '2월', count: 25 },
-    { month: '3월', count: 18 },
-    { month: '4월', count: 22 },
-    { month: '5월', count: 30 },
-    { month: '6월', count: 15 },
-    { month: '7월', count: 20 },
-    { month: '8월', count: 28 },
-    { month: '9월', count: 19 },
-    { month: '10월', count: 24 },
-    { month: '11월', count: 17 },
-    { month: '12월', count: 23 },
-  ];
+  // 나의 강의 리스트 변수
+  const myLectures = instructorDashboard?.myLectures || [];
 
-  const mostViewedLive = '이모티콘을 배우고 싶은 당신을 위한 강의';
+  // 시청자가 가장 많이 본 라이브 변수
+  const totalLectureElement = instructorDashboard?.totalLectureElement || null;
 
+  // 진척도 변수
+  const monthlyProgress = instructorDashboard?.monthlyProgress?.liveCounts || [];
+
+  console.log(monthlyProgress);
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
           <DashboardCard title="최근 나의 라이브">
             <DatedLectureCurriculumItem
-              title={recentLive.title}
-              image={recentLive.image}
-              date={recentLive.date}
+              title={myRecentLive}
+              image={myRecentLive?.image || posterNoneImg}
+              date={myRecentLive}
             />
           </DashboardCard>
           <DashboardCard title="총 구독자 수" subtitle="강사님의 전체 구독자 수입니다.">
@@ -72,9 +52,9 @@ export const InstructorDashboardSection = () => {
             </div>
           </DashboardCard>
         </div>
-        <DashboardCard title="나의 강의" subInfo={`전체 ${myLectureList.length}`}>
+        <DashboardCard title="나의 강의" subInfo={`전체 ${myLectures?.length}`}>
           <div className="flex flex-col gap-7">
-            {myLectureList.map((lecture) => (
+            {myLectures.map((lecture) => (
               <HashTaggedLectureCurriculumItem
                 key={lecture.title}
                 title={lecture.title}
@@ -86,7 +66,7 @@ export const InstructorDashboardSection = () => {
         </DashboardCard>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <DashboardCard>
+        {/* <DashboardCard>
           <BadgeInformation
             nickname={nickname}
             subscribeNumber={subscribeNumber}
@@ -94,7 +74,7 @@ export const InstructorDashboardSection = () => {
             badgeHeight={65}
             textSize="xl"
           />
-        </DashboardCard>
+        </DashboardCard> */}
         <DashboardCard>
           <div className="flex h-full w-full flex-row items-center gap-5">
             <div className="rounded-md bg-bg-gray-color p-3">
@@ -103,7 +83,7 @@ export const InstructorDashboardSection = () => {
             <div className="flex flex-col justify-center">
               <p className="text-xl text-[#6E6E6E]">가장 많은 라이브 시청수를 가진 방송은</p>
               <p className="text-xl text-[#6E6E6E]">
-                <span className="font-semibold text-black">{mostViewedLive}</span> 입니다!
+                <span className="font-semibold text-black">{totalLectureElement}</span> 입니다!
               </p>
             </div>
           </div>
@@ -113,7 +93,7 @@ export const InstructorDashboardSection = () => {
         <div className="h-[250px]">
           <ResponsiveBar
             // 차트 데이터
-            data={monthlyProgressData}
+            data={monthlyProgress}
             // 데이터의 값을 나타내는 키
             keys={['count']}
             // x축 기준이 되는 데이터 키
