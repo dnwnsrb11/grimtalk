@@ -64,10 +64,6 @@ export const MemberSettingsSection = () => {
       formData.append('image', selectedFile);
     }
 
-    console.log(nickname);
-    console.log(memberIntro);
-    console.log(selectedFile);
-    console.log(formData);
     memberSettingsChange.mutate(formData);
   };
 
