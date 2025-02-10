@@ -1,24 +1,28 @@
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 
+import { _axiosAuth } from '@/api/instance';
+
 export const CreateLectureSection = () => {
-  // 초기 커리큘럼 상태 정의
-  const initialCurriculumState = {
-    title: '',
-    description: '',
+  // 강의 정보 상태
+  const [lecture, setLecture] = useState({
+    subject: '',
+    intro: '',
+    bannerImage: '',
+    selectedFile: null,
+    category: '',
+    tags: [],
+  });
+
+  const [curriculumForm, setCurriculumForm] = useState({
+    curriculumSubject: '',
+    curriculumContent: '',
     date: '',
     time: '',
-  };
+  });
 
-  // 상태 관리
-  const [lectureTitle, setLectureTitle] = useState(''); // 강의 제목
-  const [lectureContent, setLectureContent] = useState(''); // 강의 내용
-  const [BannerImage, setBannerImage] = useState(''); // 배너 이미지 이름
-  const [selectedFile, setSelectedFile] = useState(null); // 실제 선택된 파일
-  const [curriculums, setCurriculums] = useState([]); // 커리큘럼 목록
-  const [curriculumForm, setCurriculumForm] = useState(initialCurriculumState); // 커리큘럼 입력 폼
-  const [tags, setTags] = useState([]); // 태그 목록
+  const [curriculums, setCurriculums] = useState([]); // 여러 개의 커리큘럼 리스트
   const [tagInput, setTagInput] = useState(''); // 태그 입력값
-  const [category, setCategorySelect] = useState(''); // 카테고리 저장
 
   // 이미지 업로드 핸들러
   const handleImageSelect = () => {
@@ -28,51 +32,57 @@ export const CreateLectureSection = () => {
     input.onchange = (e) => {
       const file = e.target.files[0];
       if (file) {
-        setSelectedFile(file);
-        setBannerImage(file.name);
+        setLecture({
+          ...lecture,
+          selectedFile: file,
+          bannerImage: file.name,
+        });
       }
     };
     input.click();
   };
 
-  // 커리큘럼 관련 핸들러
+  // 커리큘럼 추가
   const handleAddCurriculum = () => {
-    // 모든 필드가 입력되었는지 확인
     if (
-      !curriculumForm.title ||
-      !curriculumForm.description ||
+      !curriculumForm.curriculumSubject ||
+      !curriculumForm.curriculumContent ||
       !curriculumForm.date ||
       !curriculumForm.time
     ) {
       alert('모든 커리큘럼 필드를 입력해주세요.');
+      console.log(curriculumForm);
       return;
     }
 
-    // 새 커리큘럼 추가
-    const newCurriculum = {
-      id: Date.now(),
-      ...curriculumForm,
-    };
-
-    setCurriculums([...curriculums, newCurriculum]);
-    setCurriculumForm(initialCurriculumState); // 폼 초기화
+    setCurriculums([...curriculums, { id: Date.now(), ...curriculumForm }]);
+    setCurriculumForm({ curriculumSubject: '', curriculumContent: '', date: '', time: '' }); // 폼 초기화
   };
 
+  // 커리큘럼 삭제
   const handleDeleteCurriculum = (id) => {
     setCurriculums(curriculums.filter((curriculum) => curriculum.id !== id));
   };
 
-  // 태그 관련 핸들러
+  // 태그 추가
   const handleAddTag = () => {
     if (!tagInput.trim()) return;
-    setTags([...tags, { id: Date.now(), text: tagInput.trim() }]);
+    setLecture({
+      ...lecture,
+      tags: [...lecture.tags, { id: Date.now(), text: tagInput.trim() }],
+    });
     setTagInput('');
   };
 
+  // 태그 삭제
   const handleDeleteTag = (tagId) => {
-    setTags(tags.filter((tag) => tag.id !== tagId));
+    setLecture({
+      ...lecture,
+      tags: lecture.tags.filter((tag) => tag.id !== tagId),
+    });
   };
 
+  // 태그 입력에서 Enter 키 처리
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -80,26 +90,56 @@ export const CreateLectureSection = () => {
     }
   };
 
-  // 강의 생성 제출 핸들러
+  // 강의 생성 요청
+  const createLectureMutation = useMutation({
+    mutationFn: async (formData) => {
+      const { data } = await _axiosAuth.post(`/lecture`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return data;
+    },
+    onSuccess: (data) => {
+      alert('강의가 성공적으로 생성되었습니다!');
+      console.log('생성된 강의:', data);
+    },
+    onError: (error) => {
+      console.error('강의 생성 실패:', error);
+      alert('강의 생성에 실패했습니다.');
+    },
+  });
+
+  // 강의 생성 제출
   const handleSubmit = async () => {
-    // 필수 필드 검증
-    if (!lectureTitle || !lectureContent || !selectedFile || curriculums.length === 0) {
+    if (!lecture.subject || !lecture.intro || !lecture.selectedFile || curriculums.length === 0) {
       alert('모든 필드를 입력해주세요. 최소 1개 이상의 커리큘럼이 필요합니다.');
       return;
     }
 
-    try {
-      // API 호출 로직 추가 예정
-      console.log('강의 생성 완료', {
-        lectureTitle,
-        lectureContent,
-        selectedFile,
-        curriculums,
-      });
-    } catch (error) {
-      console.error('강의 생성 실패:', error);
-      alert('강의 생성에 실패했습니다.');
-    }
+    const formData = new FormData();
+
+    // 기본 정보
+    formData.append('subject', lecture.subject);
+    formData.append('intro', lecture.intro);
+    formData.append('category', lecture.category);
+
+    // 이미지 파일
+    formData.append('bannerImage', lecture.selectedFile);
+
+    // 커리큘럼 정보
+    curriculums.forEach((item, index) => {
+      formData.append(`curriculum[${index}].curriculumSubject`, item.curriculumSubject);
+      formData.append(`curriculum[${index}].curriculumContent`, item.curriculumContent);
+      formData.append(`curriculum[${index}].liveTime`, `${item.date}T${item.time}`); // 날짜와 시간 결합
+    });
+
+    // 해시태그
+    lecture.tags.forEach((tag, index) => {
+      formData.append(`hashtags[${index}]`, tag.text);
+    });
+
+    createLectureMutation.mutate(formData);
   };
 
   return (
@@ -108,8 +148,8 @@ export const CreateLectureSection = () => {
       <div>
         <input
           type="text"
-          value={lectureTitle}
-          onChange={(e) => setLectureTitle(e.target.value)}
+          value={lecture.subject}
+          onChange={(e) => setLecture({ ...lecture, subject: e.target.value })}
           className="w-full rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal placeholder:font-semibold"
           placeholder="강의 제목을 입력해주세요."
         />
@@ -120,14 +160,18 @@ export const CreateLectureSection = () => {
         <label className="text-xl font-bold">커리큘럼 작성</label>
         <input
           type="text"
-          value={curriculumForm.title}
-          onChange={(e) => setCurriculumForm({ ...curriculumForm, title: e.target.value })}
+          value={curriculumForm.curriculumSubject}
+          onChange={(e) =>
+            setCurriculumForm({ ...curriculumForm, curriculumSubject: e.target.value })
+          }
           className="w-full rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal placeholder:font-semibold"
           placeholder="커리큘럼 제목을 입력해주세요."
         />
         <textarea
-          value={curriculumForm.description}
-          onChange={(e) => setCurriculumForm({ ...curriculumForm, description: e.target.value })}
+          value={curriculumForm.curriculumContent}
+          onChange={(e) =>
+            setCurriculumForm({ ...curriculumForm, curriculumContent: e.target.value })
+          }
           className="h-32 resize-none rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal placeholder:font-semibold"
           placeholder="커리큘럼 내용을 작성해주세요."
         />
@@ -138,6 +182,7 @@ export const CreateLectureSection = () => {
             onChange={(e) => setCurriculumForm({ ...curriculumForm, date: e.target.value })}
             className="rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal"
           />
+
           <input
             type="time"
             value={curriculumForm.time}
@@ -164,22 +209,20 @@ export const CreateLectureSection = () => {
             key={curriculum.id}
             className="rounded-[20px] border border-[#000000] border-opacity-20 p-5"
           >
-            <h3 className="text-lg font-bold">{curriculum.title}</h3>
-            <div className="flex items-center justify-between">
-              <p className="mt-2 w-[70%] whitespace-pre-wrap break-words text-common-font-color">
-                {curriculum.description}
-              </p>
+            <h3 className="text-lg font-bold">{curriculum.curriculumSubject}</h3>
+            <p className="mt-2 whitespace-pre-wrap text-common-font-color">
+              {curriculum.curriculumContent}
+            </p>
+            <div className="mt-2 flex items-center justify-between">
+              <span className="inline-block rounded-3xl border bg-bg-gray-color px-3 py-1 text-sm text-text-gray-color">
+                {curriculum.date}T{curriculum.time}
+              </span>
               <button
                 className="rounded-md bg-bg-gray-color px-3 py-2 text-sm text-common-font-color hover:bg-red-100"
                 onClick={() => handleDeleteCurriculum(curriculum.id)}
               >
                 삭제
               </button>
-            </div>
-            <div className="mt-2">
-              <span className="inline-block rounded-3xl border bg-bg-gray-color px-3 py-1 text-sm text-text-gray-color">
-                {curriculum.date}
-              </span>
             </div>
           </div>
         ))}
@@ -189,8 +232,8 @@ export const CreateLectureSection = () => {
       <div className="flex flex-col gap-3">
         <p className="text-xl font-bold">강의 내용</p>
         <textarea
-          value={lectureContent}
-          onChange={(e) => setLectureContent(e.target.value)}
+          value={lecture.intro}
+          onChange={(e) => setLecture({ ...lecture, intro: e.target.value })}
           className="min-h-[300px] w-full resize-none rounded-[20px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal"
         />
       </div>
@@ -204,7 +247,7 @@ export const CreateLectureSection = () => {
               type="text"
               disabled
               className="col-span-7 rounded-md border border-black border-opacity-20 bg-[#E6E6E6] px-5 py-3 text-[18px] text-text-gray-color"
-              value={BannerImage}
+              value={lecture.bannerImage}
               placeholder="이미지를 선택해주세요"
             />
             <button
@@ -216,6 +259,7 @@ export const CreateLectureSection = () => {
           </div>
         </div>
 
+        {/* 태그 입력 섹션 */}
         <div className="flex flex-col gap-3">
           <p className="text-xl font-bold">태그 생성</p>
           <input
@@ -235,10 +279,10 @@ export const CreateLectureSection = () => {
             </button>
           </div>
           <div className="flex flex-wrap gap-2">
-            {tags.length === 0 ? (
+            {lecture.tags.length === 0 ? (
               <div className="h-6"></div>
             ) : (
-              tags.map((tag) => (
+              lecture.tags.map((tag) => (
                 <span
                   key={tag.id}
                   className="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm"
@@ -256,38 +300,36 @@ export const CreateLectureSection = () => {
           </div>
         </div>
 
+        {/* 카테고리 선택 */}
         <div className="flex flex-col gap-3">
           <p className="text-xl font-bold">카테고리 선택</p>
           <select
             className="w-full rounded-md border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal text-text-gray-color"
-            value={category}
-            onChange={(e) => setCategorySelect(e.target.value)}
+            value={lecture.category}
+            onChange={(e) => setLecture({ ...lecture, category: e.target.value })}
           >
-            <option value="" disabled selected>
+            <option value="" disabled>
               옵션에서 카테고리를 선택하세요.
             </option>
-            <option value="1">캐릭터</option>
-            <option value="2">이모티콘</option>
-            <option value="3">드로잉</option>
-            <option value="3">컬러링</option>
-            <option value="3">웹툰</option>
-            <option value="3">컨셉 아트</option>
+            <option value="CHARACTER">캐릭터</option>
+            <option value="EMOTICON">이모티콘</option>
+            <option value="DRAWING">드로잉</option>
+            <option value="COLORING">컬러링</option>
+            <option value="WEBTOON">웹툰</option>
+            <option value="CONCEPT_ART">컨셉 아트</option>
           </select>
         </div>
       </div>
 
       <hr className="border-divider-color" />
 
-      {/* 제출 버튼 섹션 */}
-      <div className="flex justify-end gap-6">
-        <button className="rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-bg-gray-color/60">
-          뒤로가기
-        </button>
+      {/* 제출 버튼 */}
+      <div className="flex justify-center">
         <button
           onClick={handleSubmit}
-          className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80"
+          className="w-full rounded-md bg-primary-color px-5 py-3 text-lg font-semibold text-white hover:bg-primary-color/80"
         >
-          생성하기
+          강의 생성
         </button>
       </div>
     </div>
