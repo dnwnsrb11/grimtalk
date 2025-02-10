@@ -1,6 +1,7 @@
 // nonImage 가져오기
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
 import posterNoneImg from '@/assets/posterNoneImg.png';
@@ -23,6 +24,17 @@ export const ProfileSection = ({
   myid, // 조회를 요청한은 사용자의 id
   targetid, // 조회 대상 사용자의 id
 }) => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.selectedMenu) {
+      setSelectedMenu(location.state.selectedMenu);
+    }
+    if (location.state?.selectedProfileMenu) {
+      setSelectedProfileMenu(location.state.selectedProfileMenu);
+    }
+  }, [location.state, targetid]);
+
   const handleProfileMenuClick = (menu) => {
     setSelectedMenu('유저소개');
     setSelectedProfileMenu(menu);

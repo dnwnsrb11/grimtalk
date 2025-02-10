@@ -67,15 +67,6 @@ export const StudentDashboardSection = ({ joinId, myid }) => {
     return img.complete && img.naturalHeight !== 0; // 이미지가 정상적으로 로드되었는지 확인
   };
 
-  // 다른사람 아이디라면 유저소개 페이지로 랜더링 (대쉬보드창이 계속 남아있어서 수정)
-  if (joinId !== myid) {
-    setTimeout(() => {
-      window.location.reload();
-    }, 0); // 다음 이벤트 루프에서 실행되도록 함
-
-    return;
-  }
-
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
@@ -142,11 +133,15 @@ export const StudentDashboardSection = ({ joinId, myid }) => {
         <DashboardCard title="최근 구독한 강사">
           {recentSubscribedInstructor ? (
             <button
-              onClick={() =>
+              onClick={() => {
                 navigate(`/mypage/${recentSubscribedInstructor.id}`, {
-                  state: { joinId: recentSubscribedInstructor.id },
-                })
-              }
+                  state: {
+                    joinId: recentSubscribedInstructor.id,
+                    selectedMenu: '유저소개',
+                    selectedProfileMenu: '수강생',
+                  },
+                });
+              }}
             >
               <div className="flex items-center gap-5">
                 <img
