@@ -1,7 +1,8 @@
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { useEffect, useRef, useState } from 'react';
 
-export const ReplayPage = ({ sendData }) => {
+import sendData from '@/assets/test/testPainte.json';
+export const ReplayPage = () => {
   // Excalidraw에 표시될 요소들
   const [elements, setElements] = useState([]);
   // ExcalidrawAPI 인스턴스
@@ -66,6 +67,7 @@ export const ReplayPage = ({ sendData }) => {
 
   // 컴포넌트 언마운트시 재생 인터벌을 정리
   useEffect(() => {
+    console.log(sendData);
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
