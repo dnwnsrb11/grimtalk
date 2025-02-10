@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 
 import { _axiosAuth } from '@/api/instance';
+import { StopIcon } from '@/components/common/icons';
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 
@@ -44,7 +45,7 @@ export const ReplayPage = () => {
 
       // 현재 시간에서 동일한 time을 가진 친구의 data를 가져온다.(반환)
       const currentTimeData = replayData?.find((data, index) => {
-        if (index <= 1) return false;
+        if (data.time === 0) return false;
         return data.time === timeRef.current;
       });
 
@@ -158,6 +159,7 @@ export const ReplayPage = () => {
                 onClick={handlePlayPauseClick}
               >
                 {isPlaying ? '일시정지' : '재생'}
+                <img src={StopIcon} alt="stopIcon" />
               </button>
               <div className="rounded-full border border-primary-color px-[15px] py-[5px]">
                 <p className="text-text-gray-color">
