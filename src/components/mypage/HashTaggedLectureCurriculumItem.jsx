@@ -6,7 +6,6 @@ import posterNoneImg from '@/assets/posterNoneImg.png';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 
 export const HashTaggedLectureCurriculumItem = ({ title, hashTags, image, id }) => {
-  console.log(id);
   const isValidImage = (url) => {
     if (!url) return false;
     return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url); // 유효한 확장자인지 확인

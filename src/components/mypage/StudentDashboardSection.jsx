@@ -42,7 +42,7 @@ export const StudentDashboardSection = () => {
 
   // 월간 진척도
   const studentMonthlyProgress = data?.studentMonthlyProgress?.submissions ?? [];
-  console.log(studentMonthlyProgress);
+
   // 서버 응답을 기반으로 데이터 변환
   const monthlyProgressData = studentMonthlyProgress.map(({ yearMonth, submissionCount }) => {
     const [, month] = yearMonth.split('-'); // "2024-03" → "03"

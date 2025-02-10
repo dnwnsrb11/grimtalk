@@ -82,7 +82,6 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
 
   return (
     <>
-      <p>hell,{answerId}</p>
       <div className="mt-[60px] min-h-[200px]">
         <h1 className="text-[32px] font-bold">{board.subject || ''}</h1>
         <div className="mt-[10px]">
