@@ -121,8 +121,8 @@ export const ReplayPage = () => {
       bottomCanvasRef.current.style.opacity = value / 100;
     }
   };
-  // 전체 시간
-  const maxTime = Math.max(...sendData.map((data) => data.time));
+  // 전체 시간 (0.1초가 아닌 1초)
+  const maxTime = Math.max(...sendData.map((data) => data.time)) / 10;
   return (
     <div>
       <div>
@@ -140,15 +140,54 @@ export const ReplayPage = () => {
         />
       </div>
       <div className="relative h-screen w-full">
-        <div className="absolute left-0 top-4 z-30">
-          <button
-            className="rounded bg-blue-500 px-4 py-2 text-white disabled:bg-gray-300"
-            onClick={handlePlayPauseClick}
-          >
-            {isPlaying ? '일시정지' : '재생'}
-          </button>
-          <p>{currentTime} 초</p>
-          <p>{maxTime}초</p>
+        <div className="absolute bottom-5 left-1/2 z-30 min-w-[350px] -translate-x-1/2 rounded-2xl border bg-[#ECECF4] p-1">
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex items-center gap-3 p-5">
+              <button
+                className="rounded bg-primary-color px-4 py-2 text-white disabled:bg-gray-300"
+                onClick={handlePlayPauseClick}
+              >
+                {isPlaying ? '일시정지' : '재생'}
+              </button>
+              <div className="rounded-full border border-primary-color px-[15px] py-[5px]">
+                <p className="text-text-gray-color">
+                  <span className="text-[18px] font-bold text-primary-color ">
+                    {Math.floor(currentTime)}
+                  </span>{' '}
+                  초
+                </p>
+              </div>
+              <p className="text-text-gray-color">
+                <span className="font-bol text-[18px] "> {maxTime} 초</span>(전체 시간)
+              </p>
+            </div>
+            <div>
+              <input
+                type="range"
+                ref={opacityInputRef}
+                defaultValue={100}
+                min={0}
+                max={100}
+                step={1}
+                className="
+   h-2 w-40
+   cursor-pointer
+   appearance-none
+   rounded-full
+   bg-white
+   [&::-webkit-slider-thumb]:h-4
+   [&::-webkit-slider-thumb]:w-4
+   [&::-webkit-slider-thumb]:appearance-none
+   [&::-webkit-slider-thumb]:rounded-full
+   [&::-webkit-slider-thumb]:bg-primary-color
+   [&::-webkit-slider-thumb]:transition-all
+   [&::-webkit-slider-thumb]:hover:scale-125
+   [&::-webkit-slider-thumb]:hover:shadow-lg
+ "
+                onChange={() => changeOpacity()}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="absolute inset-0 z-20 border">
