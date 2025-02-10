@@ -66,10 +66,11 @@ export const InstructorDashboardSection = ({ nickname }) => {
             <div className="flex flex-col gap-7">
               {myLectures.map((lecture) => (
                 <HashTaggedLectureCurriculumItem
-                  key={lecture.title}
-                  title={lecture.title}
-                  hashTags={lecture.hashTags}
+                  key={lecture.subject}
+                  title={lecture.subject}
+                  hashTags={lecture.hashtags}
                   image={lecture.image}
+                  id={lecture.lectureId}
                 />
               ))}
             </div>
