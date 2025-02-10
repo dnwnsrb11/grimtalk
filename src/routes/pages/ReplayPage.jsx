@@ -1,9 +1,26 @@
 import { Excalidraw } from '@excalidraw/excalidraw';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 
-import sendData from '@/assets/test/testPainte.json';
+import { _axiosAuth } from '@/api/instance';
+// import sendData from '@/assets/test/testPainte.json';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 
 export const ReplayPage = () => {
+  // api 호출
+  const {
+    data: replayData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['replayData'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/stroke/${1}`);
+      return data.body.data;
+    },
+  });
+
   // Excalidraw에 표시될 요소들
   const [elements, setElements] = useState([]);
   // ExcalidrawAPI 인스턴스
@@ -26,7 +43,7 @@ export const ReplayPage = () => {
       setCurrentTime(timeRef.current / 10);
 
       // 현재 시간에서 동일한 time을 가진 친구의 data를 가져온다.(반환)
-      const currentTimeData = sendData?.find((data, index) => {
+      const currentTimeData = replayData?.find((data, index) => {
         if (index <= 1) return false;
         return data.time === timeRef.current;
       });
@@ -47,7 +64,7 @@ export const ReplayPage = () => {
       }
 
       // 마지막까지 왓는지 체크 -> 만약 정부 시간을 봣다면 관련 interval을 제거해준다(최적화)
-      const maxTime = Math.max(...sendData.map((data) => data.time));
+      const maxTime = replayData ? Math.max(...replayData.map((data) => data.time)) : 0;
       if (timeRef.current >= maxTime) {
         clearInterval(intervalRef.current);
         setIsplaying(false);
@@ -108,7 +125,7 @@ export const ReplayPage = () => {
         clearInterval(intervalRef.current);
       }
     };
-  }, []);
+  }, [replayData]);
 
   // 스타일 ref
   const bottomCanvasRef = useRef(null);
@@ -122,23 +139,16 @@ export const ReplayPage = () => {
     }
   };
   // 전체 시간 (0.1초가 아닌 1초)
-  const maxTime = Math.max(...sendData.map((data) => data.time)) / 10;
+  const maxTime = replayData ? Math.max(...replayData.map((data) => data.time)) / 10 : 0;
+  // 로딩
+  if (isLoading) {
+    return <LoadingComponents />;
+  }
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
     <div>
-      <div>
-        <p>따라그리기</p>
-        <p>투명도 작성</p>
-        <input
-          type="range"
-          ref={opacityInputRef}
-          defaultValue={100}
-          min={0}
-          max={100}
-          step={1}
-          className="h-2 w-40 cursor-pointer appearance-none rounded-full bg-gray-200"
-          onChange={() => changeOpacity()}
-        />
-      </div>
       <div className="relative h-screen w-full">
         <div className="absolute bottom-5 left-1/2 z-30 min-w-[350px] -translate-x-1/2 rounded-2xl border bg-[#ECECF4] p-1">
           <div className="flex flex-col items-center justify-center">
