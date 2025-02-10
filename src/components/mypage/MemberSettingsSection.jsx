@@ -13,7 +13,7 @@ export const MemberSettingsSection = () => {
     queryKey: ['memberSettings'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/user/${id}`);
-
+      console.log(data);
       return data.body.data;
     },
   });
@@ -23,6 +23,7 @@ export const MemberSettingsSection = () => {
     memberSubscribeNumber: memberSettings?.subscribeNumber,
     memberIntro: memberSettings?.intro,
   };
+  // console.log(memberSettings);
   const [memberProfileImage, setMemberProfileImage] = useState('MYPROFILEIMAGE.jpg');
   const [selectedFile, setSelectedFile] = useState(null);
   const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
@@ -49,7 +50,8 @@ export const MemberSettingsSection = () => {
           'Content-Type': 'multipart/form-data', // 명시적으로 헤더 설정
         },
       });
-      console.log(data);
+      // console.log(formData);
+      // console.log(formData.getItem('nickname'));
       return data;
     },
   });
@@ -57,11 +59,15 @@ export const MemberSettingsSection = () => {
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append('nickname', nickname);
-    formData.append('intro', memberSettings?.intro || '');
+    formData.append('intro', memberIntro || '');
     if (selectedFile) {
       formData.append('image', selectedFile);
     }
 
+    console.log(nickname);
+    console.log(memberIntro);
+    console.log(selectedFile);
+    console.log(formData);
     memberSettingsChange.mutate(formData);
   };
 
@@ -108,7 +114,7 @@ export const MemberSettingsSection = () => {
             type="text"
             disabled
             className="flex-[80%] rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
-            value={memberSettings?.image}
+            value={memberProfileImage}
           />
           <button
             onClick={handleImageSelect}
@@ -142,7 +148,13 @@ export const MemberSettingsSection = () => {
         </button>
         <button
           onClick={handleSubmit}
-          className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80 focus:bg-primary-color/80 active:bg-primary-color/80"
+          disabled={!memberSettings} // memberSettings가 없으면 비활성화
+          className={`rounded-md px-4 py-2 text-sm font-semibold text-white 
+    ${
+      memberSettings
+        ? 'bg-primary-color hover:bg-primary-color/80 focus:bg-primary-color/80 active:bg-primary-color/80'
+        : 'cursor-not-allowed bg-gray-400'
+    }`}
         >
           수정하기
         </button>

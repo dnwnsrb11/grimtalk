@@ -9,7 +9,7 @@ import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-export const StudentDashboardSection = () => {
+export const StudentDashboardSection = ({ joinId, myid }) => {
   // 임시 데모 데이터
   const { data: data, isLoading: recentCurriculumLoading } = useQuery({
     queryKey: ['recentCurriculum'],
@@ -66,6 +66,15 @@ export const StudentDashboardSection = () => {
     img.src = url;
     return img.complete && img.naturalHeight !== 0; // 이미지가 정상적으로 로드되었는지 확인
   };
+
+  // 다른사람 아이디라면 유저소개 페이지로 랜더링 (대쉬보드창이 계속 남아있어서 수정)
+  if (joinId !== myid) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 0); // 다음 이벤트 루프에서 실행되도록 함
+
+    return;
+  }
 
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
