@@ -4,12 +4,13 @@ import { useQuery } from '@tanstack/react-query';
 import { _axiosAuth } from '@/api/instance';
 import posterNoneImg from '@/assets/posterNoneImg.png';
 import { StatisticsIcon } from '@/components/common/icons';
+import { BadgeInformation } from '@/components/mypage/BadgeInformation';
 import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
 
-export const InstructorDashboardSection = () => {
-  // 임시 데모 데이터
+export const InstructorDashboardSection = ({ nickname }) => {
+  // 조회 요청
   const { data: instructorDashboard } = useQuery({
     queryKey: ['recentLive'],
     queryFn: async () => {
@@ -33,7 +34,6 @@ export const InstructorDashboardSection = () => {
   // 진척도 변수
   const monthlyProgress = instructorDashboard?.monthlyProgress?.liveCounts || [];
 
-  console.log(monthlyProgress);
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
@@ -79,7 +79,7 @@ export const InstructorDashboardSection = () => {
         </DashboardCard>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        {/* <DashboardCard>
+        <DashboardCard>
           <BadgeInformation
             nickname={nickname}
             subscribeNumber={subscribeNumber}
@@ -87,7 +87,7 @@ export const InstructorDashboardSection = () => {
             badgeHeight={65}
             textSize="xl"
           />
-        </DashboardCard> */}
+        </DashboardCard>
         <DashboardCard>
           <div className="flex h-full w-full flex-row items-center gap-5">
             <div className="rounded-md bg-bg-gray-color p-3">

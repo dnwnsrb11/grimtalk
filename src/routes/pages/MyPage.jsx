@@ -41,7 +41,7 @@ export const MyPage = () => {
     },
     강사: {
       ...COMMON_MENU,
-      대시보드: <InstructorDashboardSection />,
+      대시보드: <InstructorDashboardSection nickname={userData.nickname} />,
       '질문 확인': <CheckBoardSection />,
 
       '내 강의': <MyLectureSection />,
