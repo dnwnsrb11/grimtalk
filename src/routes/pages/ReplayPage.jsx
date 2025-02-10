@@ -78,10 +78,33 @@ export const ReplayPage = () => {
     };
   }, []);
 
+  // 스타일 ref
+  const bottomCanvasRef = useRef(null); //하단 캠버스 div를 참조
+  const opacityInputRef = useRef(null); // input 요소를 참조
+
+  // 투명도 변경 함수
+  const changeOpacity = () => {
+    if (bottomCanvasRef.current && opacityInputRef.current) {
+      const value = opacityInputRef.current.value;
+      bottomCanvasRef.current.style.opacity = value / 100;
+    }
+  };
+
   return (
     <div>
       <div>
         <p>따라그리기</p>
+        <p>투명도 작성</p>
+        <input
+          type="range" // number 대신 range 사용
+          ref={opacityInputRef}
+          defaultValue={100}
+          min={0}
+          max={100}
+          step={1}
+          className="h-2 w-40 cursor-pointer appearance-none rounded-full bg-gray-200"
+          onChange={() => changeOpacity()}
+        />
       </div>
       <div className="relative h-screen w-full">
         {/* 컨트롤 버튼 - z-index를 30으로 증가 */}
@@ -108,7 +131,7 @@ export const ReplayPage = () => {
         </div>
 
         {/* 아래에 재생되는 캔버스 */}
-        <div className="absolute inset-0 z-10" style={{ opacity: 0.4 }}>
+        <div ref={bottomCanvasRef} className="absolute inset-0 z-10">
           <Excalidraw
             viewModeEnabled={true}
             excalidrawAPI={(api) => setExcalidrawAPI(api)}
