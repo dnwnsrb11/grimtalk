@@ -6,6 +6,7 @@ import { _axiosAuth } from '@/api/instance';
 import { PlayingIcon, StopIcon } from '@/components/common/icons';
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
+import { ReplayWorkList } from '@/components/replayPage/ReplayWorkList';
 
 export const ReplayPage = () => {
   // api 호출
@@ -148,6 +149,20 @@ export const ReplayPage = () => {
   // 전체 시간 (0.1초가 아닌 1초)
   const maxTime = replayData ? Math.max(...replayData.map((data) => data.time)) / 10 : 0;
 
+  useEffect(() => {
+    if (workList.length > 5) {
+      const timer = setTimeout(() => {
+        setWorkList((prev) => {
+          const newList = [...prev];
+          newList.pop(); // 가장 오래된 항목 제거
+          return newList;
+        });
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+  }, [workList]);
+
   // 로딩
   if (isLoading) {
     return <LoadingComponents />;
@@ -157,7 +172,7 @@ export const ReplayPage = () => {
   }
   return (
     <div>
-      <div className="relative h-screen w-full">
+      <div className="relative h-[80vh] w-full">
         <div className="absolute bottom-5 left-1/2 z-30 min-w-[350px] -translate-x-1/2 rounded-2xl border bg-[#ECECF4] p-1">
           <div className="flex flex-col items-center justify-center">
             <div className="flex items-center gap-3 p-5">
@@ -244,6 +259,35 @@ export const ReplayPage = () => {
             }}
           />
         </div>
+      </div>
+      {/* 테스트를 위한 구역 */}
+      <div className="relative mb-[100px] mt-[40px] flex h-[500px] flex-col gap-2 overflow-hidden p-2">
+        {workList.slice(0, 5).map((elewment, index) => (
+          <div
+            key={element.id || index}
+            className="absolute w-full transform transition-all duration-300 ease-out"
+            style={{
+              animation: index === 0 ? 'slideInAndStack 0.3s ease-out forwards' : '',
+              opacity: index === 0 ? 0 : 1,
+              top: `${index * 108}px`, // 카드 height(100px) + gap(8px)
+              transform: `translateY(0)`,
+            }}
+          >
+            <ReplayWorkList element={element} />
+            <style jsx>{`
+              @keyframes slideInAndStack {
+                from {
+                  opacity: 0;
+                  transform: translateY(-108px);
+                }
+                to {
+                  opacity: 1;
+                  transform: translateY(0);
+                }
+              }
+            `}</style>
+          </div>
+        ))}
       </div>
     </div>
   );
