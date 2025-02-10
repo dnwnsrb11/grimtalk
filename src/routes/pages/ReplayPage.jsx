@@ -75,8 +75,18 @@ export const ReplayPage = ({ sendData }) => {
 
   return (
     <>
+      <div>
+        <button
+          className="rounded bg-blue-500 px-4 py-2 text-white disabled:bg-gray-300"
+          onClick={updateScene}
+          disabled={isPlaying} //재생시 버튼 비활성화 -> 추후 변경 필요
+        >
+          {isPlaying ? '재생 중...' : '시작하기'}
+        </button>
+      </div>
       <div className="h-[80vh] w-full">
-        <Excalidraw />
+        {/* 엑스칼리드로 api 콜백함수 사용 */}
+        <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)} />
       </div>
     </>
   );
