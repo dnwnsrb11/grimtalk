@@ -17,7 +17,7 @@ export const ReplayPage = () => {
   } = useQuery({
     queryKey: ['replayData'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/stroke/${1}`);
+      const { data } = await _axiosAuth.get(`/stroke/${7}`); //추후 api 요청 하드코딩에서 변경 예정 
       return data.body.data;
     },
   });
