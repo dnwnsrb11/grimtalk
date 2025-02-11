@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
 
 export const CommunityDetail = ({ communityId, onBack }) => {
+  const [lectureIdWithCommunityId, setLectureIdWithCommunityId] = useState(communityId);
   // ✅ 선택된 커뮤니티 ID를 이용해 데이터 가져오기
   const navigate = useNavigate();
   const { data: community, isLoading } = useQuery({
@@ -13,8 +15,7 @@ export const CommunityDetail = ({ communityId, onBack }) => {
       return data.body.data;
     },
   });
-  console.log(communityId);
-  const lectureIdWithCommunityId = communityId;
+
   if (isLoading) {
     return <p>로딩 중...</p>;
   }

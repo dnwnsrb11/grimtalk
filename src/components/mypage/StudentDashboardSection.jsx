@@ -79,36 +79,42 @@ export const StudentDashboardSection = ({ isActive }) => {
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
-          <AnimatePresence>
-            {isVisible && (
-              <motion.div
-                className="h-32 w-32 rounded-md bg-red-500"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.5 }}
-              />
-            )}
-          </AnimatePresence>
+          import {(motion, AnimatePresence)} from "framer-motion";
           <DashboardCard title="최근 학습 커리큘럼">
-            {recentCurriculum ? (
-              <HashTaggedLectureCurriculumItem
-                title={recentCurriculum?.subject}
-                hashTags={recentCurriculum?.hashtags}
-                image={
-                  recentCurriculum?.image && isValidImage(recentCurriculum?.image)
-                    ? recentCurriculum?.image
-                    : posterNoneImg
-                }
-                id={recentCurriculum?.lectureId}
-              />
-            ) : (
-              <p className="mt-[85px] flex items-center justify-center text-[20px]">
-                최근 학습한 커리큘럼이 없습니다.
-              </p>
-            )}
+            <AnimatePresence>
+              {recentCurriculum ? (
+                <motion.div
+                  key="curriculum"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <HashTaggedLectureCurriculumItem
+                    title={recentCurriculum?.subject}
+                    hashTags={recentCurriculum?.hashtags}
+                    image={
+                      recentCurriculum?.image && isValidImage(recentCurriculum?.image)
+                        ? recentCurriculum?.image
+                        : posterNoneImg
+                    }
+                    id={recentCurriculum?.lectureId}
+                  />
+                </motion.div>
+              ) : (
+                <motion.p
+                  key="no-curriculum"
+                  className="mt-[85px] flex items-center justify-center text-[20px]"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  최근 학습한 커리큘럼이 없습니다.
+                </motion.p>
+              )}
+            </AnimatePresence>
           </DashboardCard>
-
           <DashboardCard
             title="나의 가장 높은 유사도"
             subtitle={

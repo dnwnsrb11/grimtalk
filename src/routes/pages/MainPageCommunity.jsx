@@ -47,9 +47,9 @@ export const MainPageCommunity = () => {
               // ✅ 목록을 렌더링하고 클릭 시 해당 ID 저장
               communities?.map((community) => (
                 <CommunityList
-                  key={community.id}
+                  key={community?.boardId}
                   community={community}
-                  onClick={() => setSelectedCommunityId(community.boardId)}
+                  onClick={() => setSelectedCommunityId(community?.boardId)}
                 />
               ))
             )}
