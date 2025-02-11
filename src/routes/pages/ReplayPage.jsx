@@ -59,6 +59,16 @@ export const ReplayPage = () => {
   // 진행도 모션
   const animationContainerRef = useRef(null);
 
+  // 현재 색상값
+  const [nowColor, setNowColor] = useState('현재 색상이 없습니다.');
+  const changeNowColor = (color) => {
+    if (nowColor !== color) {
+      setNowColor(color);
+    }
+  };
+  // 현재 색상 스타일 값  = ref
+  const colorBoxRef = useRef(null);
+
   useEffect(() => {
     const container = animationContainerRef.current;
     if (!container) return;
@@ -77,6 +87,10 @@ export const ReplayPage = () => {
           easing: 'ease-out',
         },
       );
+    }
+    if (workList.length > 0 && colorBoxRef.current) {
+      changeNowColor(workList[0]?.element?.strokeColor);
+      colorBoxRef.current.style.backgroundColor = workList[0]?.element?.strokeColor || '#ffffff';
     }
   }, [workList]); // workList가 변경될 때마다 실행
 
@@ -282,8 +296,15 @@ export const ReplayPage = () => {
     <div>
       <div className="relative h-screen w-full">
         {/* 관리 구역(시간) */}
-        <div className="absolute bottom-5 left-1/2 z-30 min-w-[350px] -translate-x-1/2 rounded-2xl border bg-[#ECECF4] p-1">
-          <div className="flex flex-col items-center justify-center">
+        <div className="absolute bottom-5 left-1/2 z-30 flex min-w-[350px] -translate-x-1/2 flex-col gap-2">
+          <div
+            ref={colorBoxRef}
+            className="border text-center transition-colors duration-300"
+            style={{ backgroundColor: '#ffffff' }} // 초기값 설정
+          >
+            <p>{nowColor}</p>
+          </div>
+          <div className="flex flex-col items-center justify-center rounded-2xl border bg-[#ECECF4] p-1">
             <div className="flex items-center gap-3 p-5">
               <button
                 className="rounded bg-primary-color px-4 py-2 text-white disabled:bg-gray-300"
@@ -358,7 +379,7 @@ export const ReplayPage = () => {
         {/* 작업 리스트 */}
         <div
           ref={animationContainerRef}
-          className="absolute right-5 top-1/2 flex w-[200px] -translate-y-1/2 flex-col gap-2"
+          className="absolute right-5 top-1/2 z-50 flex w-[200px] -translate-y-1/2 flex-col gap-2"
         >
           {workList.slice(0, 6).map((data, index) => (
             <div
