@@ -240,14 +240,21 @@ export const ReplayPage = () => {
     // 만약 뒤로 이동한다면?
     if (newTimeInTicks < currentTimeInTicks) {
       // 제거 내용 체크
-      const elementsToRemove = replayData.filter(
-        (data) => data.time > newTimeInTicks && data.time <= currentTimeInTicks,
-      ).length;
+      const newElements = replayData
+        .filter((data) => data.time <= newTimeInTicks)
+        .map((data) => data.element)
+        .filter(Boolean);
 
-      // 마지막 부터 해당길이 만큼 제거
-      accumulatedElementsRef.current = accumulatedElementsRef.current.slice(0, -elementsToRemove);
-      // 작업 리스트(카드)도 제거
-      removeWorkList(elementsToRemove);
+      // 전체 교체체
+      accumulatedElementsRef.current = newElements;
+
+      // 작업 리스트 계산
+      // 작업 리스트도 새로 계산 (오류체크를 위해 element가 있는지도 체크)
+      const newWorkListData = replayData.filter(
+        (data) => data.time <= newTimeInTicks && data.element,
+      ); // element가 있는 데이터만 필터
+
+      setWorkList(newWorkListData);
     }
 
     // 만약 앞으로 이동한다면?
