@@ -4,7 +4,7 @@ import { animate } from 'motion';
 import { useEffect, useRef, useState } from 'react';
 
 import { _axiosAuth } from '@/api/instance';
-import { PlayingIcon, StopIcon } from '@/components/common/icons';
+import { NextPlayIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayWorkList } from '@/components/replayPage/ReplayWorkList';
@@ -304,14 +304,44 @@ export const ReplayPage = () => {
       <div className="relative h-screen w-full">
         {/* 관리 구역(시간) */}
         <div className="absolute bottom-5 left-1/2 z-30 flex min-w-[350px] -translate-x-1/2 flex-col gap-2">
-          {/* 현재 색상값 */}
-          <div className="flex items-center gap-3 rounded-2xl border px-[15px] py-[10px]">
-            <div
-              ref={colorBoxRef}
-              className="h-[30px] w-[30px] rounded-md border border-gray-border-color text-center transition-colors duration-300"
-              style={{ backgroundColor: '#ffffff' }} // 초기값 설정
-            ></div>
-            <p className="text-[14px] font-light text-replay-disable-btn-font-color">{nowColor}</p>
+          <div className="flex flex-col items-center">
+            {/* 현재 색상값 */}
+            <div className="flex w-[40%] items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]">
+              <div
+                ref={colorBoxRef}
+                className="h-[30px] w-[30px] rounded-md border border-gray-border-color text-center transition-colors duration-300"
+                style={{ backgroundColor: '#ffffff' }} // 초기값 설정
+              ></div>
+              <p className="text-[14px] font-light text-replay-disable-btn-font-color">
+                {nowColor}
+              </p>
+            </div>
+            <div className="w-[100%]">
+              <input
+                type="range"
+                ref={opacityInputRef}
+                defaultValue={100}
+                min={0}
+                max={100}
+                step={1}
+                className="
+                h-3 w-full
+                cursor-pointer
+                appearance-none
+                rounded-full
+                bg-[#ECECF4]
+                [&::-webkit-slider-thumb]:h-4
+                [&::-webkit-slider-thumb]:w-4
+                [&::-webkit-slider-thumb]:appearance-none
+                [&::-webkit-slider-thumb]:rounded-full
+                [&::-webkit-slider-thumb]:bg-primary-color
+                [&::-webkit-slider-thumb]:transition-all
+                [&::-webkit-slider-thumb]:hover:scale-125
+                [&::-webkit-slider-thumb]:hover:shadow-lg
+              "
+                onChange={() => changeOpacity()}
+              />
+            </div>
             {/* 재생구역 */}
           </div>
           <div className="flex flex-col items-center justify-center rounded-2xl border bg-[#ECECF4] p-1">
@@ -357,9 +387,9 @@ export const ReplayPage = () => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-5">
-              <button onClick={() => moveToTime(currentTime - 5)} className="rounded">
-                5초 뒤로
+            <div className="flex items-center gap-6 p-5">
+              <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
+                <NextPlayIcon />
               </button>
               <button
                 className="rounded-full bg-primary-color px-4 py-4 text-white disabled:bg-gray-300"
@@ -371,7 +401,7 @@ export const ReplayPage = () => {
                       isPlaying ? 'opacity-100' : 'opacity-0'
                     }`}
                   >
-                    <StopIcon />
+                    <StopIcon width={22} height={22} />
                   </div>
                   <div
                     className={`absolute left-0 top-0 transition-all duration-300 ${
@@ -383,7 +413,7 @@ export const ReplayPage = () => {
                 </div>
               </button>
               <button onClick={() => moveToTime(currentTime + 5)} className="rounded">
-                5초 앞으로
+                <NextPlayIcon />
               </button>
               {/* <div className="rounded-full border border-primary-color px-[15px] py-[5px]">
                 <p className="text-text-gray-color">
@@ -398,32 +428,6 @@ export const ReplayPage = () => {
               </p> */}
             </div>
             {/* 아래가 투명도 그래프 */}
-            <div>
-              <input
-                type="range"
-                ref={opacityInputRef}
-                defaultValue={100}
-                min={0}
-                max={100}
-                step={1}
-                className="
-                h-2 w-40
-                cursor-pointer
-                appearance-none
-                rounded-full
-                bg-white
-                [&::-webkit-slider-thumb]:h-4
-                [&::-webkit-slider-thumb]:w-4
-                [&::-webkit-slider-thumb]:appearance-none
-                [&::-webkit-slider-thumb]:rounded-full
-                [&::-webkit-slider-thumb]:bg-primary-color
-                [&::-webkit-slider-thumb]:transition-all
-                [&::-webkit-slider-thumb]:hover:scale-125
-                [&::-webkit-slider-thumb]:hover:shadow-lg
-              "
-                onChange={() => changeOpacity()}
-              />
-            </div>
           </div>
         </div>
         {/* 작업 리스트 */}
