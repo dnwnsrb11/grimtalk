@@ -163,6 +163,47 @@ export const ReplayPage = () => {
   // 전체 시간 (0.1초가 아닌 1초)
   const maxTime = replayData ? Math.max(...replayData.map((data) => data.time)) / 10 : 0;
 
+  // 시간 이동을 위한 함수
+  const moveToTime = (newTime) => {
+    const currentTimeInTicks = timeRef.current; //현재 시간
+    const newTimeInTicks = newTime * 10; // 이동할 시간
+
+    // 만약 뒤로 이동한다면?
+    if (newTimeInTicks < currentTimeInTicks) {
+      // 제거 내용 체크
+      const elementsToRemove = replayData.filter(
+        (data) => data.time > newTimeInTicks && data.time <= currentTimeInTicks,
+      ).length;
+
+      // 마지막 부터 해당길이 만큼 제거
+      accumulatedElementsRef.current = accumulatedElementsRef.current.slice(0, -elementsToRemove);
+    }
+
+    // 만약 앞으로 이동한다면?
+    else if (newTimeInTicks > currentTimeInTicks) {
+      // 추가할 내용을 체크
+      const newElements = replayData
+        .filter((data) => data.time > currentTimeInTicks && data.time <= newTimeInTicks)
+        // 여기서 time 값이 아닌 element 값만 챙겨간다
+        .map((data) => data.element)
+        .filter(Boolean);
+
+      // 해당 ref는 누적된 리스트 배열이다 (즉 현재 시간의 그림 데이터 총 집합d) => 여기에 추가될 데이터를 넣어준다.
+      accumulatedElementsRef.current = [...accumulatedElementsRef.current, ...newElements];
+    }
+
+    // 이제 시간을 업데이트 해준다.
+    timeRef.current = newTimeInTicks;
+    setCurrentTime(newTime);
+
+    // 변경된 리스트를 엑스칼리드로우에 넣어준다.
+    if (excalidrawAPI) {
+      excalidrawAPI.updateScene({
+        elements: accumulatedElementsRef.current,
+      });
+    }
+  };
+
   useEffect(() => {
     if (workList.length > 5) {
       const timer = setTimeout(() => {
@@ -196,16 +237,14 @@ export const ReplayPage = () => {
               >
                 <div className="relative h-5 w-5">
                   <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${
-                      isPlaying ? 'opacity-100' : 'opacity-0'
-                    }`}
+                    className={`absolute left-0 top-0 transition-all duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0'
+                      }`}
                   >
                     <StopIcon />
                   </div>
                   <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${
-                      isPlaying ? 'opacity-0' : 'opacity-100'
-                    }`}
+                    className={`absolute left-0 top-0 transition-all duration-300 ${isPlaying ? 'opacity-0' : 'opacity-100'
+                      }`}
                   >
                     <PlayingIcon />
                   </div>
