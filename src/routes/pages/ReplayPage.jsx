@@ -194,7 +194,10 @@ export const ReplayPage = () => {
       const newElements = replayData
         .filter((data) => data.time > currentTimeInTicks && data.time <= newTimeInTicks)
         // 여기서 time 값이 아닌 element 값만 챙겨간다
-        .map((data) => data.element)
+        .map((data) => {
+          console.log('filterd data:', data);
+          return data.element;
+        })
         .filter(Boolean);
 
       // 해당 ref는 누적된 리스트 배열이다 (즉 현재 시간의 그림 데이터 총 집합d) => 여기에 추가될 데이터를 넣어준다.
@@ -335,7 +338,7 @@ export const ReplayPage = () => {
       </div>
       {/* 테스트를 위한 구역 */}
       <div className="relative mb-[100px] mt-[40px] flex h-[500px] flex-col gap-2 overflow-hidden p-2">
-        {workList.slice(0, 5).map((elewment, index) => (
+        {workList.slice(0, 5).map((element, index) => (
           <div
             key={element.id || index}
             className="absolute w-full transform transition-all duration-300 ease-out"
