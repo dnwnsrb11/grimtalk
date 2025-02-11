@@ -2,6 +2,7 @@ import '@/styles/live.css';
 
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
+import { Client } from '@stomp/stompjs';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -63,6 +64,76 @@ export const LivePage = () => {
     }
   }, [liveKitService]);
 
+  // STOMP 연결 및 구독 설정
+  useEffect(() => {
+    if (stompService && curriculumSubject) {
+      // STOMP 클라이언트 설정
+      stompService.client = new Client({
+        brokerURL: STOMP_URL,
+        reconnectDelay: 5000,
+        debug: (str) => {
+          console.log('STOMP Debug:', str);
+        },
+      });
+
+      // STOMP 연결 성공 시 콜백
+      stompService.client.onConnect = (frame) => {
+        console.log('Connected:', frame);
+        setIsConnected(true);
+
+        // 학생인 경우에만 구독 설정
+        if (!participantUtils.isCreator(nickname)) {
+          stompService.client.subscribe(`/pub/receive/${curriculumSubject}`, (message) => {
+            console.log('Received message:', message);
+            try {
+              const receivedData = JSON.parse(message.body);
+              console.log('Parsed data:', receivedData);
+
+              // ResponseDto 형식으로 받은 메시지 처리
+              const excalidrawData = receivedData.message || receivedData;
+
+              // 방장이 보낸 화이트보드 데이터 처리
+              if (
+                excalidrawData.type === 'excalidraw' &&
+                excalidrawData.boardType === 'roomCreator'
+              ) {
+                console.log('Setting room creator elements:', excalidrawData.data.elements);
+                setRoomCreatorElements(excalidrawData.data.elements);
+              }
+            } catch (error) {
+              console.error('Error parsing received message:', error);
+            }
+          });
+          console.log(`Subscribed to /pub/receive/${curriculumSubject}`);
+        }
+      };
+
+      // WebSocket 오류 처리
+      stompService.client.onWebSocketError = (error) => {
+        console.error('Error with WebSocket:', error);
+        setIsConnected(false);
+      };
+
+      // STOMP 프로토콜 오류 처리
+      stompService.client.onStompError = (frame) => {
+        console.error('STOMP error:', frame.headers['message']);
+        console.error('Additional details:', frame.body);
+        setIsConnected(false);
+      };
+
+      // STOMP 연결 시작
+      stompService.client.activate();
+
+      // 컴포넌트 언마운트 시 연결 해제
+      return () => {
+        if (stompService.client.active) {
+          stompService.client.deactivate();
+          setIsConnected(false);
+        }
+      };
+    }
+  }, [stompService, curriculumSubject, nickname]);
+
   // 토큰 발급 함수
   const getTokens = async (isCreator = false) => {
     const tokenFunction = isCreator ? liveApi.getInstructorToken : liveApi.getStudentToken;
@@ -88,29 +159,24 @@ export const LivePage = () => {
   // 방 연결 함수
   const connectToRoom = async () => {
     try {
-      // 1. STOMP 연결
-      stompService.connect();
-
-      // 2. 토큰 발급
+      // 토큰 발급
       const isCreator = participantUtils.isCreator(nickname);
       const { rtcToken, chatToken } = await getTokens(isCreator);
 
       liveStore.setTokens(rtcToken, chatToken);
       setChatToken(chatToken);
 
-      // 3. LiveKit 방 연결
+      // LiveKit 방 연결
       const newRoom = await liveKitService.connect(rtcToken);
       setRoom(newRoom);
       liveStore.setRoom(newRoom);
 
-      // 4. 방장일 경우 미디어 활성화
+      // 방장일 경우 미디어 활성화
       if (isCreator) {
         const track = await liveKitService.enableMedia();
         setLocalTrack(track);
         liveStore.setLocalTrack(track);
       }
-
-      setIsConnected(true);
     } catch (error) {
       console.error('방 연결 중 오류 발생:', error);
       alert('방 연결에 실패했습니다.');
@@ -132,22 +198,27 @@ export const LivePage = () => {
     };
   }, [curriculumSubject]);
 
-  // 화이트보드 업데이트 함수
+  // 화이트보드 업데이트 함수 (방장용)
   const updateBoard = useCallback(
     (elements, boardType) => {
-      if (stompService?.active && isConnected) {
-        stompService.publish({
-          destination: `/sub/receive/${curriculumSubject}`,
-          body: JSON.stringify({
-            type: 'excalidraw',
-            boardType,
+      if (stompService?.client?.active && isConnected && participantUtils.isCreator(nickname)) {
+        const message = {
+          type: 'excalidraw',
+          boardType,
+          data: {
             elements,
             sender: nickname,
-          }),
+          },
+        };
+
+        console.log('Sending message:', message);
+        stompService.client.publish({
+          destination: `/sub/send/${curriculumSubject}`,
+          body: JSON.stringify(message),
         });
       }
     },
-    [stompService, isConnected, nickname, curriculumSubject],
+    [stompService, isConnected, curriculumSubject, nickname],
   );
 
   // 방 나가기 함수
@@ -234,6 +305,10 @@ export const LivePage = () => {
           <div className="excalidraw-wrapper" style={{ flex: 1 }}>
             <h3>내 화이트보드</h3>
             <Excalidraw
+              onChange={(elements) => {
+                setParticipantElements(elements);
+                updateBoard(elements, 'participant');
+              }}
               elements={participantElements}
               excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
               viewModeEnabled={false}
