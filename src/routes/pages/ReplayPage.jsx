@@ -358,8 +358,11 @@ export const ReplayPage = () => {
               </div>
             </div>
             <div className="flex items-center gap-3 p-5">
+              <button onClick={() => moveToTime(currentTime - 5)} className="rounded">
+                5초 뒤로
+              </button>
               <button
-                className="rounded bg-primary-color px-4 py-2 text-white disabled:bg-gray-300"
+                className="rounded-full bg-primary-color px-4 py-4 text-white disabled:bg-gray-300"
                 onClick={handlePlayPauseClick}
               >
                 <div className="relative h-5 w-5">
@@ -379,7 +382,10 @@ export const ReplayPage = () => {
                   </div>
                 </div>
               </button>
-              <div className="rounded-full border border-primary-color px-[15px] py-[5px]">
+              <button onClick={() => moveToTime(currentTime + 5)} className="rounded">
+                5초 앞으로
+              </button>
+              {/* <div className="rounded-full border border-primary-color px-[15px] py-[5px]">
                 <p className="text-text-gray-color">
                   <span className="text-[18px] font-bold text-primary-color ">
                     {Math.floor(currentTime)}
@@ -389,16 +395,7 @@ export const ReplayPage = () => {
               </div>
               <p className="text-text-gray-color">
                 <span className="font-bol text-[18px] "> {maxTime} 초</span>(전체 시간)
-              </p>
-            </div>
-
-            <div>
-              <button onClick={() => moveToTime(currentTime - 5)} className="rounded">
-                5초 뒤로
-              </button>
-              <button onClick={() => moveToTime(currentTime + 5)} className="rounded">
-                5초 앞으로
-              </button>
+              </p> */}
             </div>
             {/* 아래가 투명도 그래프 */}
             <div>
