@@ -1,5 +1,7 @@
 import { ResponsiveBar } from '@nivo/bar';
 import { useQuery } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'motion/react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
@@ -9,7 +11,8 @@ import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-export const StudentDashboardSection = () => {
+export const StudentDashboardSection = ({ isActive }) => {
+  const [isVisible, setIsVisible] = useState(isActive);
   // 임시 데모 데이터
   const { data: data, isLoading: recentCurriculumLoading } = useQuery({
     queryKey: ['recentCurriculum'],
@@ -67,10 +70,26 @@ export const StudentDashboardSection = () => {
     return img.complete && img.naturalHeight !== 0; // 이미지가 정상적으로 로드되었는지 확인
   };
 
+  // 실험용
+  // 실험용
+  // 실험용
+  const show = true;
+
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
+          <AnimatePresence>
+            {isVisible && (
+              <motion.div
+                className="h-32 w-32 rounded-md bg-red-500"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.5 }}
+              />
+            )}
+          </AnimatePresence>
           <DashboardCard title="최근 학습 커리큘럼">
             {recentCurriculum ? (
               <HashTaggedLectureCurriculumItem
