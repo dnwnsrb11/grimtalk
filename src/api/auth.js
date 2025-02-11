@@ -42,7 +42,7 @@ const useLogin = ({ email, password }) => {
 
       // 커스텀 실패 코드 처리
       else {
-        handleApiError(responseBody);
+        handleApiError(data);
       }
     },
 
@@ -71,7 +71,7 @@ const useLogout = () => {
         navigate('/');
         toast.success('로그아웃 되었습니다.');
       } else {
-        handleApiError(responseBody);
+        handleApiError(data);
       }
     },
 

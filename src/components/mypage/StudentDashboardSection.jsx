@@ -1,5 +1,7 @@
 import { ResponsiveBar } from '@nivo/bar';
 import { useQuery } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'motion/react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
@@ -9,7 +11,8 @@ import { DashboardCard } from '@/components/mypage/DashboardCard';
 import { DatedLectureCurriculumItem } from '@/components/mypage/DatedLectureCurriculumItem';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { HashTaggedLectureCurriculumItem } from '@/components/mypage/HashTaggedLectureCurriculumItem';
-export const StudentDashboardSection = () => {
+export const StudentDashboardSection = ({ isActive }) => {
+  const [isVisible, setIsVisible] = useState(isActive);
   // 임시 데모 데이터
   const { data: data, isLoading: recentCurriculumLoading } = useQuery({
     queryKey: ['recentCurriculum'],
@@ -67,29 +70,51 @@ export const StudentDashboardSection = () => {
     return img.complete && img.naturalHeight !== 0; // 이미지가 정상적으로 로드되었는지 확인
   };
 
+  // 실험용
+  // 실험용
+  // 실험용
+  const show = true;
+
   return (
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
+          import {(motion, AnimatePresence)} from "framer-motion";
           <DashboardCard title="최근 학습 커리큘럼">
-            {recentCurriculum ? (
-              <HashTaggedLectureCurriculumItem
-                title={recentCurriculum?.subject}
-                hashTags={recentCurriculum?.hashtags}
-                image={
-                  recentCurriculum?.image && isValidImage(recentCurriculum?.image)
-                    ? recentCurriculum?.image
-                    : posterNoneImg
-                }
-                id={recentCurriculum?.lectureId}
-              />
-            ) : (
-              <p className="mt-[85px] flex items-center justify-center text-[20px]">
-                최근 학습한 커리큘럼이 없습니다.
-              </p>
-            )}
+            <AnimatePresence>
+              {recentCurriculum ? (
+                <motion.div
+                  key="curriculum"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <HashTaggedLectureCurriculumItem
+                    title={recentCurriculum?.subject}
+                    hashTags={recentCurriculum?.hashtags}
+                    image={
+                      recentCurriculum?.image && isValidImage(recentCurriculum?.image)
+                        ? recentCurriculum?.image
+                        : posterNoneImg
+                    }
+                    id={recentCurriculum?.lectureId}
+                  />
+                </motion.div>
+              ) : (
+                <motion.p
+                  key="no-curriculum"
+                  className="mt-[85px] flex items-center justify-center text-[20px]"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  최근 학습한 커리큘럼이 없습니다.
+                </motion.p>
+              )}
+            </AnimatePresence>
           </DashboardCard>
-
           <DashboardCard
             title="나의 가장 높은 유사도"
             subtitle={
@@ -138,7 +163,7 @@ export const StudentDashboardSection = () => {
                   state: {
                     joinId: recentSubscribedInstructor.id,
                     selectedMenu: '유저소개',
-                    selectedProfileMenu: '수강생',
+                    selectedProfileMenu: '강사',
                   },
                 })
               }

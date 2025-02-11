@@ -64,6 +64,7 @@ export const SubscriptionFavoriteSection = () => {
               key={item.nickname}
               nickname={item.nickname}
               memberTagContent={item.memberTags}
+              memberId={item.memberId}
             />
           ))}
         </div>

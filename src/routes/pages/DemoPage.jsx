@@ -1,4 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { motion } from 'motion/react';
+import { useState } from 'react';
 
 import { _axios } from '@/api/instance';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
@@ -6,6 +8,7 @@ import { useDemoStore } from '@/store/useDemoStore';
 
 export const DemoPage = () => {
   const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(true);
   // Zustand store 활용 (로컬 상태용)
   const bears = useDemoStore((state) => state.bears);
   const updateBears = useDemoStore((state) => state.updateBears);
@@ -91,10 +94,14 @@ export const DemoPage = () => {
   });
 
   // 로딩 여부에 따라 로딩 컴포넌트를 랜더링 - 테스트
-  const check = true;
+  const check = false;
   if (check) {
     return <LoadingComponents />;
   }
+
+  // motion 테스트
+  const header = 'asdf';
+  const content = '이거되냐?';
 
   return (
     <div className="col-span-14">
@@ -137,6 +144,10 @@ export const DemoPage = () => {
             </>
           )}
         </div>
+        <motion.div layout onClick={() => setIsOpen(!isOpen)}>
+          <motion.h2 layout>{header}</motion.h2>
+          {isOpen ? content : null}
+        </motion.div>
       </div>
       <LoadingComponents />
     </div>

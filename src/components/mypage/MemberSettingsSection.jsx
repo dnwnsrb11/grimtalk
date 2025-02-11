@@ -13,7 +13,6 @@ export const MemberSettingsSection = () => {
     queryKey: ['memberSettings'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/user/${id}`);
-      console.log(data);
       return data.body.data;
     },
   });
@@ -27,21 +26,63 @@ export const MemberSettingsSection = () => {
   const [memberProfileImage, setMemberProfileImage] = useState('MYPROFILEIMAGE.jpg');
   const [selectedFile, setSelectedFile] = useState(null);
   const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  // 이미지 리사이징 함수
+  const resizeImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          const maxWidth = 150; // 원하는 이미지 가로 크기
+          const maxHeight = 150; // 원하는 이미지 세로 크기
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth || height > maxHeight) {
+            const aspectRatio = width / height;
+            if (width > height) {
+              width = maxWidth;
+              height = maxWidth / aspectRatio;
+            } else {
+              height = maxHeight;
+              width = maxHeight * aspectRatio;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob((blob) => {
+            const resizedFile = new File([blob], file.name, { type: file.type });
+            resolve(resizedFile);
+          }, file.type);
+        };
+      };
+    });
+  };
 
   const handleImageSelect = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.png,.jpg,.jpeg';
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = e.target.files[0];
       if (file) {
+        const resizedImage = await resizeImage(file);
         setSelectedFile(file);
         setMemberProfileImage(file.name);
+        setPreviewImage(URL.createObjectURL(resizedImage));
       }
     };
     input.click();
   };
-
   // 수정 api 요청
   const memberSettingsChange = useMutation({
     mutationFn: async (formData) => {
@@ -50,9 +91,13 @@ export const MemberSettingsSection = () => {
           'Content-Type': 'multipart/form-data', // 명시적으로 헤더 설정
         },
       });
-      // console.log(formData);
-      // console.log(formData.getItem('nickname'));
       return data;
+    },
+    onSuccess: () => {
+      alert('회원 정보가 성공적으로 수정되었습니다!'); // ✅ 성공 알림 추가
+    },
+    onError: (error) => {
+      alert('회원 정보 수정에 실패했습니다. 다시 시도해주세요.'); // ❌ 실패 알림 추가
     },
   });
 
@@ -105,6 +150,13 @@ export const MemberSettingsSection = () => {
       </div>
       <div className="flex flex-col gap-2">
         <label className="text-lg font-semibold">프로필 이미지</label>
+        {previewImage && (
+          <img
+            src={previewImage}
+            alt="미리보기"
+            className="h-[150px] w-[150px] rounded-full border border-gray-300 object-cover"
+          />
+        )}
         <div className="flex flex-row justify-between gap-2">
           <input
             type="text"
@@ -124,7 +176,7 @@ export const MemberSettingsSection = () => {
         <label className="text-lg font-semibold">뱃지</label>
         <div className="flex flex-row gap-2 rounded-md border border-[#000000] border-opacity-20 p-4">
           <BadgeInformation
-            nickname="우준규"
+            nickname={nickname}
             subscribeNumber={memberSubscribeNumber}
             badgeWidth={40}
             badgeHeight={40}
