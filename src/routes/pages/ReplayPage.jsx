@@ -334,7 +334,7 @@ export const ReplayPage = () => {
                 {nowColor}
               </p>
             </div>
-            <div className="w-[100%]">
+            <div className="w-[100%] px-4">
               <input
                 type="range"
                 ref={opacityInputRef}
@@ -362,7 +362,7 @@ export const ReplayPage = () => {
             </div>
             {/* 재생구역 */}
           </div>
-          <div className="flex flex-col items-center justify-center rounded-2xl border bg-[#ECECF4] p-1">
+          <div className="flex flex-col items-center justify-center rounded-3xl border bg-[#ECECF4] p-1">
             {/* 타임바 */}
             <div className="w-full px-4">
               <div className="mt-2 flex justify-between text-sm text-gray-500">
