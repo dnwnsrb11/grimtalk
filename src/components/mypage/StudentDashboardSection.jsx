@@ -135,7 +135,11 @@ export const StudentDashboardSection = () => {
             <button
               onClick={() =>
                 navigate(`/mypage/${recentSubscribedInstructor.id}`, {
-                  state: { joinId: recentSubscribedInstructor.id },
+                  state: {
+                    joinId: recentSubscribedInstructor.id,
+                    selectedMenu: '유저소개',
+                    selectedProfileMenu: '강사',
+                  },
                 })
               }
             >

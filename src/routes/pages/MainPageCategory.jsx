@@ -74,9 +74,15 @@ export const MainPageCategory = () => {
 
       {/* ✅ 정렬된 데이터 렌더링 */}
       <div className="mt-[40px] flex flex-wrap gap-3">
-        {sortedLectures.slice(0, visibleLecturesCount).map((search, index) => (
-          <LectureItem key={index} search={search} />
-        ))}
+        {categorySearch.length > 0 ? (
+          sortedLectures
+            .slice(0, visibleLecturesCount)
+            .map((search, index) => <LectureItem key={index} search={search} />)
+        ) : (
+          <div className="flex h-[200px] w-full items-center justify-center rounded-lg border border-gray-300">
+            <p className="text-lg font-medium text-gray-500">조회한 결과가 없습니다.</p>
+          </div>
+        )}
       </div>
 
       {/* ✅ "더 보기" 버튼 - 4개 이상일 경우만 표시 */}

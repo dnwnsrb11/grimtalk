@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 export const NavigationMenu = ({
@@ -10,6 +11,8 @@ export const NavigationMenu = ({
   // 네비게이션 메뉴 아이템 목록을 상태로 관리
   const [studentMenuItems, setStudentMenuItems] = useState([]);
   const [instructorMenuItems, setInstructorMenuItems] = useState([]);
+  // 다른사람 프로필 조회 시 대쉬보드에서 나가도록 설정하려고 사용함
+  const queryClient = useQueryClient();
   // targetid와 myid 값이 바뀔 때마다 메뉴 아이템 업데이트
   useEffect(() => {
     // targetid가 빈 객체이거나 myid와 같을 때
@@ -21,6 +24,11 @@ export const NavigationMenu = ({
       setInstructorMenuItems(['유저소개']);
     }
   }, [myid, targetid]); // myid나 targetid가 변경될 때마다 실행
+  useEffect(() => {
+    if (targetid && targetid !== myid) {
+      queryClient.invalidateQueries(['profileSectionCheck']);
+    }
+  }, [myid, targetid]);
 
   return (
     <div className="mt-[40px] flex flex-col items-baseline gap-3 text-xl">
