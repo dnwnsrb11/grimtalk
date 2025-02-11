@@ -40,10 +40,16 @@ export const ReplayPage = () => {
   const [isPlaying, setIsplaying] = useState(false);
   // 현재 시간
   const [currentTime, setCurrentTime] = useState(0);
+
+  // 진행도 카드
   // 현재 진행도 리스트로 보여주기
   const [workList, setWorkList] = useState([]);
   const addWorkList = (newItem) => {
     setWorkList((prevWorkList) => [newItem, ...prevWorkList]);
+  };
+  // 진행도 제거 로직
+  const removeWorkList = (elementsToRemove) => {
+    setWorkList((prevList) => prevList.slice(0, -elementsToRemove));
   };
 
   // Ref 관리
@@ -197,6 +203,8 @@ export const ReplayPage = () => {
 
       // 마지막 부터 해당길이 만큼 제거
       accumulatedElementsRef.current = accumulatedElementsRef.current.slice(0, -elementsToRemove);
+      // 작업 리스트(카드)도 제거
+      removeWorkList(elementsToRemove);
     }
 
     // 만약 앞으로 이동한다면?
