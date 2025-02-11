@@ -138,7 +138,7 @@ export const StudentDashboardSection = () => {
                   state: {
                     joinId: recentSubscribedInstructor.id,
                     selectedMenu: '유저소개',
-                    selectedProfileMenu: '수강생',
+                    selectedProfileMenu: '강사',
                   },
                 })
               }
