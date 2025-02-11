@@ -297,7 +297,6 @@ export const ReplayPage = () => {
   // 선 색상 변경
   const updateColor = (color) => {
     if (!topExcalidrawAPI) return;
-    console.log(color);
     if (color && color.startsWith('#')) {
       topExcalidrawAPI.updateScene({
         appState: {
@@ -305,6 +304,7 @@ export const ReplayPage = () => {
         },
       });
     }
+    alert('색상이 변경되었습니다.');
   };
 
   // 로딩
