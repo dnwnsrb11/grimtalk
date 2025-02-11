@@ -306,7 +306,7 @@ export const ReplayPage = () => {
         <div className="absolute bottom-5 left-1/2 z-30 flex min-w-[350px] -translate-x-1/2 flex-col gap-2">
           <div className="flex flex-col items-center">
             {/* 현재 색상값 */}
-            <div className="flex w-[40%] items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]">
+            <div className="flex min-w-[40%] items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]">
               <div
                 ref={colorBoxRef}
                 className="h-[30px] w-[30px] rounded-md border border-gray-border-color text-center transition-colors duration-300"
@@ -438,10 +438,11 @@ export const ReplayPage = () => {
           {workList.slice(0, 6).map((data, index) => (
             <div
               key={data.element.id || index}
-              className="transition-opacity duration-300"
+              className="cursor-pointer transition-opacity duration-300"
               style={{
                 opacity: index === 0 || index === 5 ? 0 : 1,
               }}
+              onClick={() => moveToTime(data.time / 10)}
             >
               <ReplayWorkList data={data} />
             </div>
