@@ -175,7 +175,18 @@ export const ReplayPage = () => {
   // 시간 이동을 위한 함수!!
   const moveToTime = (newTime) => {
     const currentTimeInTicks = timeRef.current; //현재 시간
-    const newTimeInTicks = newTime * 10; // 이동할 시간
+    const checkTime = newTime * 10; // 이동할 시간
+
+    // 0보다 뒤로, 혹은 총 시간보다 높이 올라가게 하면 안됨
+    let newTimeInTicks;
+    if (checkTime < 0) {
+      newTimeInTicks = 0;
+    } else if (checkTime > maxTime * 10) {
+      newTimeInTicks = maxTime * 10;
+      console.log(newTimeInTicks);
+    } else {
+      newTimeInTicks = checkTime;
+    }
 
     // 만약 뒤로 이동한다면?
     if (newTimeInTicks < currentTimeInTicks) {
@@ -249,16 +260,14 @@ export const ReplayPage = () => {
               >
                 <div className="relative h-5 w-5">
                   <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${
-                      isPlaying ? 'opacity-100' : 'opacity-0'
-                    }`}
+                    className={`absolute left-0 top-0 transition-all duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0'
+                      }`}
                   >
                     <StopIcon />
                   </div>
                   <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${
-                      isPlaying ? 'opacity-0' : 'opacity-100'
-                    }`}
+                    className={`absolute left-0 top-0 transition-all duration-300 ${isPlaying ? 'opacity-0' : 'opacity-100'
+                      }`}
                   >
                     <PlayingIcon />
                   </div>
