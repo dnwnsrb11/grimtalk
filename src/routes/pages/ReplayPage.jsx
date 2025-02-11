@@ -2,6 +2,7 @@ import { Excalidraw } from '@excalidraw/excalidraw';
 import { useQuery } from '@tanstack/react-query';
 import { animate } from 'motion';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
 import { NextPlayIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
@@ -10,6 +11,7 @@ import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayWorkList } from '@/components/replayPage/ReplayWorkList';
 
 export const ReplayPage = () => {
+  navigate = useNavigate();
   // api 호출
   const {
     data: replayData,
@@ -312,7 +314,7 @@ export const ReplayPage = () => {
     return <LoadingComponents />;
   }
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    navigate('/notfound');
   }
   return (
     <div>
