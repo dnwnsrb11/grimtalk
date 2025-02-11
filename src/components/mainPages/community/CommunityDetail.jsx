@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
 
 export const CommunityDetail = ({ communityId, onBack }) => {
   // ✅ 선택된 커뮤니티 ID를 이용해 데이터 가져오기
+  const navigate = useNavigate();
   const { data: community, isLoading } = useQuery({
     queryKey: ['community', communityId],
     queryFn: async () => {
@@ -11,7 +13,8 @@ export const CommunityDetail = ({ communityId, onBack }) => {
       return data.body.data;
     },
   });
-
+  console.log(communityId);
+  const lectureIdWithCommunityId = communityId;
   if (isLoading) {
     return <p>로딩 중...</p>;
   }
@@ -47,7 +50,13 @@ export const CommunityDetail = ({ communityId, onBack }) => {
         </div>
       </div>
       <hr />
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => navigate(`/lecture/${lectureIdWithCommunityId}`)}
+          className="mt-[20px] flex rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
+        >
+          <p className="text-[18px] font-semibold text-white">강의 이동</p>
+        </button>
         <button
           className="mt-[20px] flex rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
           onClick={onBack}
