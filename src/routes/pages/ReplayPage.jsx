@@ -163,7 +163,7 @@ export const ReplayPage = () => {
   // 전체 시간 (0.1초가 아닌 1초)
   const maxTime = replayData ? Math.max(...replayData.map((data) => data.time)) / 10 : 0;
 
-  // 시간 이동을 위한 함수
+  // 시간 이동을 위한 함수!!
   const moveToTime = (newTime) => {
     const currentTimeInTicks = timeRef.current; //현재 시간
     const newTimeInTicks = newTime * 10; // 이동할 시간
@@ -237,14 +237,16 @@ export const ReplayPage = () => {
               >
                 <div className="relative h-5 w-5">
                   <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0'
-                      }`}
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-100' : 'opacity-0'
+                    }`}
                   >
                     <StopIcon />
                   </div>
                   <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${isPlaying ? 'opacity-0' : 'opacity-100'
-                      }`}
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-0' : 'opacity-100'
+                    }`}
                   >
                     <PlayingIcon />
                   </div>
@@ -262,6 +264,15 @@ export const ReplayPage = () => {
                 <span className="font-bol text-[18px] "> {maxTime} 초</span>(전체 시간)
               </p>
             </div>
+            <div>
+              <button onClick={() => moveToTime(currentTime - 5)} className="rounded">
+                5초 뒤로
+              </button>
+              <button onClick={() => moveToTime(currentTime + 5)} className="rounded">
+                5초 앞으로
+              </button>
+            </div>
+            {/* 아래가 투명도 그래프 */}
             <div>
               <input
                 type="range"
