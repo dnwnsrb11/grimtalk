@@ -232,7 +232,7 @@ export const OpenviduV3ReferencePage = () => {
       setRoom(newRoom);
 
       // 4. 방장 정보 저장
-      const cleanCreator = participantUtils.getDisplayName(creator);
+      const cleanCreator = participantUtils.removeTokenPrefix(creator);
       localStorage.setItem('roomCreator', cleanCreator);
       liveStore.setRoomCreator(cleanCreator);
       setRoomCreator(cleanCreator);
@@ -332,7 +332,7 @@ export const OpenviduV3ReferencePage = () => {
                         <div className="live-info">
                           <span className="live-badge">LIVE</span>
                           <h3>{room}</h3>
-                          <p>방장: {participantUtils.getDisplayName(creator)}</p>
+                          <p>방장: {participantUtils.removeTokenPrefix(creator)}</p>
                         </div>
                         <button
                           type="button"
@@ -383,7 +383,7 @@ export const OpenviduV3ReferencePage = () => {
                       <VideoComponent
                         key={remoteTrack.trackPublication.trackSid}
                         track={remoteTrack.trackPublication.videoTrack}
-                        participantIdentity={participantUtils.getDisplayName(
+                        participantIdentity={participantUtils.removeTokenPrefix(
                           remoteTrack.participantIdentity,
                         )}
                       />

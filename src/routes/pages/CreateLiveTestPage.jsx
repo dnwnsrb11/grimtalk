@@ -56,8 +56,8 @@ export const CreateLiveTestPage = () => {
         alert('참가자 이름을 입력해주세요.');
         return;
       }
-      localStorage.setItem('roomCreator', creator);
-      liveStore.setRoomCreator(creator);
+      localStorage.setItem('roomCreator', participantUtils.removeTokenPrefix(creator));
+      liveStore.setRoomCreator(participantUtils.removeTokenPrefix(creator));
       navigate(`/live/${selectedRoom}`);
     } catch (error) {
       console.error('방 참여 중 오류 발생:', error);
@@ -121,7 +121,7 @@ export const CreateLiveTestPage = () => {
                     <div className="live-info">
                       <span className="live-badge">LIVE</span>
                       <h3>{room}</h3>
-                      <p>방장: {participantUtils.getDisplayName(creator)}</p>
+                      <p>방장: {participantUtils.removeTokenPrefix(creator)}</p>
                     </div>
                     <button
                       type="button"

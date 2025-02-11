@@ -187,7 +187,7 @@ export const LivePage = () => {
                   <VideoComponent
                     key={remoteTrack.trackPublication.trackSid}
                     track={remoteTrack.trackPublication.videoTrack}
-                    participantIdentity={participantUtils.getDisplayName(
+                    participantIdentity={participantUtils.removeTokenPrefix(
                       remoteTrack.participantIdentity,
                     )}
                   />
