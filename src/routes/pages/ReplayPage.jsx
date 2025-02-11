@@ -37,6 +37,8 @@ export const ReplayPage = () => {
   const [elements, setElements] = useState([]);
   // ExcalidrawAPI 인스턴스
   const [excalidrawAPI, setExcalidrawAPI] = useState(null);
+  // 하단 api
+  const [topExcalidrawAPI, setTopExcalidrawAPI] = useState(null);
   // 재생 상태 추적
   const [isPlaying, setIsplaying] = useState(false);
   // 현재 시간
@@ -292,6 +294,19 @@ export const ReplayPage = () => {
     }
   };
 
+  // 선 색상 변경
+  const updateColor = (color) => {
+    if (!topExcalidrawAPI) return;
+    console.log(color);
+    if (color && color.startsWith('#')) {
+      topExcalidrawAPI.updateScene({
+        appState: {
+          currentItemStrokeColor: color, // 선 색상
+        },
+      });
+    }
+  };
+
   // 로딩
   if (isLoading) {
     return <LoadingComponents />;
@@ -306,7 +321,10 @@ export const ReplayPage = () => {
         <div className="absolute bottom-5 left-1/2 z-30 flex min-w-[350px] -translate-x-1/2 flex-col gap-2">
           <div className="flex flex-col items-center">
             {/* 현재 색상값 */}
-            <div className="flex min-w-[40%] items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]">
+            <div
+              className="flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]"
+              onClick={() => updateColor(nowColor)}
+            >
               <div
                 ref={colorBoxRef}
                 className="h-[30px] w-[30px] rounded-md border border-gray-border-color text-center transition-colors duration-300"
@@ -377,7 +395,7 @@ export const ReplayPage = () => {
                       [&::-webkit-slider-thumb]:hover:shadow-lg
                     "
                     style={{
-                      '--range-progress': `${Math.min((currentTime / maxTime) * 100 + 2, 100)}%`,
+                      '--range-progress': `${Math.min((currentTime / maxTime) * 100 + 1, 100)}%`,
                     }}
                     onChange={(e) => {
                       const newTime = parseFloat(e.target.value);
@@ -451,6 +469,8 @@ export const ReplayPage = () => {
 
         <div className="absolute inset-0 z-20 border">
           <Excalidraw
+            // 엑스칼리드로우 사용하는 부분에 api도 연결
+            excalidrawAPI={(api) => setTopExcalidrawAPI(api)}
             initialData={{
               appState: {
                 viewBackgroundColor: 'transparent',
