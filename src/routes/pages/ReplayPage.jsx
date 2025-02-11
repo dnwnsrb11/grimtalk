@@ -51,6 +51,10 @@ export const ReplayPage = () => {
   const removeWorkList = (elementsToRemove) => {
     setWorkList((prevList) => prevList.slice(0, -elementsToRemove));
   };
+  // 진행도 추가 로직
+  const plusWorkList = (newElements) => {
+    setWorkList((prevList) => [...newElements, ...prevList]);
+  };
 
   // Ref 관리
   const timeRef = useRef(0); // 현재 재생 시간을 추적
@@ -137,6 +141,7 @@ export const ReplayPage = () => {
   const handlePlayPauseClick = () => {
     if (!isPlaying) {
       // 처음 시작이거나 끝까지 재생된 경우
+      // 처음 시작은 0초에서 시작하니 해당 값을 통해 이게 처음정지 하는건지 아닌지 체크가 가능
       if (timeRef.current === 0) {
         updateScene();
       } else {
@@ -214,13 +219,15 @@ export const ReplayPage = () => {
         .filter((data) => data.time > currentTimeInTicks && data.time <= newTimeInTicks)
         // 여기서 time 값이 아닌 element 값만 챙겨간다
         .map((data) => {
-          console.log('filterd data:', data);
           return data.element;
         })
+        // 안전빵으로 null값을 제외
         .filter(Boolean);
 
       // 해당 ref는 누적된 리스트 배열이다 (즉 현재 시간의 그림 데이터 총 집합d) => 여기에 추가될 데이터를 넣어준다.
       accumulatedElementsRef.current = [...accumulatedElementsRef.current, ...newElements];
+      // 작업리스트(카드) 에도 넣어준다.
+      plusWorkList(accumulatedElementsRef.current);
     }
 
     // 이제 시간을 업데이트 해준다.
@@ -235,20 +242,6 @@ export const ReplayPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (workList.length > 5) {
-      const timer = setTimeout(() => {
-        setWorkList((prev) => {
-          const newList = [...prev];
-          newList.pop(); // 가장 오래된 항목 제거
-          return newList;
-        });
-      }, 300);
-
-      return () => clearTimeout(timer);
-    }
-  }, [workList]);
-
   // 로딩
   if (isLoading) {
     return <LoadingComponents />;
@@ -258,7 +251,8 @@ export const ReplayPage = () => {
   }
   return (
     <div>
-      <div className="relative h-[80vh] w-full">
+      <div className="relative h-screen w-full">
+        {/* 관리 구역(시간) */}
         <div className="absolute bottom-5 left-1/2 z-30 min-w-[350px] -translate-x-1/2 rounded-2xl border bg-[#ECECF4] p-1">
           <div className="flex flex-col items-center justify-center">
             <div className="flex items-center gap-3 p-5">
@@ -268,14 +262,16 @@ export const ReplayPage = () => {
               >
                 <div className="relative h-5 w-5">
                   <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0'
-                      }`}
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-100' : 'opacity-0'
+                    }`}
                   >
                     <StopIcon />
                   </div>
                   <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${isPlaying ? 'opacity-0' : 'opacity-100'
-                      }`}
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-0' : 'opacity-100'
+                    }`}
                   >
                     <PlayingIcon />
                   </div>
@@ -330,6 +326,14 @@ export const ReplayPage = () => {
             </div>
           </div>
         </div>
+        {/* 작업 리스트 */}
+        <div className="absolute top-1/2 flex w-[200px] -translate-y-1/2 flex-col gap-2">
+          {workList.slice(0, 7).map((element, index) => (
+            <div key={index}>
+              <ReplayWorkList element={element} />
+            </div>
+          ))}
+        </div>
 
         <div className="absolute inset-0 z-20 border">
           <Excalidraw
@@ -352,35 +356,6 @@ export const ReplayPage = () => {
             }}
           />
         </div>
-      </div>
-      {/* 테스트를 위한 구역 */}
-      <div className="relative mb-[100px] mt-[40px] flex h-[500px] flex-col gap-2 overflow-hidden p-2">
-        {workList.slice(0, 5).map((element, index) => (
-          <div
-            key={element.id || index}
-            className="absolute w-full transform transition-all duration-300 ease-out"
-            style={{
-              animation: index === 0 ? 'slideInAndStack 0.3s ease-out forwards' : '',
-              opacity: index === 0 ? 0 : 1,
-              top: `${index * 108}px`, // 카드 height(100px) + gap(8px)
-              transform: `translateY(0)`,
-            }}
-          >
-            <ReplayWorkList element={element} />
-            <style jsx>{`
-              @keyframes slideInAndStack {
-                from {
-                  opacity: 0;
-                  transform: translateY(-108px);
-                }
-                to {
-                  opacity: 1;
-                  transform: translateY(0);
-                }
-              }
-            `}</style>
-          </div>
-        ))}
       </div>
     </div>
   );
