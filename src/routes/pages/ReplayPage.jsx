@@ -18,8 +18,17 @@ export const ReplayPage = () => {
   } = useQuery({
     queryKey: ['replayData'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/stroke/${7}`); //추후 api 요청 하드코딩에서 변경 예정
+      const { data } = await _axiosAuth.get(`/stroke/${4}`); //추후 api 요청 하드코딩에서 변경 예정
+      // 만약 데이터가 없다면
+      if (data.body?.code) {
+        if (data.body.code === 404) {
+          alert('현재 데이터를 찾을수 없습니다.');
+        }
+      }
       return data.body.data;
+    },
+    onError: (error) => {
+      console.log('error', error);
     },
   });
 
