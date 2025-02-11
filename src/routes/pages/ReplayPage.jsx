@@ -297,14 +297,59 @@ export const ReplayPage = () => {
       <div className="relative h-screen w-full">
         {/* 관리 구역(시간) */}
         <div className="absolute bottom-5 left-1/2 z-30 flex min-w-[350px] -translate-x-1/2 flex-col gap-2">
-          <div
-            ref={colorBoxRef}
-            className="border text-center transition-colors duration-300"
-            style={{ backgroundColor: '#ffffff' }} // 초기값 설정
-          >
-            <p>{nowColor}</p>
+          {/* 현재 색상값 */}
+          <div className="flex items-center gap-3 rounded-2xl border px-[15px] py-[10px]">
+            <div
+              ref={colorBoxRef}
+              className="h-[30px] w-[30px] rounded-md border border-gray-border-color text-center transition-colors duration-300"
+              style={{ backgroundColor: '#ffffff' }} // 초기값 설정
+            ></div>
+            <p className="text-[14px] font-light text-replay-disable-btn-font-color">{nowColor}</p>
+            {/* 재생구역 */}
           </div>
           <div className="flex flex-col items-center justify-center rounded-2xl border bg-[#ECECF4] p-1">
+            {/* 타임바 */}
+            <div className="w-full px-4">
+              <div className="mt-2 flex justify-between text-sm text-gray-500">
+                <div className="w-[100%]">
+                  <input
+                    type="range"
+                    value={currentTime}
+                    min={0}
+                    max={maxTime}
+                    step={0.1}
+                    className="
+                      [&::-webkit-slider-thumb]:scale-120 h-2
+                      w-full
+                      cursor-pointer
+                      appearance-none
+                      rounded-full
+                      [&::-webkit-slider-runnable-track]:rounded-full
+                      [&::-webkit-slider-runnable-track]:bg-gradient-to-r
+                      [&::-webkit-slider-runnable-track]:from-primary-color
+                      [&::-webkit-slider-runnable-track]:from-[length:var(--range-progress)]
+                      [&::-webkit-slider-runnable-track]:to-white
+                      [&::-webkit-slider-runnable-track]:to-[length:var(--range-progress)]
+                      [&::-webkit-slider-thumb]:h-4
+                      [&::-webkit-slider-thumb]:w-4
+                      [&::-webkit-slider-thumb]:appearance-none
+                      [&::-webkit-slider-thumb]:rounded-full
+                      [&::-webkit-slider-thumb]:bg-primary-color
+                      [&::-webkit-slider-thumb]:transition-all
+                      [&::-webkit-slider-thumb]:hover:scale-150
+                      [&::-webkit-slider-thumb]:hover:shadow-lg
+                    "
+                    style={{
+                      '--range-progress': `${Math.min((currentTime / maxTime) * 100 + 2, 100)}%`,
+                    }}
+                    onChange={(e) => {
+                      const newTime = parseFloat(e.target.value);
+                      moveToTime(newTime);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
             <div className="flex items-center gap-3 p-5">
               <button
                 className="rounded bg-primary-color px-4 py-2 text-white disabled:bg-gray-300"
@@ -339,6 +384,7 @@ export const ReplayPage = () => {
                 <span className="font-bol text-[18px] "> {maxTime} 초</span>(전체 시간)
               </p>
             </div>
+
             <div>
               <button onClick={() => moveToTime(currentTime - 5)} className="rounded">
                 5초 뒤로
