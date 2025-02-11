@@ -43,52 +43,52 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
   };
 
   return (
-    <div className={`${!showStar ? 'mb-8' : ''}`}>
-      <div
-        onClick={() => {
-          console.log('클릭');
-          navigate(`/lecture/${lectureId}`);
-        }}
-        className="group cursor-pointer"
-      >
-        <div className="min-h-[160px] overflow-hidden rounded-lg transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl">
-          <img
-            src={lectureImg}
-            alt={lectureSubject}
-            className="h-full w-full object-cover"
-            onError={handleImageError}
-          />
-        </div>
-        <div>
-          <h4 className="mt-2 text-lg leading-tight">{lectureSubject}</h4>
-          <div className="mt-2 flex items-center gap-3">
-            <h4 className="text-base font-bold">{lectureNickname || ''}</h4>
-            <div className="flex gap-1">
-              {lectureTags?.map((tag, index) => (
-                <div
-                  key={index}
-                  className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
-                >
-                  <p className="text-text-gray-color">{tag}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        {showStar && (
-          <div className="mt-2 flex items-center gap-2">
-            <div>
-              <img src={starSVG} alt="starIcon" />
-            </div>
-            <p className="text-text-gray-color">{lectureStar} / 5</p>
-          </div>
-        )}
+    <div
+      className="group cursor-pointer"
+      onClick={() => {
+        console.log('클릭');
+        navigate(`/lecture/${lectureId}`);
+      }}
+    >
+      <div className="min-h-[160px] overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+        <img
+          src={lectureImg}
+          alt={lectureSubject}
+          className="h-full w-full object-cover"
+          onError={handleImageError}
+        />
       </div>
+
+      <div>
+        <h4 className="mt-2 text-lg leading-tight">{lectureSubject}</h4>
+        <div className="mt-2 flex items-center gap-3">
+          <h4 className="text-base font-bold">{lectureNickname || ''}</h4>
+          <div className="flex gap-1">
+            {lectureTags?.map((tag, index) => (
+              <div
+                key={index}
+                className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
+              >
+                <p className="text-text-gray-color">{tag}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {showStar && (
+        <div className="mt-2 flex items-center gap-2">
+          <div>
+            <img src={starSVG} alt="starIcon" />
+          </div>
+          <p className="text-text-gray-color">{lectureStar} / 5</p>
+        </div>
+      )}
 
       {showUpdate && (
         <button
-          onClick={handleDelete} // 🔥 mutate 호출
-          className="mt-[10px] h-[41px] w-[88px] rounded-2xl border-[1px] border-solid bg-[#EFEFEF] text-[18px]"
+          onClick={handleDelete}
+          className="mt-[10px] h-[41px] w-[88px] rounded-2xl border border-solid bg-[#EFEFEF] text-[18px] transition-all duration-200 hover:bg-red-50 hover:shadow-md"
         >
           삭제하기
         </button>
