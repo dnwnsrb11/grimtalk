@@ -1,13 +1,22 @@
+import { useNavigate } from 'react-router-dom';
+
 import PopularIMG1 from '@/assets/banner/PopularIMG_1.svg';
 import posterNoneImg from '@/assets/posterNoneImg.png';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const PopularInstructor = ({ index, instroductor }) => {
+  const { id, email, nickname } = useAuthStore((state) => state.userData);
+  const navigate = useNavigate();
   const instroductorNickname = instroductor?.nickname || '더미닉네임';
   const instroductorImg = instroductor?.image || posterNoneImg;
   const instroductorTags =
     Array.isArray(instroductor?.tags) && instroductor?.tags.length > 0
       ? instroductor?.tags
       : ['더미태그1', '더미태그2'];
+  const instroductorMemberId = instroductor?.memberId;
+  // console.log('현재 로그인한 유저 ID:', id);
+  console.log('강사의 ID:', instroductorMemberId);
+  console.log(instroductor);
 
   return (
     <>
@@ -42,7 +51,18 @@ export const PopularInstructor = ({ index, instroductor }) => {
           </div>
         </div>
         <div>
-          <button className='className="w-[140px] text-center" rounded-lg bg-[#FFC2B4] px-1 py-3'>
+          <button
+            onClick={() =>
+              navigate(`/mypage/${instroductorMemberId}`, {
+                state: {
+                  joinId: instroductorMemberId,
+                  selectedMenu: '유저소개',
+                  selectedProfileMenu: '강사',
+                },
+              })
+            }
+            className='className="w-[140px] text-center" rounded-lg bg-[#FFC2B4] px-1 py-3'
+          >
             <p className="text-lg font-medium text-[#D2310C]">강사 알아보기</p>
           </button>
         </div>
