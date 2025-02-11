@@ -1,25 +1,26 @@
-# 1️⃣ Node.js 환경에서 Vue(React) 빌드
-FROM node:18 as build-stage
+# 1️⃣ Build Stage (Vite + esbuild 최적화)
+FROM node:18 AS build-stage
 WORKDIR /app
 
-# 패키지 매니저 설정 및 의존성 설치
+# 캐시 최적화를 위해 package.json과 pnpm-lock.yaml만 먼저 복사
 COPY package.json pnpm-lock.yaml ./
+
+# pnpm 설치 및 의존성 설치 (캐시 활용)
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
-# 프로젝트 파일 복사 및 빌드
+# 소스 코드 복사 (이후 단계에서 변경된 경우에만 캐시 무효화)
 COPY . .
+
+# Vite 빌드 (esbuild 최적화 적용됨)
 RUN pnpm run build
-# dist 폴더 생성됨
 
-# 2️⃣ Nginx로 정적 파일 제공
-FROM nginx:alpine as production-stage
+# 2️⃣ Production Stage (Nginx로 정적 파일 서빙)
+FROM nginx:alpine AS production-stage
+WORKDIR /usr/share/nginx/html
 
-# 1) dist 폴더 복사
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+# 빌드된 파일만 복사 (불필요한 파일 제거로 이미지 크기 최소화)
+COPY --from=build-stage /app/dist .
 
-# 2) 이 부분은 "프론트엔드 도커 컨테이너"용 기본 nginx.conf를 복사하던 것이었는데,
-#    이제 /home/ubuntu/nginx.conf를 마운트해서 쓰므로, 이 파일이 필요 없다면 생략 가능.
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-
+# Nginx 설정 (커스터마이징 가능)
 EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]
