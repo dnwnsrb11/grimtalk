@@ -15,8 +15,6 @@ export const PopularInstructor = ({ index, instroductor }) => {
       : ['더미태그1', '더미태그2'];
   const instroductorMemberId = instroductor?.memberId;
   // console.log('현재 로그인한 유저 ID:', id);
-  console.log('강사의 ID:', instroductorMemberId);
-  console.log(instroductor);
 
   return (
     <>

@@ -31,17 +31,14 @@ export const LectureItem = ({ isMyPage = false, search }) => {
   };
 
   return (
-    <div
-      className="relative cursor-pointer rounded-lg p-3 transition-all hover:bg-gray-100"
-      onClick={handleClick}
-    >
-      <div className="h-[160px] w-full overflow-hidden rounded-lg">
+    <div className="relative cursor-pointer rounded-lg p-3" onClick={handleClick}>
+      <div className="h-[160px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
         <img src={searchImage} className="h-full w-full object-cover" alt="검색 이미지" />
       </div>
 
       <div>
         <h4 className="mt-2 text-lg leading-tight">{searchSubject}</h4>
-        <div className="mt-2 flex justify-start gap-3 ">
+        <div className="mt-2 flex justify-start gap-3">
           <div className="flex flex-wrap items-center gap-1">
             <h4 className="mr-2 text-base font-bold">{searchNickname}</h4>
             {searchTags?.map((tag, index) => (
@@ -54,8 +51,8 @@ export const LectureItem = ({ isMyPage = false, search }) => {
             ))}
 
             {!isMyPage && (
-              <div className="inline-block rounded-full border bg-primary-color px-3 py-1 ">
-                <p className=" text-white">{searchCategory}</p>
+              <div className="inline-block rounded-full border bg-primary-color px-3 py-1">
+                <p className="text-white">{searchCategory}</p>
               </div>
             )}
           </div>
@@ -64,7 +61,7 @@ export const LectureItem = ({ isMyPage = false, search }) => {
 
       {isMyPage ? (
         <button
-          className="mt-2 rounded-[10px] bg-bg-gray-color px-3 py-2 text-[#343434] hover:bg-red-50"
+          className="mt-2 rounded-[10px] bg-bg-gray-color px-3 py-2 text-[#343434] transition-all duration-200 hover:bg-red-50 hover:shadow-md"
           onClick={(e) => {
             e.stopPropagation(); // 부모 div 클릭 이벤트 방지
             console.log('삭제 로직 실행');

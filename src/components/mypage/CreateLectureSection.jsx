@@ -102,6 +102,7 @@ export const CreateLectureSection = () => {
     },
     onSuccess: (data) => {
       alert('강의가 성공적으로 생성되었습니다!');
+      console.log(data);
       window.location.reload();
     },
     onError: (error) => {
