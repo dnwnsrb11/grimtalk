@@ -1,5 +1,6 @@
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { useQuery } from '@tanstack/react-query';
+import { animate } from 'motion';
 import { useEffect, useRef, useState } from 'react';
 
 import { _axiosAuth } from '@/api/instance';
@@ -55,6 +56,29 @@ export const ReplayPage = () => {
   const plusWorkList = (newElements) => {
     setWorkList((prevList) => [...newElements, ...prevList]);
   };
+  // 진행도 모션
+  const animationContainerRef = useRef(null);
+
+  useEffect(() => {
+    const container = animationContainerRef.current;
+    if (!container) return;
+
+    // 가장 최근에 추가된 아이템 (첫 번째 아이템)
+    const newItem = container.firstElementChild;
+    if (newItem) {
+      animate(
+        newItem,
+        {
+          opacity: [0, 1],
+          y: [-40, 0],
+        },
+        {
+          duration: 0.3,
+          easing: 'ease-out',
+        },
+      );
+    }
+  }, [workList]); // workList가 변경될 때마다 실행
 
   // Ref 관리
   const timeRef = useRef(0); // 현재 재생 시간을 추적
@@ -81,7 +105,7 @@ export const ReplayPage = () => {
           ...accumulatedElementsRef.current,
           currentTimeData.element,
         ];
-        addWorkList(currentTimeData.element);
+        addWorkList(currentTimeData);
         // 이후 해당 값을 excalidraw에 넣어준다
         if (excalidrawAPI) {
           excalidrawAPI.updateScene({
@@ -226,13 +250,18 @@ export const ReplayPage = () => {
 
       // 해당 ref는 누적된 리스트 배열이다 (즉 현재 시간의 그림 데이터 총 집합d) => 여기에 추가될 데이터를 넣어준다.
       accumulatedElementsRef.current = [...accumulatedElementsRef.current, ...newElements];
+
+      // 작업 리스트용 data (전체 데이터)
+      const newWorkListData = replayData.filter(
+        (data) => data.time > currentTimeInTicks && data.time <= newTimeInTicks,
+      );
       // 작업리스트(카드) 에도 넣어준다.
-      plusWorkList(accumulatedElementsRef.current);
+      plusWorkList(newWorkListData);
     }
 
     // 이제 시간을 업데이트 해준다.
     timeRef.current = newTimeInTicks;
-    setCurrentTime(newTime);
+    setCurrentTime(newTimeInTicks / 10);
 
     // 변경된 리스트를 엑스칼리드로우에 넣어준다.
     if (excalidrawAPI) {
@@ -327,10 +356,19 @@ export const ReplayPage = () => {
           </div>
         </div>
         {/* 작업 리스트 */}
-        <div className="absolute top-1/2 flex w-[200px] -translate-y-1/2 flex-col gap-2">
-          {workList.slice(0, 7).map((element, index) => (
-            <div key={index}>
-              <ReplayWorkList element={element} />
+        <div
+          ref={animationContainerRef}
+          className="absolute right-5 top-1/2 flex w-[200px] -translate-y-1/2 flex-col gap-2"
+        >
+          {workList.slice(0, 6).map((data, index) => (
+            <div
+              key={data.element.id || index}
+              className="transition-opacity duration-300"
+              style={{
+                opacity: index === 0 || index === 5 ? 0 : 1,
+              }}
+            >
+              <ReplayWorkList data={data} />
             </div>
           ))}
         </div>
