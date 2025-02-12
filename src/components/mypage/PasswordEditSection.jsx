@@ -38,11 +38,17 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
       alert('비밀번호 변경에 실패했습니다.:', error);
     },
   });
-
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{10,}$/;
   // api 호출 필요(DB 변경 로직)
   const handlePasswordEditClick = () => {
+    if (!passwordRegex.test(newPassword)) {
+      alert('비밀번호는 10자 이상, 숫자, 문자, 기호를 포함해야 합니다.', {
+        style: { fontSize: '14px', width: '300px' },
+      });
+      return;
+    }
     if (!isPasswordValid(newPassword) || newPassword !== newPasswordConfirm) {
-      alert('새로운 비밀번호가 일치하지 않거나 규칙을 충족하지 않습니다.');
+      alert('새로운 비밀번호가 다릅니다.');
       return;
     }
     changePassword();
