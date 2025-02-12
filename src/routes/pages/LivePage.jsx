@@ -169,9 +169,16 @@ export const LivePage = () => {
     <div id="room">
       <div id="room-header">
         <h2 id="room-title">{curriculumSubject}</h2>
+        {participantUtils.isCreator(nickname) && (
+          <button className="btn btn-large btn-danger" onClick={leaveRoom}>
+            라이브 종료
+          </button>
+        )}
+        {!participantUtils.isCreator(nickname) && (
         <button className="btn btn-large btn-danger" onClick={leaveRoom}>
-          Leave Room
+            라이브 퇴장
         </button>
+        )}
       </div>
 
       {/* 비디오 레이아웃 */}
@@ -211,7 +218,6 @@ export const LivePage = () => {
       <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
         <CustomChat />
       </LiveKitRoom>
-      {participantUtils.isCreator(nickname)}
       {/* Excalidraw 컴포넌트 */}
       {participantUtils.isCreator(nickname) ? (
         <div className="excalidraw-wrapper">
