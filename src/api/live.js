@@ -87,4 +87,17 @@ const getLiveCount = async (roomId) => {
   }
 };
 
-export { endLive, getLiveCount, joinLive, leaveLive, liveApi, useRoomList };
+const InstructorLeaveLive = async (curriculumId, userId) => {
+  try {
+    const response = await _axiosAuth.post('/live/leave/instructor', {
+      curriculumId,
+      userId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('강사 라이브 퇴장 실패:', error);
+    throw error;
+  }
+};
+
+export { endLive, getLiveCount, InstructorLeaveLive, joinLive, leaveLive, liveApi, useRoomList };
