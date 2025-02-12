@@ -7,11 +7,11 @@ const LIVE_JOIN_STATUS_URL = import.meta.env.VITE_LIVE_JOIN_STATUS_URL;
 // LiveKit 관련 API 호출 모음
 const liveApi = {
   // 강사용 토큰 발급 (방 생성 시 사용)
-  getInstructorToken: async (curriculumSubject, userNickname) => {
+  getInstructorToken: async (curriculumId, curriculumSubject, userId, userNickname) => {
     const response = await _axiosAuth.post('/token/instructor', {
-      curriculumId: 1,
+      curriculumId,
       curriculumSubject,
-      userId: 1,
+      userId,
       userNickname,
       isLive: true,
     });
@@ -19,11 +19,11 @@ const liveApi = {
   },
 
   // 학생용 토큰 발급 (방 참여 시 사용)
-  getStudentToken: async (curriculumSubject, userNickname) => {
+  getStudentToken: async (curriculumId, curriculumSubject, userId, userNickname) => {
     const response = await _axiosAuth.post('/token/student', {
-      curriculumId: 1,
+      curriculumId,
       curriculumSubject,
-      userId: 1,
+      userId,
       userNickname,
     });
     return response.data.token;

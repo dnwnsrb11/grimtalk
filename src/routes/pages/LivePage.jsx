@@ -70,11 +70,15 @@ export const LivePage = () => {
 
     const [rtcToken, chatToken] = await Promise.all([
       tokenFunction(
+        curriculumId,
         curriculumSubject,
+        id,
         participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
       ),
       tokenFunction(
+        curriculumId,
         curriculumSubject,
+        id,
         participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
       ),
     ]);
