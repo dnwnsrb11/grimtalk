@@ -19,6 +19,10 @@ import { participantUtils, TOKEN_TYPES } from '@/utils/participantUtils';
 const LIVEKIT_URL = 'wss://www.grimtalk.com:7443/';
 const STOMP_URL = 'wss://www.grimtalk.com:28080/ws';
 
+// Constants for update timing
+const ACTIVE_DRAWING_INTERVAL = 100; // Send updates every 100ms during active drawing
+const COMPLETED_ACTION_DELAY = 500; // Wait 500ms after drawing stops before sending final update
+
 export const LivePage = () => {
   const navigate = useNavigate();
   const { curriculumSubject } = useParams();
@@ -35,13 +39,23 @@ export const LivePage = () => {
   const [remoteTracks, setRemoteTracks] = useState([]);
   const [chatToken, setChatToken] = useState('');
   const [isConnected, setIsConnected] = useState(false);
+  const [isStompReady, setIsStompReady] = useState(false);
 
   // Excalidraw 관련 상태
   const [roomCreatorElements, setRoomCreatorElements] = useState([]);
   const [participantElements, setParticipantElements] = useState([]);
   const roomCreatorAPIRef = useRef(null);
   const participantAPIRef = useRef(null);
-  const updateTimeoutRef = useRef(null);
+
+  // Drawing state management
+  const isDrawingRef = useRef(false);
+  const lastUpdateTimeRef = useRef(0);
+  const pendingUpdatesRef = useRef(null);
+  const activeIntervalRef = useRef(null);
+  const completedTimeoutRef = useRef(null);
+  const connectionAttempts = useRef(0);
+  const maxRetries = 3;
+  const retryDelay = 2000;
 
   // LiveKit 이벤트 리스너 설정
   useEffect(() => {
@@ -72,9 +86,7 @@ export const LivePage = () => {
       const excalidrawData = receivedData.message || receivedData;
 
       if (excalidrawData.type === 'excalidraw' && excalidrawData.boardType === 'roomCreator') {
-        // 삭제된 요소 제외하고 현재 유효한 요소만 필터링
         const activeElements = excalidrawData.elements.filter((el) => !el.isDeleted);
-
         setRoomCreatorElements(activeElements);
 
         if (roomCreatorAPIRef.current) {
@@ -95,83 +107,186 @@ export const LivePage = () => {
     }
   }, []);
 
+  // Send updates to other participants
+  const sendUpdate = useCallback(
+    (elements, appState, boardType) => {
+      if (!stompService?.client?.active || !isStompReady || !participantUtils.isCreator(nickname)) {
+        console.log('STOMP not ready, buffering update');
+        return false;
+      }
+
+      try {
+        const activeElements = elements.filter((el) => !el.isDeleted);
+        const message = {
+          type: 'excalidraw',
+          boardType,
+          elements: activeElements,
+          appState: {
+            ...appState,
+            viewBackgroundColor: '#ffffff',
+            currentItemStrokeColor: '#000000',
+            currentItemBackgroundColor: '#ffffff',
+          },
+          sender: nickname,
+          timestamp: Date.now(),
+        };
+
+        stompService.client.publish({
+          destination: `/sub/send/${curriculumSubject}`,
+          body: JSON.stringify(message),
+        });
+        return true;
+      } catch (error) {
+        console.error('Failed to send update:', error);
+        return false;
+      }
+    },
+    [stompService, isStompReady, curriculumSubject, nickname],
+  );
+
+  // Handle active drawing updates
+  const startActiveUpdates = useCallback(() => {
+    if (!activeIntervalRef.current) {
+      activeIntervalRef.current = setInterval(() => {
+        if (
+          pendingUpdatesRef.current &&
+          Date.now() - lastUpdateTimeRef.current >= ACTIVE_DRAWING_INTERVAL
+        ) {
+          const success = sendUpdate(
+            pendingUpdatesRef.current.elements,
+            pendingUpdatesRef.current.appState,
+            pendingUpdatesRef.current.boardType,
+          );
+
+          if (success) {
+            lastUpdateTimeRef.current = Date.now();
+            pendingUpdatesRef.current = null;
+          }
+        }
+      }, ACTIVE_DRAWING_INTERVAL);
+    }
+  }, [sendUpdate]);
+
+  // Stop active updates
+  const stopActiveUpdates = useCallback(() => {
+    if (activeIntervalRef.current) {
+      clearInterval(activeIntervalRef.current);
+      activeIntervalRef.current = null;
+    }
+  }, []);
+
+  // Handle changes in drawing
+  const handleDrawingChange = useCallback(
+    (elements, appState, boardType) => {
+      pendingUpdatesRef.current = { elements, appState, boardType };
+
+      if (!isDrawingRef.current) {
+        isDrawingRef.current = true;
+        startActiveUpdates();
+      }
+
+      if (completedTimeoutRef.current) {
+        clearTimeout(completedTimeoutRef.current);
+      }
+
+      completedTimeoutRef.current = setTimeout(() => {
+        if (pendingUpdatesRef.current) {
+          const updateSuccess = sendUpdate(
+            pendingUpdatesRef.current.elements,
+            pendingUpdatesRef.current.appState,
+            pendingUpdatesRef.current.boardType,
+          );
+
+          if (!updateSuccess && connectionAttempts.current < maxRetries) {
+            setTimeout(() => {
+              if (pendingUpdatesRef.current) {
+                sendUpdate(
+                  pendingUpdatesRef.current.elements,
+                  pendingUpdatesRef.current.appState,
+                  pendingUpdatesRef.current.boardType,
+                );
+              }
+            }, retryDelay);
+          }
+
+          pendingUpdatesRef.current = null;
+        }
+        isDrawingRef.current = false;
+        stopActiveUpdates();
+      }, COMPLETED_ACTION_DELAY);
+    },
+    [startActiveUpdates, stopActiveUpdates, sendUpdate],
+  );
+
   // STOMP 연결 및 구독 설정
   useEffect(() => {
     if (stompService && curriculumSubject) {
-      stompService.client = new Client({
-        brokerURL: STOMP_URL,
-        reconnectDelay: 5000,
-        debug: (str) => {
-          console.log('STOMP Debug:', str);
-        },
-      });
+      const connectStomp = () => {
+        stompService.client = new Client({
+          brokerURL: STOMP_URL,
+          reconnectDelay: retryDelay,
+          heartbeatIncoming: 4000,
+          heartbeatOutgoing: 4000,
+          debug: (str) => {
+            console.log('STOMP Debug:', str);
+          },
+        });
 
-      stompService.client.onConnect = (frame) => {
-        console.log('Connected:', frame);
-        setIsConnected(true);
+        stompService.client.onConnect = (frame) => {
+          console.log('STOMP Connected:', frame);
+          setIsStompReady(true);
+          setIsConnected(true);
+          connectionAttempts.current = 0;
 
-        if (!participantUtils.isCreator(nickname)) {
-          stompService.client.subscribe(`/pub/receive/${curriculumSubject}`, handleStompMessage);
+          if (!participantUtils.isCreator(nickname)) {
+            stompService.client.subscribe(`/pub/receive/${curriculumSubject}`, handleStompMessage);
+          }
+        };
+
+        stompService.client.onStompError = (frame) => {
+          console.error('STOMP error:', frame.headers['message']);
+          setIsStompReady(false);
+          setIsConnected(false);
+
+          if (connectionAttempts.current < maxRetries) {
+            connectionAttempts.current += 1;
+            setTimeout(connectStomp, retryDelay);
+          }
+        };
+
+        stompService.client.onWebSocketClose = () => {
+          console.log('WebSocket Connection Closed');
+          setIsStompReady(false);
+          setIsConnected(false);
+
+          if (connectionAttempts.current < maxRetries) {
+            connectionAttempts.current += 1;
+            setTimeout(connectStomp, retryDelay);
+          }
+        };
+
+        try {
+          stompService.client.activate();
+        } catch (error) {
+          console.error('Failed to activate STOMP client:', error);
+          if (connectionAttempts.current < maxRetries) {
+            connectionAttempts.current += 1;
+            setTimeout(connectStomp, retryDelay);
+          }
         }
       };
 
-      stompService.client.onWebSocketError = (error) => {
-        console.error('Error with WebSocket:', error);
-        setIsConnected(false);
-      };
-
-      stompService.client.onStompError = (frame) => {
-        console.error('STOMP error:', frame.headers['message']);
-        console.error('Additional details:', frame.body);
-        setIsConnected(false);
-      };
-
-      stompService.client.activate();
+      connectStomp();
 
       return () => {
-        if (stompService.client.active) {
+        if (stompService.client?.active) {
           stompService.client.deactivate();
+          setIsStompReady(false);
           setIsConnected(false);
         }
       };
     }
   }, [stompService, curriculumSubject, nickname, handleStompMessage]);
-
-  // 화이트보드 업데이트 함수 (방장용)
-  const updateBoard = useCallback(
-    (elements, appState, boardType) => {
-      if (stompService?.client?.active && isConnected && participantUtils.isCreator(nickname)) {
-        if (updateTimeoutRef.current) {
-          clearTimeout(updateTimeoutRef.current);
-        }
-
-        updateTimeoutRef.current = setTimeout(() => {
-          // 삭제된 요소를 제외한 실제 활성 요소만 전송
-          const activeElements = elements.filter((el) => !el.isDeleted);
-
-          const message = {
-            type: 'excalidraw',
-            boardType,
-            elements: activeElements,
-            appState: {
-              ...appState,
-              viewBackgroundColor: '#ffffff',
-              currentItemStrokeColor: '#000000',
-              currentItemBackgroundColor: '#ffffff',
-            },
-            sender: nickname,
-            timestamp: Date.now(),
-          };
-
-          stompService.client.publish({
-            destination: `/sub/send/${curriculumSubject}`,
-            body: JSON.stringify(message),
-          });
-        }, 5);
-      }
-    },
-    [stompService, isConnected, curriculumSubject, nickname],
-  );
 
   // 토큰 발급 함수
   const getTokens = async (isCreator = false) => {
@@ -220,25 +335,33 @@ export const LivePage = () => {
     }
   };
 
+  // Cleanup function
+  const cleanup = useCallback(() => {
+    if (activeIntervalRef.current) {
+      clearInterval(activeIntervalRef.current);
+    }
+    if (completedTimeoutRef.current) {
+      clearTimeout(completedTimeoutRef.current);
+    }
+    if (room) {
+      room.disconnect();
+      if (stompService.client?.active) {
+        stompService.client.deactivate();
+      }
+      setIsStompReady(false);
+      setIsConnected(false);
+    }
+  }, [room, stompService]);
+
   // 컴포넌트 마운트 시 방 연결
   useEffect(() => {
     connectToRoom();
-
-    return () => {
-      if (room) {
-        room.disconnect();
-        stompService.disconnect();
-        setIsConnected(false);
-      }
-      if (updateTimeoutRef.current) {
-        clearTimeout(updateTimeoutRef.current);
-      }
-    };
-  }, [curriculumSubject]);
+    return cleanup;
+  }, [curriculumSubject, cleanup]);
 
   // 방 나가기 함수
   const leaveRoom = async () => {
-    room?.disconnect();
+    cleanup();
     localStorage.removeItem('roomCreator');
     liveStore.reset();
     navigate('/create-live-test');
@@ -286,7 +409,6 @@ export const LivePage = () => {
           </div>
         )}
       </div>
-
       <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
         <CustomChat />
       </LiveKitRoom>
@@ -297,7 +419,7 @@ export const LivePage = () => {
           <Excalidraw
             onChange={(elements, appState) => {
               setRoomCreatorElements(elements);
-              updateBoard(elements, appState, 'roomCreator');
+              handleDrawingChange(elements, appState, 'roomCreator');
             }}
             excalidrawAPI={(api) => {
               roomCreatorAPIRef.current = api;
