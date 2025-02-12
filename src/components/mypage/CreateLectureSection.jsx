@@ -103,7 +103,7 @@ export const CreateLectureSection = () => {
     onSuccess: (data) => {
       alert('강의가 성공적으로 생성되었습니다!');
       console.log(data);
-      window.location.reload();
+      // window.location.reload();
     },
     onError: (error) => {
       alert('강의 생성에 실패했습니다.');
@@ -138,6 +138,10 @@ export const CreateLectureSection = () => {
     lecture.tags.forEach((tag, index) => {
       formData.append(`hashtags[${index}]`, tag.text);
     });
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+    console.log(formData);
 
     createLectureMutation.mutate(formData);
   };

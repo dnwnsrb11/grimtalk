@@ -118,6 +118,10 @@ export const MemberSettingsSection = () => {
     if (selectedFile) {
       formData.append('image', selectedFile);
     }
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+    console.log(formData+13);
 
     memberSettingsChange.mutate(formData);
   };
