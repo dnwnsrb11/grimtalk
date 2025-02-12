@@ -64,7 +64,7 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
   const lectureSubmit = useMutation({
     mutationFn: async () => {
       const { data } = await _axiosAuth.post(`/subscribe`, {
-        memberId: lecture?.instructorInfo.id,
+        memberId: lecture?.instructorInfo?.id,
       });
       return data;
     },
@@ -80,7 +80,7 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
   // 강사 구독 취소
   const lectureSubmitCancel = useMutation({
     mutationFn: async () => {
-      const { data } = await _axiosAuth.delete(`/subscribe/${lecture?.instructorInfo.id}`);
+      const { data } = await _axiosAuth.delete(`/subscribe/${lecture?.instructorInfo?.id}`);
       return data;
     },
     onSuccess: () => {
@@ -101,7 +101,7 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
       setCheckSubscribe(false);
     }
   };
-  console.log('targetid:', lecture?.instructorInfo.id);
+  console.log('targetid:', lecture?.instructorInfo?.id);
   console.log('myid:', id);
   return (
     <>
@@ -118,7 +118,7 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
                 {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
                 <div className="overflow-hidden rounded-full">
                   <img
-                    src={lecture.instructorInfo.image}
+                    src={lecture.instructorInfo?.image}
                     alt="profileimg"
                     className="h-[162px] w-[162px]"
                   />
@@ -139,12 +139,12 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
               {/* 강사 인포 */}
               <div>
                 <h2 className="mb-[15px] text-[24px] font-bold">
-                  {lecture?.instructorInfo.nickname}
+                  {lecture?.instructorInfo?.nickname}
                 </h2>
-                {lecture?.instructorInfo.intro === null ? (
+                {lecture?.instructorInfo?.intro === null ? (
                   <p className="font-medium text-text-gray-color">작성된 소개 메시지가 없습니다.</p>
                 ) : (
-                  <p> {lecture?.instructorInfo.intro} </p>
+                  <p> {lecture?.instructorInfo?.intro} </p>
                 )}
               </div>
               <div className="mt-[15px] flex gap-3">
@@ -152,9 +152,9 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
                 <button
                   className="rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white"
                   onClick={() =>
-                    navigate(`/mypage/${lecture?.instructorInfo.id}`, {
+                    navigate(`/mypage/${lecture?.instructorInfo?.id}`, {
                       state: {
-                        joinId: lecture?.instructorInfo.id,
+                        joinId: lecture?.instructorInfo?.id,
                         selectedMenu: '유저소개',
                         selectedProfileMenu: '강사',
                       },
