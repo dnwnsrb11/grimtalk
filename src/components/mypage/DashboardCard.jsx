@@ -1,6 +1,6 @@
 export const DashboardCard = ({ title, subtitle, subInfo, children }) => {
   return (
-    <div className="rounded-2xl border border-gray-border-color px-4 py-5">
+    <div className="min-h-4 rounded-2xl border border-gray-border-color px-4 py-5">
       {title && (
         <div className={`flex items-center gap-2 ${!subtitle && 'mb-3'}`}>
           <p className="text-[22px] font-bold">{title}</p>

@@ -79,144 +79,247 @@ export const StudentDashboardSection = ({ isActive }) => {
     <div className="grid grid-rows-[2fr_1fr_2fr] gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="grid grid-rows-2 gap-3">
-          import {(motion, AnimatePresence)} from "framer-motion";
-          <DashboardCard title="최근 학습 커리큘럼">
-            <AnimatePresence>
-              {recentCurriculum ? (
-                <motion.div
-                  key="curriculum"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5 }}
+          <AnimatePresence mode="wait">
+            {recentCurriculum ? (
+              <motion.div
+                key="dashboard-card"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.5 }}
+              >
+                <DashboardCard title="최근 학습 커리큘럼">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key="curriculum"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <HashTaggedLectureCurriculumItem
+                        title={recentCurriculum?.subject}
+                        hashTags={recentCurriculum?.hashtags}
+                        image={
+                          recentCurriculum?.image && isValidImage(recentCurriculum?.image)
+                            ? recentCurriculum?.image
+                            : posterNoneImg
+                        }
+                        id={recentCurriculum?.lectureId}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </DashboardCard>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="dashboard-card-empty"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.5 }}
+              >
+                <DashboardCard title="최근 학습 커리큘럼">
+                  <motion.p
+                    key="no-curriculum"
+                    className="mt-[85px] flex items-center justify-center text-[20px]"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    최근 학습한 커리큘럼이 없습니다.
+                  </motion.p>
+                </DashboardCard>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <AnimatePresence mode="wait">
+            {similarity ? (
+              <motion.div
+                key="similarity-card"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.5, delay: 0.3 }} // 🚀 0.3초 딜레이 추가
+              >
+                <DashboardCard
+                  title="나의 가장 높은 유사도"
+                  subtitle={
+                    similarity?.curriculumSubject
+                      ? `수업: ${similarity?.curriculumSubject}`
+                      : '수업에 참여해보세요'
+                  }
                 >
-                  <HashTaggedLectureCurriculumItem
-                    title={recentCurriculum?.subject}
-                    hashTags={recentCurriculum?.hashtags}
-                    image={
-                      recentCurriculum?.image && isValidImage(recentCurriculum?.image)
-                        ? recentCurriculum?.image
-                        : posterNoneImg
-                    }
-                    id={recentCurriculum?.lectureId}
-                  />
-                </motion.div>
-              ) : (
+                  <div className="flex items-end justify-end">
+                    <span className="text-7xl font-bold text-primary-color">
+                      {similarity?.imageSimilarityPercent !== undefined &&
+                      similarity?.imageSimilarityPercent !== null
+                        ? similarity?.imageSimilarityPercent
+                        : 'NO DATA'}
+                    </span>
+                    <span className="text-4xl font-bold text-black">%</span>
+                  </div>
+                </DashboardCard>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="similarity-card-empty"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.5, delay: 0.3 }} // 🚀 동일한 딜레이 적용
+              >
+                <DashboardCard title="나의 가장 높은 유사도" subtitle="수업에 참여해보세요">
+                  <div className="flex items-end justify-end">
+                    <span className="text-7xl font-bold text-primary-color">NO DATA</span>
+                    <span className="text-4xl font-bold text-black">%</span>
+                  </div>
+                </DashboardCard>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        <AnimatePresence mode="wait">
+          {expectedCurriculums && expectedCurriculums.length > 0 ? (
+            <motion.div
+              key="dashboard-card"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.5, delay: 1.2 }}
+            >
+              <DashboardCard title="예정 커리큘럼">
+                <AnimatePresence mode="wait">
+                  {expectedCurriculums.map((expectedCurriculum) => (
+                    <motion.div
+                      key={expectedCurriculum?.subject}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.5, delay: 1.2 }}
+                    >
+                      <DatedLectureCurriculumItem
+                        title={expectedCurriculum?.subject}
+                        image={expectedCurriculum?.image ?? null}
+                        createdAt={expectedCurriculum?.createdAt}
+                        expectedLiveTime={expectedCurriculum?.expectedLiveTime}
+                        id={expectedCurriculum?.lectureId}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </DashboardCard>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="dashboard-card-empty"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.5, delay: 1.2 }}
+            >
+              <DashboardCard title="예정 커리큘럼">
                 <motion.p
                   key="no-curriculum"
-                  className="mt-[85px] flex items-center justify-center text-[20px]"
+                  className="mt-[200px] flex items-center justify-center text-[20px]"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5 }}
+                  transition={{ duration: 0.5, delay: 1.2 }}
                 >
-                  최근 학습한 커리큘럼이 없습니다.
+                  예정된 강의가 없습니다.
                 </motion.p>
-              )}
-            </AnimatePresence>
-          </DashboardCard>
-          <DashboardCard
-            title="나의 가장 높은 유사도"
-            subtitle={
-              similarity?.curriculumSubject
-                ? `수업: ${similarity?.curriculumSubject}`
-                : '수업에 참여해보세요'
-            }
-          >
-            <div className="flex items-end justify-end">
-              <span className="text-7xl font-bold text-primary-color">
-                {similarity?.imageSimilarityPercent !== undefined &&
-                similarity?.imageSimilarityPercent !== null
-                  ? similarity?.imageSimilarityPercent
-                  : 'NO DATA'}
-              </span>
-
-              <span className="text-4xl font-bold text-black">%</span>
-            </div>
-          </DashboardCard>
-        </div>
-        <DashboardCard title="예정 커리큘럼">
-          {expectedCurriculums && expectedCurriculums.length > 0 ? (
-            expectedCurriculums.map((expectedCurriculum) => (
-              <DatedLectureCurriculumItem
-                key={expectedCurriculum?.subject}
-                title={expectedCurriculum?.subject}
-                image={expectedCurriculum?.image ?? null}
-                createdAt={expectedCurriculum?.createdAt}
-                expectedLiveTime={expectedCurriculum?.expectedLiveTime}
-                id={expectedCurriculum?.lectureId}
-              />
-            ))
-          ) : (
-            <p className="mt-[200px] flex items-center justify-center text-[20px]">
-              예정된 강의가 없습니다.
-            </p>
+              </DashboardCard>
+            </motion.div>
           )}
-        </DashboardCard>
+        </AnimatePresence>
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <DashboardCard title="최근 구독한 강사">
-          {recentSubscribedInstructor ? (
-            <button
-              onClick={() =>
-                navigate(`/mypage/${recentSubscribedInstructor.id}`, {
-                  state: {
-                    joinId: recentSubscribedInstructor.id,
-                    selectedMenu: '유저소개',
-                    selectedProfileMenu: '강사',
-                  },
-                })
-              }
-            >
-              <div className="flex items-center gap-5">
-                <img
-                  src={
-                    recentSubscribedInstructor.image &&
-                    isValidImage(recentSubscribedInstructor.image)
-                      ? recentSubscribedInstructor.image
+      <AnimatePresence mode="wait">
+        <div className="grid grid-cols-2 gap-3">
+          {/* 최근 구독한 강사 (0.6초 딜레이) */}
+          <motion.div
+            key="recent-instructor"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5, delay: 0.6 }} // ✅ 0.6초 딜레이 적용
+          >
+            <DashboardCard title="최근 구독한 강사">
+              {recentSubscribedInstructor ? (
+                <button
+                  onClick={() =>
+                    navigate(`/mypage/${recentSubscribedInstructor.id}`, {
+                      state: {
+                        joinId: recentSubscribedInstructor.id,
+                        selectedMenu: '유저소개',
+                        selectedProfileMenu: '강사',
+                      },
+                    })
+                  }
+                >
+                  <div className="flex items-center gap-5">
+                    <img
+                      src={
+                        recentSubscribedInstructor.image &&
+                        isValidImage(recentSubscribedInstructor.image)
+                          ? recentSubscribedInstructor.image
+                          : posterNoneImg
+                      }
+                      alt="recent-instructor"
+                      className="h-[70px] w-[70px] rounded-full"
+                    />
+
+                    <div className="flex flex-col items-start">
+                      <p className="text-lg font-bold text-common-font-color">
+                        {recentSubscribedInstructor.nickname}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        {recentSubscribedInstructor.memberTags?.map((tag) => (
+                          <HashTagChip key={tag} hashTag={tag} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ) : (
+                <p className="mt-[60px] flex items-center justify-center text-[20px]">
+                  최근 구독한 강사가 없습니다.
+                </p>
+              )}
+            </DashboardCard>
+          </motion.div>
+
+          {/* 최근 구독한 강의 (0.9초 딜레이) */}
+          <motion.div
+            key="recent-lecture"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5, delay: 0.9 }} // ✅ 0.9초 딜레이 적용
+          >
+            <DashboardCard title="최근 구독한 강의">
+              {recentFavoriteLecture ? (
+                <HashTaggedLectureCurriculumItem
+                  title={recentFavoriteLecture.subject}
+                  hashTags={recentFavoriteLecture.hashtags}
+                  image={
+                    recentFavoriteLecture?.image && isValidImage(recentFavoriteLecture?.image)
+                      ? recentFavoriteLecture?.image
                       : posterNoneImg
                   }
-                  alt="recent-instructor"
-                  className="h-[70px] w-[70px] rounded-full"
+                  id={recentFavoriteLecture?.lectureId}
                 />
+              ) : (
+                <p className="mt-[60px] flex items-center justify-center text-[20px]">
+                  최근 즐겨찾기한 강의가 없습니다.
+                </p>
+              )}
+            </DashboardCard>
+          </motion.div>
+        </div>
+      </AnimatePresence>
 
-                <div className="flex flex-col items-start">
-                  <p className="text-lg font-bold text-common-font-color">
-                    {recentSubscribedInstructor.nickname}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    {recentSubscribedInstructor.memberTags?.map((tag) => (
-                      <HashTagChip key={tag} hashTag={tag} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </button>
-          ) : (
-            <p className="mt-[85px] flex items-center justify-center text-[20px]">
-              최근 구독한 강사가 없습니다.
-            </p>
-          )}
-        </DashboardCard>
-        <DashboardCard title="최근 구독한 강의">
-          {recentFavoriteLecture ? (
-            <HashTaggedLectureCurriculumItem
-              title={recentFavoriteLecture.subject}
-              hashTags={recentFavoriteLecture.hashtags}
-              image={
-                recentFavoriteLecture?.image && isValidImage(recentFavoriteLecture?.image)
-                  ? recentFavoriteLecture?.image
-                  : posterNoneImg
-              }
-              id={recentFavoriteLecture?.lectureId}
-            />
-          ) : (
-            <p className="mt-[85px] flex items-center justify-center text-[20px]">
-              최근 즐겨찾기한 강의가 없습니다.
-            </p>
-          )}
-        </DashboardCard>
-      </div>
       <DashboardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
         <div>{monthlyProgressData?.year}</div>
         <div className="h-[250px]">
