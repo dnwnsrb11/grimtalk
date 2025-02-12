@@ -36,14 +36,15 @@ export const LivePage = () => {
   const [chatToken, setChatToken] = useState('');
   const [isConnected, setIsConnected] = useState(false);
 
-  // Excalidraw 관련 상태
-  const [roomCreatorElements, setRoomCreatorElements] = useState([]);
-  const [participantElements, setParticipantElements] = useState([]);
+  // Excalidraw 관련 상태 - useRef로 변경하여 무한 업데이트 방지
+  const roomCreatorElementsRef = useRef([]);
+  const participantElementsRef = useRef([]);
+  const roomCreatorAPIRef = useRef(null);
+  const previousElementsRef = useRef([]);
+
+  // API 상태는 유지 (필요한 경우 UI 업데이트를 위해)
   const [roomCreatorExcalidrawAPI, setRoomCreatorExcalidrawAPI] = useState(null);
   const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
-
-  const [receivedElements, setReceivedElements] = useState([]);
-  const latestElementsRef = useRef([]);
 
   // LiveKit 이벤트 리스너 설정
   useEffect(() => {
@@ -70,7 +71,6 @@ export const LivePage = () => {
   // STOMP 연결 및 구독 설정
   useEffect(() => {
     if (stompService && curriculumSubject) {
-      // STOMP 클라이언트 설정
       stompService.client = new Client({
         brokerURL: STOMP_URL,
         reconnectDelay: 5000,
@@ -79,59 +79,48 @@ export const LivePage = () => {
         },
       });
 
-      // STOMP 연결 성공 시 콜백
       stompService.client.onConnect = (frame) => {
         console.log('Connected:', frame);
         setIsConnected(true);
 
-        // 학생인 경우에만 구독 설정
         if (!participantUtils.isCreator(nickname)) {
           stompService.client.subscribe(`/pub/receive/${curriculumSubject}`, (message) => {
-            console.log('Received message:', message);
             try {
               const receivedData = JSON.parse(message.body);
-              console.log('Parsed data:', receivedData);
-
               const excalidrawData = receivedData.message || receivedData;
 
-              if (
-                excalidrawData.type === 'excalidraw' &&
-                excalidrawData.boardType === 'roomCreator'
-              ) {
-                console.log('Setting room creator elements:', excalidrawData.elements);
+              if (excalidrawData.type === 'excalidraw' && excalidrawData.boardType === 'roomCreator') {
+                const filteredElements = excalidrawData.elements.filter(element => !element.isDeleted);
+                roomCreatorElementsRef.current = filteredElements;
 
-                // 상태와 참조 모두 업데이트
-                setRoomCreatorElements(excalidrawData.elements);
-                latestElementsRef.current = excalidrawData.elements;
-
-                // 즉시 업데이트를 위한 수신 요소 설정
-                setReceivedElements(excalidrawData.elements);
+                // API가 존재할 때만 scene 업데이트
+                if (roomCreatorAPIRef.current) {
+                  roomCreatorAPIRef.current.updateScene({
+                    elements: filteredElements,
+                    appState: excalidrawData.appState || { viewBackgroundColor: '#ffffff' }
+                  });
+                }
               }
             } catch (error) {
               console.error('Error parsing received message:', error);
             }
           });
-          console.log(`Subscribed to /pub/receive/${curriculumSubject}`);
         }
       };
 
-      // WebSocket 오류 처리
       stompService.client.onWebSocketError = (error) => {
         console.error('Error with WebSocket:', error);
         setIsConnected(false);
       };
 
-      // STOMP 프로토콜 오류 처리
       stompService.client.onStompError = (frame) => {
         console.error('STOMP error:', frame.headers['message']);
         console.error('Additional details:', frame.body);
         setIsConnected(false);
       };
 
-      // STOMP 연결 시작
       stompService.client.activate();
 
-      // 컴포넌트 언마운트 시 연결 해제
       return () => {
         if (stompService.client.active) {
           stompService.client.deactivate();
@@ -166,19 +155,16 @@ export const LivePage = () => {
   // 방 연결 함수
   const connectToRoom = async () => {
     try {
-      // 토큰 발급
       const isCreator = participantUtils.isCreator(nickname);
       const { rtcToken, chatToken } = await getTokens(isCreator);
 
       liveStore.setTokens(rtcToken, chatToken);
       setChatToken(chatToken);
 
-      // LiveKit 방 연결
       const newRoom = await liveKitService.connect(rtcToken);
       setRoom(newRoom);
       liveStore.setRoom(newRoom);
 
-      // 방장일 경우 미디어 활성화
       if (isCreator) {
         const track = await liveKitService.enableMedia();
         setLocalTrack(track);
@@ -191,21 +177,39 @@ export const LivePage = () => {
     }
   };
 
-  // Excalidraw 씬 업데이트를 처리하는 useEffect 추가
-  useEffect(() => {
-    if (roomCreatorExcalidrawAPI && receivedElements.length > 0) {
-      roomCreatorExcalidrawAPI.updateScene({
-        elements: receivedElements,
-        appState: { viewBackgroundColor: 'transparent' }
-      });
-    }
-  }, [receivedElements, roomCreatorExcalidrawAPI]);
+  // 화이트보드 업데이트 함수 (방장용)
+  const updateBoard = useCallback(
+    (elements, appState, boardType) => {
+      if (stompService?.client?.active && isConnected && participantUtils.isCreator(nickname)) {
+        const filteredElements = elements.filter(element => !element.isDeleted);
+
+        // 이전 요소들과 비교하여 변경사항이 있을 때만 업데이트
+        if (JSON.stringify(filteredElements) !== JSON.stringify(previousElementsRef.current)) {
+          previousElementsRef.current = filteredElements;
+
+          const message = {
+            type: 'excalidraw',
+            boardType,
+            elements: filteredElements,
+            appState: appState || { viewBackgroundColor: '#ffffff' },
+            sender: nickname,
+            timestamp: Date.now() // 타임스탬프 추가하여 메시지 순서 보장
+          };
+
+          stompService.client.publish({
+            destination: `/sub/send/${curriculumSubject}`,
+            body: JSON.stringify(message),
+          });
+        }
+      }
+    },
+    [stompService, isConnected, curriculumSubject, nickname],
+  );
 
   // 컴포넌트 마운트 시 방 연결
   useEffect(() => {
     connectToRoom();
 
-    // 컴포넌트 언마운트 시 정리
     return () => {
       if (room) {
         room.disconnect();
@@ -214,27 +218,6 @@ export const LivePage = () => {
       }
     };
   }, [curriculumSubject]);
-
-  // 화이트보드 업데이트 함수 (방장용)
-  const updateBoard = useCallback(
-    (elements, boardType) => {
-      if (stompService?.client?.active && isConnected && participantUtils.isCreator(nickname)) {
-        const message = {
-          type: 'excalidraw',
-          boardType,
-          elements,
-          sender: nickname,
-        };
-
-        console.log('Sending message:', message);
-        stompService.client.publish({
-          destination: `/sub/send/${curriculumSubject}`,
-          body: JSON.stringify(message),
-        });
-      }
-    },
-    [stompService, isConnected, curriculumSubject, nickname],
-  );
 
   // 방 나가기 함수
   const leaveRoom = async () => {
@@ -255,7 +238,6 @@ export const LivePage = () => {
         )}
       </div>
 
-      {/* 비디오 레이아웃 */}
       <div id="layout-container">
         {participantUtils.isCreator(nickname) && localTrack && (
           <VideoComponent track={localTrack} participantIdentity={nickname} local={true} />
@@ -288,22 +270,25 @@ export const LivePage = () => {
         )}
       </div>
 
-      {/* 채팅 컴포넌트 */}
       <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
         <CustomChat />
       </LiveKitRoom>
-      {participantUtils.isCreator(nickname)}
-      {/* Excalidraw 컴포넌트 */}
+
       {participantUtils.isCreator(nickname) ? (
         <div className="excalidraw-wrapper">
           <h3>내 화이트보드</h3>
           <Excalidraw
-            onChange={(elements) => {
-              setRoomCreatorElements(elements);
-              updateBoard(elements, 'roomCreator');
+            onChange={(elements, appState) => {
+              updateBoard(elements, appState, 'roomCreator');
             }}
-            elements={roomCreatorElements}
-            excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
+            initialData={{
+              elements: roomCreatorElementsRef.current,
+              appState: { viewBackgroundColor: '#ffffff' }
+            }}
+            excalidrawAPI={(api) => {
+              setRoomCreatorExcalidrawAPI(api);
+              roomCreatorAPIRef.current = api;
+            }}
             viewModeEnabled={false}
           />
         </div>
@@ -312,13 +297,13 @@ export const LivePage = () => {
           <div className="excalidraw-wrapper" style={{ flex: 1 }}>
             <h3>방장 화이트보드</h3>
             <Excalidraw
-              elements={roomCreatorElements}
+              initialData={{
+                elements: roomCreatorElementsRef.current,
+                appState: { viewBackgroundColor: '#ffffff' }
+              }}
               excalidrawAPI={(api) => {
                 setRoomCreatorExcalidrawAPI(api);
-                // API가 설정될 때 이미 있는 요소들 적용
-                if (latestElementsRef.current.length > 0 && api) {
-                  api.updateScene({ elements: latestElementsRef.current });
-                }
+                roomCreatorAPIRef.current = api;
               }}
               viewModeEnabled={true}
             />
@@ -326,12 +311,18 @@ export const LivePage = () => {
           <div className="excalidraw-wrapper" style={{ flex: 1 }}>
             <h3>내 화이트보드</h3>
             <Excalidraw
-              onChange={(elements) => {
-                setParticipantElements(elements);
-                updateBoard(elements, 'participant');
+              onChange={(elements, appState) => {
+                const filteredElements = elements.filter(element => !element.isDeleted);
+                participantElementsRef.current = filteredElements;
+                updateBoard(filteredElements, appState, 'participant');
               }}
-              elements={participantElements}
-              excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
+              initialData={{
+                elements: participantElementsRef.current,
+                appState: { viewBackgroundColor: '#ffffff' }
+              }}
+              excalidrawAPI={(api) => {
+                setParticipantExcalidrawAPI(api);
+              }}
               viewModeEnabled={false}
             />
           </div>
