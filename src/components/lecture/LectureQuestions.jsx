@@ -97,19 +97,22 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
         </div>
         <hr className="border border-divider-color" />
         <div className="mt-[40px]">
-          {questions.map((question, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                setIsActive('질문 상세페이지');
-                setQuestionId(question.boardId);
-                setCurriculumId(question.curriculumId);
-              }}
-              className="mb-3"
-            >
-              <QuestionLectureCard setIsActive={setIsActive} question={question} />
-            </div>
-          ))}
+          {questions
+            .slice() // 원본 배열 변경 방지
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            .map((question, index) => (
+              <div
+                key={index}
+                onClick={() => {
+                  setIsActive('질문 상세페이지');
+                  setQuestionId(question.boardId);
+                  setCurriculumId(question.curriculumId);
+                }}
+                className="mb-3"
+              >
+                <QuestionLectureCard setIsActive={setIsActive} question={question} />
+              </div>
+            ))}
         </div>
       </div>
     </>

@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { RootLayout } from '@/layouts/RootLayout';
 import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
 import { AlarmPage } from '@/routes/pages/AlarmPage';
+import { CreateLiveTestPage } from '@/routes/pages/CreateLiveTestPage';
 import { DemoPage } from '@/routes/pages/DemoPage';
 import { LecturePage } from '@/routes/pages/LecturePage';
 import { LivePage } from '@/routes/pages/LivePage';
@@ -13,13 +14,21 @@ import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
 import { MainPageLive } from '@/routes/pages/MainPageLive';
 import { MyPage } from '@/routes/pages/MyPage';
 import { NotFoundPage } from '@/routes/pages/NotFoundPage';
+import { OpenviduV3ReferencePage } from '@/routes/pages/OpenviduV3ReferencePage';
 import { SignupPage } from '@/routes/pages/SignupPage';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
-
 const router = createBrowserRouter([
   {
-    path: '/streaming',
+    path: '/create-live-test',
+    element: <CreateLiveTestPage />,
+  },
+  {
+    path: '/live/:curriculumSubject',
     element: <LivePage />,
+  },
+  {
+    path: '/open-vidu-reference',
+    element: <OpenviduV3ReferencePage />,
   },
   {
     element: <RootLayout />,

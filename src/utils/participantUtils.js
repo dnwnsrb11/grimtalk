@@ -9,8 +9,8 @@ const participantUtils = {
     return `${type} ${participantName}`;
   },
 
-  // 화면 표시용 참가자 이름 (접두사 제거)
-  getDisplayName: (participantName) => {
+  // 토큰 접두사 제거
+  removeTokenPrefix: (participantName) => {
     return participantName.replace(`${TOKEN_TYPES.RTC} `, '').replace(`${TOKEN_TYPES.CHAT} `, '');
   },
 
