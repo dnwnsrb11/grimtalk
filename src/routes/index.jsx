@@ -14,6 +14,7 @@ import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
 import { MainPageLive } from '@/routes/pages/MainPageLive';
 import { MyPage } from '@/routes/pages/MyPage';
 import { NotFoundPage } from '@/routes/pages/NotFoundPage';
+import { ReplayPage } from '@/routes/pages/ReplayPage';
 import { SignupPage } from '@/routes/pages/SignupPage';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
 const router = createBrowserRouter([
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: '/live/:curriculumSubject',
     element: <LivePage />,
+  },
+  {
+    path: '/replay',
+    element: <ReplayPage />,
   },
   {
     element: <RootLayout />,
