@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
@@ -54,8 +55,24 @@ export const SignupPage = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{10,}$/;
             if (!email || !password || !password2 || !nickname || !question || !answer) {
-              alert('모든 필드를 입력해 주세요.');
+              toast.error('모든 정보를 입력해 주세요.', {
+                style: { fontSize: '14px', width: '300px' },
+              });
+              return;
+            }
+            if (password !== password2) {
+              toast.error('비밀번호가 일치하지 않습니다.', {
+                style: { fontSize: '14px', width: '300px' },
+              });
+              return;
+            }
+
+            if (!passwordRegex.test(password)) {
+              toast.error('비밀번호는 10자 이상, 숫자, 문자, 기호를 포함해야 합니다.', {
+                style: { fontSize: '14px', width: '300px' },
+              });
               return;
             }
             signupMutation.mutate();
@@ -65,21 +82,21 @@ export const SignupPage = () => {
             <input
               type="text"
               placeholder="이메일을 입력하세요."
-              className="h-10 rounded-md border border-gray-border-color pl-3"
+              className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
               placeholder="비밀번호를 입력하세요."
-              className="h-10 rounded-md border border-gray-border-color pl-3"
+              className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <input
               type="password"
               placeholder="비밀번호를 다시 입력하세요."
-              className="h-10 rounded-md border border-gray-border-color pl-3"
+              className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={password2}
               onChange={(e) => setPassword2(e.target.value)}
             />
@@ -87,12 +104,12 @@ export const SignupPage = () => {
             <input
               type="text"
               placeholder="닉네임을 알려주세요."
-              className="h-10 rounded-md border border-gray-border-color pl-3"
+              className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
             />
             <select
-              className="h-10 rounded-md border border-gray-border-color pl-3"
+              className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
             >
@@ -106,7 +123,7 @@ export const SignupPage = () => {
             <input
               type="text"
               placeholder="질문 답변을 작성해주세요."
-              className="h-10 rounded-md border border-gray-border-color pl-3"
+              className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
             />
