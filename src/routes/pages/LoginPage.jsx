@@ -52,11 +52,18 @@ export const LoginPage = () => {
           </div>
         </div>
 
-        <div className="text-center text-xs">
-          <button type="button" onClick={() => navigate(`/signup`)}>
+        <div className="mt-[15px] text-center text-sm">
+          <button
+            type="button"
+            onClick={() => navigate(`/signup`)}
+            className="transition-transform duration-150 hover:scale-105"
+          >
             회원가입
           </button>{' '}
-          | <button type="button">비밀번호 찾기</button>
+          <span> | </span>
+          <button type="button" className="transition-transform duration-150 hover:scale-105">
+            비밀번호 찾기
+          </button>
         </div>
       </div>
     </div>

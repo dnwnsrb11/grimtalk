@@ -36,7 +36,7 @@ const useLogin = ({ email, password }) => {
           useAuthStore.getState().loginAuth(accessToken); // 토큰 저장
 
           toast.success('로그인 되었습니다.');
-          navigate('/signup-success'); // 홈 페이지로 이동
+          navigate('/'); // 홈 페이지로 이동
         }
       }
 
