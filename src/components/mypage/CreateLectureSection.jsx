@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { _axiosAuth } from '@/api/instance';
 
 export const CreateLectureSection = () => {
+  const [selectDate, setSelectDate] = useState(false);
   // 강의 정보 상태
   const [lecture, setLecture] = useState({
     subject: '',
@@ -183,16 +184,39 @@ export const CreateLectureSection = () => {
           <input
             type="date"
             value={curriculumForm.date}
-            onChange={(e) => setCurriculumForm({ ...curriculumForm, date: e.target.value })}
+            onChange={(e) => {
+              setCurriculumForm({ ...curriculumForm, date: e.target.value });
+              setSelectDate(true);
+            }}
             className="rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal"
           />
 
           <input
             type="time"
             value={curriculumForm.time}
-            onChange={(e) => setCurriculumForm({ ...curriculumForm, time: e.target.value })}
+            onChange={(e) => {
+              setCurriculumForm({ ...curriculumForm, time: e.target.value });
+              setSelectDate(true);
+            }}
             className="rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal"
           />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {!curriculumForm.date ? (
+            <p className="pl-[10px] text-primary-color">라이브 시작 날짜를 선택해주세요.</p>
+          ) : (
+            selectDate && (
+              <p className="pl-[10px] text-green-600">라이브 시작 날짜가 설정되었습니다.</p>
+            )
+          )}
+
+          {!curriculumForm.time ? (
+            <p className="pl-[10px] text-primary-color">라이브 시작 시간을 선택해주세요.</p>
+          ) : (
+            selectDate && (
+              <p className="pl-[10px] text-green-600">라이브 시작 시간이 설정되었습니다.</p>
+            )
+          )}
         </div>
         <div className="flex justify-end">
           <button
