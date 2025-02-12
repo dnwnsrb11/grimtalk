@@ -3,9 +3,9 @@ import '@/styles/live.css';
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { joinLive, leaveLive, liveApi } from '@/api/live';
+import { InstructorLeaveLive, joinLive, leaveLive, liveApi } from '@/api/live';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
 import { VideoComponent } from '@/components/live/VideoComponent';
@@ -23,7 +23,8 @@ export const LivePage = () => {
   const { curriculumSubject } = useParams();
   const liveStore = useLiveStore();
   const { id, nickname } = useAuthStore((state) => state.userData);
-  const curriculumId = 1;
+  const { state } = useLocation();
+  const curriculumId = state?.curriculumId;
 
   // 서비스 초기화
   const [stompService] = useState(() => new StompService(STOMP_URL));
@@ -97,6 +98,19 @@ export const LivePage = () => {
       stompService.connect();
       await joinLive(curriculumId, id);
 
+      // 강사 닉네임을 localStorage와 liveStore에 저장
+      const { state } = location;
+      if (state?.instructorNickname) {
+        localStorage.setItem('roomCreator', state.instructorNickname);
+        liveStore.setRoomCreator(state.instructorNickname);
+      } else {
+        // localStorage에서 roomCreator를 가져와서 liveStore에도 저장
+        const storedRoomCreator = localStorage.getItem('roomCreator');
+        if (storedRoomCreator) {
+          liveStore.setRoomCreator(storedRoomCreator);
+        }
+      }
+
       // 2. 토큰 발급
       const isCreator = participantUtils.isCreator(nickname);
       const { rtcToken, chatToken } = await getTokens(isCreator);
@@ -158,11 +172,15 @@ export const LivePage = () => {
 
   // 방 나가기 함수
   const leaveRoom = async () => {
+    if (participantUtils.isCreator(nickname)) {
+      await InstructorLeaveLive(curriculumId, id);
+    } else {
+      await leaveLive(curriculumId, id);
+    }
     room?.disconnect();
     localStorage.removeItem('roomCreator');
     liveStore.reset();
     navigate('/create-live-test');
-    await leaveLive(curriculumId, id);
   };
 
   return (
@@ -175,9 +193,9 @@ export const LivePage = () => {
           </button>
         )}
         {!participantUtils.isCreator(nickname) && (
-        <button className="btn btn-large btn-danger" onClick={leaveRoom}>
+          <button className="btn btn-large btn-danger" onClick={leaveRoom}>
             라이브 퇴장
-        </button>
+          </button>
         )}
       </div>
 
