@@ -16,7 +16,6 @@ export const MainPage = () => {
     queryKey: ['popularLectures'],
     queryFn: async () => {
       const { data } = await _axios.get(`/home/popular-lecture`);
-
       return data.body.data.list;
     },
   });

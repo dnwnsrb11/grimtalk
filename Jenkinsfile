@@ -15,9 +15,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh """
-                docker build -t ${IMAGE_NAME} .
-                """
+                script {
+                    def startTime = System.currentTimeMillis()
+
+                    sh """
+                    docker build -t ${IMAGE_NAME} .
+                    """
+
+                    def endTime = System.currentTimeMillis()
+                    def duration = (endTime - startTime) / 1000 
+                    echo "🚀 프론트 빌드 완료: ${duration}초 소요"
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { CheckBoardSection } from '@/components/mypage/CheckBoardSection';
@@ -23,9 +23,9 @@ export const MyPage = () => {
   const location = useLocation();
   const { joinId } = location.state || userData.id;
   // joinId 감지
-  useEffect(() => {
-    navigate(`/mypage/${joinId}`, { state: { joinId } });
-  }, [joinId]);
+  // useEffect(() => {
+  //   navigate(`/mypage/${joinId}`, { state: { joinId } });
+  // }, []);
   const COMMON_MENU = {
     유저소개: <MemberIntroSection joinId={joinId} />,
     '마이 페이지': <MemberSettingsSection />,
@@ -37,11 +37,11 @@ export const MyPage = () => {
       ...COMMON_MENU,
       '구독, 즐겨찾기': <SubscriptionFavoriteSection />,
       '내가 쓴 글': <MyBoardSection />,
-      대시보드: <StudentDashboardSection />,
+      대시보드: <StudentDashboardSection joinId={joinId} myid={userData.id} isActive={true} />,
     },
     강사: {
       ...COMMON_MENU,
-      대시보드: <InstructorDashboardSection />,
+      대시보드: <InstructorDashboardSection nickname={userData.nickname} />,
       '질문 확인': <CheckBoardSection />,
 
       '내 강의': <MyLectureSection />,

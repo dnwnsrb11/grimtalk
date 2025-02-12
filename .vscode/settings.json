@@ -10,5 +10,6 @@
   // JavaScript 파일의 import 경로를 절대 경로로 설정
   "javascript.preferences.importModuleSpecifier": "non-relative",
   // TypeScript 파일의 import 경로를 절대 경로로 설정
-  "typescript.preferences.importModuleSpecifier": "non-relative"
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "cSpell.words": ["Excalidraw", "grimtalk", "jaemoon", "livekit", "Openvidu", "Vidu"]
 }
