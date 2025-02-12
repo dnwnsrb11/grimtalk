@@ -9,10 +9,15 @@ import { NextPlayIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayWorkList } from '@/components/replayPage/ReplayWorkList';
+import { handleApiError } from '@/utils/errorHandler';
 
 export const ReplayPage = () => {
-  navigate = useNavigate();
+  const navigate = useNavigate();
   // api 호출
+  console.log('ReplayPage 컴포넌트 마운트'); // 디버깅 로그 1
+
+  // API 호출 전 axios 인스턴스 확인
+  console.log('_axiosAuth 설정 확인:', _axiosAuth.defaults); // 디버깅 로그 2
   const {
     data: replayData,
     isLoading,
@@ -21,17 +26,16 @@ export const ReplayPage = () => {
   } = useQuery({
     queryKey: ['replayData'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/stroke/${4}`); //추후 api 요청 하드코딩에서 변경 예정
+      const { data } = await _axiosAuth.get(`/stroke/${12}`); //추후 api 요청 하드코딩에서 변경 예정
       // 만약 데이터가 없다면
-      if (data.body?.code) {
-        if (data.body.code === 404) {
-          alert('현재 데이터를 찾을수 없습니다.');
+      if (data.body?.code !== undefined) {
+        // 코드가 200이 아닌 경우 에러 처리
+        if (data.body.code !== 200) {
+          handleApiError(data);
+          throw new Error(data.body.message || '데이터를 찾을 수 없습니다');
         }
       }
       return data.body.data;
-    },
-    onError: (error) => {
-      console.log('error', error);
     },
   });
 
