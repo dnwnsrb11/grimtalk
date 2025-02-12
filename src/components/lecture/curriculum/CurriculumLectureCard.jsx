@@ -43,7 +43,7 @@ export const CurriculumLectureCard = ({ curriculum, instructorId, instructorNick
   const cardBaseStyle = curriculum.status
     ? 'rounded-2xl border border-gray-300 bg-gray-100 p-[20px]' // 완료된 상태
     : curriculum.live
-      ? 'rounded-2xl bg-white p-[20px] relative transition-all duration-300 group before:absolute before:inset-0 before:rounded-2xl before:border-2 before:border-primary-color before:animate-pulse before:pointer-events-none' // 라이브 중
+      ? 'rounded-2xl bg-white p-[20px] relative transition-all duration-300 before:absolute before:inset-0 before:rounded-2xl before:border-2 before:border-primary-color before:animate-pulse before:pointer-events-none' // 라이브 중
       : 'rounded-2xl border border-gray-border-color bg-white p-[20px]'; // 예정된 상태
 
   return (
@@ -113,14 +113,14 @@ export const CurriculumLectureCard = ({ curriculum, instructorId, instructorNick
           ) : curriculum.live ? (
             <button
               onClick={handleJoinLive}
-              className="hover:bg-primary-hover-color animate-pulse rounded-full border-2 border-primary-color bg-primary-color px-6 py-2 text-[16px] font-semibold text-white transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2 group-hover:scale-105"
+              className="hover:bg-primary-hover-color animate-pulse rounded-full border-2 border-primary-color bg-primary-color px-6 py-2 text-[16px] font-semibold text-white transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2"
             >
               {isInstructor ? '라이브 입장' : '라이브 입장'}
             </button>
           ) : isInstructor ? (
             <button
               onClick={handleJoinLive}
-              className="hover:bg-primary-hover-color rounded-full border-2 border-primary-color bg-primary-color px-6 py-2 text-[16px] font-semibold text-white transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2 group-hover:scale-105"
+              className="hover:bg-primary-hover-color rounded-full border-2 border-primary-color bg-primary-color px-6 py-2 text-[16px] font-semibold text-white transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2"
             >
               라이브 시작
             </button>
