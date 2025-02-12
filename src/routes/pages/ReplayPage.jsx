@@ -1,4 +1,4 @@
-import { Excalidraw } from '@excalidraw/excalidraw';
+import { Excalidraw, exportToBlob } from '@excalidraw/excalidraw';
 import { useQuery } from '@tanstack/react-query';
 import { animate } from 'motion';
 import { useEffect, useRef, useState } from 'react';
@@ -13,11 +13,6 @@ import { handleApiError } from '@/utils/errorHandler';
 
 export const ReplayPage = () => {
   const navigate = useNavigate();
-  // api 호출
-  console.log('ReplayPage 컴포넌트 마운트'); // 디버깅 로그 1
-
-  // API 호출 전 axios 인스턴스 확인
-  console.log('_axiosAuth 설정 확인:', _axiosAuth.defaults); // 디버깅 로그 2
   const {
     data: replayData,
     isLoading,
@@ -26,7 +21,7 @@ export const ReplayPage = () => {
   } = useQuery({
     queryKey: ['replayData'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/stroke/${12}`); //추후 api 요청 하드코딩에서 변경 예정
+      const { data } = await _axiosAuth.get(`/stroke/${4}`); //추후 api 요청 하드코딩에서 변경 예정
       // 만약 데이터가 없다면
       if (data.body?.code !== undefined) {
         // 코드가 200이 아닌 경우 에러 처리
@@ -240,7 +235,6 @@ export const ReplayPage = () => {
       newTimeInTicks = 0;
     } else if (checkTime > maxTime * 10) {
       newTimeInTicks = maxTime * 10;
-      console.log(newTimeInTicks);
     } else {
       newTimeInTicks = checkTime;
     }
@@ -311,6 +305,35 @@ export const ReplayPage = () => {
       });
     }
     alert('색상이 변경되었습니다.');
+  };
+
+  // 이미지 내보내기
+  const handleExportImage = async () => {
+    if (!topExcalidrawAPI) return;
+
+    try {
+      // 씬 정보가져오기
+      const elements = topExcalidrawAPI.getSceneElements();
+      const appState = topExcalidrawAPI.getAppState();
+
+      const blob = await exportToBlob({
+        elements,
+        appState,
+        mimeType: 'image/png',
+        quality: 1,
+        exportPadding: 10,
+      });
+      console.log('이미지 추출 성공', blob);
+
+      // 직렬화를 통해 전송 가능한 상태로 변경하자
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        console.log(reader);
+      };
+    } catch (error) {
+      console.log('이미지 추출 실패', error);
+    }
   };
 
   // 로딩
@@ -411,6 +434,12 @@ export const ReplayPage = () => {
                 </div>
               </div>
             </div>
+            {/* 이미지 추출 기능 */}
+            <div>
+              <button className="border p-4" onClick={handleExportImage}>
+                이미지 추출 테스트
+              </button>
+            </div>
             <div className="flex items-center gap-6 p-5">
               <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
                 <NextPlayIcon />
@@ -439,17 +468,6 @@ export const ReplayPage = () => {
               <button onClick={() => moveToTime(currentTime + 5)} className="rounded">
                 <NextPlayIcon />
               </button>
-              {/* <div className="rounded-full border border-primary-color px-[15px] py-[5px]">
-                <p className="text-text-gray-color">
-                  <span className="text-[18px] font-bold text-primary-color ">
-                    {Math.floor(currentTime)}
-                  </span>{' '}
-                  초
-                </p>
-              </div>
-              <p className="text-text-gray-color">
-                <span className="font-bol text-[18px] "> {maxTime} 초</span>(전체 시간)
-              </p> */}
             </div>
             {/* 아래가 투명도 그래프 */}
           </div>
