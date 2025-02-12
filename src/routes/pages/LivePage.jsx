@@ -5,7 +5,7 @@ import { LiveKitRoom } from '@livekit/components-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { liveApi } from '@/api/live';
+import { joinLive, leaveLive, liveApi } from '@/api/live';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
 import { VideoComponent } from '@/components/live/VideoComponent';
@@ -22,7 +22,8 @@ export const LivePage = () => {
   const navigate = useNavigate();
   const { curriculumSubject } = useParams();
   const liveStore = useLiveStore();
-  const { nickname } = useAuthStore((state) => state.userData);
+  const { id, nickname } = useAuthStore((state) => state.userData);
+  const curriculumId = 1;
 
   // 서비스 초기화
   const [stompService] = useState(() => new StompService(STOMP_URL));
@@ -90,6 +91,7 @@ export const LivePage = () => {
     try {
       // 1. STOMP 연결
       stompService.connect();
+      await joinLive(curriculumId, id);
 
       // 2. 토큰 발급
       const isCreator = participantUtils.isCreator(nickname);
@@ -156,17 +158,16 @@ export const LivePage = () => {
     localStorage.removeItem('roomCreator');
     liveStore.reset();
     navigate('/create-live-test');
+    await leaveLive(curriculumId, id);
   };
 
   return (
     <div id="room">
       <div id="room-header">
         <h2 id="room-title">{curriculumSubject}</h2>
-        {participantUtils.isCreator(nickname) && (
-          <button className="btn btn-large btn-danger" onClick={leaveRoom}>
-            Leave Room
-          </button>
-        )}
+        <button className="btn btn-large btn-danger" onClick={leaveRoom}>
+          Leave Room
+        </button>
       </div>
 
       {/* 비디오 레이아웃 */}
