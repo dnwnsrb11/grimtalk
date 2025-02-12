@@ -30,7 +30,7 @@ export const SignupPage = () => {
       // 회원가입 성공 시
       // 페이지 이동
       if (data.body.code === 200) {
-        navigate('/');
+        navigate('/signup-success');
       } else {
         // 회원가입 실패 시
         // 에러 처리
@@ -45,7 +45,7 @@ export const SignupPage = () => {
   });
 
   return (
-    <div className="relative mt-[150px] flex h-full items-center justify-center gap-2 pb-[250px]">
+    <div className="relative mt-[160px] flex h-full items-center justify-center gap-2 pb-[250px]">
       <div className="relative z-10 w-80 rounded-lg bg-white bg-opacity-80 p-5 shadow-lg">
         <div className="mb-1 flex flex-row justify-between">
           <p className="text-xl">회원가입</p>

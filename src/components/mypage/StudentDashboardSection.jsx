@@ -180,63 +180,54 @@ export const StudentDashboardSection = ({ isActive }) => {
             )}
           </AnimatePresence>
         </div>
-        <AnimatePresence mode="wait">
-          {expectedCurriculums && expectedCurriculums.length > 0 ? (
-            <motion.div
-              key="dashboard-card"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.5, delay: 1.2 }}
-            >
-              <DashboardCard title="예정 커리큘럼">
-                <AnimatePresence mode="wait">
+        <div className="h-full w-full">
+          <AnimatePresence mode="wait">
+            {expectedCurriculums && expectedCurriculums.length > 0 ? (
+              <motion.div
+                key="expected-curriculum-list"
+                className="flex h-full flex-col"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.5, delay: 1.0 }} // 🚀 1.0초 딜레이 적용
+              >
+                <DashboardCard title="예정 커리큘럼" className="flex h-full flex-col">
                   {expectedCurriculums.map((expectedCurriculum) => (
-                    <motion.div
+                    <DatedLectureCurriculumItem
                       key={expectedCurriculum?.subject}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.5, delay: 1.2 }}
-                    >
-                      <DatedLectureCurriculumItem
-                        title={expectedCurriculum?.subject}
-                        image={expectedCurriculum?.image ?? null}
-                        createdAt={expectedCurriculum?.createdAt}
-                        expectedLiveTime={expectedCurriculum?.expectedLiveTime}
-                        id={expectedCurriculum?.lectureId}
-                      />
-                    </motion.div>
+                      title={expectedCurriculum?.subject}
+                      image={expectedCurriculum?.image ?? null}
+                      createdAt={expectedCurriculum?.createdAt}
+                      expectedLiveTime={expectedCurriculum?.expectedLiveTime}
+                      id={expectedCurriculum?.lectureId}
+                    />
                   ))}
-                </AnimatePresence>
-              </DashboardCard>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="dashboard-card-empty"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.5, delay: 1.2 }}
-            >
-              <DashboardCard title="예정 커리큘럼">
-                <motion.p
-                  key="no-curriculum"
-                  className="mt-[200px] flex items-center justify-center text-[20px]"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5, delay: 1.2 }}
+                </DashboardCard>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="expected-curriculum-empty"
+                className="flex h-full flex-col justify-center"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.5, delay: 1.2 }} // 🚀 동일한 딜레이 적용
+              >
+                <DashboardCard
+                  title="예정 커리큘럼"
+                  className="flex h-full flex-col justify-center"
                 >
-                  예정된 강의가 없습니다.
-                </motion.p>
-              </DashboardCard>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  <p className="mt-[200px] flex items-center justify-center text-[20px]">
+                    예정된 강의가 없습니다.
+                  </p>
+                </DashboardCard>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
       <AnimatePresence mode="wait">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid h-[10px] grid-cols-2 gap-3">
           {/* 최근 구독한 강사 (0.6초 딜레이) */}
           <motion.div
             key="recent-instructor"
@@ -320,72 +311,82 @@ export const StudentDashboardSection = ({ isActive }) => {
         </div>
       </AnimatePresence>
 
-      <DashboardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
-        <div>{monthlyProgressData?.year}</div>
-        <div className="h-[250px]">
-          <ResponsiveBar
-            // 차트 데이터
-            data={monthlyProgressData}
-            // 데이터의 값을 나타내는 키
-            keys={['count']}
-            // x축 기준이 되는 데이터 키
-            indexBy="month"
-            // 차트 여백 설정
-            margin={{ top: 10, right: 10, bottom: 40, left: 10 }}
-            // 막대 사이 간격
-            padding={0.3}
-            // y축 스케일 타입
-            valueScale={{ type: 'linear' }}
-            // 막대 색상
-            colors="#FF5C38"
-            // 막대 모서리 둥글기
-            borderRadius={4}
-            // x축(하단) 스타일링
-            axisBottom={{
-              tickSize: 0,
-              tickPadding: 5,
-              tickRotation: 0,
-            }}
-            // y축(좌측) 비활성화
-            axisLeft={null}
-            // y축 그리드 비활성화
-            enableGridY={false}
-            // 막대 위 라벨 비활성화
-            enableLabel={false}
-            // 접근성
-            role="application"
-            ariaLabel="월간 진척도"
-            // 툴팁 커스터마이징
-            tooltip={({ value, data }) => (
-              <div
-                style={{
-                  padding: '8px',
-                  background: 'white',
-                  border: '1px solid #ccc',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
+      <AnimatePresence mode="wait">
+        <motion.div
+          key="monthly-progress"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.5, delay: 1.4 }} // 🚀 1.2초 딜레이 추가
+        >
+          <DashboardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
+            <div>{monthlyProgressData?.year}</div>
+            <div className="h-[250px]">
+              <ResponsiveBar
+                // 차트 데이터
+                data={monthlyProgressData}
+                // 데이터의 값을 나타내는 키
+                keys={['count']}
+                // x축 기준이 되는 데이터 키
+                indexBy="month"
+                // 차트 여백 설정
+                margin={{ top: 10, right: 10, bottom: 40, left: 10 }}
+                // 막대 사이 간격
+                padding={0.3}
+                // y축 스케일 타입
+                valueScale={{ type: 'linear' }}
+                // 막대 색상
+                colors="#FF5C38"
+                // 막대 모서리 둥글기
+                borderRadius={4}
+                // x축(하단) 스타일링
+                axisBottom={{
+                  tickSize: 0,
+                  tickPadding: 5,
+                  tickRotation: 0,
                 }}
-              >
-                <div style={{ width: '12px', height: '12px', background: '#FF5C38' }} />
-                <span>{`${data.month}: ${value}회 제출`}</span>
-              </div>
-            )}
-            // 차트 테마 설정
-            theme={{
-              axis: {
-                ticks: {
-                  text: {
-                    fontSize: 13,
-                    fill: '#C6C6C6',
+                // y축(좌측) 비활성화
+                axisLeft={null}
+                // y축 그리드 비활성화
+                enableGridY={false}
+                // 막대 위 라벨 비활성화
+                enableLabel={false}
+                // 접근성
+                role="application"
+                ariaLabel="월간 진척도"
+                // 툴팁 커스터마이징
+                tooltip={({ value, data }) => (
+                  <div
+                    style={{
+                      padding: '8px',
+                      background: 'white',
+                      border: '1px solid #ccc',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <div style={{ width: '12px', height: '12px', background: '#FF5C38' }} />
+                    <span>{`${data.month}: ${value}회 제출`}</span>
+                  </div>
+                )}
+                // 차트 테마 설정
+                theme={{
+                  axis: {
+                    ticks: {
+                      text: {
+                        fontSize: 13,
+                        fill: '#C6C6C6',
+                      },
+                    },
                   },
-                },
-              },
-            }}
-            layout={'vertical'}
-          />
-        </div>
-      </DashboardCard>
+                }}
+                layout={'vertical'}
+              />
+            </div>
+          </DashboardCard>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };
