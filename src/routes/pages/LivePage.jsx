@@ -3,7 +3,7 @@ import '@/styles/live.css';
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { Client } from '@stomp/stompjs';
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { liveApi } from '@/api/live';
@@ -36,15 +36,12 @@ export const LivePage = () => {
   const [chatToken, setChatToken] = useState('');
   const [isConnected, setIsConnected] = useState(false);
 
-  // Excalidraw 관련 상태 - useRef로 변경하여 무한 업데이트 방지
-  const roomCreatorElementsRef = useRef([]);
-  const participantElementsRef = useRef([]);
+  // Excalidraw 관련 상태
+  const [roomCreatorElements, setRoomCreatorElements] = useState([]);
+  const [participantElements, setParticipantElements] = useState([]);
   const roomCreatorAPIRef = useRef(null);
-  const previousElementsRef = useRef([]);
-
-  // API 상태는 유지 (필요한 경우 UI 업데이트를 위해)
-  const [roomCreatorExcalidrawAPI, setRoomCreatorExcalidrawAPI] = useState(null);
-  const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
+  const participantAPIRef = useRef(null);
+  const updateTimeoutRef = useRef(null);
 
   // LiveKit 이벤트 리스너 설정
   useEffect(() => {
@@ -68,6 +65,36 @@ export const LivePage = () => {
     }
   }, [liveKitService]);
 
+  // STOMP 메시지 처리 함수
+  const handleStompMessage = useCallback((message) => {
+    try {
+      const receivedData = JSON.parse(message.body);
+      const excalidrawData = receivedData.message || receivedData;
+
+      if (excalidrawData.type === 'excalidraw' && excalidrawData.boardType === 'roomCreator') {
+        // 삭제된 요소 제외하고 현재 유효한 요소만 필터링
+        const activeElements = excalidrawData.elements.filter((el) => !el.isDeleted);
+
+        setRoomCreatorElements(activeElements);
+
+        if (roomCreatorAPIRef.current) {
+          roomCreatorAPIRef.current.updateScene({
+            elements: activeElements,
+            appState: {
+              viewBackgroundColor: '#ffffff',
+              currentItemStrokeColor: '#000000',
+              currentItemBackgroundColor: '#ffffff',
+              viewModeEnabled: true,
+              theme: 'light',
+            },
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error handling STOMP message:', error);
+    }
+  }, []);
+
   // STOMP 연결 및 구독 설정
   useEffect(() => {
     if (stompService && curriculumSubject) {
@@ -84,27 +111,7 @@ export const LivePage = () => {
         setIsConnected(true);
 
         if (!participantUtils.isCreator(nickname)) {
-          stompService.client.subscribe(`/pub/receive/${curriculumSubject}`, (message) => {
-            try {
-              const receivedData = JSON.parse(message.body);
-              const excalidrawData = receivedData.message || receivedData;
-
-              if (excalidrawData.type === 'excalidraw' && excalidrawData.boardType === 'roomCreator') {
-                const filteredElements = excalidrawData.elements.filter(element => !element.isDeleted);
-                roomCreatorElementsRef.current = filteredElements;
-
-                // API가 존재할 때만 scene 업데이트
-                if (roomCreatorAPIRef.current) {
-                  roomCreatorAPIRef.current.updateScene({
-                    elements: filteredElements,
-                    appState: excalidrawData.appState || { viewBackgroundColor: '#ffffff' }
-                  });
-                }
-              }
-            } catch (error) {
-              console.error('Error parsing received message:', error);
-            }
-          });
+          stompService.client.subscribe(`/pub/receive/${curriculumSubject}`, handleStompMessage);
         }
       };
 
@@ -128,7 +135,43 @@ export const LivePage = () => {
         }
       };
     }
-  }, [stompService, curriculumSubject, nickname]);
+  }, [stompService, curriculumSubject, nickname, handleStompMessage]);
+
+  // 화이트보드 업데이트 함수 (방장용)
+  const updateBoard = useCallback(
+    (elements, appState, boardType) => {
+      if (stompService?.client?.active && isConnected && participantUtils.isCreator(nickname)) {
+        if (updateTimeoutRef.current) {
+          clearTimeout(updateTimeoutRef.current);
+        }
+
+        updateTimeoutRef.current = setTimeout(() => {
+          // 삭제된 요소를 제외한 실제 활성 요소만 전송
+          const activeElements = elements.filter((el) => !el.isDeleted);
+
+          const message = {
+            type: 'excalidraw',
+            boardType,
+            elements: activeElements,
+            appState: {
+              ...appState,
+              viewBackgroundColor: '#ffffff',
+              currentItemStrokeColor: '#000000',
+              currentItemBackgroundColor: '#ffffff',
+            },
+            sender: nickname,
+            timestamp: Date.now(),
+          };
+
+          stompService.client.publish({
+            destination: `/sub/send/${curriculumSubject}`,
+            body: JSON.stringify(message),
+          });
+        }, 5);
+      }
+    },
+    [stompService, isConnected, curriculumSubject, nickname],
+  );
 
   // 토큰 발급 함수
   const getTokens = async (isCreator = false) => {
@@ -177,35 +220,6 @@ export const LivePage = () => {
     }
   };
 
-  // 화이트보드 업데이트 함수 (방장용)
-  const updateBoard = useCallback(
-    (elements, appState, boardType) => {
-      if (stompService?.client?.active && isConnected && participantUtils.isCreator(nickname)) {
-        const filteredElements = elements.filter(element => !element.isDeleted);
-
-        // 이전 요소들과 비교하여 변경사항이 있을 때만 업데이트
-        if (JSON.stringify(filteredElements) !== JSON.stringify(previousElementsRef.current)) {
-          previousElementsRef.current = filteredElements;
-
-          const message = {
-            type: 'excalidraw',
-            boardType,
-            elements: filteredElements,
-            appState: appState || { viewBackgroundColor: '#ffffff' },
-            sender: nickname,
-            timestamp: Date.now() // 타임스탬프 추가하여 메시지 순서 보장
-          };
-
-          stompService.client.publish({
-            destination: `/sub/send/${curriculumSubject}`,
-            body: JSON.stringify(message),
-          });
-        }
-      }
-    },
-    [stompService, isConnected, curriculumSubject, nickname],
-  );
-
   // 컴포넌트 마운트 시 방 연결
   useEffect(() => {
     connectToRoom();
@@ -215,6 +229,9 @@ export const LivePage = () => {
         room.disconnect();
         stompService.disconnect();
         setIsConnected(false);
+      }
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current);
       }
     };
   }, [curriculumSubject]);
@@ -279,17 +296,21 @@ export const LivePage = () => {
           <h3>내 화이트보드</h3>
           <Excalidraw
             onChange={(elements, appState) => {
+              setRoomCreatorElements(elements);
               updateBoard(elements, appState, 'roomCreator');
             }}
-            initialData={{
-              elements: roomCreatorElementsRef.current,
-              appState: { viewBackgroundColor: '#ffffff' }
-            }}
             excalidrawAPI={(api) => {
-              setRoomCreatorExcalidrawAPI(api);
               roomCreatorAPIRef.current = api;
             }}
             viewModeEnabled={false}
+            initialData={{
+              elements: roomCreatorElements,
+              appState: {
+                viewBackgroundColor: '#ffffff',
+                currentItemStrokeColor: '#000000',
+                currentItemBackgroundColor: '#ffffff',
+              },
+            }}
           />
         </div>
       ) : (
@@ -297,33 +318,42 @@ export const LivePage = () => {
           <div className="excalidraw-wrapper" style={{ flex: 1 }}>
             <h3>방장 화이트보드</h3>
             <Excalidraw
-              initialData={{
-                elements: roomCreatorElementsRef.current,
-                appState: { viewBackgroundColor: '#ffffff' }
-              }}
               excalidrawAPI={(api) => {
-                setRoomCreatorExcalidrawAPI(api);
                 roomCreatorAPIRef.current = api;
               }}
+              elements={roomCreatorElements}
               viewModeEnabled={true}
+              initialData={{
+                elements: roomCreatorElements,
+                appState: {
+                  viewBackgroundColor: '#ffffff',
+                  currentItemStrokeColor: '#000000',
+                  currentItemBackgroundColor: '#ffffff',
+                  viewModeEnabled: true,
+                  theme: 'light',
+                },
+              }}
             />
           </div>
           <div className="excalidraw-wrapper" style={{ flex: 1 }}>
             <h3>내 화이트보드</h3>
             <Excalidraw
-              onChange={(elements, appState) => {
-                const filteredElements = elements.filter(element => !element.isDeleted);
-                participantElementsRef.current = filteredElements;
-                updateBoard(filteredElements, appState, 'participant');
-              }}
-              initialData={{
-                elements: participantElementsRef.current,
-                appState: { viewBackgroundColor: '#ffffff' }
+              onChange={(elements) => {
+                setParticipantElements(elements);
               }}
               excalidrawAPI={(api) => {
-                setParticipantExcalidrawAPI(api);
+                participantAPIRef.current = api;
               }}
+              elements={participantElements}
               viewModeEnabled={false}
+              initialData={{
+                elements: participantElements,
+                appState: {
+                  viewBackgroundColor: '#ffffff',
+                  currentItemStrokeColor: '#000000',
+                  currentItemBackgroundColor: '#ffffff',
+                },
+              }}
             />
           </div>
         </div>
