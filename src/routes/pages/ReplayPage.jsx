@@ -441,12 +441,6 @@ export const ReplayPage = () => {
                 </div>
               </div>
             </div>
-            {/* 이미지 추출 기능 */}
-            <div>
-              <button className="border p-4" onClick={handleExportImage}>
-                이미지 추출 테스트
-              </button>
-            </div>
             <div className="flex items-center gap-6 p-5">
               <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
                 <NextPlayIcon />
@@ -477,6 +471,14 @@ export const ReplayPage = () => {
               </button>
             </div>
             {/* 아래가 투명도 그래프 */}
+          </div>
+        </div>
+        {/* 이미지 추출 기능 */}
+        <div className="absolute bottom-4 right-4 z-50">
+          <div className="rounded-3xl bg-primary-color text-white">
+            <button className="p-4" onClick={handleExportImage}>
+              이미지 추출
+            </button>
           </div>
         </div>
         {/* 작업 리스트 */}
