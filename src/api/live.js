@@ -5,26 +5,31 @@ import { _axiosAuth } from '@/api/instance';
 // LiveKit 관련 API 호출 모음
 const liveApi = {
   // 강사용 토큰 발급 (방 생성 시 사용)
-  getInstructorToken: async (roomName, participantName) => {
-    const response = await _axiosAuth.post('/openvidu/token/instructor', {
-      roomName,
-      participantName,
+  getInstructorToken: async (curriculumSubject, userNickname) => {
+    const response = await _axiosAuth.post('/token/instructor', {
+      curriculumId: 1,
+      curriculumSubject,
+      userId: 1,
+      userNickname,
+      isLive: true,
     });
     return response.data.token;
   },
 
   // 학생용 토큰 발급 (방 참여 시 사용)
-  getStudentToken: async (roomName, participantName) => {
-    const response = await _axiosAuth.post('/openvidu/token/student', {
-      roomName,
-      participantName,
+  getStudentToken: async (curriculumSubject, userNickname) => {
+    const response = await _axiosAuth.post('/token/student', {
+      curriculumId: 1,
+      curriculumSubject,
+      userId: 1,
+      userNickname,
     });
     return response.data.token;
   },
 
   // 라이브 방 목록 조회
   getRoomList: async () => {
-    const response = await _axiosAuth.get('/openvidu/live/rooms');
+    const response = await _axiosAuth.get('/memory/rooms');
     return response.data;
   },
 };
