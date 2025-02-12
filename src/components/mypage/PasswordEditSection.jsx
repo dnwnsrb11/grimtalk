@@ -30,9 +30,13 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
       });
       return data;
     },
-    onSuccess: () => {
-      alert('비밀번호 변경이 완료되었습니다.');
-      onGoBack();
+    onSuccess: (data) => {
+      if (data.body.code === 200) {
+        alert('비밀번호 변경이 완료되었습니다.');
+        onGoBack();
+      } else {
+        alert('현재 비밀번호가 일치하지 않습니다.');
+      }
     },
     onError: (error) => {
       alert('비밀번호 변경에 실패했습니다.:', error);
