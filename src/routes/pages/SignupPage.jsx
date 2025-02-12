@@ -31,7 +31,7 @@ export const SignupPage = () => {
       // 회원가입 성공 시
       // 페이지 이동
       if (data.body.code === 200) {
-        navigate('/signup-success');
+        navigate('/signup-success', { state: { nickname: nickname } });
       } else {
         // 회원가입 실패 시
         // 에러 처리
