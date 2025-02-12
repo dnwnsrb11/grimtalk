@@ -121,7 +121,6 @@ export const MemberSettingsSection = () => {
     formData.forEach((value, key) => {
       console.log(`${key}:`, value);
     });
-    console.log(formData+13);
 
     memberSettingsChange.mutate(formData);
   };
