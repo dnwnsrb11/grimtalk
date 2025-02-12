@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useLogin } from '@/api/auth';
 
@@ -6,6 +7,7 @@ export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const handleLogin = useLogin({ email, password });
+  const navigate = useNavigate();
 
   // Enter 키 이벤트 핸들러
   const handleKeyDown = (e) => {
@@ -43,7 +45,7 @@ export const LoginPage = () => {
             <button
               onClick={() => handleLogin.mutate()}
               type="button"
-              className="h-10 w-full rounded-full bg-primary-color text-center text-white"
+              className="h-10 w-full rounded-full bg-primary-color text-center text-white transition-transform duration-300 hover:scale-95"
             >
               로그인
             </button>
@@ -51,7 +53,10 @@ export const LoginPage = () => {
         </div>
 
         <div className="text-center text-xs">
-          <button type="button">회원가입</button> | <button type="button">비밀번호 찾기</button>
+          <button type="button" onClick={() => navigate(`/signup`)}>
+            회원가입
+          </button>{' '}
+          | <button type="button">비밀번호 찾기</button>
         </div>
       </div>
     </div>
