@@ -3,7 +3,7 @@ import '@/styles/live.css';
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { Client } from '@stomp/stompjs';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { liveApi } from '@/api/live';
@@ -41,6 +41,9 @@ export const LivePage = () => {
   const [participantElements, setParticipantElements] = useState([]);
   const [roomCreatorExcalidrawAPI, setRoomCreatorExcalidrawAPI] = useState(null);
   const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
+
+  const [receivedElements, setReceivedElements] = useState([]);
+  const latestElementsRef = useRef([]);
 
   // LiveKit 이벤트 리스너 설정
   useEffect(() => {
@@ -89,16 +92,20 @@ export const LivePage = () => {
               const receivedData = JSON.parse(message.body);
               console.log('Parsed data:', receivedData);
 
-              // ResponseDto 형식으로 받은 메시지 처리
               const excalidrawData = receivedData.message || receivedData;
 
-              // 방장이 보낸 화이트보드 데이터 처리
               if (
                 excalidrawData.type === 'excalidraw' &&
                 excalidrawData.boardType === 'roomCreator'
               ) {
-                console.log('Setting room creator elements:', excalidrawData.data.elements);
-                setRoomCreatorElements(excalidrawData.data.elements);
+                console.log('Setting room creator elements:', excalidrawData.elements);
+
+                // 상태와 참조 모두 업데이트
+                setRoomCreatorElements(excalidrawData.elements);
+                latestElementsRef.current = excalidrawData.elements;
+
+                // 즉시 업데이트를 위한 수신 요소 설정
+                setReceivedElements(excalidrawData.elements);
               }
             } catch (error) {
               console.error('Error parsing received message:', error);
@@ -184,6 +191,16 @@ export const LivePage = () => {
     }
   };
 
+  // Excalidraw 씬 업데이트를 처리하는 useEffect 추가
+  useEffect(() => {
+    if (roomCreatorExcalidrawAPI && receivedElements.length > 0) {
+      roomCreatorExcalidrawAPI.updateScene({
+        elements: receivedElements,
+        appState: { viewBackgroundColor: 'transparent' }
+      });
+    }
+  }, [receivedElements, roomCreatorExcalidrawAPI]);
+
   // 컴포넌트 마운트 시 방 연결
   useEffect(() => {
     connectToRoom();
@@ -205,10 +222,8 @@ export const LivePage = () => {
         const message = {
           type: 'excalidraw',
           boardType,
-          data: {
-            elements,
-            sender: nickname,
-          },
+          elements,
+          sender: nickname,
         };
 
         console.log('Sending message:', message);
@@ -298,7 +313,13 @@ export const LivePage = () => {
             <h3>방장 화이트보드</h3>
             <Excalidraw
               elements={roomCreatorElements}
-              excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
+              excalidrawAPI={(api) => {
+                setRoomCreatorExcalidrawAPI(api);
+                // API가 설정될 때 이미 있는 요소들 적용
+                if (latestElementsRef.current.length > 0 && api) {
+                  api.updateScene({ elements: latestElementsRef.current });
+                }
+              }}
               viewModeEnabled={true}
             />
           </div>
