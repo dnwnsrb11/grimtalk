@@ -326,11 +326,18 @@ export const ReplayPage = () => {
       console.log('이미지 추출 성공', blob);
 
       // 직렬화를 통해 전송 가능한 상태로 변경하자
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = () => {
-        console.log(reader);
-      };
+      const base64Image = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        // 먼저 값을 받아서 변환한다.
+        reader.readAsDataURL(blob);
+        // 성공하면 성공 내용을 반환
+        reader.onloadend = () => resolve(reader.result);
+        // 실패하면 실패를 반환
+        reader.onerror = reject;
+      });
+
+      // 네비게이션으로 ai 페이지로 이동
+      navigate('/aicompare', { state: { ImageData: base64Image } });
     } catch (error) {
       console.log('이미지 추출 실패', error);
     }
