@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { _axiosAuth } from '@/api/instance';
 
+const LIVE_JOIN_STATUS_URL = import.meta.env.VITE_LIVE_JOIN_STATUS_URL;
+
 // LiveKit 관련 API 호출 모음
 const liveApi = {
   // 강사용 토큰 발급 (방 생성 시 사용)
@@ -47,10 +49,42 @@ const useRoomList = () => {
 // 방 종료 함수
 const endLive = async () => {};
 
-// 방 나가기 함수
-const leaveRoom = async () => {
-  const response = await _axiosAuth.post('/openvidu/live/leave');
-  return response.data;
+// 라이브 입장 함수
+// roomId: 커리큘럼 id
+// userId: 사용자 id
+const joinLive = async (roomId, userId) => {
+  try {
+    const response = await _axiosAuth.post(`${LIVE_JOIN_STATUS_URL}/${roomId}/join/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('라이브 입장 실패:', error);
+    throw error;
+  }
 };
 
-export { endLive, leaveRoom, liveApi, useRoomList };
+// 라이브 퇴장 함수
+// roomId: 커리큘럼 id
+// userId: 사용자 id
+const leaveLive = async (roomId, userId) => {
+  try {
+    const response = await _axiosAuth.post(`${LIVE_JOIN_STATUS_URL}/${roomId}/leave/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('라이브 퇴장 실패:', error);
+    throw error;
+  }
+};
+
+// 라이브 참여자 수 조회 함수
+// roomId: 커리큘럼 id
+const getLiveCount = async (roomId) => {
+  try {
+    const response = await _axiosAuth.get(`${LIVE_JOIN_STATUS_URL}/${roomId}/count`);
+    return response.data;
+  } catch (error) {
+    console.error('참여자 수 조회 실패:', error);
+    throw error;
+  }
+};
+
+export { endLive, getLiveCount, joinLive, leaveLive, liveApi, useRoomList };

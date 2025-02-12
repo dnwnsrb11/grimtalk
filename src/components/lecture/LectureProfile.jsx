@@ -1,5 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
@@ -101,8 +101,60 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
       setCheckSubscribe(false);
     }
   };
-  console.log('targetid:', lecture?.instructorInfo?.id);
-  console.log('myid:', id);
+  // console.log('targetid:', lecture?.instructorInfo?.id);
+  // console.log('myid:', id);
+  const { data: check } = useQuery({
+    queryKey: ['check'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/subscribe`);
+      return data.body?.data ?? []; // ❗ 항상 배열을 반환하도록 처리
+    },
+  });
+
+  useEffect(() => {
+    if (!check || check.length === 0) return; // check가 없거나 빈 배열이면 실행 X
+
+    console.log('✅ check 값 변경됨:', check);
+
+    // check 배열을 돌면서 lecture.instructorInfo.nickname과 비교
+    const isMatched = check.some((item) => item.nickname === lecture?.instructorInfo?.nickname);
+
+    if (isMatched) {
+      console.log('✅ 매칭된 닉네임 발견:', lecture?.instructorInfo?.nickname);
+      setCheckSubscribe(true);
+    } else {
+      console.log('❌ 매칭된 닉네임 없음');
+      setCheckSubscribe(false);
+    }
+  }, [check, lecture?.instructorInfo?.nickname]); // check 또는 nickname이 변경될 때 실행
+
+  const { data: checkF } = useQuery({
+    queryKey: ['favorite'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/favorite`);
+      return data.body?.data ?? []; // ❗ 항상 배열 반환
+    },
+  });
+
+  useEffect(() => {
+    if (!checkF || checkF.length === 0) return; // checkF가 없거나 빈 배열이면 실행 X
+    console.log(checkF);
+    console.log('✅ 즐겨찾기 데이터 변경됨:', checkF);
+
+    // checkF 배열을 돌면서 lecture.id와 비교
+    const isMatched = checkF.list.some(
+      (item) => item.nickname === lecture?.instructorInfo?.nickname,
+    );
+
+    if (isMatched) {
+      console.log('✅ 즐겨찾기된 강의 발견:', lecture?.instructorInfo?.nickname);
+      setCheckFavorite(true);
+    } else {
+      console.log('❌ 즐겨찾기된 강의 없음');
+      setCheckFavorite(false);
+    }
+  }, [checkF, lecture?.instructorInfo?.nickname]); // checkF 또는 lecture.id 변경 시 실행
+
   return (
     <>
       <div>
