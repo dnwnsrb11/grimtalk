@@ -63,9 +63,10 @@ export const MemberIntroSection = ({ joinId }) => {
           value={editingText}
           onChange={(e) => setEditingText(e.target.value)}
           className={`absolute inset-0 h-[40vh] w-full resize-none overflow-auto rounded-[20px] border p-5 transition-[border-color] duration-300 focus:outline-none ${
-            isEditing ? 'visible z-10 border-primary-color' : 'invisible z-0'
+            isEditing ? 'border-primary-color' : 'border-gray-border-color'
           }`}
         />
+
         <p
           className={`h-[40vh] w-full overflow-auto whitespace-pre-wrap break-all rounded-[20px] border p-5 text-base transition-[border-color] duration-300 ${
             isEditing ? 'invisible z-0' : 'visible z-10 border-divider-color'
