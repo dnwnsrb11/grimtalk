@@ -641,6 +641,7 @@ const OpacityIcon = ({ className = '', width = 16, height = 16, fill = 'black' }
     viewBox="0 0 16 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    className={className}
   >
     <g clip-path="url(#clip0_1324_34)">
       <path
