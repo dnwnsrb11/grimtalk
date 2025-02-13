@@ -89,20 +89,27 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
             </div>
           )}
         </div>
+        <hr className="border border-divider-color" />
         {/* 공지사항 내용 */}
         <div className="mt-[40px]">
-          {notices.map((notice, index) => (
-            <div
-              key={index}
-              className="mb-3"
-              onClick={() => {
-                setIsActive('공지사항 상세페이지');
-                setNoticeDate(notice);
-              }}
-            >
-              <LectureNoticeCard notice={notice} />
-            </div>
-          ))}
+          {notices && notices.length > 0 ? (
+            notices.map((notice, index) => (
+              <div
+                key={index}
+                className="mb-3"
+                onClick={() => {
+                  setIsActive('공지사항 상세페이지');
+                  setNoticeDate(notice);
+                }}
+              >
+                <LectureNoticeCard notice={notice} />
+              </div>
+            ))
+          ) : (
+            <p className="m-[200px] py-4 text-center text-lg text-gray-500">
+              등록된 공지사항이 없습니다.
+            </p>
+          )}
         </div>
       </div>
     </>
