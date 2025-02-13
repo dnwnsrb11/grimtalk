@@ -55,7 +55,7 @@ export const LecturePage = () => {
       // id가 undefined가 아닐 때만 체크
       setCheckInstructor(id === lecture.instructorInfo.id);
     }
-  }, [lecture, id]); // lecture나 id가 변경될 때마다 체크
+  }, [lectuerId, id, lecture]); // lecture나 id가 변경될 때마다 체크
 
   const [selectedCategory, setSelectedCategory] = useState('강의소개');
   const contentRef = useRef(null);

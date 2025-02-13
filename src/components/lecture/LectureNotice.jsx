@@ -36,7 +36,11 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
   // 상세페이지, 공지사항 작성페이지
   const pageComponents = {
     '공지사항 상세페이지': (
-      <LectureNoticeDetail noticeDate={noticeDate} setIsActive={setIsActive} />
+      <LectureNoticeDetail
+        noticeDate={noticeDate}
+        checkInstructor={checkInstructor}
+        setIsActive={setIsActive}
+      />
     ),
     '공지사항 작성페이지': <LectureCreateWrite />,
   };

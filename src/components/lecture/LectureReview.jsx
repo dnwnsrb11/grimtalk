@@ -54,6 +54,7 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
     },
     onSuccess: () => {
       alert('리뷰 작성 완료');
+      setReviewText('');
       queryClient.invalidateQueries(['reviews']);
     },
     onError: (error) => {
