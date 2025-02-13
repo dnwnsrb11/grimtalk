@@ -21,6 +21,7 @@ export const CreateLectureSection = () => {
     date: '',
     time: '',
   });
+  // 제출버튼 비활성화용
 
   const [curriculums, setCurriculums] = useState([]); // 여러 개의 커리큘럼 리스트
   const [tagInput, setTagInput] = useState(''); // 태그 입력값
@@ -114,7 +115,7 @@ export const CreateLectureSection = () => {
   // 강의 생성 제출
   const handleSubmit = async () => {
     if (!lecture.subject || !lecture.intro || !lecture.selectedFile || curriculums.length === 0) {
-      alert('모든 필드를 입력해주세요. 최소 1개 이상의 커리큘럼이 필요합니다.');
+      alert('모든 필드를 입력해주세요.');
       return;
     }
 
@@ -126,7 +127,7 @@ export const CreateLectureSection = () => {
     formData.append('category', lecture.category);
 
     // 이미지 파일
-    formData.append('bannerImage', lecture.selectedFile);
+    formData.append('imgUrl', lecture.selectedFile);
 
     // 커리큘럼 정보
     curriculums.forEach((item, index) => {
@@ -136,9 +137,14 @@ export const CreateLectureSection = () => {
     });
 
     // 해시태그
-    lecture.tags.forEach((tag, index) => {
-      formData.append(`hashtags[${index}]`, tag.text);
-    });
+    if (lecture.tags) {
+      lecture.tags.forEach((tag, index) => {
+        formData.append(`hashtags[${index}]`, tag.text);
+      });
+    } else if (!lecture.tags) {
+      alert('해시태그를 선택하세요.');
+      return;
+    }
     formData.forEach((value, key) => {
       console.log(`${key}:`, value);
     });
@@ -355,7 +361,7 @@ export const CreateLectureSection = () => {
       <div className="flex justify-center">
         <button
           onClick={handleSubmit}
-          className="w-full rounded-md bg-primary-color px-5 py-3 text-lg font-semibold text-white hover:bg-primary-color/80"
+          className={`w-[110px] rounded-md px-5 py-3 text-lg font-semibold text-white ${'bg-primary-color hover:bg-primary-color/80'}`}
         >
           강의 생성
         </button>
