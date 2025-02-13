@@ -12,13 +12,16 @@ import {
   LeveltwoBadgeIcon,
   SubscribeIcon,
 } from '@/components/common/icons';
+import { LiveClock } from '@/components/lecture/LiveClock';
 import { useAuthStore } from '@/store/useAuthStore';
-export const LectureProfile = ({ checkInstructor, lecture }) => {
+
+export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }) => {
   const { id, email, nickname } = useAuthStore((state) => state.userData);
   const navigate = useNavigate();
   const [checkFavorite, setCheckFavorite] = useState(false);
   //   구독시 값에 따라 버튼 활성화, 비활성화 기능 구현
   const [checkSubscribe, setCheckSubscribe] = useState(false);
+
   // 강의 즐겨찾기 추가
   const lectureFavorite = useMutation({
     mutationFn: async () => {
@@ -302,27 +305,15 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
 
             <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl border border-gray-border-color">
               {/* 라이브 카드 부분 */}
-              <h3 className="text-[24px] font-medium text-[#565252]">2024.01.24</h3>
-              <h2 className="text-[30px] font-bold">09:00</h2>
-              {checkInstructor ? (
-                lecture?.liveId === null ? (
-                  <div className="rounded-xl bg-bg-gray-color p-3 px-5 transition-all duration-200 hover:px-7">
-                    <button className="font-semibold text-black">라이브 시작하기</button>
-                  </div>
-                ) : (
-                  <div className="rounded-xl bg-primary-color p-3 px-5 transition-all duration-200 hover:px-7">
-                    <button className="font-semibold text-white">라이브 진행중</button>
-                  </div>
-                )
-              ) : lecture?.liveId === null ? (
-                <div className="rounded-xl bg-bg-gray-color p-3 px-5">
-                  <button className="font-semibold">라이브 시작 전 입니다.</button>
-                </div>
-              ) : (
-                <div className="rounded-xl bg-primary-color p-3 px-5 transition-all duration-200 hover:px-7">
-                  <button className="font-semibold text-white">라이브 시청하기.</button>
-                </div>
-              )}
+              <LiveClock />
+              <button
+                className={
+                  'rounded-xl bg-primary-color p-3 px-5 font-semibold text-white transition-all duration-200 hover:px-7'
+                }
+                onClick={() => setSelectedCategory('커리큘럼')}
+              >
+                {checkInstructor ? '라이브 시작하기' : '라이브 살펴보기'}
+              </button>
             </div>
           </div>
         </div>

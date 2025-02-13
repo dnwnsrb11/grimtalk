@@ -84,7 +84,11 @@ export const LecturePage = () => {
           <LectureBanner lecture={lecture} />
         </div>
         <div>
-          <LectureProfile checkInstructor={checkInstructor} lecture={lecture} />
+          <LectureProfile
+            checkInstructor={checkInstructor}
+            lecture={lecture}
+            setSelectedCategory={handleCatagory}
+          />
         </div>
         <div className="mt-[60px]">
           <LectureCategory
