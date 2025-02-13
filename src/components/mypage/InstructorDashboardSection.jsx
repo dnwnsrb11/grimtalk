@@ -17,6 +17,9 @@ export const InstructorDashboardSection = ({ nickname }) => {
       const { data } = await _axiosAuth.get(`/dashboard/instructor`);
       return data.body.data;
     },
+    onError: () => {
+      alert('에러');
+    },
   });
 
   // 나의 최근 라이브 변수
