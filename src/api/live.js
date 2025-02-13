@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { _axiosAuth } from '@/api/instance';
+import { _axios, _axiosAuth } from '@/api/instance';
 
 const LIVE_JOIN_STATUS_URL = import.meta.env.VITE_LIVE_JOIN_STATUS_URL;
 
@@ -31,8 +31,8 @@ const liveApi = {
 
   // 라이브 방 목록 조회
   getRoomList: async () => {
-    const response = await _axiosAuth.get('/live/rooms');
-    return response.data;
+    const response = await _axios.get('/rooms');
+    return response.data.body.data.body.data;
   },
 };
 
