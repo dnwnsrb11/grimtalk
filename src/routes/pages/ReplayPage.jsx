@@ -208,7 +208,9 @@ export const ReplayPage = () => {
   // 캠버스 ref
   const bottomCanvasRef = useRef(null);
   // 투명도 조절 ref
-  const opacityInputRef = useRef(null);
+  const opacityInputRef = useRef(100);
+  // 투명도 조절바 STYLE 관리
+  const [rangeProgress, setRangeProgress] = useState(100);
 
   // 투명도 변경 함수
   const changeOpacity = () => {
@@ -219,6 +221,7 @@ export const ReplayPage = () => {
       // 이후 이 값을 캠버스의 투명도 조절에 사용한다
       // 해당 방법을 사용한다면 리랜더링 없이 css로 투명도 조절이 가능하다 즉 좀더 안전하다.
       bottomCanvasRef.current.style.opacity = value / 100;
+      setRangeProgress(value); //스타일 값 업데이트 해줌
     }
   };
   // 전체 시간 (0.1초가 아닌 1초)
@@ -355,49 +358,6 @@ export const ReplayPage = () => {
       <div className="relative h-screen w-full">
         {/* 관리 구역(시간) */}
         <div className="absolute bottom-5 left-1/2 z-30 flex w-full min-w-[400px] max-w-[1000px] -translate-x-1/2 flex-col gap-2">
-          {/* 현재 색상값 */}
-          <div className="flex flex-col items-center">
-            <div
-              className="flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]"
-              onClick={() => updateColor(nowColor)}
-            >
-              <div
-                ref={colorBoxRef}
-                className="h-[30px] w-[30px] rounded-md border border-gray-border-color text-center transition-colors duration-300"
-                style={{ backgroundColor: '#ffffff' }} // 초기값 설정
-              ></div>
-              <p className="text-[14px] font-light text-replay-disable-btn-font-color">
-                {nowColor}
-              </p>
-            </div>
-            <div className="w-[100%] px-4">
-              <input
-                type="range"
-                ref={opacityInputRef}
-                defaultValue={100}
-                min={0}
-                max={100}
-                step={1}
-                className="
-                h-3 w-full
-                cursor-pointer
-                appearance-none
-                rounded-full
-                bg-[#ECECF4]
-                [&::-webkit-slider-thumb]:h-4
-                [&::-webkit-slider-thumb]:w-4
-                [&::-webkit-slider-thumb]:appearance-none
-                [&::-webkit-slider-thumb]:rounded-full
-                [&::-webkit-slider-thumb]:bg-primary-color
-                [&::-webkit-slider-thumb]:transition-all
-                [&::-webkit-slider-thumb]:hover:scale-125
-                [&::-webkit-slider-thumb]:hover:shadow-lg
-              "
-                onChange={() => changeOpacity()}
-              />
-            </div>
-            {/* 재생구역 */}
-          </div>
           <div className="flex items-center justify-center rounded-2xl bg-[#ECECF4] p-2">
             <div className="flex items-center gap-6 rounded-2xl border bg-[#E7E7EF] p-2">
               <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
@@ -429,7 +389,7 @@ export const ReplayPage = () => {
               </button>
             </div>
             {/* 타임바 */}
-            <div className="relative h-full w-full px-4">
+            <div className="relative h-full w-[60%] px-2">
               <div className="flex h-full items-center justify-center text-sm text-gray-500">
                 <div className="flex h-full w-[100%] items-stretch">
                   <div className="absolute right-8 top-1/2 z-10 -translate-y-1/2">
@@ -495,6 +455,72 @@ export const ReplayPage = () => {
                     }}
                   />
                 </div>
+              </div>
+            </div>
+            {/* 현재 색상값 */}
+            <div className="flex w-[30%] items-center">
+              <div className="relative flex w-[100%] items-center justify-center px-4">
+                <div className="absolute -top-14 z-10 rounded-xl border px-[20px] py-[5px]">
+                  <p className="text-text-gray-color">{rangeProgress}</p>
+                </div>
+                <input
+                  type="range"
+                  ref={opacityInputRef}
+                  defaultValue={100}
+                  min={0}
+                  max={100}
+                  step={1}
+                  className="
+                      [&::-webkit-slider-thumb]:scale-120
+                      relative
+                      m-0
+                      h-10
+                      w-full
+                      cursor-pointer
+                      appearance-none
+                      rounded-xl
+                      p-0
+                      after:absolute
+                      after:left-0
+                      after:top-[50%]
+                      after:h-2
+                      after:w-[var(--range-progress)]
+                      after:-translate-y-1/2
+                      after:rounded-xl
+                      after:bg-primary-color
+                      [&::-webkit-slider-runnable-track]:h-full
+                      [&::-webkit-slider-runnable-track]:rounded-xl
+                      [&::-webkit-slider-runnable-track]:bg-gradient-to-r
+                      [&::-webkit-slider-runnable-track]:from-primary-color
+                      [&::-webkit-slider-runnable-track]:from-[length:var(--range-progress)]
+                      [&::-webkit-slider-runnable-track]:to-white
+                      [&::-webkit-slider-runnable-track]:to-[length:var(--range-progress)]
+                      [&::-webkit-slider-thumb]:w-4
+                      [&::-webkit-slider-thumb]:appearance-none
+                      [&::-webkit-slider-thumb]:rounded-xl
+                      [&::-webkit-slider-thumb]:bg-primary-color
+                      [&::-webkit-slider-thumb]:transition-all
+                      [&::-webkit-slider-thumb]:hover:scale-150
+                      [&::-webkit-slider-thumb]:hover:shadow-lg
+                    "
+                  style={{
+                    '--range-progress': `${rangeProgress}%`,
+                  }}
+                  onChange={() => changeOpacity()}
+                />
+              </div>
+              <div
+                className="flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]"
+                onClick={() => updateColor(nowColor)}
+              >
+                <div
+                  ref={colorBoxRef}
+                  className="h-[30px] w-[30px] rounded-md border border-gray-border-color text-center transition-colors duration-300"
+                  style={{ backgroundColor: '#ffffff' }} // 초기값 설정
+                ></div>
+                <p className="text-[14px] font-light text-replay-disable-btn-font-color">
+                  {nowColor}
+                </p>
               </div>
             </div>
           </div>
