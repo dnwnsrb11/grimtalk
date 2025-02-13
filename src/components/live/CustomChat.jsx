@@ -14,13 +14,21 @@ export const CustomChat = (props) => {
         nameElement.textContent = nameElement.textContent.substring(5);
       }
 
+      // 빈 meta-data 요소 제거
+      const metaDataElements = entry.querySelectorAll('.lk-meta-data');
+      metaDataElements.forEach((metaData) => {
+        if (!metaData.querySelector('.lk-participant-name')) {
+          metaData.remove();
+        }
+      });
+
       // 기본 스타일 적용
       entry.style.display = 'flex';
       entry.style.flexDirection = 'row';
       entry.style.gap = '8px';
       entry.style.alignItems = 'center';
 
-      // 시간 요소 숨기기
+      // 시간 요소 제거
       const timestamp = entry.querySelector('.lk-timestamp');
       if (timestamp) {
         timestamp.remove();
