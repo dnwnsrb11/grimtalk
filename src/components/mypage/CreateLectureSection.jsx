@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 import { _axiosAuth } from '@/api/instance';
 
@@ -59,6 +60,7 @@ export const CreateLectureSection = () => {
 
     setCurriculums([...curriculums, { id: Date.now(), ...curriculumForm }]);
     setCurriculumForm({ curriculumSubject: '', curriculumContent: '', date: '', time: '' }); // 폼 초기화
+    toast.success('커리큘럼이 추가되었습니다.');
   };
 
   // 커리큘럼 삭제
@@ -243,13 +245,15 @@ export const CreateLectureSection = () => {
             key={curriculum.id}
             className="rounded-[20px] border border-[#000000] border-opacity-20 p-5"
           >
+            <p className="text-md font-semibold text-[#C6C6C6] opacity-90">커리큘럼 제목</p>
+
             <h3 className="text-lg font-bold">{curriculum.curriculumSubject}</h3>
             <p className="mt-2 whitespace-pre-wrap text-common-font-color">
               {curriculum.curriculumContent}
             </p>
             <div className="mt-2 flex items-center justify-between">
               <span className="inline-block rounded-3xl border bg-bg-gray-color px-3 py-1 text-sm text-text-gray-color">
-                {curriculum.date}T{curriculum.time}
+                {curriculum.date} {curriculum.time}
               </span>
               <button
                 className="rounded-md bg-bg-gray-color px-3 py-2 text-sm text-common-font-color hover:bg-red-100"
