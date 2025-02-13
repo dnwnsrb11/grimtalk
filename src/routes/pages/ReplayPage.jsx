@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
-import { NextPlayIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
+import { NextPlayIcon, OpacityIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayWorkList } from '@/components/replayPage/ReplayWorkList';
@@ -460,8 +460,13 @@ export const ReplayPage = () => {
             {/* 현재 색상값 */}
             <div className="flex w-[30%] items-center gap-2">
               <div className="group relative flex w-[100%] items-center justify-center">
+                {/* 색상값 박스 -> 호버시 나타남 */}
                 <div className="absolute -top-0 z-0 rounded-xl border border-gray-border-color px-[20px] py-[5px] opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:-top-14">
                   <p className="text-text-gray-color">{rangeProgress}</p>
+                </div>
+                {/* 아이콘 위치 */}
+                <div className="absolute z-10 left-3">
+                  <OpacityIcon width={22} height={22} fill={'#494949'} />
                 </div>
                 <input
                   type="range"
