@@ -80,7 +80,7 @@ const router = createBrowserRouter([
         element: <AlarmPage />,
       },
       {
-        path: '/lecture/:lectuerId',
+        path: '/lecture/:lectureId',
         element: <LecturePage />,
       },
       {
