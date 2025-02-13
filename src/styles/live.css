@@ -215,15 +215,18 @@ body {
 
 .lk-meta-data {
   flex: 1;
+  white-space: nowrap; /* 이름 줄바꿈 방지 */
 }
 
 .lk-participant-name {
   color: #374151;
   font-weight: 600;
+  white-space: nowrap; /* 추가 보호 장치 */
 }
 
 .lk-message-body {
   flex: 5;
+  word-break: break-word; /* 긴 메시지는 줄바꿈 허용 */
 }
 
 .lk-chat-form {
