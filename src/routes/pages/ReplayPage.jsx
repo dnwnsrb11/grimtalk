@@ -376,14 +376,14 @@ export const ReplayPage = () => {
                       isPlaying ? 'opacity-100' : 'opacity-0'
                     }`}
                   >
-                    <StopIcon width={20} height={20} />
+                    <StopIcon width={20} height={20} fill="#FF5C38" />
                   </div>
                   <div
                     className={`absolute left-0 top-0 transition-all duration-300 ${
                       isPlaying ? 'opacity-0' : 'opacity-100'
                     }`}
                   >
-                    <PlayingIcon width={20} height={20} />
+                    <PlayingIcon width={20} height={20} fill="#FF5C38" />
                   </div>
                 </div>
               </button>
@@ -526,7 +526,7 @@ export const ReplayPage = () => {
               </div>
               {/* 현재 색상 + 색상 변경 */}
               <div
-                className="group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border bg-white px-[15px] py-[10px] transition-colors duration-300 hover:bg-[#E7E7EF]"
+                className="group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border border-gray-border-color bg-white px-[15px] py-[10px] transition-colors duration-300 hover:border-white hover:bg-[#E7E7EF]"
                 onClick={() => updateColor(nowColor)}
               >
                 <div
