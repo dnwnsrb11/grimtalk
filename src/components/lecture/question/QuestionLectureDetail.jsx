@@ -1,9 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import { _axios, _axiosAuth } from '@/api/instance';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
+import { QuestionContentCard } from '@/components/lecture/question/QustionContentCard';
 
 export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor }) => {
   const queryClient = useQueryClient();
@@ -30,7 +32,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       navigate('/notfound');
     },
   });
-  const boardComments = board.comments;
+  const boardComments = board?.comments;
 
   // 작성 api
   const addCommentMutation = useMutation({
@@ -45,16 +47,10 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       });
       return data;
     },
-    onSuccess: (data) => {
-      setIsActive(false);
-      console.log('댓글 작성 성공', answer);
-      queryClient.setQueryData(['board', questionId], (oldBoard) => {
-        return {
-          ...oldBoard,
-          comment: data.body.data.answerContent,
-        };
-      });
+    onSuccess: () => {
+      toast.success('댓글 작성 완료!');
       setAnswer('');
+      queryClient.invalidateQueries(['board', questionId]); // 🔥 해당 쿼리만 리패칭
     },
   });
 
@@ -106,16 +102,32 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
 
         {/* // 조건부 렌더링을 하기위해 <> 추가 */}
         <>
-          <div className="mt-[20px]">
+          <div className="mt-[20px] flex flex-col gap-2">
             <div className="mt-[20px] w-full">
               <input
                 type="text"
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault(); // 기본 엔터 동작 방지
+                    addCommentMutation.mutate(); // 버튼 클릭 함수 실행
+                  }
+                }}
                 className="min-h-[60px] w-full rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
-                placeholder="답변을 입력해주세요."
+                placeholder="답변을 입력해주세요. (Shift+Enter: 줄바꿈, Enter: 작성)"
               />
             </div>
+            {checkInstructor && (
+              <div className="flex justify-end">
+                <button
+                  className="w-[65px] rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
+                  onClick={() => addCommentMutation.mutate()}
+                >
+                  <p className="text-[12px] font-semibold text-white">작성하기</p>
+                </button>
+              </div>
+            )}
           </div>
           <hr className="mt-[40px] border-gray-border-color" />
         </>
@@ -125,8 +137,11 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
             <div className="space-y-3">
               {boardComments.map((comment, index) => (
                 <div key={index} className="flex h-full flex-col">
-                  <div>{comment.content}</div>
-                  <div>{comment.nickname}</div>
+                  <QuestionContentCard
+                    key={index}
+                    comment={comment}
+                    boardId={board?.boardCreatedMemberId}
+                  />
                 </div>
               ))}
             </div>
