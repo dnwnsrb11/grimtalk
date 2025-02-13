@@ -66,18 +66,18 @@ export const QuestionLectureDetail = ({
   });
 
   // 채택 기능
-  const addCommentCheckMutation = useMutation({
-    mutationFn: async () => {
-      const { data } = await _axiosAuth.put('/board/pick', {
-        answerId: answerId,
-      });
-      return data;
-    },
-    onSuccess: () => {
-      alert('답변을 채택하였습니다.');
-      setIsActive(false);
-    },
-  });
+  // const addCommentCheckMutation = useMutation({
+  //   mutationFn: async () => {
+  //     const { data } = await _axiosAuth.put('/board/pick', {
+  //       answerId: answerId,
+  //     });
+  //     return data;
+  //   },
+  //   onSuccess: () => {
+  //     alert('답변을 채택하였습니다.');
+  //     setIsActive(false);
+  //   },
+  // });
   // 질문 삭제
   const deleteBoardMutation = useMutation({
     mutationFn: async () => {
@@ -161,16 +161,14 @@ export const QuestionLectureDetail = ({
                 placeholder="답변을 입력해주세요. (Shift+Enter: 줄바꿈, Enter: 작성)"
               />
             </div>
-            {checkInstructor && (
-              <div className="flex justify-end">
-                <button
-                  className="w-[65px] rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
-                  onClick={() => addCommentMutation.mutate()}
-                >
-                  <p className="text-[12px] font-semibold text-white">작성하기</p>
-                </button>
-              </div>
-            )}
+            <div className="flex justify-end">
+              <button
+                className="w-[65px] rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
+                onClick={() => addCommentMutation.mutate()}
+              >
+                <p className="text-[12px] font-semibold text-white">작성하기</p>
+              </button>
+            </div>
           </div>
           <hr className="mt-[40px] border-gray-border-color" />
         </>
@@ -184,6 +182,7 @@ export const QuestionLectureDetail = ({
                     key={index}
                     comment={comment}
                     boardId={board?.boardCreatedMemberId}
+                    // picked={board?.picked}
                   />
                 </div>
               ))}
