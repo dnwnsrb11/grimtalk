@@ -1,15 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { _axios } from '@/api/instance';
+import { useRoomListTop4 } from '@/api/live';
 import { Banner } from '@/components/mainPages/home/Banner';
 import { Lecture } from '@/components/mainPages/home/Lecture';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { PopularInstructor } from '@/components/mainPages/home/PopularInstructor';
 
 export const MainPage = () => {
-  // const [LiveLists, setLiveLists] = useState([]);
-  // const [count, setCount] = useState([1, 2, 3, 4]);
-  const count = [1, 2, 3, 4];
+  const {
+    data: availableLiveRoomsTop4,
+    isLoading: isLoadingTop4,
+    error: errorTop4,
+  } = useRoomListTop4();
 
   // 인기 강의 조회
   const { data: popularLectures, isLoading: isLecturesLoading } = useQuery({
@@ -43,16 +46,26 @@ export const MainPage = () => {
     <>
       <div className="mt-10">
         <div>
-          <h2 className="text-2xl font-bold">
+          <h2 className="mb-[15px] text-2xl font-bold">
             인기 있는 <span className="text-primary-color">라이브</span>
           </h2>
-          <div className="mt-3 flex gap-3">
-            {count.map((c, index) => (
-              <LiveList key={index} />
-            ))}
+          <div className="flex gap-3">
+            {!availableLiveRoomsTop4 || availableLiveRoomsTop4.length === 0 ? (
+              <div className="flex h-[200px] w-full items-center justify-center rounded-lg bg-gray-50">
+                <p className="text-lg font-medium text-gray-500">
+                  현재 진행중인 인기 라이브가 없습니다.
+                </p>
+              </div>
+            ) : (
+              availableLiveRoomsTop4.map((LiveRoom, index) => (
+                <div key={index} className="mb-[40px] w-[calc(25%_-_0.75rem)]">
+                  <LiveList LiveRoom={LiveRoom} />
+                </div>
+              ))
+            )}
           </div>
         </div>
-        <div className="mt-[60px]">
+        <div className="mt-[30px]">
           <Banner />
         </div>
         <div className="mb-[15px] mt-[60px] flex gap-4">
