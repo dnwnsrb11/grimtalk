@@ -184,23 +184,27 @@ export const LivePage = () => {
   };
 
   return (
-    <div id="room">
-      <div id="room-header">
-        <h2 id="room-title">{curriculumSubject}</h2>
-        {participantUtils.isCreator(nickname) && (
-          <button className="btn btn-large btn-danger" onClick={leaveRoom}>
+    <div id="room" className="p-6">
+      <div id="room-header" className="mb-6 flex items-center justify-between">
+        <h2 id="room-title" className="text-2xl font-bold">
+          <span className="text-primary-color">라이브</span> {curriculumSubject}
+        </h2>
+        {participantUtils.isCreator(nickname) ? (
+          <button className="rounded-lg bg-primary-color px-6 py-2 text-white hover:opacity-90">
             라이브 종료
           </button>
-        )}
-        {!participantUtils.isCreator(nickname) && (
-          <button className="btn btn-large btn-danger" onClick={leaveRoom}>
+        ) : (
+          <button className="rounded-lg bg-primary-color px-6 py-2 text-white hover:opacity-90">
             라이브 퇴장
           </button>
         )}
       </div>
 
       {/* 비디오 레이아웃 */}
-      <div id="layout-container">
+      <div
+        id="layout-container"
+        className="mb-6 rounded-xl border border-gray-border-color bg-white p-4"
+      >
         {participantUtils.isCreator(nickname) && localTrack && (
           <VideoComponent track={localTrack} participantIdentity={nickname} local={true} />
         )}
@@ -233,13 +237,18 @@ export const LivePage = () => {
       </div>
 
       {/* 채팅 컴포넌트 */}
-      <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
-        <CustomChat />
-      </LiveKitRoom>
+      <div className="mb-6 rounded-xl border border-gray-border-color bg-white p-4">
+        <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
+          <CustomChat />
+        </LiveKitRoom>
+      </div>
+
       {/* Excalidraw 컴포넌트 */}
       {participantUtils.isCreator(nickname) ? (
-        <div className="excalidraw-wrapper">
-          <h3>내 화이트보드</h3>
+        <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
+          <h3 className="mb-4 text-xl font-bold">
+            내 <span className="text-primary-color">화이트보드</span>
+          </h3>
           <Excalidraw
             onChange={(elements) => {
               setRoomCreatorElements(elements);
@@ -251,17 +260,21 @@ export const LivePage = () => {
           />
         </div>
       ) : (
-        <div className="whiteboard-container" style={{ display: 'flex', gap: '20px' }}>
-          <div className="excalidraw-wrapper" style={{ flex: 1 }}>
-            <h3>방장 화이트보드</h3>
+        <div className="whiteboard-container flex gap-6">
+          <div className="excalidraw-wrapper flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+            <h3 className="mb-4 text-xl font-bold">
+              방장 <span className="text-primary-color">화이트보드</span>
+            </h3>
             <Excalidraw
               elements={roomCreatorElements}
               excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
               viewModeEnabled={true}
             />
           </div>
-          <div className="excalidraw-wrapper" style={{ flex: 1 }}>
-            <h3>내 화이트보드</h3>
+          <div className="excalidraw-wrapper flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+            <h3 className="mb-4 text-xl font-bold">
+              내 <span className="text-primary-color">화이트보드</span>
+            </h3>
             <Excalidraw
               elements={participantElements}
               excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
