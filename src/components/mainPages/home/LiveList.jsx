@@ -1,6 +1,8 @@
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import posterNoneImg from '@/assets/posterNoneImg.png';
+import { useAuthStore } from '@/store/useAuthStore';
 import { useLiveStore } from '@/store/useLiveStore';
 import { participantUtils } from '@/utils/participantUtils';
 
@@ -8,6 +10,7 @@ import { participantUtils } from '@/utils/participantUtils';
 export const LiveList = ({ LiveRoom }) => {
   const navigate = useNavigate();
   const { setRoomCreator } = useLiveStore();
+  const { isLogin } = useAuthStore();
 
   // LiveRoom이 undefined인 경우 early return
   if (!LiveRoom) {
@@ -17,6 +20,12 @@ export const LiveList = ({ LiveRoom }) => {
   const { curriculumId, curriculumName, hashtags, image, instructorName } = LiveRoom;
 
   const handleJoinLive = async () => {
+    if (!isLogin) {
+      navigate('/login');
+      toast.error('로그인 후 이용해주세요.');
+      return;
+    }
+
     try {
       localStorage.setItem('roomCreator', participantUtils.removeTokenPrefix(instructorName));
       setRoomCreator(participantUtils.removeTokenPrefix(instructorName));
