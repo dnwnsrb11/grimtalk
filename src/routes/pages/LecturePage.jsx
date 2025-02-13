@@ -18,7 +18,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 export const LecturePage = () => {
   // api 기능(강의 정보)
   const navigate = useNavigate();
-  const { lectuerId } = useParams();
+  const { lectureId } = useParams();
   // 강사 여부 체크 - 기본 값을 false로
   const [checkInstructor, setCheckInstructor] = useState(false);
 
@@ -31,9 +31,9 @@ export const LecturePage = () => {
     isError,
     error,
   } = useQuery({
-    queryKey: ['lecture', lectuerId],
+    queryKey: ['lecture', lectureId],
     queryFn: async () => {
-      const { data } = await _axios.get(`/lecture/intro/${lectuerId}`);
+      const { data } = await _axios.get(`/lecture/intro/${lectureId}`);
       return data.body.data;
     },
     onError: (error) => {
