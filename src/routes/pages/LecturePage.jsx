@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
@@ -50,9 +50,15 @@ export const LecturePage = () => {
   }, [lecture, id]); // lecture나 id가 변경될 때마다 체크
 
   const [selectedCategory, setSelectedCategory] = useState('강의소개');
-  //   자식으로 부터 값을 받기 위한 함수
+  const contentRef = useRef(null);
+
   const handleCatagory = (childData) => {
     setSelectedCategory(childData);
+    // 부드러운 스크롤 효과 추가 및 offset 조정
+    const yOffset = -100; // 위로 100px 조정
+    const element = contentRef.current;
+    const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
   };
 
   // 여기에 해당하는 컴포넌트를 저장한다.
@@ -86,7 +92,9 @@ export const LecturePage = () => {
             selectedCategory={selectedCategory}
           />
         </div>
-        <div>{MENU_COMPONENTS[selectedCategory]}</div>
+        <div ref={contentRef} className="scroll-mt-[100px]">
+          {MENU_COMPONENTS[selectedCategory]}
+        </div>
       </div>
     </>
   );
