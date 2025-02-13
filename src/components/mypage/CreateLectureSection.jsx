@@ -66,6 +66,7 @@ export const CreateLectureSection = () => {
   // 커리큘럼 삭제
   const handleDeleteCurriculum = (id) => {
     setCurriculums(curriculums.filter((curriculum) => curriculum.id !== id));
+    toast.success('커리큘럼이 삭제되었습니다.');
   };
 
   // 태그 추가
