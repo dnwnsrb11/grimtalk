@@ -17,10 +17,10 @@ import { useLiveStore } from '@/store/useLiveStore';
 import { participantUtils, TOKEN_TYPES } from '@/utils/participantUtils';
 
 const LIVEKIT_URL = 'wss://www.grimtalk.com:7443/';
-const STOMP_URL = 'wss://www.grimtalk.com:28080/ws';
+const STOMP_URL = 'ws://localhost:38080/ws';
 
 // Constants for update timing
-const ACTIVE_DRAWING_INTERVAL = 100; // Send updates every 100ms during active drawing
+const ACTIVE_DRAWING_INTERVAL = 200; // Send updates every 100ms during active drawing
 const COMPLETED_ACTION_DELAY = 500; // Wait 500ms after drawing stops before sending final update
 
 export const LivePage = () => {
@@ -82,8 +82,12 @@ export const LivePage = () => {
   // STOMP 메시지 처리 함수
   const handleStompMessage = useCallback((message) => {
     try {
+      console.log('🟢 Received STOMP message:', message.body); // 원본 메시지 로그
+
       const receivedData = JSON.parse(message.body);
       const excalidrawData = receivedData.message || receivedData;
+
+      console.log('📩 Parsed STOMP message:', excalidrawData); // 파싱된 데이터 로그
 
       if (excalidrawData.type === 'excalidraw' && excalidrawData.boardType === 'roomCreator') {
         const activeElements = excalidrawData.elements.filter((el) => !el.isDeleted);
@@ -103,9 +107,10 @@ export const LivePage = () => {
         }
       }
     } catch (error) {
-      console.error('Error handling STOMP message:', error);
+      console.error('❌ Error handling STOMP message:', error);
     }
   }, []);
+
 
   // Send updates to other participants
   const sendUpdate = useCallback(
@@ -131,18 +136,21 @@ export const LivePage = () => {
           timestamp: Date.now(),
         };
 
+        console.log('🔵 Sending STOMP message:', message); // 메시지 송신 로그
+
         stompService.client.publish({
           destination: `/sub/send/${curriculumSubject}`,
           body: JSON.stringify(message),
         });
         return true;
       } catch (error) {
-        console.error('Failed to send update:', error);
+        console.error('❌ Failed to send update:', error);
         return false;
       }
     },
     [stompService, isStompReady, curriculumSubject, nickname],
   );
+
 
   // Handle active drawing updates
   const startActiveUpdates = useCallback(() => {
