@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 import { _axiosAuth } from '@/api/instance';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
@@ -48,6 +49,23 @@ export const QuestionLectureWrite = ({ setIsActive, curriculumId, lecture }) => 
   if (isLoading) {
     return <LoadingComponents />;
   }
+
+  const handleSubjectChange = (e) => {
+    if (e.target.value.length <= 240) {
+      setSubject(e.target.value);
+    } else {
+      toast.error('질문 제목 글자 수를 초과했습니다.');
+    }
+  };
+
+  const handleContentChange = (e) => {
+    if (e.target.value.length <= 240) {
+      setContent(e.target.value);
+    } else {
+      toast.error('질문 내용 글자 수를 초과했습니다.');
+    }
+  };
+
   return (
     <>
       <div>
@@ -69,15 +87,15 @@ export const QuestionLectureWrite = ({ setIsActive, curriculumId, lecture }) => 
           <input
             type="text"
             value={subject}
-            onChange={(e) => setSubject(e.target.value)}
+            onChange={handleSubjectChange}
             className="min-h-[60px] rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
-            placeholder="질문 제목을 입려해주세요."
+            placeholder="질문 제목을 입력해주세요."
           />
           <textarea
             className="min-h-[300px] resize-none rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
             placeholder="질문 내용을 입력해주세요."
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={handleContentChange}
           ></textarea>
         </div>
         <hr className="mt-[20px] border-gray-border-color" />

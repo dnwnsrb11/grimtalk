@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
-import { NextPlayIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
+import { NextPlayIcon, OpacityIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayWorkList } from '@/components/replayPage/ReplayWorkList';
@@ -63,7 +63,7 @@ export const ReplayPage = () => {
   const animationContainerRef = useRef(null);
 
   // 현재 색상값
-  const [nowColor, setNowColor] = useState('현재 색상이 없습니다.');
+  const [nowColor, setNowColor] = useState('None');
   const changeNowColor = (color) => {
     if (nowColor !== color) {
       setNowColor(color);
@@ -208,7 +208,9 @@ export const ReplayPage = () => {
   // 캠버스 ref
   const bottomCanvasRef = useRef(null);
   // 투명도 조절 ref
-  const opacityInputRef = useRef(null);
+  const opacityInputRef = useRef(100);
+  // 투명도 조절바 STYLE 관리
+  const [rangeProgress, setRangeProgress] = useState(100);
 
   // 투명도 변경 함수
   const changeOpacity = () => {
@@ -219,6 +221,7 @@ export const ReplayPage = () => {
       // 이후 이 값을 캠버스의 투명도 조절에 사용한다
       // 해당 방법을 사용한다면 리랜더링 없이 css로 투명도 조절이 가능하다 즉 좀더 안전하다.
       bottomCanvasRef.current.style.opacity = value / 100;
+      setRangeProgress(value); //스타일 값 업데이트 해줌
     }
   };
   // 전체 시간 (0.1초가 아닌 1초)
@@ -354,55 +357,72 @@ export const ReplayPage = () => {
     <div>
       <div className="relative h-screen w-full">
         {/* 관리 구역(시간) */}
-        <div className="absolute bottom-5 left-1/2 z-30 flex min-w-[350px] -translate-x-1/2 flex-col gap-2">
-          <div className="flex flex-col items-center">
-            {/* 현재 색상값 */}
-            <div
-              className="flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]"
-              onClick={() => updateColor(nowColor)}
-            >
-              <div
-                ref={colorBoxRef}
-                className="h-[30px] w-[30px] rounded-md border border-gray-border-color text-center transition-colors duration-300"
-                style={{ backgroundColor: '#ffffff' }} // 초기값 설정
-              ></div>
-              <p className="text-[14px] font-light text-replay-disable-btn-font-color">
-                {nowColor}
-              </p>
+        <div className="absolute bottom-5 left-1/2 z-30 flex w-full min-w-[400px] max-w-[1100px] -translate-x-1/2 flex-col gap-2">
+          <div
+            className="flex items-center justify-center gap-4 rounded-2xl border bg-white p-2"
+            style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.17)' }}
+          >
+            <div className="flex items-center gap-6 rounded-2xl border bg-[#E7E7EF] p-2">
+              <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
+                <NextPlayIcon />
+              </button>
+              <button
+                className="rounded-full text-white disabled:bg-gray-300"
+                onClick={handlePlayPauseClick}
+              >
+                <div className="relative h-5 w-5">
+                  <div
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
+                    <StopIcon width={20} height={20} fill="#FF5C38" />
+                  </div>
+                  <div
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-0' : 'opacity-100'
+                    }`}
+                  >
+                    <PlayingIcon width={20} height={20} fill="#FF5C38" />
+                  </div>
+                </div>
+              </button>
+              <button onClick={() => moveToTime(currentTime + 5)} className="rounded">
+                <NextPlayIcon />
+              </button>
             </div>
-            <div className="w-[100%] px-4">
-              <input
-                type="range"
-                ref={opacityInputRef}
-                defaultValue={100}
-                min={0}
-                max={100}
-                step={1}
-                className="
-                h-3 w-full
-                cursor-pointer
-                appearance-none
-                rounded-full
-                bg-[#ECECF4]
-                [&::-webkit-slider-thumb]:h-4
-                [&::-webkit-slider-thumb]:w-4
-                [&::-webkit-slider-thumb]:appearance-none
-                [&::-webkit-slider-thumb]:rounded-full
-                [&::-webkit-slider-thumb]:bg-primary-color
-                [&::-webkit-slider-thumb]:transition-all
-                [&::-webkit-slider-thumb]:hover:scale-125
-                [&::-webkit-slider-thumb]:hover:shadow-lg
-              "
-                onChange={() => changeOpacity()}
-              />
-            </div>
-            {/* 재생구역 */}
-          </div>
-          <div className="flex flex-col items-center justify-center rounded-3xl border bg-[#ECECF4] p-1">
             {/* 타임바 */}
-            <div className="w-full px-4">
-              <div className="mt-2 flex justify-between text-sm text-gray-500">
-                <div className="w-[100%]">
+            <div className="group relative h-full w-[60%]">
+              <div className="flex h-full items-center justify-center text-sm text-gray-500">
+                <div className="flex h-full w-[100%] items-stretch">
+                  {/* 움직이는 현재 시간 */}
+                  <div className="opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                    <div
+                      className="absolute -top-14 rounded-xl border border-gray-border-color px-[20px] py-[5px]"
+                      style={{
+                        left: `${Math.min((currentTime / maxTime) * 100 - 7, 100)}%`,
+                      }}
+                    >
+                      <p>{(timeRef.current / 10).toFixed(0)} 초</p>
+                    </div>
+                  </div>
+                  {/* 총 시간 */}
+                  <div className="absolute right-8 top-1/2 z-10 -translate-y-1/2">
+                    <p
+                      className={`${Math.min((currentTime / maxTime) * 100, 100) >= 98 ? 'text-white' : 'text-[#2E3032]'}`}
+                    >
+                      {maxTime.toFixed(0)}
+                    </p>
+                  </div>
+                  {/* 현재ㄹㄹ 시간  -  퍼센트에 따라 텍스트 색상 변경*/}
+                  <div className="absolute left-8 top-1/2 z-10 -translate-y-1/2">
+                    <p
+                      className={`${Math.min((currentTime / maxTime) * 100, 100) >= 6 ? 'text-white' : 'text-[#2E3032]'}`}
+                    >
+                      {(timeRef.current / 10).toFixed(0)}
+                    </p>
+                  </div>
+                  {/* 재생바 */}
                   <input
                     type="range"
                     value={currentTime}
@@ -410,28 +430,36 @@ export const ReplayPage = () => {
                     max={maxTime}
                     step={0.1}
                     className="
-                      [&::-webkit-slider-thumb]:scale-120 h-2
+                      [&::-webkit-slider-thumb]:scale-120
+                      relative
+                      m-0
+                      h-10
                       w-full
                       cursor-pointer
                       appearance-none
-                      rounded-full
-                      [&::-webkit-slider-runnable-track]:rounded-full
-                      [&::-webkit-slider-runnable-track]:bg-gradient-to-r
-                      [&::-webkit-slider-runnable-track]:from-primary-color
-                      [&::-webkit-slider-runnable-track]:from-[length:var(--range-progress)]
-                      [&::-webkit-slider-runnable-track]:to-white
-                      [&::-webkit-slider-runnable-track]:to-[length:var(--range-progress)]
-                      [&::-webkit-slider-thumb]:h-4
+                      rounded-xl
+                      p-0
+                      after:absolute
+                      after:left-0
+                      after:top-[50%]
+                      after:h-full
+                      after:w-[var(--range-progress)]
+                      after:-translate-y-1/2
+                      after:rounded-xl
+                      after:bg-primary-color
+                      [&::-webkit-slider-runnable-track]:h-full
+                      [&::-webkit-slider-runnable-track]:rounded-xl
+                      [&::-webkit-slider-runnable-track]:bg-[#E7E7EF]
                       [&::-webkit-slider-thumb]:w-4
                       [&::-webkit-slider-thumb]:appearance-none
-                      [&::-webkit-slider-thumb]:rounded-full
+                      [&::-webkit-slider-thumb]:rounded-xl
                       [&::-webkit-slider-thumb]:bg-primary-color
                       [&::-webkit-slider-thumb]:transition-all
                       [&::-webkit-slider-thumb]:hover:scale-150
                       [&::-webkit-slider-thumb]:hover:shadow-lg
                     "
                     style={{
-                      '--range-progress': `${Math.min((currentTime / maxTime) * 100 + 1, 100)}%`,
+                      '--range-progress': `${Math.min((currentTime / maxTime) * 100, 100)}%`,
                     }}
                     onChange={(e) => {
                       const newTime = parseFloat(e.target.value);
@@ -441,44 +469,87 @@ export const ReplayPage = () => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-6 p-5">
-              <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
-                <NextPlayIcon />
-              </button>
-              <button
-                className="rounded-full bg-primary-color px-4 py-4 text-white disabled:bg-gray-300"
-                onClick={handlePlayPauseClick}
-              >
-                <div className="relative h-5 w-5">
-                  <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${
-                      isPlaying ? 'opacity-100' : 'opacity-0'
-                    }`}
-                  >
-                    <StopIcon width={22} height={22} />
-                  </div>
-                  <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${
-                      isPlaying ? 'opacity-0' : 'opacity-100'
-                    }`}
-                  >
-                    <PlayingIcon />
-                  </div>
+            {/* 현재 색상값 - 투명도 */}
+            <div className="flex w-[25%] items-center gap-2">
+              <div className="group relative flex w-[100%] items-center justify-center rounded-xl border">
+                {/* 투명도값 박스 -> 호버시 나타남 */}
+                <div className="absolute -top-0 z-0 rounded-xl border border-gray-border-color px-[20px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
+                  <p className="text-text-gray-color">{rangeProgress}</p>
                 </div>
-              </button>
-              <button onClick={() => moveToTime(currentTime + 5)} className="rounded">
-                <NextPlayIcon />
-              </button>
+                {/* 아이콘 위치 */}
+                <div className="absolute left-3 z-10">
+                  <OpacityIcon width={22} height={22} fill={'#494949'} />
+                </div>
+                <input
+                  type="range"
+                  ref={opacityInputRef}
+                  defaultValue={100}
+                  min={0}
+                  max={100}
+                  step={1}
+                  className={`
+                    [&::-webkit-slider-thumb]:scale-120
+                    relative
+                    m-0
+                    h-10
+                    w-full
+                    cursor-pointer
+                    appearance-none
+                    rounded-xl
+                    p-0
+                    after:absolute
+                    after:left-0
+                    after:top-[50%]
+                    after:h-10
+                    after:w-[var(--range-progress)]
+                    after:-translate-y-1/2
+                    after:rounded-xl
+                    after:bg-[#E7E7EF]
+                    [&::-webkit-slider-runnable-track]:h-10
+                    [&::-webkit-slider-runnable-track]:rounded-xl
+                    [&::-webkit-slider-runnable-track]:bg-gradient-to-r
+                    [&::-webkit-slider-thumb]:w-4
+                    [&::-webkit-slider-thumb]:appearance-none
+                    [&::-webkit-slider-thumb]:rounded-xl
+                    [&::-webkit-slider-thumb]:bg-primary-color
+                    [&::-webkit-slider-thumb]:transition-all
+                    [&::-webkit-slider-thumb]:hover:scale-150
+                    [&::-webkit-slider-thumb]:hover:shadow-lg
+                  `}
+                  style={{
+                    '--range-progress': `${rangeProgress}%`,
+                    '--tw-gradient-from': '#E7E7EF var(--range-progress)',
+                    '--tw-gradient-to': '#F4F4F4 var(--range-progress)',
+                  }}
+                  onChange={() => changeOpacity()}
+                />
+              </div>
+              {/* 현재 색상 + 색상 변경 */}
+              <div
+                className="group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border border-gray-border-color bg-white px-[10px] py-[10px] transition-colors duration-300 hover:border-white hover:bg-[#E7E7EF]"
+                onClick={() => updateColor(nowColor)}
+              >
+                <div
+                  ref={colorBoxRef}
+                  className="h-[30px] w-[10px] rounded-md text-center transition-colors duration-300"
+                  style={{ backgroundColor: '#ffffff' }} // 초기값 설정
+                ></div>
+                <p className="text-[14px] font-light text-replay-disable-btn-font-color">
+                  {nowColor ? nowColor.toString().substring(0, 6) : ''}
+                </p>
+                <div className="absolute -top-0 rounded-xl border px-[15px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
+                  <p className="text-text-gray-color">색상 변경</p>
+                </div>
+              </div>
             </div>
-            {/* 아래가 투명도 그래프 */}
-          </div>
-        </div>
-        {/* 이미지 추출 기능 */}
-        <div className="absolute bottom-4 right-4 z-50">
-          <div className="rounded-3xl bg-primary-color text-white">
-            <button className="p-4" onClick={handleExportImage}>
-              이미지 추출
-            </button>
+            {/* 이미지 추출 기능 */}
+            <div className="w-[80px] text-center">
+              <div className="group rounded-2xl border border-gray-border-color bg-white text-white transition-all duration-300 hover:bg-primary-color">
+                <button className="p-4" onClick={handleExportImage}>
+                  <p className="text-[16px] text-text-gray-color group-hover:text-white">완료</p>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         {/* 작업 리스트 */}
@@ -486,12 +557,12 @@ export const ReplayPage = () => {
           ref={animationContainerRef}
           className="absolute right-5 top-1/2 z-50 flex w-[200px] -translate-y-1/2 flex-col gap-2"
         >
-          {workList.slice(0, 6).map((data, index) => (
+          {workList.slice(0, 12).map((data, index) => (
             <div
               key={data.element.id || index}
               className="cursor-pointer transition-opacity duration-300"
               style={{
-                opacity: index === 0 || index === 5 ? 0 : 1,
+                opacity: index === 0 || index === 11 ? 0 : 1,
               }}
               onClick={() => moveToTime(data.time / 10)}
             >

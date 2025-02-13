@@ -63,7 +63,7 @@ export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate, lecture }
               className="rounded-2xl bg-primary-color px-[30px] py-[10px]"
               onClick={() => addNoticeMutation.mutate()}
             >
-              <p className="text-[18px] font-semibold text-white">수정하기</p>
+              <p className="text-[18px] font-semibold text-white">생성하기</p>
             </button>
           </div>
         </div>
