@@ -389,9 +389,21 @@ export const ReplayPage = () => {
               </button>
             </div>
             {/* 타임바 */}
-            <div className="relative h-full w-[60%]">
+            <div className="group relative h-full w-[60%]">
               <div className="flex h-full items-center justify-center text-sm text-gray-500">
                 <div className="flex h-full w-[100%] items-stretch">
+                  {/* 움직이는 현재 시간 */}
+                  <div className="opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                    <div
+                      className="absolute -top-14 rounded-xl border border-gray-border-color px-[20px] py-[5px]"
+                      style={{
+                        left: `${Math.min((currentTime / maxTime) * 100 - 7, 100)}%`,
+                      }}
+                    >
+                      <p>{(timeRef.current / 10).toFixed(0)} 초</p>
+                    </div>
+                  </div>
+                  {/* 총 시간 */}
                   <div className="absolute right-8 top-1/2 z-10 -translate-y-1/2">
                     <p
                       className={`${Math.min((currentTime / maxTime) * 100, 100) >= 98 ? 'text-white' : 'text-[#2E3032]'}`}
@@ -399,7 +411,7 @@ export const ReplayPage = () => {
                       {maxTime.toFixed(0)}
                     </p>
                   </div>
-                  {/* 종료 시간  -  퍼센트에 따라 텍스트 색상 변경*/}
+                  {/* 현재ㄹㄹ 시간  -  퍼센트에 따라 텍스트 색상 변경*/}
                   <div className="absolute left-8 top-1/2 z-10 -translate-y-1/2">
                     <p
                       className={`${Math.min((currentTime / maxTime) * 100, 100) >= 2 ? 'text-white' : 'text-[#2E3032]'}`}
@@ -407,6 +419,7 @@ export const ReplayPage = () => {
                       {(timeRef.current / 10).toFixed(0)}
                     </p>
                   </div>
+                  {/* 재생바 */}
                   <input
                     type="range"
                     value={currentTime}
@@ -457,15 +470,15 @@ export const ReplayPage = () => {
                 </div>
               </div>
             </div>
-            {/* 현재 색상값 */}
+            {/* 현재 색상값 - 투명도 */}
             <div className="flex w-[30%] items-center gap-2">
               <div className="group relative flex w-[100%] items-center justify-center">
-                {/* 색상값 박스 -> 호버시 나타남 */}
-                <div className="absolute -top-0 z-0 rounded-xl border border-gray-border-color px-[20px] py-[5px] opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:-top-14">
+                {/* 투명도값 박스 -> 호버시 나타남 */}
+                <div className="absolute -top-0 z-0 rounded-xl border border-gray-border-color px-[20px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
                   <p className="text-text-gray-color">{rangeProgress}</p>
                 </div>
                 {/* 아이콘 위치 */}
-                <div className="absolute z-10 left-3">
+                <div className="absolute left-3 z-10">
                   <OpacityIcon width={22} height={22} fill={'#494949'} />
                 </div>
                 <input
@@ -475,47 +488,46 @@ export const ReplayPage = () => {
                   min={0}
                   max={100}
                   step={1}
-                  className="
-                      [&::-webkit-slider-thumb]:scale-120
-                      relative
-                      m-0
-                      h-10
-                      w-full
-                      cursor-pointer
-                      appearance-none
-                      rounded-xl
-                      p-0
-                      after:absolute
-                      after:left-0
-                      after:top-[50%]
-                      after:h-2
-                      after:w-[var(--range-progress)]
-                      after:-translate-y-1/2
-                      after:rounded-xl
-                      after:bg-[#D1D1DF]
-                      [&::-webkit-slider-runnable-track]:h-full
-                      [&::-webkit-slider-runnable-track]:rounded-xl
-                      [&::-webkit-slider-runnable-track]:bg-gradient-to-r
-                      [&::-webkit-slider-runnable-track]:from-[#D1D1DF]
-                      [&::-webkit-slider-runnable-track]:from-[length:var(--range-progress)]
-                      [&::-webkit-slider-runnable-track]:to-white
-                      [&::-webkit-slider-runnable-track]:to-[length:var(--range-progress)]
-                      [&::-webkit-slider-thumb]:w-4
-                      [&::-webkit-slider-thumb]:appearance-none
-                      [&::-webkit-slider-thumb]:rounded-xl
-                      [&::-webkit-slider-thumb]:bg-primary-color
-                      [&::-webkit-slider-thumb]:transition-all
-                      [&::-webkit-slider-thumb]:hover:scale-150
-                      [&::-webkit-slider-thumb]:hover:shadow-lg
-                    "
+                  className={`
+                    [&::-webkit-slider-thumb]:scale-120
+                    relative
+                    m-0
+                    h-10
+                    w-full
+                    cursor-pointer
+                    appearance-none
+                    rounded-xl
+                    p-0
+                    after:absolute
+                    after:left-0
+                    after:top-[50%]
+                    after:h-10
+                    after:w-[var(--range-progress)]
+                    after:-translate-y-1/2
+                    after:rounded-xl
+                    after:bg-[#D1D1DF]
+                    [&::-webkit-slider-runnable-track]:h-10
+                    [&::-webkit-slider-runnable-track]:rounded-xl
+                    [&::-webkit-slider-runnable-track]:bg-gradient-to-r
+                    [&::-webkit-slider-thumb]:w-4
+                    [&::-webkit-slider-thumb]:appearance-none
+                    [&::-webkit-slider-thumb]:rounded-xl
+                    [&::-webkit-slider-thumb]:bg-primary-color
+                    [&::-webkit-slider-thumb]:transition-all
+                    [&::-webkit-slider-thumb]:hover:scale-150
+                    [&::-webkit-slider-thumb]:hover:shadow-lg
+                  `}
                   style={{
                     '--range-progress': `${rangeProgress}%`,
+                    '--tw-gradient-from': '#D1D1DF var(--range-progress)',
+                    '--tw-gradient-to': 'white var(--range-progress)',
                   }}
                   onChange={() => changeOpacity()}
                 />
               </div>
+              {/* 현재 색상 + 색상 변경 */}
               <div
-                className="flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]"
+                className="group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border bg-white px-[15px] py-[10px]"
                 onClick={() => updateColor(nowColor)}
               >
                 <div
@@ -526,6 +538,9 @@ export const ReplayPage = () => {
                 <p className="text-[14px] font-light text-replay-disable-btn-font-color">
                   {nowColor}
                 </p>
+                <div className="absolute -top-0 rounded-xl border px-[15px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
+                  <p className="text-text-gray-color">색상 변경</p>
+                </div>
               </div>
             </div>
           </div>
