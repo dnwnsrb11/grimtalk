@@ -11,7 +11,7 @@ export const CustomChat = (props) => {
       const button = document.querySelector('.lk-chat-form-button');
 
       if (header) {
-        header.textContent = '채팅방';
+        header.style.display = 'none';
       }
       if (input) {
         input.placeholder = '새로운 메시지를 입력하세요...';
