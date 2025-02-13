@@ -83,7 +83,7 @@ export const Navbar = () => {
           라이브
         </button>
         {/* 검색창 */}
-        <div className="flex h-[50px] w-[400px] items-center justify-between rounded-xl border border-solid bg-[#EFEFEF] hover:bg-gray-300">
+        <div className="flex h-[50px] w-[400px] items-center justify-between rounded-xl border border-solid bg-[#EFEFEF]">
           <input
             type="text"
             className="ml-[25px] h-full w-full bg-[#EFEFEF] outline-none"
@@ -108,16 +108,16 @@ export const Navbar = () => {
           <>
             <button
               onClick={() => navigate('/signup')}
-              className="hover:scale-105 hover:bg-gray-300 focus:outline-none"
+              className="text-text-gray-color hover:scale-105 hover:text-black focus:outline-none"
             >
               회원가입
             </button>
             <div className="mx-5">|</div>
             <button
               onClick={() => navigate('/login')}
-              className="h-[35px] w-[70px] rounded-xl bg-[#EFEFEF] hover:scale-105 hover:bg-gray-300 focus:outline-none"
+              className="h-[35px] w-[70px] rounded-xl bg-[#EFEFEF] text-text-gray-color transition-all duration-300 hover:scale-105 hover:bg-primary-color hover:text-white focus:outline-none"
             >
-              <p className="text-text-gray-color">로그인</p>
+              <p>로그인</p>
             </button>
           </>
         ) : (
@@ -131,7 +131,7 @@ export const Navbar = () => {
             <div>|</div>
             <button
               onClick={() => handleLogout.mutate()}
-              className="text-text-gray-color hover:scale-105 hover:bg-gray-300 focus:outline-none"
+              className="text-text-gray-color hover:scale-105 focus:outline-none"
             >
               로그아웃
             </button>

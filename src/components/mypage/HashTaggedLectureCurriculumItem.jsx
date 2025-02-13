@@ -13,7 +13,7 @@ export const HashTaggedLectureCurriculumItem = ({ title, hashTags, image, id }) 
 
   return (
     // 커리큘럼 이미지가 70px이기 때문에 컬럼 너비를 70px로 고정
-    <div className="grid grid-cols-[70px_1fr_110px] items-center justify-between gap-5">
+    <div className="grid grid-cols-[70px_1fr_110px] items-center gap-5">
       <img
         src={isValidImage(image) ? image : posterNoneImg} // 유효하지 않으면 기본 이미지 사용
         alt="lecture-curriculum"
@@ -30,7 +30,9 @@ export const HashTaggedLectureCurriculumItem = ({ title, hashTags, image, id }) 
       </div>
 
       <Link to={`/lecture/${id}`}>
-        <button className="text-lg font-semibold text-detail-text-color">자세히 보기 ＞</button>
+        <button className="text-lg font-semibold text-detail-text-color hover:scale-110">
+          자세히 보기 ＞
+        </button>
       </Link>
     </div>
   );

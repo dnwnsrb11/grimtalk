@@ -65,6 +65,7 @@ export const SubscriptionFavoriteSection = () => {
               nickname={item.nickname}
               memberTagContent={item.memberTags}
               memberId={item.memberId}
+              image={item.image}
             />
           ))}
         </div>
