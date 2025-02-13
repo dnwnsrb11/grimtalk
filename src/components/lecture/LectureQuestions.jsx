@@ -19,7 +19,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['questions', isActive],
+    queryKey: ['questions'],
     queryFn: async () => {
       const { data } = await _axios.get(`/lecture/board/${lecture.lectureId}`);
 

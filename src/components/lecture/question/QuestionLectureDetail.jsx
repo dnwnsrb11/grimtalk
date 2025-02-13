@@ -30,6 +30,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       navigate('/notfound');
     },
   });
+  const boardComments = board.comments;
 
   // 작성 api
   const addCommentMutation = useMutation({
@@ -102,35 +103,40 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
             </div>
           )}
         </div>
-        <div className="mt-[10px] min-h-[100px]">
-          {board?.comments?.length > 0 ? (
-            <p className="text-[18px] text-black">{board.comments[0]?.content || ''}</p>
-          ) : (
-            <p className="text-[18px] font-medium text-text-gray-color">현재 답변이 없습니다.</p>
-          )}
-        </div>
-      </div>
-      <hr className="border-gray-border-color" />
-      {checkInstructor && (
-        // 조건부 렌더링을 하기위해 <> 추가
+
+        {/* // 조건부 렌더링을 하기위해 <> 추가 */}
         <>
           <div className="mt-[20px]">
-            <div className="flex items-center gap-3">
-              <h1 className="text-[32px] font-bold">답변</h1>
-            </div>
             <div className="mt-[20px] w-full">
               <input
                 type="text"
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 className="min-h-[60px] w-full rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
-                placeholder="답변을 입려해주세요."
+                placeholder="답변을 입력해주세요."
               />
             </div>
           </div>
           <hr className="mt-[40px] border-gray-border-color" />
         </>
-      )}
+
+        <div className="mt-[10px] min-h-[100px]">
+          {boardComments?.length > 0 ? (
+            <div className="space-y-3">
+              {boardComments.map((comment, index) => (
+                <div key={index} className="flex h-full flex-col">
+                  <div>{comment.content}</div>
+                  <div>{comment.nickname}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[18px] font-medium text-text-gray-color">현재 답변이 없습니다.</p>
+          )}
+        </div>
+      </div>
+      <hr className="border-gray-border-color" />
+
       <div className="mt-[20px] flex justify-end gap-2">
         <button
           className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
