@@ -53,7 +53,7 @@ export const CustomChat = (props) => {
         header.style.display = 'none';
       }
       if (input) {
-        input.placeholder = '새로운 메시지를 입력하세요...';
+        input.placeholder = '채팅을 입력해주세요.';
       }
       if (button) {
         button.textContent = '전송';
