@@ -31,7 +31,7 @@ const liveApi = {
 
   // 라이브 방 목록 조회
   getRoomList: async () => {
-    const response = await _axiosAuth.get('/memory/rooms');
+    const response = await _axiosAuth.get('/live/rooms');
     return response.data;
   },
 };
