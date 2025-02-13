@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { LoginHi } from '@/components/common/icons';
 
 export const SignupSuccessPage = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  console.log(location);
   return (
     <AnimatePresence>
       <motion.div
@@ -30,7 +31,7 @@ export const SignupSuccessPage = () => {
               transition={{ duration: 0.6, delay: 0.8 }}
             >
               <h1 className="mb-[20px]">
-                <span className="mr-2 text-5xl font-bold">OOO님</span>
+                <span className="mr-2 text-5xl font-bold">{location?.state?.nickname}님 </span>
                 <span className="text-5xl font-bold text-primary-color">가입을 환영해요.</span>
               </h1>
               <p className="text-3xl text-[#A8A8A8]">가입이 완료되었습니다.</p>

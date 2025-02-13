@@ -25,7 +25,9 @@ export const DatedLectureCurriculumItem = ({ title, image, createdAt, expectedLi
       </div>
 
       <Link to={`/lecture/${id}`}>
-        <button className="text-lg font-semibold text-detail-text-color">자세히 보기 ＞</button>
+        <button className="text-lg font-semibold text-detail-text-color hover:scale-110">
+          자세히 보기 ＞
+        </button>
       </Link>
     </div>
   );

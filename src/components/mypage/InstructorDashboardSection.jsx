@@ -46,7 +46,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
                 date={myRecentLive}
               />
             ) : (
-              <div className="py-4 text-center text-gray-500">최근 라이브가 없습니다.</div>
+              <div className="py-4 pt-[6%] text-center text-gray-500">최근 라이브가 없습니다.</div>
             )}
           </DashboardCard>
 
@@ -57,7 +57,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
                 <span className="text-4xl font-bold text-black"> 명</span>
               </div>
             ) : (
-              <div className="py-4 text-center text-gray-500">구독자가 없습니다.</div>
+              <div className="py-4 pt-[4%] text-center text-gray-500">구독자가 없습니다.</div>
             )}
           </DashboardCard>
         </div>
@@ -75,7 +75,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
               ))}
             </div>
           ) : (
-            <div className="py-4 text-center text-gray-500">등록된 강의가 없습니다.</div>
+            <div className="py-4 pt-[25%] text-center text-gray-500">등록된 강의가 없습니다.</div>
           )}
         </DashboardCard>
       </div>

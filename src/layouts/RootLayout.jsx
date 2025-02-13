@@ -28,7 +28,7 @@ export const RootLayout = () => {
           </div>
           <div className="col-span-2"></div>
         </div>
-        <footer>
+        <footer className="mt-[100px]">
           <Footer />
         </footer>
       </div>

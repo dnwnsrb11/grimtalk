@@ -1,9 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 import { _axiosAuth } from '@/api/instance';
 
 export const CreateLectureSection = () => {
+  const [selectDate, setSelectDate] = useState(false);
   // 강의 정보 상태
   const [lecture, setLecture] = useState({
     subject: '',
@@ -20,6 +22,7 @@ export const CreateLectureSection = () => {
     date: '',
     time: '',
   });
+  // 제출버튼 비활성화용
 
   const [curriculums, setCurriculums] = useState([]); // 여러 개의 커리큘럼 리스트
   const [tagInput, setTagInput] = useState(''); // 태그 입력값
@@ -57,11 +60,13 @@ export const CreateLectureSection = () => {
 
     setCurriculums([...curriculums, { id: Date.now(), ...curriculumForm }]);
     setCurriculumForm({ curriculumSubject: '', curriculumContent: '', date: '', time: '' }); // 폼 초기화
+    toast.success('커리큘럼이 추가되었습니다.');
   };
 
   // 커리큘럼 삭제
   const handleDeleteCurriculum = (id) => {
     setCurriculums(curriculums.filter((curriculum) => curriculum.id !== id));
+    toast.success('커리큘럼이 삭제되었습니다.');
   };
 
   // 태그 추가
@@ -103,7 +108,7 @@ export const CreateLectureSection = () => {
     onSuccess: (data) => {
       alert('강의가 성공적으로 생성되었습니다!');
       console.log(data);
-      window.location.reload();
+      // window.location.reload();
     },
     onError: (error) => {
       alert('강의 생성에 실패했습니다.');
@@ -113,7 +118,7 @@ export const CreateLectureSection = () => {
   // 강의 생성 제출
   const handleSubmit = async () => {
     if (!lecture.subject || !lecture.intro || !lecture.selectedFile || curriculums.length === 0) {
-      alert('모든 필드를 입력해주세요. 최소 1개 이상의 커리큘럼이 필요합니다.');
+      alert('모든 필드를 입력해주세요.');
       return;
     }
 
@@ -125,7 +130,7 @@ export const CreateLectureSection = () => {
     formData.append('category', lecture.category);
 
     // 이미지 파일
-    formData.append('bannerImage', lecture.selectedFile);
+    formData.append('imgUrl', lecture.selectedFile);
 
     // 커리큘럼 정보
     curriculums.forEach((item, index) => {
@@ -135,9 +140,18 @@ export const CreateLectureSection = () => {
     });
 
     // 해시태그
-    lecture.tags.forEach((tag, index) => {
-      formData.append(`hashtags[${index}]`, tag.text);
+    if (lecture.tags) {
+      lecture.tags.forEach((tag, index) => {
+        formData.append(`hashtags[${index}]`, tag.text);
+      });
+    } else if (!lecture.tags) {
+      alert('해시태그를 선택하세요.');
+      return;
+    }
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
     });
+    console.log(formData);
 
     createLectureMutation.mutate(formData);
   };
@@ -179,16 +193,39 @@ export const CreateLectureSection = () => {
           <input
             type="date"
             value={curriculumForm.date}
-            onChange={(e) => setCurriculumForm({ ...curriculumForm, date: e.target.value })}
+            onChange={(e) => {
+              setCurriculumForm({ ...curriculumForm, date: e.target.value });
+              setSelectDate(true);
+            }}
             className="rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal"
           />
 
           <input
             type="time"
             value={curriculumForm.time}
-            onChange={(e) => setCurriculumForm({ ...curriculumForm, time: e.target.value })}
+            onChange={(e) => {
+              setCurriculumForm({ ...curriculumForm, time: e.target.value });
+              setSelectDate(true);
+            }}
             className="rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal"
           />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {!curriculumForm.date ? (
+            <p className="pl-[10px] text-primary-color">라이브 시작 날짜를 선택해주세요.</p>
+          ) : (
+            selectDate && (
+              <p className="pl-[10px] text-green-600">라이브 시작 날짜가 설정되었습니다.</p>
+            )
+          )}
+
+          {!curriculumForm.time ? (
+            <p className="pl-[10px] text-primary-color">라이브 시작 시간을 선택해주세요.</p>
+          ) : (
+            selectDate && (
+              <p className="pl-[10px] text-green-600">라이브 시작 시간이 설정되었습니다.</p>
+            )
+          )}
         </div>
         <div className="flex justify-end">
           <button
@@ -209,13 +246,15 @@ export const CreateLectureSection = () => {
             key={curriculum.id}
             className="rounded-[20px] border border-[#000000] border-opacity-20 p-5"
           >
+            <p className="text-md font-semibold text-[#C6C6C6] opacity-90">커리큘럼 제목</p>
+
             <h3 className="text-lg font-bold">{curriculum.curriculumSubject}</h3>
             <p className="mt-2 whitespace-pre-wrap text-common-font-color">
               {curriculum.curriculumContent}
             </p>
             <div className="mt-2 flex items-center justify-between">
               <span className="inline-block rounded-3xl border bg-bg-gray-color px-3 py-1 text-sm text-text-gray-color">
-                {curriculum.date}T{curriculum.time}
+                {curriculum.date} {curriculum.time}
               </span>
               <button
                 className="rounded-md bg-bg-gray-color px-3 py-2 text-sm text-common-font-color hover:bg-red-100"
@@ -327,7 +366,7 @@ export const CreateLectureSection = () => {
       <div className="flex justify-center">
         <button
           onClick={handleSubmit}
-          className="w-full rounded-md bg-primary-color px-5 py-3 text-lg font-semibold text-white hover:bg-primary-color/80"
+          className={`w-[110px] rounded-md px-5 py-3 text-lg font-semibold text-white ${'bg-primary-color hover:bg-primary-color/80'}`}
         >
           강의 생성
         </button>

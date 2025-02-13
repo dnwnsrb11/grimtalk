@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
 import { BadgeInformation } from '@/components/mypage/BadgeInformation';
@@ -7,6 +8,7 @@ import { PasswordEditSection } from '@/components/mypage/PasswordEditSection';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export const MemberSettingsSection = () => {
+  const navigate = useNavigate();
   const { id, email, nickname } = useAuthStore((state) => state.userData);
   // 정보 조회회
   const { data: memberSettings } = useQuery({
@@ -16,14 +18,15 @@ export const MemberSettingsSection = () => {
       return data.body.data;
     },
   });
-  const { memberId, memberPassword, memberSubscribeNumber, memberIntro } = {
+  const { memberId, memberPassword, memberSubscribeNumber, memberIntro, memberImage } = {
     memberId: memberSettings?.email,
     memberPassword: 'password',
     memberSubscribeNumber: memberSettings?.subscribeNumber,
     memberIntro: memberSettings?.intro,
+    memberImage: memberSettings?.image,
   };
   // console.log(memberSettings);
-  const [memberProfileImage, setMemberProfileImage] = useState('MYPROFILEIMAGE.jpg');
+  const [memberProfileImage, setMemberProfileImage] = useState(memberImage);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
@@ -95,6 +98,13 @@ export const MemberSettingsSection = () => {
     },
     onSuccess: () => {
       alert('회원 정보가 성공적으로 수정되었습니다!'); // ✅ 성공 알림 추가
+      navigate(`/mypage/${id}`, {
+        state: {
+          joinId: id,
+          selectedMenu: '유저소개',
+          selectedProfileMenu: '수강생',
+        },
+      });
     },
     onError: (error) => {
       alert('회원 정보 수정에 실패했습니다. 다시 시도해주세요.'); // ❌ 실패 알림 추가
@@ -108,6 +118,9 @@ export const MemberSettingsSection = () => {
     if (selectedFile) {
       formData.append('image', selectedFile);
     }
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
 
     memberSettingsChange.mutate(formData);
   };

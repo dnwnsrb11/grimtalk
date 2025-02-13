@@ -122,7 +122,7 @@ export const StudentDashboardSection = ({ isActive }) => {
                 <DashboardCard title="최근 학습 커리큘럼">
                   <motion.p
                     key="no-curriculum"
-                    className="mt-[85px] flex items-center justify-center text-[20px]"
+                    className="flex items-center justify-center p-[10%] text-[20px]"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
@@ -170,9 +170,12 @@ export const StudentDashboardSection = ({ isActive }) => {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.5, delay: 0.3 }} // 🚀 동일한 딜레이 적용
               >
-                <DashboardCard title="나의 가장 높은 유사도" subtitle="수업에 참여해보세요">
+                <DashboardCard
+                  title="나의 가장 높은 유사도"
+                  subtitle="수업에 참여해서 유사도를 확인해보세요."
+                >
                   <div className="flex items-end justify-end">
-                    <span className="text-7xl font-bold text-primary-color">NO DATA</span>
+                    <span className="text-7xl font-bold text-primary-color">0</span>
                     <span className="text-4xl font-bold text-black">%</span>
                   </div>
                 </DashboardCard>
@@ -217,7 +220,7 @@ export const StudentDashboardSection = ({ isActive }) => {
                   title="예정 커리큘럼"
                   className="flex h-full flex-col justify-center"
                 >
-                  <p className="mt-[200px] flex items-center justify-center text-[20px]">
+                  <p className="flex items-center justify-center p-[30%] text-[20px]">
                     예정된 강의가 없습니다.
                   </p>
                 </DashboardCard>
@@ -239,6 +242,7 @@ export const StudentDashboardSection = ({ isActive }) => {
             <DashboardCard title="최근 구독한 강사">
               {recentSubscribedInstructor ? (
                 <button
+                  className="hover:scale-95"
                   onClick={() =>
                     navigate(`/mypage/${recentSubscribedInstructor.id}`, {
                       state: {
@@ -274,7 +278,7 @@ export const StudentDashboardSection = ({ isActive }) => {
                   </div>
                 </button>
               ) : (
-                <p className="mt-[60px] flex items-center justify-center text-[20px]">
+                <p className="flex items-center justify-center p-[10%] text-[20px]">
                   최근 구독한 강사가 없습니다.
                 </p>
               )}
@@ -287,7 +291,7 @@ export const StudentDashboardSection = ({ isActive }) => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.5, delay: 0.9 }} // ✅ 0.9초 딜레이 적용
+            transition={{ duration: 0.5, delay: 0.8 }} // ✅ 0.9초 딜레이 적용
           >
             <DashboardCard title="최근 구독한 강의">
               {recentFavoriteLecture ? (
@@ -302,7 +306,7 @@ export const StudentDashboardSection = ({ isActive }) => {
                   id={recentFavoriteLecture?.lectureId}
                 />
               ) : (
-                <p className="mt-[60px] flex items-center justify-center text-[20px]">
+                <p className="flex items-center justify-center p-[10%] text-[20px]">
                   최근 즐겨찾기한 강의가 없습니다.
                 </p>
               )}
@@ -317,7 +321,7 @@ export const StudentDashboardSection = ({ isActive }) => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.5, delay: 1.4 }} // 🚀 1.2초 딜레이 추가
+          transition={{ duration: 0.5, delay: 1.2 }} // 🚀 1.2초 딜레이 추가
         >
           <DashboardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
             <div>{monthlyProgressData?.year}</div>
