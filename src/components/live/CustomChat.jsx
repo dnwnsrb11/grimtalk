@@ -1,4 +1,6 @@
 /** @jsxImportSource react */
+import '@/styles/live.css';
+
 import { Chat } from '@livekit/components-react';
 import { useEffect } from 'react';
 
