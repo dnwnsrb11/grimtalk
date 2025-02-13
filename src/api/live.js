@@ -32,7 +32,12 @@ const liveApi = {
   // 라이브 방 목록 조회
   getRoomList: async () => {
     const response = await _axios.get('/rooms');
-    return response.data.body.data.body.data;
+    return response.data.body.data;
+  },
+
+  getRoomListTop4: async () => {
+    const response = await _axios.get('/rooms/top4');
+    return response.data.body.data;
   },
 };
 
@@ -43,6 +48,13 @@ const useRoomList = () => {
     queryFn: liveApi.getRoomList,
     refetchInterval: 5000, // - 5초마다 자동으로 방 목록 업데이트
     staleTime: 1000 * 60, // - 1분간 최신 데이터 유지
+  });
+};
+
+const useRoomListTop4 = () => {
+  return useQuery({
+    queryKey: ['roomsTop4'],
+    queryFn: liveApi.getRoomListTop4,
   });
 };
 
@@ -100,4 +112,13 @@ const InstructorLeaveLive = async (curriculumId, userId) => {
   }
 };
 
-export { endLive, getLiveCount, InstructorLeaveLive, joinLive, leaveLive, liveApi, useRoomList };
+export {
+  endLive,
+  getLiveCount,
+  InstructorLeaveLive,
+  joinLive,
+  leaveLive,
+  liveApi,
+  useRoomList,
+  useRoomListTop4,
+};

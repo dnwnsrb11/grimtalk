@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useRoomList } from '@/api/live';
+import { useRoomList, useRoomListTop4 } from '@/api/live';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { Banner } from '@/components/mainPages/home/Banner';
 import { LiveList } from '@/components/mainPages/home/LiveList';
@@ -10,6 +10,11 @@ export const MainPageLive = () => {
   const navigate = useNavigate();
 
   const { data: availableLiveRooms, isLoading, error } = useRoomList();
+  const {
+    data: availableLiveRoomsTop4,
+    isLoading: isLoadingTop4,
+    error: errorTop4,
+  } = useRoomListTop4();
 
   useEffect(() => {
     if (error || (availableLiveRooms?.body?.code && availableLiveRooms.body.code !== 200)) {
@@ -27,14 +32,18 @@ export const MainPageLive = () => {
           인기 있는 <span className="text-primary-color">라이브</span>
         </h2>
         <div className="mb-[50px] flex gap-3">
-          {!availableLiveRooms || availableLiveRooms.length === 0 ? (
+          {!availableLiveRoomsTop4 || availableLiveRoomsTop4.length === 0 ? (
             <div className="flex h-[200px] w-full items-center justify-center rounded-lg bg-gray-50">
               <p className="text-lg font-medium text-gray-500">
                 현재 진행중인 인기 라이브가 없습니다.
               </p>
             </div>
           ) : (
-            Array.from({ length: 4 }, (_, index) => <LiveList key={index} />)
+            availableLiveRoomsTop4.map((LiveRoom, index) => (
+              <div key={index} className="mb-[40px] w-[calc(25%_-_0.75rem)]">
+                <LiveList LiveRoom={LiveRoom} />
+              </div>
+            ))
           )}
         </div>
       </div>
