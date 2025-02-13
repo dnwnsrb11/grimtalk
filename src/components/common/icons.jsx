@@ -543,7 +543,7 @@ const StopIcon = ({ className = '', width = 20, height = 20, fill = 'black' }) =
   </svg>
 );
 
-const NextPlayIcon = ({ className = '', width = 24, height = 24, fill = 'black' }) => (
+const NextPlayIcon = ({ className = '', width = 24, height = 24, fill = '#C8C9D0' }) => (
   <svg
     width={width}
     height={height}
