@@ -507,7 +507,7 @@ const LeveltwoBadgeIcon = ({ className = '', width = 35, height = 33 }) => (
   </svg>
 );
 
-const PlayingIcon = ({ className = '', width = 20, height = 20, fill = 'white' }) => (
+const PlayingIcon = ({ className = '', width = 20, height = 20, fill = 'black' }) => (
   <svg
     width={width}
     height={height}
@@ -523,7 +523,7 @@ const PlayingIcon = ({ className = '', width = 20, height = 20, fill = 'white' }
   </svg>
 );
 
-const StopIcon = ({ className = '', width = 20, height = 20, fill = 'white' }) => (
+const StopIcon = ({ className = '', width = 20, height = 20, fill = 'black' }) => (
   <svg
     width={width}
     height={height}
