@@ -12,7 +12,11 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
   const navigate = useNavigate();
   const [answer, setAnswer] = useState('');
   const [answerId, setAnserId] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(4);
 
+  const handleShowMore = () => {
+    setVisibleCount((prev) => prev + 4);
+  };
   const {
     data: board,
     isLoading,
@@ -81,7 +85,12 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
     <>
       <div className="mt-[60px] min-h-[200px]">
         <h1 className="text-[32px] font-bold">{board.subject || ''}</h1>
-        <div className="mt-[10px]">
+        <div className="text-[14px] text-[#868296]">
+          {board?.createdAt
+            ? new Date(board.createdAt).toISOString().replace('T', ' ').slice(0, 16)
+            : '날짜 없음'}
+        </div>
+        <div className="ml-[10px] mt-[20px]">
           <p className="text-[18px]">{board.content || ''}</p>
         </div>
       </div>
@@ -135,7 +144,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
         <div className="mt-[10px] min-h-[100px]">
           {boardComments?.length > 0 ? (
             <div className="space-y-3">
-              {boardComments.map((comment, index) => (
+              {boardComments.slice(0, visibleCount).map((comment, index) => (
                 <div key={index} className="flex h-full flex-col">
                   <QuestionContentCard
                     key={index}
@@ -144,13 +153,24 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
                   />
                 </div>
               ))}
+              {/* 🔥 '더보기' 버튼 추가 (모든 댓글이 표시되면 숨김) */}
+              {visibleCount < boardComments.length && (
+                <div className="flex justify-center">
+                  <button
+                    onClick={handleShowMore}
+                    className="mt-4 w-[70px] rounded-lg bg-primary-color py-2 font-semibold text-white"
+                  >
+                    더보기
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <p className="text-[18px] font-medium text-text-gray-color">현재 답변이 없습니다.</p>
           )}
         </div>
       </div>
-      <hr className="border-gray-border-color" />
+      <hr className="mt-[24px] border-gray-border-color" />
 
       <div className="mt-[20px] flex justify-end gap-2">
         <button
@@ -159,14 +179,7 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
         >
           <p className="text-[18px] font-semibold">뒤로가기</p>
         </button>
-        {checkInstructor && (
-          <button
-            className="rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
-            onClick={() => addCommentMutation.mutate()}
-          >
-            <p className="text-[18px] font-semibold text-white">작성하기</p>
-          </button>
-        )}
+
         {!checkInstructor && board?.comments?.length > 0 && (
           <button
             className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]"
