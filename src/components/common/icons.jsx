@@ -661,6 +661,50 @@ const OpacityIcon = ({ className = '', width = 16, height = 16, fill = 'black' }
   </svg>
 );
 
+const LeftArrowIcon = ({ className = '', width = 24, height = 24, fill = 'black' }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+    <g id="SVGRepo_iconCarrier">
+      <path
+        d="M6 12H18M6 12L11 7M6 12L11 17"
+        stroke={fill}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
+    </g>
+  </svg>
+);
+
+const RightArrowIcon = ({ className = '', width = 24, height = 24, fill = 'black' }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+    <g id="SVGRepo_iconCarrier">
+      <path
+        d="M6 12H18M18 12L13 7M18 12L13 17"
+        stroke={fill}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
+    </g>
+  </svg>
+);
+
 export {
   AlarmIcon,
   CheckIcon,
@@ -668,6 +712,7 @@ export {
   FavoriteIcon,
   FooterIcon,
   InstructorIcon,
+  LeftArrowIcon,
   LeveloneBadgeIcon,
   LevelthirdBadgeIcon,
   LeveltwoBadgeIcon,
@@ -680,6 +725,7 @@ export {
   OpacityIcon,
   PlayingIcon,
   ReadingGlassesIcon,
+  RightArrowIcon,
   StarReviewIcon,
   StatisticsIcon,
   StopIcon,
