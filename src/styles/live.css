@@ -172,7 +172,6 @@ body {
   flex-direction: column;
   background-color: white;
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
 }
 
 .lk-chat-messages {
@@ -239,7 +238,7 @@ body {
 
 .lk-chat-form-input {
   flex: 0;
-  max-width: 180px;
+  max-width: 170px;
   padding: 0.5rem;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
@@ -265,7 +264,9 @@ body {
   bottom: 20px;
   width: 300px;
   background-color: #ffffff;
-  border-radius: 12px;
+  border-radius: 30px;
+  padding-block: 20px;
+  padding-inline: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   z-index: 1000;
@@ -607,4 +608,71 @@ body {
 .excalidraw-wrapper h3 {
   margin-bottom: 10px;
   text-align: center;
+}
+
+.chat-container {
+  position: relative;
+  width: 100%;
+}
+
+.chat-wrapper {
+  opacity: 0;
+  transform: translateX(30px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  visibility: hidden;
+}
+
+.chat-wrapper.visible {
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.chat-wrapper.hidden {
+  opacity: 0;
+  transform: translateX(30px);
+  visibility: hidden;
+}
+
+.chat-hidden-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  transform: translateX(-30px);
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.toggle-chat-btn {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.toggle-chat-btn:hover {
+  background: #f9fafb;
+  transform: scale(1.05);
+}
+
+.header-buttons-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

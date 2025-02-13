@@ -189,15 +189,6 @@ export const LivePage = () => {
         <h2 id="room-title" className="text-2xl font-bold">
           <span className="text-primary-color">라이브</span> {curriculumSubject}
         </h2>
-        {participantUtils.isCreator(nickname) ? (
-          <button className="rounded-lg bg-primary-color px-6 py-2 text-white hover:opacity-90">
-            라이브 종료
-          </button>
-        ) : (
-          <button className="rounded-lg bg-primary-color px-6 py-2 text-white hover:opacity-90">
-            라이브 퇴장
-          </button>
-        )}
       </div>
 
       {/* 비디오 레이아웃 */}
@@ -239,7 +230,7 @@ export const LivePage = () => {
       {/* 채팅 컴포넌트 */}
       <div className="mb-6 rounded-xl border border-gray-border-color bg-white p-4">
         <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
-          <CustomChat />
+          <CustomChat onLeave={leaveRoom} isCreator={participantUtils.isCreator(nickname)} />
         </LiveKitRoom>
       </div>
 

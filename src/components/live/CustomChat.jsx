@@ -2,9 +2,13 @@
 import '@/styles/live.css';
 
 import { Chat } from '@livekit/components-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-export const CustomChat = (props) => {
+import { LeftArrowIcon, RightArrowIcon } from '@/components/common/icons';
+
+export const CustomChat = ({ onLeave, isCreator, ...props }) => {
+  const [isVisible, setIsVisible] = useState(true);
+
   const applyMessageStyles = () => {
     const entries = document.querySelectorAll('.lk-chat-entry');
     entries.forEach((entry) => {
@@ -93,5 +97,33 @@ export const CustomChat = (props) => {
     };
   }, []);
 
-  return <Chat {...props} />;
+  return (
+    <div className="chat-container relative">
+      {/* 채팅 컴포넌트 */}
+      <div className={`chat-wrapper ${isVisible ? 'visible' : 'hidden'}`}>
+        {/* 퇴장 버튼과 토글 버튼 컨테이너 */}
+        <div className="header-buttons-container mb-4 flex items-center gap-2">
+          <button className="toggle-chat-btn" onClick={() => setIsVisible(false)}>
+            <RightArrowIcon />
+          </button>
+          <button
+            onClick={onLeave}
+            className="flex-1 rounded-lg bg-primary-color px-6 py-2 text-white hover:opacity-90"
+          >
+            {isCreator ? '라이브 종료' : '라이브 퇴장'}
+          </button>
+        </div>
+        <Chat {...props} />
+      </div>
+
+      {/* 채팅 열기 버튼 (숨겨져 있을 때) */}
+      {!isVisible && (
+        <div className="chat-hidden-controls">
+          <button className="toggle-chat-btn" onClick={() => setIsVisible(true)}>
+            <LeftArrowIcon />
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
