@@ -21,7 +21,7 @@ export const CustomChat = (props) => {
       // 시간 요소 숨기기
       const timestamp = entry.querySelector('.lk-timestamp');
       if (timestamp) {
-        timestamp.style.display = 'none';
+        timestamp.remove();
       }
 
       // 연속된 메시지에도 이름 표시
