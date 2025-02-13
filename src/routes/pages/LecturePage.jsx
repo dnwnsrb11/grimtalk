@@ -25,6 +25,14 @@ export const LecturePage = () => {
   //로그인 체크를 위한 데이터
   const { id } = useAuthStore((state) => state.userData);
 
+  // 페이지 진입 시 맨 위로 스크롤
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
   const {
     data: lecture,
     isLoading,
