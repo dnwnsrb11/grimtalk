@@ -85,7 +85,6 @@ export const QuestionLectureDetail = ({
       return data;
     },
     onSuccess: (data) => {
-      toast.success('질문을 삭제했습니다.');
       setIsActive(false);
     },
     onError: (err) => {
@@ -213,14 +212,14 @@ export const QuestionLectureDetail = ({
           <p className="text-[18px] font-semibold">뒤로가기</p>
         </button>
 
-        {!checkInstructor && board?.comments?.length > 0 && (
+        {/* {!checkInstructor && board?.comments?.length > 0 && (
           <button
             className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]"
             onClick={() => addCommentCheckMutation.mutate()}
           >
             <p className="text-[18px] font-semibold text-white">답변완료</p>
           </button>
-        )}
+        )} */}
         {lectureInstructorInfoId === id ? (
           <button
             className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]"
