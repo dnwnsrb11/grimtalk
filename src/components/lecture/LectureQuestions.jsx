@@ -12,6 +12,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
   const [isActive, setIsActive] = useState('/');
   const [questionId, setQuestionId] = useState('');
   const [curriculumId, setCurriculumId] = useState('');
+  const [boardCreatedMemberId, setBoardCreatedMemberId] = useState('');
 
   // 목록 조회
   const {
@@ -19,7 +20,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['questions', isActive],
+    queryKey: ['questions'],
     queryFn: async () => {
       const { data } = await _axios.get(`/lecture/board/${lecture.lectureId}`);
 
@@ -69,6 +70,8 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
         setIsActive={setIsActive}
         questionId={questionId}
         checkInstructor={checkInstructor}
+        lectureInstructorInfoId={lecture?.instructorInfo?.id}
+        boardCreatedMemberId={boardCreatedMemberId}
       />
     );
   } else if (isActive === '질문 작성페이지') {
@@ -108,6 +111,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
                     setIsActive('질문 상세페이지');
                     setQuestionId(question.boardId);
                     setCurriculumId(question.curriculumId);
+                    setBoardCreatedMemberId(question.nickname);
                   }}
                   className="mb-3"
                 >
