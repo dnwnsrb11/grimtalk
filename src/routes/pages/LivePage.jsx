@@ -111,7 +111,6 @@ export const LivePage = () => {
     }
   }, []);
 
-
   // Send updates to other participants
   const sendUpdate = useCallback(
     (elements, appState, boardType) => {
@@ -121,11 +120,16 @@ export const LivePage = () => {
       }
 
       try {
+        // Get only the most recently added/modified element
         const activeElements = elements.filter((el) => !el.isDeleted);
+        const latestElement = activeElements[activeElements.length - 1];
+
+        if (!latestElement) return true; // No new elements to send
+
         const message = {
           type: 'excalidraw',
           boardType,
-          elements: activeElements,
+          elements: [latestElement], // Send only the latest element
           appState: {
             ...appState,
             viewBackgroundColor: '#ffffff',
@@ -136,7 +140,7 @@ export const LivePage = () => {
           timestamp: Date.now(),
         };
 
-        console.log('🔵 Sending STOMP message:', message); // 메시지 송신 로그
+        console.log('🔵 Sending STOMP message:', message);
 
         stompService.client.publish({
           destination: `/sub/send/${curriculumSubject}`,
@@ -150,7 +154,6 @@ export const LivePage = () => {
     },
     [stompService, isStompReady, curriculumSubject, nickname],
   );
-
 
   // Handle active drawing updates
   const startActiveUpdates = useCallback(() => {
