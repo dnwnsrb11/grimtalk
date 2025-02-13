@@ -6,13 +6,20 @@ import { useNavigate } from 'react-router-dom';
 import { _axios, _axiosAuth } from '@/api/instance';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { QuestionContentCard } from '@/components/lecture/question/QustionContentCard';
+import { useAuthStore } from '@/store/useAuthStore';
 
-export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor }) => {
+export const QuestionLectureDetail = ({
+  setIsActive,
+  questionId,
+  checkInstructor,
+  lectureInstructorInfoId,
+}) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [answer, setAnswer] = useState('');
   const [answerId, setAnserId] = useState(null);
   const [visibleCount, setVisibleCount] = useState(4);
+  const { id, email, nickname } = useAuthStore((state) => state.userData);
 
   const handleShowMore = () => {
     setVisibleCount((prev) => prev + 4);
@@ -71,6 +78,33 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
       setIsActive(false);
     },
   });
+  // 질문 삭제
+  const deleteBoardMutation = useMutation({
+    mutationFn: async () => {
+      const { data } = await _axiosAuth.delete(`/board/${board?.boardId}`);
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success('질문을 삭제했습니다.');
+      setIsActive(false);
+    },
+    onError: (err) => {
+      toast.error(err);
+    },
+  });
+
+  // 질문 삭제 버튼
+  const deleteBoardCheckMutation = () => {
+    const isConfirmed = window.confirm('정말 삭제하시겠습니까?');
+    if (isConfirmed) {
+      deleteBoardMutation.mutate(null, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(['board', questionId]); // ✅ 데이터 다시 불러오기
+          toast.success('삭제가 완료되었습니다!');
+        },
+      });
+    }
+  };
 
   const changeActive = () => {
     setIsActive(false);
@@ -188,6 +222,14 @@ export const QuestionLectureDetail = ({ setIsActive, questionId, checkInstructor
             <p className="text-[18px] font-semibold text-white">답변완료</p>
           </button>
         )}
+        {lectureInstructorInfoId === id ? (
+          <button
+            className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]"
+            onClick={() => deleteBoardCheckMutation()}
+          >
+            <p className="text-[18px] font-semibold text-white">삭제하기</p>
+          </button>
+        ) : null}
       </div>
     </>
   );

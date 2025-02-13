@@ -69,6 +69,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
         setIsActive={setIsActive}
         questionId={questionId}
         checkInstructor={checkInstructor}
+        lectureInstructorInfoId={lecture?.instructorInfo?.id}
       />
     );
   } else if (isActive === '질문 작성페이지') {
