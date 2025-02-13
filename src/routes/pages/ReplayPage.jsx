@@ -354,9 +354,9 @@ export const ReplayPage = () => {
     <div>
       <div className="relative h-screen w-full">
         {/* 관리 구역(시간) */}
-        <div className="absolute bottom-5 left-1/2 z-30 flex min-w-[350px] -translate-x-1/2 flex-col gap-2">
+        <div className="absolute bottom-5 left-1/2 z-30 flex w-full min-w-[400px] max-w-[1000px] -translate-x-1/2 flex-col gap-2">
+          {/* 현재 색상값 */}
           <div className="flex flex-col items-center">
-            {/* 현재 색상값 */}
             <div
               className="flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border px-[15px] py-[10px]"
               onClick={() => updateColor(nowColor)}
@@ -398,7 +398,36 @@ export const ReplayPage = () => {
             </div>
             {/* 재생구역 */}
           </div>
-          <div className="flex flex-col items-center justify-center rounded-3xl border bg-[#ECECF4] p-1">
+          <div className="flex items-center justify-center rounded-3xl border bg-[#ECECF4]">
+            <div className="flex items-center gap-6 p-1">
+              <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
+                <NextPlayIcon />
+              </button>
+              <button
+                className="rounded-full bg-primary-color px-4 py-4 text-white disabled:bg-gray-300"
+                onClick={handlePlayPauseClick}
+              >
+                <div className="relative h-5 w-5">
+                  <div
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
+                    <StopIcon width={22} height={22} />
+                  </div>
+                  <div
+                    className={`absolute left-0 top-0 transition-all duration-300 ${
+                      isPlaying ? 'opacity-0' : 'opacity-100'
+                    }`}
+                  >
+                    <PlayingIcon />
+                  </div>
+                </div>
+              </button>
+              <button onClick={() => moveToTime(currentTime + 5)} className="rounded">
+                <NextPlayIcon />
+              </button>
+            </div>
             {/* 타임바 */}
             <div className="w-full px-4">
               <div className="mt-2 flex justify-between text-sm text-gray-500">
@@ -441,36 +470,6 @@ export const ReplayPage = () => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-6 p-5">
-              <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
-                <NextPlayIcon />
-              </button>
-              <button
-                className="rounded-full bg-primary-color px-4 py-4 text-white disabled:bg-gray-300"
-                onClick={handlePlayPauseClick}
-              >
-                <div className="relative h-5 w-5">
-                  <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${
-                      isPlaying ? 'opacity-100' : 'opacity-0'
-                    }`}
-                  >
-                    <StopIcon width={22} height={22} />
-                  </div>
-                  <div
-                    className={`absolute left-0 top-0 transition-all duration-300 ${
-                      isPlaying ? 'opacity-0' : 'opacity-100'
-                    }`}
-                  >
-                    <PlayingIcon />
-                  </div>
-                </div>
-              </button>
-              <button onClick={() => moveToTime(currentTime + 5)} className="rounded">
-                <NextPlayIcon />
-              </button>
-            </div>
-            {/* 아래가 투명도 그래프 */}
           </div>
         </div>
         {/* 이미지 추출 기능 */}
