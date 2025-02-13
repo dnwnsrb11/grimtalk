@@ -49,7 +49,7 @@ const base64ToBlob = (base64Data, mimeType) => {
   return new Blob(byteArrays, { type: mimeType });
 };
 
-export const AiCompare = () => {
+export const AiComparePage = () => {
   // React Router의 location 훅을 사용해 이전 페이지에서 전달된 이미지 데이터 추출
   const location = useLocation();
   const imageData = location.state?.ImageData;
@@ -133,35 +133,61 @@ export const AiCompare = () => {
   }
 
   return (
-    <div>
-      {/* 학생 이미지 표시 */}
-      <div>
-        <h1>내꺼</h1>
-        <div>{imageData && <img src={imageData} alt="myDrawing" />}</div>
-      </div>
-
-      {/* 강사 이미지 표시 */}
-      <div>
-        <h1>강사</h1>
-        <div>
-          {InstructorBlob && <img src={URL.createObjectURL(InstructorBlob)} alt="instructorImg" />}
+    <>
+      <div className="mt-[60px] flex flex-col">
+        {/* 헤더 부분 */}
+        <div className="rounded-2xl border p-6">
+          <h1 className="text-[36px] font-bold">그림 유사도를 확인해보세요!</h1>
+          <p className="text-text-gray-color">
+            수업 종료 후 저장된 이미지를 업로드하시면 여러분의 그림 진척도를 AI가 분석해드립니다.
+          </p>
         </div>
-      </div>
 
-      {/* 분석 시작 버튼 */}
-      <button
-        onClick={handleAnalysis}
-        // 이미지 준비 여부와 현재 분석 진행 상태에 따라 버튼 비활성화
-        disabled={!imageData || !InstructorBlob || addAIanalysisMutation.isPending}
-      >
-        {/* 분석 진행 중일 때는 로딩 컴포넌트 표시 */}
-        {addAIanalysisMutation.isPending ? <LoadingComponents /> : '분석 시작'}
-      </button>
-      {analysisResult && (
-        <div>
-          <h1 className="text-[40px]">{analysisResult.accuracy}</h1>
+        {/* 이미지 섹션 */}
+        <div className="my-[60px] flex gap-4">
+          <div className="flex-1 text-center">
+            <h1 className="text-[24px] font-bold text-[#343434]">수강생</h1>
+            <div className="mt-[10px] flex h-full items-center justify-center rounded-2xl border p-4">
+              <div>{imageData && <img src={imageData} alt="myDrawing" />}</div>
+            </div>
+          </div>
+
+          <div className="flex-1 text-center">
+            <h1 className="text-[24px] font-bold text-[#343434]">강사</h1>
+            <div className="mt-[10px] flex h-full items-center justify-center rounded-2xl border p-4">
+              {InstructorBlob && (
+                <img src={URL.createObjectURL(InstructorBlob)} alt="instructorImg" />
+              )}
+            </div>
+          </div>
         </div>
-      )}
-    </div>
+
+        {/* 버튼과 결과 섹션 */}
+        <div className="mt-[20px] flex justify-between rounded-2xl border bg-bg-gray-color p-6">
+          <div>
+            <p>
+              그려주신 그림을 강사그림과 비교하여 유사도를 통하여 그림 실력을 확인해보실수 있습니다.
+            </p>
+            <p className="text-[14px] font-normal text-text-gray-color">
+              분석 시작 버튼을 클릭하면 분석이 시작됩니다.
+            </p>
+          </div>
+          <div className="">
+            <button
+              className="w-40 rounded-lg bg-primary-color px-6 py-3 text-white transition-colors duration-300 hover:bg-[#FF451C] disabled:bg-gray-300"
+              onClick={handleAnalysis}
+              disabled={!imageData || !InstructorBlob || addAIanalysisMutation.isPending}
+            >
+              분석 시작
+            </button>
+          </div>
+        </div>
+        {analysisResult && (
+          <div>
+            <h1 className="text-[40px]">{analysisResult.accuracy}</h1>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
