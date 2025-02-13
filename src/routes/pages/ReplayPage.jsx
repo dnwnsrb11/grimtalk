@@ -557,12 +557,12 @@ export const ReplayPage = () => {
           ref={animationContainerRef}
           className="absolute right-5 top-1/2 z-50 flex w-[200px] -translate-y-1/2 flex-col gap-2"
         >
-          {workList.slice(0, 6).map((data, index) => (
+          {workList.slice(0, 12).map((data, index) => (
             <div
               key={data.element.id || index}
               className="cursor-pointer transition-opacity duration-300"
               style={{
-                opacity: index === 0 || index === 5 ? 0 : 1,
+                opacity: index === 0 || index === 11 ? 0 : 1,
               }}
               onClick={() => moveToTime(data.time / 10)}
             >
