@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { RootLayout } from '@/layouts/RootLayout';
+import { AiCompare } from '@/routes/pages/AiCompare';
 import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
 import { AlarmPage } from '@/routes/pages/AlarmPage';
 import { CreateLiveTestPage } from '@/routes/pages/CreateLiveTestPage';
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
       {
         path: '/notfound',
         element: <NotFoundPage />,
+      },
+      {
+        path: '/aicompare',
+        element: <AiCompare />,
       },
     ],
   },
