@@ -398,13 +398,13 @@ export const ReplayPage = () => {
             </div>
             {/* 재생구역 */}
           </div>
-          <div className="flex items-center justify-center rounded-3xl border bg-[#ECECF4]">
-            <div className="flex items-center gap-6 p-1">
+          <div className="flex items-center justify-center rounded-2xl bg-[#ECECF4] p-2">
+            <div className="flex items-center gap-6 rounded-2xl border bg-[#E7E7EF] p-2">
               <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
                 <NextPlayIcon />
               </button>
               <button
-                className="rounded-full bg-primary-color px-4 py-4 text-white disabled:bg-gray-300"
+                className="rounded-full text-white disabled:bg-gray-300"
                 onClick={handlePlayPauseClick}
               >
                 <div className="relative h-5 w-5">
@@ -413,14 +413,14 @@ export const ReplayPage = () => {
                       isPlaying ? 'opacity-100' : 'opacity-0'
                     }`}
                   >
-                    <StopIcon width={22} height={22} />
+                    <StopIcon width={20} height={20} />
                   </div>
                   <div
                     className={`absolute left-0 top-0 transition-all duration-300 ${
                       isPlaying ? 'opacity-0' : 'opacity-100'
                     }`}
                   >
-                    <PlayingIcon />
+                    <PlayingIcon width={20} height={20} />
                   </div>
                 </div>
               </button>
@@ -429,9 +429,24 @@ export const ReplayPage = () => {
               </button>
             </div>
             {/* 타임바 */}
-            <div className="w-full px-4">
-              <div className="mt-2 flex justify-between text-sm text-gray-500">
-                <div className="w-[100%]">
+            <div className="relative h-full w-full px-4">
+              <div className="flex h-full items-center justify-center text-sm text-gray-500">
+                <div className="flex h-full w-[100%] items-stretch">
+                  <div className="absolute right-8 top-1/2 z-10 -translate-y-1/2">
+                    <p
+                      className={`${Math.min((currentTime / maxTime) * 100, 100) >= 98 ? 'text-white' : 'text-[#2E3032]'}`}
+                    >
+                      {maxTime.toFixed(0)}
+                    </p>
+                  </div>
+                  {/* 종료 시간  -  퍼센트에 따라 텍스트 색상 변경*/}
+                  <div className="absolute left-8 top-1/2 z-10 -translate-y-1/2">
+                    <p
+                      className={`${Math.min((currentTime / maxTime) * 100, 100) >= 2 ? 'text-white' : 'text-[#2E3032]'}`}
+                    >
+                      {(timeRef.current / 10).toFixed(0)}
+                    </p>
+                  </div>
                   <input
                     type="range"
                     value={currentTime}
@@ -439,28 +454,40 @@ export const ReplayPage = () => {
                     max={maxTime}
                     step={0.1}
                     className="
-                      [&::-webkit-slider-thumb]:scale-120 h-2
+                      [&::-webkit-slider-thumb]:scale-120
+                      relative
+                      m-0
+                      h-10
                       w-full
                       cursor-pointer
                       appearance-none
-                      rounded-full
-                      [&::-webkit-slider-runnable-track]:rounded-full
+                      rounded-xl
+                      p-0
+                      after:absolute
+                      after:left-0
+                      after:top-[50%]
+                      after:h-2
+                      after:w-[var(--range-progress)]
+                      after:-translate-y-1/2
+                      after:rounded-xl
+                      after:bg-primary-color
+                      [&::-webkit-slider-runnable-track]:h-full
+                      [&::-webkit-slider-runnable-track]:rounded-xl
                       [&::-webkit-slider-runnable-track]:bg-gradient-to-r
                       [&::-webkit-slider-runnable-track]:from-primary-color
                       [&::-webkit-slider-runnable-track]:from-[length:var(--range-progress)]
                       [&::-webkit-slider-runnable-track]:to-white
                       [&::-webkit-slider-runnable-track]:to-[length:var(--range-progress)]
-                      [&::-webkit-slider-thumb]:h-4
                       [&::-webkit-slider-thumb]:w-4
                       [&::-webkit-slider-thumb]:appearance-none
-                      [&::-webkit-slider-thumb]:rounded-full
+                      [&::-webkit-slider-thumb]:rounded-xl
                       [&::-webkit-slider-thumb]:bg-primary-color
                       [&::-webkit-slider-thumb]:transition-all
                       [&::-webkit-slider-thumb]:hover:scale-150
                       [&::-webkit-slider-thumb]:hover:shadow-lg
                     "
                     style={{
-                      '--range-progress': `${Math.min((currentTime / maxTime) * 100 + 1, 100)}%`,
+                      '--range-progress': `${Math.min((currentTime / maxTime) * 100, 100)}%`,
                     }}
                     onChange={(e) => {
                       const newTime = parseFloat(e.target.value);
