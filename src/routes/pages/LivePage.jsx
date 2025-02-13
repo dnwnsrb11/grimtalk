@@ -19,9 +19,9 @@ import { participantUtils, TOKEN_TYPES } from '@/utils/participantUtils';
 const LIVEKIT_URL = 'wss://www.grimtalk.com:7443/';
 const STOMP_URL = 'wss://www.grimtalk.com:28080/ws';
 
-// Constants for update timing
-const ACTIVE_DRAWING_INTERVAL = 200; // Send updates every 100ms during active drawing
-const COMPLETED_ACTION_DELAY = 500; // Wait 500ms after drawing stops before sending final update
+// 드로잉 업데이트 관련 상수
+const BATCH_INTERVAL = 500; // 배치 전송 간격 (ms)
+const DRAW_END_DELAY = 1000; // 드로잉 종료 감지 시간 (ms)
 
 export const LivePage = () => {
   const navigate = useNavigate();
@@ -48,11 +48,12 @@ export const LivePage = () => {
   const participantAPIRef = useRef(null);
 
   // Drawing state management
-  const isDrawingRef = useRef(false);
-  const lastUpdateTimeRef = useRef(0);
-  const pendingUpdatesRef = useRef(null);
-  const activeIntervalRef = useRef(null);
-  const completedTimeoutRef = useRef(null);
+  const elementBufferRef = useRef(new Map()); // 변경된 요소들을 저장할 버퍼
+  const batchTimeoutRef = useRef(null); // 배치 전송 타이머
+  const drawEndTimeoutRef = useRef(null); // 드로잉 종료 감지 타이머
+  const isDrawingRef = useRef(false); // 현재 드로잉 중인지 여부
+  const activeIntervalRef = useRef(null); // 활성 업데이트 인터벌
+  const completedTimeoutRef = useRef(null); // 완료 타이머
   const connectionAttempts = useRef(0);
   const maxRetries = 3;
   const retryDelay = 2000;
@@ -79,35 +80,40 @@ export const LivePage = () => {
     }
   }, [liveKitService]);
 
+  /**
+   * STOMP 메시지 수신 핸들러
+   * 수신된 드로잉 데이터를 화이트보드에 반영
+   */
   const handleStompMessage = useCallback((message) => {
     try {
-      console.log('🟢 Received STOMP message:', message.body);
-
+      console.log('📥 Received STOMP message:', message.body);
       const receivedData = JSON.parse(message.body);
-      const excalidrawData = receivedData.message || receivedData;
 
-      console.log('📩 Parsed STOMP message:', excalidrawData);
+      if (receivedData.type === 'excalidraw') {
+        const newElements = receivedData.elements;
+        console.log('🎨 Received elements:', newElements);
 
-      if (excalidrawData.type === 'excalidraw' && excalidrawData.boardType === 'roomCreator') {
-        // 새로운 요소 추출
-        const newElement = excalidrawData.elements[0];
+        if (!Array.isArray(newElements) || newElements.length === 0) {
+          console.warn('❌ Invalid elements format or empty:', newElements);
+          return;
+        }
 
-        if (!newElement) return;
-
-        // 기존 요소들과 새로운 요소를 합치기
         setRoomCreatorElements((prevElements) => {
-          // 같은 ID를 가진 요소가 있는지 확인
-          const elementIndex = prevElements.findIndex((el) => el.id === newElement.id);
+          console.log('🔄 Previous elements:', prevElements);
+          const updatedElements = [...prevElements];
 
-          if (elementIndex !== -1) {
-            // 기존 요소 업데이트
-            const updatedElements = [...prevElements];
-            updatedElements[elementIndex] = newElement;
-            return updatedElements;
-          } else {
-            // 새로운 요소 추가
-            return [...prevElements, newElement];
-          }
+          // 배치로 받은 각 요소들을 처리
+          newElements.forEach((newElement) => {
+            const elementIndex = updatedElements.findIndex((el) => el.id === newElement.id);
+            if (elementIndex !== -1) {
+              updatedElements[elementIndex] = newElement;
+            } else {
+              updatedElements.push(newElement);
+            }
+          });
+
+          console.log('✅ Updated elements:', updatedElements);
+          return updatedElements;
         });
 
         // 화면 업데이트
@@ -117,11 +123,7 @@ export const LivePage = () => {
             elements: roomCreatorElements,
             appState: {
               ...prevScene.appState,
-              viewBackgroundColor: '#ffffff',
-              currentItemStrokeColor: '#000000',
-              currentItemBackgroundColor: '#ffffff',
               viewModeEnabled: true,
-              theme: 'light',
             },
           }));
         }
@@ -131,36 +133,27 @@ export const LivePage = () => {
     }
   }, []);
 
-  // Send updates to other participants
+  /**
+   * 드로잉 요소들을 서버로 전송하는 함수
+   * @param {Array} elements - 전송할 드로잉 요소들
+   * @returns {boolean} 전송 성공 여부
+   */
   const sendUpdate = useCallback(
-    (elements, appState, boardType) => {
+    (elements) => {
       if (!stompService?.client?.active || !isStompReady || !participantUtils.isCreator(nickname)) {
-        console.log('STOMP not ready, buffering update');
+        console.log('STOMP not ready or not authorized');
         return false;
       }
 
       try {
-        // Get only the most recently added/modified element
-        const activeElements = elements.filter((el) => !el.isDeleted);
-        const latestElement = activeElements[activeElements.length - 1];
-
-        if (!latestElement) return true; // No new elements to send
-
         const message = {
           type: 'excalidraw',
-          boardType,
-          elements: [latestElement], // Send only the latest element
-          appState: {
-            ...appState,
-            viewBackgroundColor: '#ffffff',
-            currentItemStrokeColor: '#000000',
-            currentItemBackgroundColor: '#ffffff',
-          },
+          elements: elements,
           sender: nickname,
           timestamp: Date.now(),
         };
 
-        console.log('🔵 Sending STOMP message:', message);
+        console.log('🔵 Sending batch update:', message);
 
         stompService.client.publish({
           destination: `/sub/send/${curriculumSubject}`,
@@ -175,84 +168,72 @@ export const LivePage = () => {
     [stompService, isStompReady, curriculumSubject, nickname],
   );
 
-  // Handle active drawing updates
-  const startActiveUpdates = useCallback(() => {
-    if (!activeIntervalRef.current) {
-      activeIntervalRef.current = setInterval(() => {
-        if (
-          pendingUpdatesRef.current &&
-          Date.now() - lastUpdateTimeRef.current >= ACTIVE_DRAWING_INTERVAL
-        ) {
-          const success = sendUpdate(
-            pendingUpdatesRef.current.elements,
-            pendingUpdatesRef.current.appState,
-            pendingUpdatesRef.current.boardType,
-          );
+  /**
+   * 배치 전송을 실행하는 함수
+   * 버퍼에 있는 모든 요소를 전송하고 버퍼를 비움
+   */
+  const executeBatchUpdate = useCallback(() => {
+    if (elementBufferRef.current.size > 0) {
+      const elements = Array.from(elementBufferRef.current.values());
+      const success = sendUpdate(elements);
 
-          if (success) {
-            lastUpdateTimeRef.current = Date.now();
-            pendingUpdatesRef.current = null;
-          }
-        }
-      }, ACTIVE_DRAWING_INTERVAL);
+      if (success) {
+        elementBufferRef.current.clear();
+      }
     }
   }, [sendUpdate]);
 
-  // Stop active updates
-  const stopActiveUpdates = useCallback(() => {
-    if (activeIntervalRef.current) {
-      clearInterval(activeIntervalRef.current);
-      activeIntervalRef.current = null;
-    }
-  }, []);
-
-  // Handle changes in drawing
+  /**
+   * 드로잉 변경을 처리하는 함수
+   * @param {Array} elements - 변경된 Excalidraw 요소들
+   */
   const handleDrawingChange = useCallback(
-    (elements, appState, boardType) => {
-      pendingUpdatesRef.current = { elements, appState, boardType };
+    (elements) => {
+      console.log('✏️ Drawing changed:', elements);
+      const activeElements = elements.filter((el) => !el.isDeleted);
+      const latestElement = activeElements[activeElements.length - 1];
 
+      if (!latestElement) return;
+
+      // 새로운 요소를 버퍼에 저장 (id를 키로 사용하여 중복 방지)
+      elementBufferRef.current.set(latestElement.id, latestElement);
+
+      // 이전 타이머들 초기화
+      if (batchTimeoutRef.current) {
+        clearTimeout(batchTimeoutRef.current);
+      }
+      if (drawEndTimeoutRef.current) {
+        clearTimeout(drawEndTimeoutRef.current);
+      }
+
+      // 드로잉 시작 상태 갱신
       if (!isDrawingRef.current) {
         isDrawingRef.current = true;
-        startActiveUpdates();
       }
 
-      if (completedTimeoutRef.current) {
-        clearTimeout(completedTimeoutRef.current);
-      }
+      // 배치 업데이트 예약
+      batchTimeoutRef.current = setTimeout(() => {
+        executeBatchUpdate();
+      }, BATCH_INTERVAL);
 
-      completedTimeoutRef.current = setTimeout(() => {
-        if (pendingUpdatesRef.current) {
-          const updateSuccess = sendUpdate(
-            pendingUpdatesRef.current.elements,
-            pendingUpdatesRef.current.appState,
-            pendingUpdatesRef.current.boardType,
-          );
-
-          if (!updateSuccess && connectionAttempts.current < maxRetries) {
-            setTimeout(() => {
-              if (pendingUpdatesRef.current) {
-                sendUpdate(
-                  pendingUpdatesRef.current.elements,
-                  pendingUpdatesRef.current.appState,
-                  pendingUpdatesRef.current.boardType,
-                );
-              }
-            }, retryDelay);
-          }
-
-          pendingUpdatesRef.current = null;
-        }
+      // 드로잉 종료 감지 타이머 설정
+      drawEndTimeoutRef.current = setTimeout(() => {
         isDrawingRef.current = false;
-        stopActiveUpdates();
-      }, COMPLETED_ACTION_DELAY);
+        executeBatchUpdate(); // 드로잉 종료 시 마지막 업데이트 실행
+      }, DRAW_END_DELAY);
     },
-    [startActiveUpdates, stopActiveUpdates, sendUpdate],
+    [executeBatchUpdate],
   );
 
   // STOMP 연결 및 구독 설정
   useEffect(() => {
     if (stompService && curriculumSubject) {
       const connectStomp = () => {
+        // 기존 연결 정리
+        if (stompService.client?.active) {
+          stompService.client.deactivate();
+        }
+
         stompService.client = new Client({
           brokerURL: STOMP_URL,
           reconnectDelay: retryDelay,
@@ -341,7 +322,7 @@ export const LivePage = () => {
     return { rtcToken, chatToken };
   };
 
-  // 방 연결 함수
+  // 방 연결 함수 (연결관련)
   const connectToRoom = async () => {
     try {
       const isCreator = participantUtils.isCreator(nickname);
@@ -368,6 +349,15 @@ export const LivePage = () => {
 
   // Cleanup function
   const cleanup = useCallback(() => {
+    if (batchTimeoutRef.current) {
+      clearTimeout(batchTimeoutRef.current);
+    }
+    if (drawEndTimeoutRef.current) {
+      clearTimeout(drawEndTimeoutRef.current);
+    }
+    if (elementBufferRef.current) {
+      elementBufferRef.current.clear();
+    }
     if (activeIntervalRef.current) {
       clearInterval(activeIntervalRef.current);
     }
@@ -448,9 +438,9 @@ export const LivePage = () => {
         <div className="excalidraw-wrapper">
           <h3>내 화이트보드</h3>
           <Excalidraw
-            onChange={(elements, appState) => {
+            onChange={(elements) => {
               setRoomCreatorElements(elements);
-              handleDrawingChange(elements, appState, 'roomCreator');
+              handleDrawingChange(elements);
             }}
             excalidrawAPI={(api) => {
               roomCreatorAPIRef.current = api;

@@ -1,4 +1,3 @@
-// 라이브 테스트 페이지(삭제 예정)
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -80,7 +79,10 @@ export const CreateLiveTestPage = () => {
       }
 
       const creatorName =
-        typeof creator === 'string' ? participantUtils.removeTokenPrefix(creator) : creator;
+        typeof creator === 'object'
+          ? creator.instructorName || '알 수 없음'
+          : participantUtils.removeTokenPrefix(creator);
+
       localStorage.setItem('roomCreator', creatorName);
       liveStore.setRoomCreator(creatorName);
       navigate(`/live/${selectedRoom}`, {
@@ -102,8 +104,11 @@ export const CreateLiveTestPage = () => {
     }
 
     return Object.entries(availableRooms).map(([room, creator]) => {
+      // creator가 객체인 경우 적절한 값을 추출
       const creatorName =
-        typeof creator === 'string' ? participantUtils.removeTokenPrefix(creator) : creator;
+        typeof creator === 'object'
+          ? creator.instructorName || '알 수 없음' // 객체에서 instructorName을 사용
+          : participantUtils.removeTokenPrefix(creator);
 
       return (
         <div key={room} className="live-card">
@@ -111,7 +116,7 @@ export const CreateLiveTestPage = () => {
             <div className="live-info">
               <span className="live-badge">LIVE</span>
               <h3>{room}</h3>
-              <p>방장: {creatorName || '알 수 없음'}</p>
+              <p>방장: {creatorName}</p>
             </div>
             <button
               type="button"
