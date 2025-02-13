@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
+import { DrawingIcon } from '@/components/common/icons';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 
 // 이미지 URL을 Blob으로 변환하는 유틸리티 함수
@@ -245,6 +246,9 @@ export const AiComparePage = () => {
               <span className="font-light text-text-gray-color">유사도:</span>{' '}
               <CountUpAnimation targetNumber={Number(analysisResult.accuracy)} />%
             </h1>
+            <div>
+              <DrawingIcon />
+            </div>
           </div>
         )}
       </div>
