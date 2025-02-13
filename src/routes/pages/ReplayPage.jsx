@@ -63,7 +63,7 @@ export const ReplayPage = () => {
   const animationContainerRef = useRef(null);
 
   // 현재 색상값
-  const [nowColor, setNowColor] = useState('현재 색상이 없습니다.');
+  const [nowColor, setNowColor] = useState('None');
   const changeNowColor = (color) => {
     if (nowColor !== color) {
       setNowColor(color);
@@ -358,7 +358,7 @@ export const ReplayPage = () => {
       <div className="relative h-screen w-full">
         {/* 관리 구역(시간) */}
         <div className="absolute bottom-5 left-1/2 z-30 flex w-full min-w-[400px] max-w-[1000px] -translate-x-1/2 flex-col gap-2">
-          <div className="flex items-center justify-center rounded-2xl bg-[#ECECF4] p-2">
+          <div className="flex items-center justify-center gap-4 rounded-2xl bg-[#ECECF4] p-2">
             <div className="flex items-center gap-6 rounded-2xl border bg-[#E7E7EF] p-2">
               <button onClick={() => moveToTime(currentTime - 5)} className="rotate-180 rounded">
                 <NextPlayIcon />
@@ -389,7 +389,7 @@ export const ReplayPage = () => {
               </button>
             </div>
             {/* 타임바 */}
-            <div className="relative h-full w-[60%] px-2">
+            <div className="relative h-full w-[60%]">
               <div className="flex h-full items-center justify-center text-sm text-gray-500">
                 <div className="flex h-full w-[100%] items-stretch">
                   <div className="absolute right-8 top-1/2 z-10 -translate-y-1/2">
@@ -458,9 +458,9 @@ export const ReplayPage = () => {
               </div>
             </div>
             {/* 현재 색상값 */}
-            <div className="flex w-[30%] items-center">
-              <div className="relative flex w-[100%] items-center justify-center px-4">
-                <div className="absolute -top-14 z-10 rounded-xl border px-[20px] py-[5px]">
+            <div className="flex w-[30%] items-center gap-2">
+              <div className="group relative flex w-[100%] items-center justify-center">
+                <div className="absolute -top-0 z-0 rounded-xl border border-gray-border-color px-[20px] py-[5px] opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:-top-14">
                   <p className="text-text-gray-color">{rangeProgress}</p>
                 </div>
                 <input
@@ -487,11 +487,11 @@ export const ReplayPage = () => {
                       after:w-[var(--range-progress)]
                       after:-translate-y-1/2
                       after:rounded-xl
-                      after:bg-primary-color
+                      after:bg-[#D1D1DF]
                       [&::-webkit-slider-runnable-track]:h-full
                       [&::-webkit-slider-runnable-track]:rounded-xl
                       [&::-webkit-slider-runnable-track]:bg-gradient-to-r
-                      [&::-webkit-slider-runnable-track]:from-primary-color
+                      [&::-webkit-slider-runnable-track]:from-[#D1D1DF]
                       [&::-webkit-slider-runnable-track]:from-[length:var(--range-progress)]
                       [&::-webkit-slider-runnable-track]:to-white
                       [&::-webkit-slider-runnable-track]:to-[length:var(--range-progress)]
