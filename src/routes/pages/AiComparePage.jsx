@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
@@ -53,6 +53,7 @@ export const AiComparePage = () => {
   // React Router의 location 훅을 사용해 이전 페이지에서 전달된 이미지 데이터 추출
   const location = useLocation();
   const imageData = location.state?.ImageData;
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // React Query를 사용하여 강사 이미지 불러오기
   // 쿼리 키: ['InstructorImg']로 캐싱 및 식별
@@ -103,16 +104,20 @@ export const AiComparePage = () => {
           headers: { 'Content-Type': 'multipart/form-data' },
         },
       );
+      // 일부로 로딩시간 2초로 awati 걸어서 잠시 멈처줌
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       return response.data.data;
     },
     // 성공 시 분석 결과 로깅
     onSuccess: (data) => {
       console.log('분석 완료:', data);
       setAnalysisResult(data);
+      setIsAnalyzing(false);
     },
     // 실패 시 오류 로깅
     onError: (error) => {
       console.error('분석 실패:', error);
+      setIsAnalyzing(false);
     },
   });
 
@@ -123,8 +128,40 @@ export const AiComparePage = () => {
       console.error('이미지가 모두 준비되지 않았습니다.');
       return;
     }
+    setIsAnalyzing(true);
     // AI 분석 뮤테이션 실행
     addAIanalysisMutation.mutate();
+  };
+
+  // 카운터 애니메이션 컴포넌트
+  const CountUpAnimation = ({ targetNumber }) => {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+      // 애니메이션 시간 (2초)
+      const duration = 2000;
+      // 업데이트 간격 (60fps에 맞춰서)
+      const interval = 1000 / 60;
+      // 총 스텝 수
+      const steps = duration / interval;
+      // 각 스텝당 증가량
+      const increment = targetNumber / steps;
+
+      let currentNumber = 0;
+      const timer = setInterval(() => {
+        currentNumber += increment;
+        if (currentNumber >= targetNumber) {
+          setCount(targetNumber);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(currentNumber));
+        }
+      }, interval);
+
+      return () => clearInterval(timer);
+    }, [targetNumber]);
+
+    return <>{count}</>;
   };
 
   // 이미지 로딩 중 로딩 컴포넌트 표시
@@ -137,7 +174,9 @@ export const AiComparePage = () => {
       <div className="mt-[60px] flex flex-col">
         {/* 헤더 부분 */}
         <div className="rounded-2xl border p-6">
-          <h1 className="text-[36px] font-bold">그림 유사도를 확인해보세요!</h1>
+          <h1 className="text-[36px] font-bold text-text-gray-color">
+            그림 <span className="text-primary-color">유사도</span>를 확인해보세요!
+          </h1>
           <p className="text-text-gray-color">
             수업 종료 후 저장된 이미지를 업로드하시면 여러분의 그림 진척도를 AI가 분석해드립니다.
           </p>
@@ -163,7 +202,7 @@ export const AiComparePage = () => {
         </div>
 
         {/* 버튼과 결과 섹션 */}
-        <div className="mt-[20px] flex justify-between rounded-2xl border bg-bg-gray-color p-6">
+        <div className="mt-[20px] flex justify-between rounded-2xl border bg-bg-gray-color p-6 transition-all duration-200">
           <div>
             <p>
               그려주신 그림을 강사그림과 비교하여 유사도를 통하여 그림 실력을 확인해보실수 있습니다.
@@ -171,23 +210,71 @@ export const AiComparePage = () => {
             <p className="text-[14px] font-normal text-text-gray-color">
               분석 시작 버튼을 클릭하면 분석이 시작됩니다.
             </p>
+            {isAnalyzing && (
+              <p className="mt-2 animate-pulse text-primary-color">
+                AI가 그림을 분석하고 있습니다... 잠시만 기다려주세요.
+              </p>
+            )}
           </div>
           <div className="">
             <button
-              className="w-40 rounded-lg bg-primary-color px-6 py-3 text-white transition-colors duration-300 hover:bg-[#FF451C] disabled:bg-gray-300"
+              className={`w-40 rounded-lg px-6 py-3 text-white transition-colors duration-300 disabled:bg-gray-300
+                ${
+                  isAnalyzing
+                    ? 'animate-gradient relative overflow-hidden bg-gradient-to-r from-primary-color via-[#FF451C] to-primary-color bg-[length:200%_auto]'
+                    : 'bg-primary-color hover:bg-[#FF451C]'
+                }`}
               onClick={handleAnalysis}
-              disabled={!imageData || !InstructorBlob || addAIanalysisMutation.isPending}
+              disabled={!imageData || !InstructorBlob || isAnalyzing}
             >
-              분석 시작
+              {isAnalyzing ? (
+                <div className="flex items-center justify-center gap-2">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                  분석중
+                </div>
+              ) : (
+                '분석 시작'
+              )}
             </button>
           </div>
         </div>
-        {analysisResult && (
-          <div>
-            <h1 className="text-[40px]">{analysisResult.accuracy}</h1>
+        {/* 분석 결과 섹션 */}
+        {analysisResult && !isAnalyzing && (
+          <div className="animate-fade-slide-down mt-[10px] rounded-2xl border p-6">
+            <h1 className="text-[46px] font-bold text-primary-color">
+              <span className="font-light text-text-gray-color">유사도:</span>{' '}
+              <CountUpAnimation targetNumber={Number(analysisResult.accuracy)} />%
+            </h1>
           </div>
         )}
       </div>
+      <style jsx>{`
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          100% {
+            background-position: 100% 50%;
+          }
+        }
+        .animate-gradient {
+          animation: gradient 2s linear infinite;
+        }
+
+        @keyframes fadeSlideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-slide-down {
+          animation: fadeSlideDown 2s ease-out forwards;
+        }
+      `}</style>
     </>
   );
 };
