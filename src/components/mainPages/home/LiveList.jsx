@@ -17,7 +17,7 @@ export const LiveList = ({ LiveRoom }) => {
     return null;
   }
 
-  const { curriculumId, curriculumName, hashtags, image, instructorName } = LiveRoom;
+  const { curriculumId, curriculumName, hashtags, image, instructorName, lectureId } = LiveRoom;
 
   const handleJoinLive = async () => {
     if (!isLogin) {
@@ -66,9 +66,17 @@ export const LiveList = ({ LiveRoom }) => {
 
         {/* 방송 정보 */}
         <div className="mt-3 text-left">
-          <h4 className="line-clamp-1 text-base font-medium text-gray-900">{curriculumName}</h4>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/lecture/${lectureId}`);
+            }}
+            className="active:text-primary-hover-color text-base font-bold text-gray-900 transition-all duration-300 hover:text-primary-color hover:underline"
+          >
+            <h4 className="text-base font-medium">{curriculumName}</h4>
+          </button>
           <div className="mt-1 flex items-center gap-2">
-            <span className="text-base font-bold text-gray-900">{instructorName}</span>
+            {instructorName}
             <div className="flex flex-wrap gap-1.5">
               {hashtags?.map((tag, index) => (
                 <div
