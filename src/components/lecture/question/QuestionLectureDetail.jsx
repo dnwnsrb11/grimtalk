@@ -13,6 +13,7 @@ export const QuestionLectureDetail = ({
   questionId,
   checkInstructor,
   lectureInstructorInfoId,
+  boardCreatedMemberId,
 }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -127,6 +128,9 @@ export const QuestionLectureDetail = ({
           <p className="text-[18px]">{board.content || ''}</p>
         </div>
       </div>
+      <div className="flex w-full justify-end">
+        작성자 :&nbsp;<span className="font-bold"> {boardCreatedMemberId}</span>
+      </div>
       <hr />
       <div className="mt-[20px]">
         <div className="flex items-center gap-3">
@@ -225,7 +229,7 @@ export const QuestionLectureDetail = ({
             className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]"
             onClick={() => deleteBoardCheckMutation()}
           >
-            <p className="text-[18px] font-semibold text-white">삭제하기</p>
+            <p className="text-[18px] font-semibold text-white">질문 삭제</p>
           </button>
         ) : null}
       </div>
