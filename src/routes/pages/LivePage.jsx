@@ -17,7 +17,7 @@ import { useLiveStore } from '@/store/useLiveStore';
 import { participantUtils, TOKEN_TYPES } from '@/utils/participantUtils';
 
 const LIVEKIT_URL = 'wss://www.grimtalk.com:7443/';
-const STOMP_URL = 'ws://localhost:38080/ws';
+const STOMP_URL = 'wss://www.grimtalk.com:28080/ws';
 
 // Constants for update timing
 const ACTIVE_DRAWING_INTERVAL = 200; // Send updates every 100ms during active drawing
@@ -79,31 +79,51 @@ export const LivePage = () => {
     }
   }, [liveKitService]);
 
-  // STOMP 메시지 처리 함수
   const handleStompMessage = useCallback((message) => {
     try {
-      console.log('🟢 Received STOMP message:', message.body); // 원본 메시지 로그
+      console.log('🟢 Received STOMP message:', message.body);
 
       const receivedData = JSON.parse(message.body);
       const excalidrawData = receivedData.message || receivedData;
 
-      console.log('📩 Parsed STOMP message:', excalidrawData); // 파싱된 데이터 로그
+      console.log('📩 Parsed STOMP message:', excalidrawData);
 
       if (excalidrawData.type === 'excalidraw' && excalidrawData.boardType === 'roomCreator') {
-        const activeElements = excalidrawData.elements.filter((el) => !el.isDeleted);
-        setRoomCreatorElements(activeElements);
+        // 새로운 요소 추출
+        const newElement = excalidrawData.elements[0];
 
+        if (!newElement) return;
+
+        // 기존 요소들과 새로운 요소를 합치기
+        setRoomCreatorElements((prevElements) => {
+          // 같은 ID를 가진 요소가 있는지 확인
+          const elementIndex = prevElements.findIndex((el) => el.id === newElement.id);
+
+          if (elementIndex !== -1) {
+            // 기존 요소 업데이트
+            const updatedElements = [...prevElements];
+            updatedElements[elementIndex] = newElement;
+            return updatedElements;
+          } else {
+            // 새로운 요소 추가
+            return [...prevElements, newElement];
+          }
+        });
+
+        // 화면 업데이트
         if (roomCreatorAPIRef.current) {
-          roomCreatorAPIRef.current.updateScene({
-            elements: activeElements,
+          roomCreatorAPIRef.current.updateScene((prevScene) => ({
+            ...prevScene,
+            elements: roomCreatorElements,
             appState: {
+              ...prevScene.appState,
               viewBackgroundColor: '#ffffff',
               currentItemStrokeColor: '#000000',
               currentItemBackgroundColor: '#ffffff',
               viewModeEnabled: true,
               theme: 'light',
             },
-          });
+          }));
         }
       }
     } catch (error) {
