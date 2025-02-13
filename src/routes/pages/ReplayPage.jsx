@@ -526,16 +526,16 @@ export const ReplayPage = () => {
               </div>
               {/* 현재 색상 + 색상 변경 */}
               <div
-                className="group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border border-gray-border-color bg-white px-[15px] py-[10px] transition-colors duration-300 hover:border-white hover:bg-[#E7E7EF]"
+                className="group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border border-gray-border-color bg-white px-[10px] py-[10px] transition-colors duration-300 hover:border-white hover:bg-[#E7E7EF]"
                 onClick={() => updateColor(nowColor)}
               >
                 <div
                   ref={colorBoxRef}
-                  className="h-[30px] w-[30px] rounded-md border border-gray-border-color text-center transition-colors duration-300"
+                  className="h-[30px] w-[10px] rounded-md text-center transition-colors duration-300"
                   style={{ backgroundColor: '#ffffff' }} // 초기값 설정
                 ></div>
                 <p className="text-[14px] font-light text-replay-disable-btn-font-color">
-                  {nowColor}
+                  {nowColor ? nowColor.toString().substring(0, 6) : ''}
                 </p>
                 <div className="absolute -top-0 rounded-xl border px-[15px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
                   <p className="text-text-gray-color">색상 변경</p>
