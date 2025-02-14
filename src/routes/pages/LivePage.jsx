@@ -8,9 +8,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { InstructorLeaveLive, joinLive, leaveLive, liveApi } from '@/api/live';
 import { LeftArrowIcon } from '@/components/common/icons';
-import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
-import { VideoComponent } from '@/components/live/VideoComponent';
 import { LiveKitService } from '@/services/liveKitService';
 import { StompService } from '@/services/stompService';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -188,40 +186,6 @@ export const LivePage = () => {
   return (
     <div id="room" className="p-6">
       {/* 비디오 레이아웃 */}
-      <div
-        id="layout-container"
-        className="mb-6 rounded-xl border border-gray-border-color bg-white p-4"
-      >
-        {participantUtils.isCreator(nickname) && localTrack && (
-          <VideoComponent track={localTrack} participantIdentity={nickname} local={true} />
-        )}
-        {!participantUtils.isCreator(nickname) && remoteTracks.length > 0 && (
-          <div>
-            {remoteTracks
-              .filter(
-                (track) =>
-                  track.participantIdentity ===
-                  participantUtils.getTokenParticipantName(liveStore.roomCreator, TOKEN_TYPES.RTC),
-              )
-              .map((remoteTrack) =>
-                remoteTrack.trackPublication.kind === 'video' ? (
-                  <VideoComponent
-                    key={remoteTrack.trackPublication.trackSid}
-                    track={remoteTrack.trackPublication.videoTrack}
-                    participantIdentity={participantUtils.removeTokenPrefix(
-                      remoteTrack.participantIdentity,
-                    )}
-                  />
-                ) : (
-                  <AudioComponent
-                    key={remoteTrack.trackPublication.trackSid}
-                    track={remoteTrack.trackPublication.audioTrack}
-                  />
-                ),
-              )}
-          </div>
-        )}
-      </div>
 
       {/* 채팅 컴포넌트 */}
       <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
@@ -231,6 +195,23 @@ export const LivePage = () => {
           isVisible={isChatVisible}
           setIsVisible={setIsChatVisible}
           curriculumSubject={curriculumSubject}
+          track={
+            participantUtils.isCreator(nickname)
+              ? localTrack
+              : remoteTracks.find(
+                  (track) =>
+                    track.trackPublication?.kind === 'video' &&
+                    track.participantIdentity ===
+                      participantUtils.getTokenParticipantName(
+                        liveStore.roomCreator,
+                        TOKEN_TYPES.RTC,
+                      ),
+                )?.trackPublication?.videoTrack
+          }
+          participantIdentity={
+            participantUtils.isCreator(nickname) ? nickname : liveStore.roomCreator || ''
+          }
+          local={participantUtils.isCreator(nickname)}
         />
       </LiveKitRoom>
 

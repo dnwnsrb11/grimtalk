@@ -5,6 +5,7 @@ import { Chat } from '@livekit/components-react';
 import { useEffect } from 'react';
 
 import { RightArrowIcon } from '@/components/common/icons';
+import { VideoComponent } from '@/components/live/VideoComponent';
 
 export const CustomChat = ({
   onLeave,
@@ -12,6 +13,9 @@ export const CustomChat = ({
   isVisible,
   setIsVisible,
   curriculumSubject,
+  track,
+  participantIdentity,
+  local,
   ...props
 }) => {
   const applyMessageStyles = () => {
@@ -128,6 +132,12 @@ export const CustomChat = ({
             {isCreator ? '라이브 종료' : '라이브 퇴장'}
           </button>
         </div>
+        {/* 비디오 컴포넌트 추가 */}
+        {track && (
+          <div className="mb-4">
+            <VideoComponent track={track} participantIdentity={participantIdentity} local={local} />
+          </div>
+        )}
         <Chat {...props} />
       </div>
     </div>
