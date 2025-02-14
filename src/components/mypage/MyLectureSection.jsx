@@ -9,7 +9,7 @@ export const MyLectureSection = () => {
     queryKey: ['myLectures'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/mypage/lecture`);
-      console.log(data);
+
       return data.body.data.list;
     },
   });

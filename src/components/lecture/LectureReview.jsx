@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import { _axios, _axiosAuth } from '@/api/instance';
@@ -9,13 +10,14 @@ import { ReviewLectureCard } from '@/components/lecture/review/ReviewLectureCard
 
 export const LectureReview = ({ lecture, checkInstructor }) => {
   const queryClient = useQueryClient();
+  const MAX_LENGTH = 255;
   const navigate = useNavigate();
+
   // 리뷰 리스트 받아오기
   const {
     data: reviews,
     isLoading,
     isError,
-    error,
   } = useQuery({
     queryKey: ['reviews'],
     queryFn: async () => {
@@ -26,8 +28,11 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
       navigate('/notfound');
     },
   });
+
   const [score, setScore] = useState(0);
-  //  1에서 다시 클릭하면 값이 0으로 변경되게
+  const [reviewText, setReviewText] = useState('');
+
+  // ⭐ 1에서 다시 클릭하면 값이 0으로 변경되게 설정
   const checkScore = (index, score) => {
     if (index === score - 1) {
       setScore(0);
@@ -36,39 +41,47 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
     }
   };
 
-  const [reviewText, setReviewText] = useState('');
-  // 강의 작성 로직
-  const addReviewMutaion = useMutation({
+  // ✅ 입력 제한 체크 (toast 추가)
+  const handleReviewChange = (e) => {
+    if (e.target.value.length > MAX_LENGTH) {
+      toast.error(`최대 ${MAX_LENGTH}자까지만 입력할 수 있습니다.`);
+      return;
+    }
+    setReviewText(e.target.value);
+  };
+
+  // 강의 리뷰 작성 로직
+  const addReviewMutation = useMutation({
     mutationFn: async () => {
       const { data } = await _axiosAuth.post('/review', {
         lectureId: lecture.lectureId,
         content: reviewText,
         star: score,
       });
-      if (data.body?.code) {
-        if (data.body?.code && data.body.code !== 200) {
-          throw { response: { data } };
-        }
+      if (data.body?.code && data.body.code !== 200) {
+        throw { response: { data } };
       }
       return data;
     },
     onSuccess: () => {
-      alert('리뷰 작성 완료');
+      alert('리뷰 작성 완료!');
       setReviewText('');
       queryClient.invalidateQueries(['reviews']);
     },
     onError: (error) => {
       const errorCode = error.response.data.body.code;
-      if (errorCode === 5006 || errorCode === 5001 || errorCode === 5003) {
+      if ([5006, 5001, 5003].includes(errorCode)) {
         navigate('/login');
       } else {
-        alert('네트워크 오류 발생');
+        toast.error('네트워크 오류 발생');
       }
     },
   });
+
   if (isLoading) {
     return <LoadingComponents />;
   }
+
   return (
     <>
       <div className="mt-[60px]">
@@ -90,10 +103,14 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
               ))}
               <div className="ml-[15px]">
                 <p
-                  className={`text-[22px] text-[#828282] transition-all duration-500 ease-in-out ${score === 0 ? 'opacity-50' : `opacity-100`}`}
+                  className={`text-[22px] text-[#828282] transition-all duration-500 ease-in-out ${
+                    score === 0 ? 'opacity-50' : 'opacity-100'
+                  }`}
                 >
                   <span
-                    className={`font-semibold ${score === 0 ? 'text-text-gray-color' : 'text-primary-color'}`}
+                    className={`font-semibold ${
+                      score === 0 ? 'text-text-gray-color' : 'text-primary-color'
+                    }`}
                   >
                     {score}
                   </span>
@@ -104,17 +121,19 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
           )}
           <div className="mt-[25px]">
             <textarea
-              name=""
-              id=""
               value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
+              onChange={handleReviewChange}
               placeholder="강의에 대한 리뷰를 알려주세요~!"
               className="min-h-[200px] w-full resize-none rounded-2xl border border-gray-border-color p-5 transition-all duration-200 focus:border-primary-color focus:outline-none"
+              maxLength={MAX_LENGTH}
             ></textarea>
+            <small>
+              {reviewText.length} / {MAX_LENGTH}
+            </small>
             <div className="mt-[10px] flex justify-end">
               <button
                 className="rounded-2xl bg-primary-color px-[30px] py-[10px]"
-                onClick={() => addReviewMutaion.mutate()}
+                onClick={() => addReviewMutation.mutate()}
               >
                 <p className="text-[18px] font-semibold text-white">리뷰 작성하기</p>
               </button>

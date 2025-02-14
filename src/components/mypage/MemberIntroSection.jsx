@@ -1,85 +1,93 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 import { _axiosAuth } from '@/api/instance';
 import { useAuthStore } from '@/store/useAuthStore';
 
 // 마이페이지의 유저 소개 섹션을 담당하는 컴포넌트
 export const MemberIntroSection = ({ joinId }) => {
+  const queryClint = useQueryClient();
+  const MAX_LENGTH = 255; // 글자 수 제한
   const [isEditing, setIsEditing] = useState(false);
   const [introText, setIntroText] = useState(''); // 초기 소개글 상태
-  const [editingText, setEditingText] = useState(introText); // 수정할 텍스트 상태
-  const { id, email, nickname } = useAuthStore((state) => state.userData);
+  const [editingText, setEditingText] = useState(''); // 수정할 텍스트 상태
+  const { id } = useAuthStore((state) => state.userData);
 
-  // 유저소개 조회 api (joinId를 사용해서 해당 유저의 소개글을 가져옴)
+  // 유저소개 조회 API (joinId를 사용해서 해당 유저의 소개글을 가져옴)
   const {
-    data: userintroduce,
+    data: userIntroduce,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['userintroduce', joinId], // joinId가 변경될 때마다 새로 불러옴
+    queryKey: ['userIntroduce', joinId],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/user/${joinId}`);
-      return data.body.data.intro; // 해당 유저의 소개글을 반환
+      return data.body.data.intro;
     },
     enabled: !!joinId, // joinId가 있을 때만 요청
   });
 
-  // 로딩 중일 때와 에러가 발생한 경우 처리
+  // 가져온 소개글을 상태에 저장
   useEffect(() => {
-    if (userintroduce) {
-      setIntroText(userintroduce); // 가져온 소개글을 상태에 저장
-      setEditingText(userintroduce); // 수정용 상태에 저장
+    if (userIntroduce) {
+      setIntroText(userIntroduce);
+      setEditingText(userIntroduce);
     }
-  }, [userintroduce]); // userintroduce가 바뀔 때마다 실행
+  }, [userIntroduce]);
 
   const handleSave = async () => {
+    if (editingText.length >= MAX_LENGTH) {
+      toast.error(`소개글은 ${MAX_LENGTH}자 이내로 입력해주세요.`);
+      return;
+    }
+
     try {
-      await _axiosAuth.put(`/user/intro`, {
-        intro: editingText,
-      }); // 소개글 수정 API 호출
+      await _axiosAuth.put(`/user/intro`, { intro: editingText });
 
-      setIntroText(editingText); // 수정된 소개글 상태 업데이트
-      setIsEditing(false); // 수정 완료 후 편집 모드 종료
-
-      alert('소개글이 성공적으로 수정되었습니다!'); // ✅ 성공 알림 추가
+      setIntroText(editingText);
+      setIsEditing(false);
+      toast.success('소개글이 성공적으로 수정되었습니다!');
+      queryClint.invalidateQueries(['useIntroduce'], joinId);
     } catch (error) {
-      alert('소개글 수정에 실패했습니다. 다시 시도해주세요.'); // ❌ 실패 알림 추가
+      toast.error('소개글 수정에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
-  const handleEditClick = () => {
-    setEditingText(introText); // 수정 모드 진입 시 현재 저장된 텍스트로 초기화
-    setIsEditing(true);
+  const handleTextChange = (e) => {
+    const text = e.target.value;
+    if (text.length > MAX_LENGTH) {
+      toast.error(`소개글은 ${MAX_LENGTH}자 이내로 입력해주세요.`);
+      return;
+    }
+    setEditingText(text);
   };
 
-  if (isLoading) return <div>Loading...</div>; // 로딩 중일 때
-  if (isError) return <div>Error occurred while fetching data</div>; // 에러 발생 시
-
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error occurred while fetching data</div>;
   return (
     <div className="flex flex-col gap-2">
-      <div className="relative">
-        <textarea
-          value={editingText}
-          onChange={(e) => setEditingText(e.target.value)}
-          className={`absolute inset-0 h-[40vh] w-full resize-none overflow-auto rounded-[20px] border p-5 transition-[border-color] duration-300 focus:outline-none ${
-            isEditing ? 'border-primary-color' : 'border-gray-border-color'
-          }`}
-        />
+      {isEditing ? (
+        <div>
+          <div className="relative">
+            <textarea
+              value={editingText}
+              onChange={handleTextChange} // ✅ 255자 초과 감지 및 토스트 알림 실행
+              className="h-[40vh] w-full resize-none overflow-auto rounded-[20px] border border-primary-color p-5 pr-16 transition-[border-color] duration-300 focus:outline-none"
+              maxLength={MAX_LENGTH}
+            />
+            {/* 글자 수 표시 - textarea 내부 우측 하단 */}
+            <small className="absolute bottom-4 right-5 text-xs text-gray-500">
+              {editingText.length} / {MAX_LENGTH}
+            </small>
+          </div>
 
-        <p
-          className={`h-[40vh] w-full overflow-auto whitespace-pre-wrap break-all rounded-[20px] border p-5 text-base transition-[border-color] duration-300 ${
-            isEditing ? 'invisible z-0' : 'visible z-10 border-divider-color'
-          } ${!introText ? 'text-text-gray-color' : 'text-common-font-color'}`}
-        >
-          {introText || '소개글을 작성해주세요.'} {/* 기본값 설정 */}
-        </p>
-      </div>
-      <div className="flex justify-end gap-2">
-        {isEditing ? (
-          <>
+          <div className="mt-2 flex justify-end gap-2">
             <button
-              onClick={() => setIsEditing(false)}
+              onClick={() => {
+                setIsEditing(false);
+                setEditingText(userIntroduce);
+              }}
               className="rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-bg-gray-color/60"
             >
               뒤로가기
@@ -90,18 +98,29 @@ export const MemberIntroSection = ({ joinId }) => {
             >
               수정완료
             </button>
-          </>
-        ) : (
-          id === joinId && ( // ✅ myid와 joinid가 같을 때만 버튼 보이게 처리
-            <button
-              onClick={handleEditClick}
-              className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80"
-            >
-              수정하기
-            </button>
-          )
-        )}
-      </div>
+          </div>
+        </div>
+      ) : (
+        <div className="relative">
+          <p
+            className={`h-[40vh] w-full overflow-auto whitespace-pre-wrap break-all rounded-[20px] border border-divider-color p-5 text-base transition-[border-color] duration-300 ${
+              !introText ? 'text-text-gray-color' : 'text-common-font-color'
+            }`}
+          >
+            {introText || '소개글을 작성해주세요.'}
+          </p>
+          {id === joinId && (
+            <div className="mt-2 flex justify-end">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color/80"
+              >
+                수정하기
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
