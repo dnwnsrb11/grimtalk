@@ -14,6 +14,20 @@ export const SignupPage = () => {
   const [answer, setAnswer] = useState('');
 
   const navigate = useNavigate();
+
+  // 입력 길이 제한
+  const MAX_LENGTH = 255;
+
+  const handleChange = (setter, value, maxLength) => {
+    if (value.length > maxLength) {
+      toast.error(`최대 ${maxLength}자까지 입력할 수 있습니다.`, {
+        style: { fontSize: '14px', width: '300px' },
+      });
+      return;
+    }
+    setter(value);
+  };
+
   // 회원가입 API 요청
   const signupMutation = useMutation({
     mutationFn: async () => {
@@ -28,19 +42,13 @@ export const SignupPage = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      // 회원가입 성공 시
-      // 페이지 이동
       if (data.body.code === 200) {
         navigate('/signup-success', { state: { nickname: nickname } });
       } else {
-        // 회원가입 실패 시
-        // 에러 처리
         alert(data.body.message);
       }
     },
     onError: (error) => {
-      // 회원가입 실패 시
-      // 에러 처리
       console.error(error);
     },
   });
@@ -68,7 +76,6 @@ export const SignupPage = () => {
               });
               return;
             }
-
             if (!passwordRegex.test(password)) {
               toast.error('비밀번호는 10자 이상, 숫자, 문자, 기호를 포함해야 합니다.', {
                 style: { fontSize: '14px', width: '300px' },
@@ -84,21 +91,21 @@ export const SignupPage = () => {
               placeholder="이메일을 입력하세요."
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => handleChange(setEmail, e.target.value, MAX_LENGTH)}
             />
             <input
               type="password"
               placeholder="비밀번호를 입력하세요."
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => handleChange(setPassword, e.target.value, MAX_LENGTH)}
             />
             <input
               type="password"
               placeholder="비밀번호를 다시 입력하세요."
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={password2}
-              onChange={(e) => setPassword2(e.target.value)}
+              onChange={(e) => handleChange(setPassword2, e.target.value, MAX_LENGTH)}
             />
             <br />
             <input
@@ -106,12 +113,20 @@ export const SignupPage = () => {
               placeholder="닉네임을 알려주세요."
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
+              onChange={(e) => handleChange(setNickname, e.target.value, MAX_LENGTH)}
             />
             <select
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={question}
-              onChange={(e) => setQuestion(e.target.value)}
+              onChange={(e) => {
+                if (!/^\d*$/.test(e.target.value)) {
+                  toast.error('질문은 숫자로만 선택할 수 있습니다.', {
+                    style: { fontSize: '14px', width: '300px' },
+                  });
+                  return;
+                }
+                setQuestion(e.target.value);
+              }}
             >
               <option value="">-- 질문을 선택하세요 --</option>
               <option value="1">첫 번째 애완동물의 이름은 무엇인가요?</option>
@@ -125,7 +140,7 @@ export const SignupPage = () => {
               placeholder="질문 답변을 작성해주세요."
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              onChange={(e) => handleChange(setAnswer, e.target.value, MAX_LENGTH)}
             />
             <div className="flex justify-center pt-2">
               <button
