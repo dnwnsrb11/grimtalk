@@ -16,9 +16,14 @@ export const LectureItem = ({ isMyPage = false, search }) => {
     }
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+  };
+
   const searchImage = isValidImageURL(search?.image) ? search.image : posterNoneImg;
-  const searchSubject = search.subject;
-  const searchNickname = search.nickname;
+  const searchSubject = truncateText(search.subject, 13);
+  const searchNickname = truncateText(search.nickname, 5);
   const searchStar = search.star || 0;
   const searchTags = search.hashtags;
   const searchCategory = search.category;
@@ -31,30 +36,44 @@ export const LectureItem = ({ isMyPage = false, search }) => {
   };
 
   return (
-    <div className="relative cursor-pointer rounded-lg p-3" onClick={handleClick}>
-      <div className="h-[160px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-        <img src={searchImage} className="h-full w-full object-cover" alt="검색 이미지" />
+    <div
+      className="relative cursor-pointer rounded-lg border border-gray-200 p-3"
+      onClick={handleClick}
+    >
+      <div className="">
+        <div className="max-h-[175px] min-h-[175px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+          <img
+            src={searchImage}
+            className="h-full max-h-[175px] min-h-[175px] w-full object-contain"
+            alt="검색 이미지"
+            onError={(e) => {
+              e.target.onerror = null; // 무한 루프 방지
+              e.target.src = posterNoneImg;
+            }}
+          />
+        </div>
       </div>
 
-      <div>
-        <h4 className="mt-2 text-lg leading-tight">{searchSubject}</h4>
+      <div className="max-w-[300px]">
+        <div className="flex flex-row justify-between">
+          <h4 className="mt-2 text-lg leading-tight">{searchSubject}</h4>
+          {!isMyPage && (
+            <div className="inline-block rounded-full border px-3 py-1">
+              <p className="text-text-gray-color">{searchCategory}</p>
+            </div>
+          )}
+        </div>
         <div className="mt-2 flex justify-start gap-3">
           <div className="flex flex-wrap items-center gap-1">
             <h4 className="mr-2 text-base font-bold">{searchNickname}</h4>
-            {searchTags?.map((tag, index) => (
+            {searchTags?.slice(0, 2).map((tag, index) => (
               <div
                 className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
                 key={index}
               >
-                <p className="text-text-gray-color">{tag}</p>
+                <p className="text-text-gray-color">{truncateText(tag, 2)}</p>
               </div>
             ))}
-
-            {!isMyPage && (
-              <div className="inline-block rounded-full border bg-primary-color px-3 py-1">
-                <p className="text-white">{searchCategory}</p>
-              </div>
-            )}
           </div>
         </div>
       </div>
