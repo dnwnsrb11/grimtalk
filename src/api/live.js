@@ -32,12 +32,12 @@ const liveApi = {
   // 라이브 방 목록 조회
   getRoomList: async () => {
     const response = await _axios.get('/rooms');
-    return response.data.body.data;
+    return response.data;
   },
 
   getRoomListTop4: async () => {
     const response = await _axios.get('/rooms/top4');
-    return response.data.body.data;
+    return response.data;
   },
 };
 
