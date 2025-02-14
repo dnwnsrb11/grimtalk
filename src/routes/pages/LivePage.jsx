@@ -9,6 +9,16 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { InstructorLeaveLive, joinLive, leaveLive, liveApi, useLiveCount } from '@/api/live';
 import { LeftArrowIcon } from '@/components/common/icons';
 import { CustomChat } from '@/components/live/CustomChat';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { LiveKitService } from '@/services/liveKitService';
 import { StompService } from '@/services/stompService';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -45,6 +55,9 @@ export const LivePage = () => {
   const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
 
   const [isOverlayMode, setIsOverlayMode] = useState(false);
+
+  // 방 나가기 확인 상태
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
 
   // LiveKit 이벤트 리스너 설정
   useEffect(() => {
@@ -186,6 +199,11 @@ export const LivePage = () => {
     navigate(-1);
   }, [nickname, curriculumId, id, room, liveStore, navigate]);
 
+  // 방 나가기 시도 함수
+  const handleLeaveAttempt = useCallback(() => {
+    setIsLeaveDialogOpen(true);
+  }, []);
+
   // 브라우저 창 닫기, 새로고침, 뒤로가기 이벤트 처리
   useEffect(() => {
     // 강사가 아닌 경우에만 이벤트 리스너 등록
@@ -217,7 +235,7 @@ export const LivePage = () => {
       {/* 채팅 컴포넌트 */}
       <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
         <CustomChat
-          onLeave={leaveRoom}
+          onLeave={handleLeaveAttempt}
           isCreator={participantUtils.isCreator(nickname)}
           isVisible={isChatVisible}
           setIsVisible={setIsChatVisible}
@@ -243,6 +261,49 @@ export const LivePage = () => {
         />
       </LiveKitRoom>
 
+      {/* 퇴장 확인 다이얼로그 */}
+      <AlertDialog open={isLeaveDialogOpen} onOpenChange={setIsLeaveDialogOpen}>
+        <AlertDialogContent className="border-gray-border-color">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl font-bold">
+              ⚠️
+              {participantUtils.isCreator(nickname) ? (
+                <>
+                  <span className="text-primary-color">라이브</span> 종료
+                </>
+              ) : (
+                <>
+                  <span className="text-primary-color">라이브</span> 퇴장
+                </>
+              )}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base">
+              {participantUtils.isCreator(nickname) ? (
+                <>
+                  <span className="text-red-500">라이브를 종료</span>하시겠습니까? 모든 참가자가
+                  <span className="text-red-500"> 퇴장</span>됩니다.
+                </>
+              ) : (
+                <>
+                  <span className="text-red-500">라이브를 퇴장</span>하시겠습니까?
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
+              취소
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+              onClick={leaveRoom}
+            >
+              {participantUtils.isCreator(nickname) ? '종료' : '퇴장'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* 채팅 토글 버튼 */}
       {!isChatVisible && (
         <motion.div
@@ -263,7 +324,7 @@ export const LivePage = () => {
 
       {/* Excalidraw 컴포넌트 */}
       {participantUtils.isCreator(nickname) ? (
-        <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
+        <div className="excalidraw-wrapper border-gray-border-color rounded-xl border bg-white p-4">
           <Excalidraw
             onChange={(elements) => {
               setRoomCreatorElements(elements);
@@ -280,7 +341,7 @@ export const LivePage = () => {
           <div className="mb-4 flex justify-center">
             <button
               onClick={() => setIsOverlayMode(!isOverlayMode)}
-              className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
+              className="bg-primary-color rounded-lg px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
             >
               {isOverlayMode ? '겹치기 해제' : '겹치기'}
             </button>
@@ -291,7 +352,7 @@ export const LivePage = () => {
             <div className="relative flex-1">
               {/* 방장 화이트보드 (아래 레이어) */}
               <div className="absolute inset-0 z-0">
-                <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                <div className="border-gray-border-color h-full rounded-xl border bg-white p-4">
                   <h3 className="mb-4 text-xl font-bold">
                     <span className="text-primary-color">방장 </span>화이트보드
                   </h3>
@@ -306,7 +367,7 @@ export const LivePage = () => {
               </div>
               {/* 내 화이트보드 (위 레이어) */}
               <div className="absolute inset-0 z-10 bg-white bg-opacity-50">
-                <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                <div className="border-gray-border-color h-full rounded-xl border bg-white p-4">
                   <h3 className="mb-4 text-xl font-bold">
                     <span className="text-primary-color">내 </span>화이트보드
                   </h3>
@@ -323,7 +384,7 @@ export const LivePage = () => {
           ) : (
             // 기본 모드
             <div className="flex h-full gap-2">
-              <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+              <div className="border-gray-border-color flex-1 rounded-xl border bg-white p-4">
                 <h3 className="mb-4 text-xl font-bold">
                   <span className="text-primary-color">방장 </span>화이트보드
                 </h3>
@@ -335,7 +396,7 @@ export const LivePage = () => {
                   />
                 </div>
               </div>
-              <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+              <div className="border-gray-border-color flex-1 rounded-xl border bg-white p-4">
                 <h3 className="mb-4 text-xl font-bold">
                   <span className="text-primary-color">내 </span>화이트보드
                 </h3>

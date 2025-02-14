@@ -156,10 +156,10 @@ export const CustomChat = ({
         <h2 className="mb-4 flex flex-col gap-2 text-xl font-bold">
           <span className="text-primary-color break-keep">{curriculumSubject}</span>
           <div className="flex items-center justify-end gap-1">
-            <span className="flex items-center gap-2 text-sm text-text-gray-color">
+            <span className="text-text-gray-color flex items-center gap-2 text-sm">
               <ParticipantCountIcon />
             </span>
-            <span className="text-sm text-text-gray-color">{liveCount}</span>
+            <span className="text-text-gray-color text-sm">{liveCount}</span>
           </div>
         </h2>
         {/* 퇴장 버튼과 토글 버튼 컨테이너 */}
@@ -169,7 +169,7 @@ export const CustomChat = ({
           </button>
           <button
             onClick={onLeave}
-            className="flex-1 rounded-lg bg-primary-color px-6 py-2 text-white hover:opacity-90"
+            className="bg-primary-color flex-1 rounded-lg px-6 py-2 text-white hover:opacity-90"
           >
             <div className="flex items-center justify-center gap-2">
               {isCreator ? (
