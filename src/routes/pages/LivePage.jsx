@@ -247,7 +247,7 @@ export const LivePage = () => {
           />
         </div>
       ) : (
-        <div className="whiteboard-container flex gap-6">
+        <div className="whiteboard-container flex gap-2">
           <div className="excalidraw-wrapper flex-1 rounded-xl border border-gray-border-color bg-white p-4">
             <h3 className="mb-4 text-xl font-bold">
               방장 <span className="text-primary-color">화이트보드</span>
