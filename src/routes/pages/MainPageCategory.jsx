@@ -74,7 +74,7 @@ export const MainPageCategory = () => {
 
       {/* ✅ 정렬된 데이터 렌더링 */}
       {/* ✅ 정렬된 데이터 렌더링 */}
-      <div className="mt-[40px] grid grid-cols-4 gap-4">
+      <div className="mt-[40px] grid grid-cols-4 gap-4 ">
         {categorySearch.length > 0 ? (
           sortedLectures
             .slice(0, visibleLecturesCount)

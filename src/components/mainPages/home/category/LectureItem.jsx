@@ -22,7 +22,7 @@ export const LectureItem = ({ isMyPage = false, search }) => {
   };
 
   const searchImage = isValidImageURL(search?.image) ? search.image : posterNoneImg;
-  const searchSubject = truncateText(search.subject, 20);
+  const searchSubject = truncateText(search.subject, 21);
   const searchNickname = truncateText(search.nickname, 5);
   const searchStar = search.star || 0;
   const searchTags = search.hashtags;
@@ -38,21 +38,21 @@ export const LectureItem = ({ isMyPage = false, search }) => {
   return (
     <div className="relative cursor-pointer rounded-lg p-3" onClick={handleClick}>
       <div className="">
-        <div className="max-h-[160px] min-h-[160px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+        <div className="max-h-[175px] min-h-[175px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
           <img
             src={searchImage}
-            className="h-full max-h-[160px] w-full object-contain"
+            className="h-full max-h-[175px] min-h-[175px] w-full object-contain"
             alt="검색 이미지"
           />
         </div>
       </div>
 
-      <div>
+      <div className="max-w-[300px]">
         <h4 className="mt-2 text-lg leading-tight">{searchSubject}</h4>
         <div className="mt-2 flex justify-start gap-3">
           <div className="flex flex-wrap items-center gap-1">
             <h4 className="mr-2 text-base font-bold">{searchNickname}</h4>
-            {searchTags?.map((tag, index) => (
+            {searchTags?.slice(0, 2).map((tag, index) => (
               <div
                 className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
                 key={index}

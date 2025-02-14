@@ -363,10 +363,10 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
       <hr className="border-divider-color" />
 
       {/* 제출 버튼 */}
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-3">
         <button
           onClick={() => onBack()}
-          className={`w-[110px] rounded-md px-5 py-3 text-lg font-semibold text-white ${'bg-primary-color hover:bg-primary-color/80'}`}
+          className={`w-[110px] rounded-md bg-bg-gray-color px-5 py-3 text-lg font-semibold text-black transition-all duration-200 hover:bg-gray-300`}
         >
           뒤로가기
         </button>
