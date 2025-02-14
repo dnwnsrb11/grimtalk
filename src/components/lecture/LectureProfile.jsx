@@ -173,7 +173,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
             <h2 className="text-[32px] font-bold">{lecture?.subject}</h2>
             <span className="flex gap-3">
               {lecture ? (
-                lecture.hashtags.map((tag, index) => (
+                lecture?.hashtags?.map((tag, index) => (
                   <HashTagChip key={index} hashTag={`#${tag}`} />
                 ))
               ) : (
