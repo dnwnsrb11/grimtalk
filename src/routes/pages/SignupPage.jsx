@@ -108,13 +108,19 @@ export const SignupPage = () => {
               onChange={(e) => handleChange(setPassword2, e.target.value, MAX_LENGTH)}
             />
             <br />
-            <input
-              type="text"
-              placeholder="닉네임을 알려주세요."
-              className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
-              value={nickname}
-              onChange={(e) => handleChange(setNickname, e.target.value, MAX_LENGTH)}
-            />
+            <div className="flex flex-col">
+              {' '}
+              <input
+                type="text"
+                placeholder="닉네임을 알려주세요."
+                className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
+                value={nickname}
+                onChange={(e) => handleChange(setNickname, e.target.value, MAX_LENGTH)}
+              />
+              <small className="text-gray-500">
+                {nickname.length}/{MAX_LENGTH}
+              </small>
+            </div>
             <select
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={question}
@@ -142,6 +148,9 @@ export const SignupPage = () => {
               value={answer}
               onChange={(e) => handleChange(setAnswer, e.target.value, MAX_LENGTH)}
             />
+            <small className="text-gray-500">
+              {answer.length}/{MAX_LENGTH}
+            </small>
             <div className="flex justify-center pt-2">
               <button
                 type="submit"
