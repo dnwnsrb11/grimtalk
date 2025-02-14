@@ -76,19 +76,19 @@ const useRoomListTop4 = () => {
 };
 
 // React Query를 사용한 방 목록 자동 갱신 Hook
-const useFavoriteRoomList = (userId) => {
+const useFavoriteRoomList = (userId, isLogin = false) => {
   return useQuery({
-    queryKey: ['rooms', userId], // userId를 키에 포함
-    queryFn: () => liveApi.getFavoriteRoomList(userId), // userId 전달
+    queryKey: ['rooms', userId],
+    queryFn: () => (isLogin ? liveApi.getFavoriteRoomList(userId) : liveApi.getRoomList()),
     refetchInterval: 5000,
     staleTime: 1000 * 60,
   });
 };
 
-const useFavoriteRoomListTop4 = (userId) => {
+const useFavoriteRoomListTop4 = (userId, isLogin = false) => {
   return useQuery({
     queryKey: ['roomsTop4', userId],
-    queryFn: () => liveApi.getFavoriteRoomListTop4(userId),
+    queryFn: () => (isLogin ? liveApi.getFavoriteRoomListTop4(userId) : liveApi.getRoomListTop4()),
     refetchInterval: 5000,
     staleTime: 1000 * 60,
   });
