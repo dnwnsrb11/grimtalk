@@ -39,7 +39,7 @@ export const CheckBoardSection = () => {
             community={checkBoard}
             onClick={() => {
               console.log('질문 선택:', checkBoard.boardId);
-              setSelectedBoardId(checkBoard.boardId);
+              setSelectedBoardId(checkBoard.lectureId);
             }}
           />
         ))

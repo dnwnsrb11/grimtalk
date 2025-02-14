@@ -6,30 +6,37 @@ import starSVG from '@/assets/banner/star.svg';
 import posterNoneImg from '@/assets/posterNoneImg.png';
 
 export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
-  const lectureSubject = lecture.subject;
-  const lectureNickname = lecture.nickname;
-  const lectureTags = lecture.hashtags;
-  const lectureCategory = lecture.category ?? null;
-  const lectureStar = lecture.start || 0;
-  const lectureImg = lecture.image || posterNoneImg;
-  const lectureId = lecture.lectureId || null; // 🔥 강의 ID 추가
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  // 🔹 글자 수 제한 함수
+  const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+  };
+
+  // 🔹 데이터 정리
+  const lectureSubject = truncateText(lecture.subject, 13);
+  const lectureNickname = truncateText(lecture.nickname, 5);
+  const lectureTags = lecture.hashtags?.slice(0, 3).map((tag) => truncateText(tag, 2));
+  const lectureCategory = lecture.category ?? null;
+  const lectureStar = lecture.star || 0;
+  const lectureImg = lecture.image || posterNoneImg;
+  const lectureId = lecture.lectureId || null;
 
   const handleImageError = (e) => {
     e.target.src = posterNoneImg;
   };
 
   // ✅ DELETE 요청을 위한 useMutation 정의
-  const queryClient = useQueryClient();
   const deleteMutation = useMutation({
     mutationFn: async () => {
       const { data } = await _axiosAuth.delete(`/lecture/${lectureId}`);
-      console.log(lectureId);
       return data;
     },
     onSuccess: () => {
       console.log(`${lectureSubject} 강의가 삭제되었습니다.`);
-      queryClient.invalidateQueries(['lectures']); // ✅ 삭제 후 강의 목록 갱신
+      queryClient.invalidateQueries(['lectures']); // ✅ 삭제 후 목록 갱신
     },
     onError: (error) => {
       console.error('삭제 실패:', error);
@@ -44,26 +51,30 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
   };
 
   return (
-    <div className="group cursor-pointer">
-      <div
-        onClick={() => {
-          console.log('클릭');
-          navigate(`/lecture/${lectureId}`);
-        }}
-      >
-        <div className="min-h-[160px] overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+    <div className="relative cursor-pointer rounded-lg border border-gray-200 p-3">
+      <div onClick={() => navigate(`/lecture/${lectureId}`)}>
+        {/* 🔹 이미지 크기 통일 */}
+        <div className="max-h-[175px] min-h-[175px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
           <img
             src={lectureImg}
             alt={lectureSubject}
-            className="h-full w-full object-cover"
+            className="h-full max-h-[175px] min-h-[175px] w-full object-contain"
             onError={handleImageError}
           />
         </div>
 
-        <div>
-          <h4 className="mt-2 text-lg leading-tight">{lectureSubject}</h4>
+        <div className="max-w-[300px]">
+          <div className="flex flex-row justify-between">
+            <h4 className="mt-2 text-lg leading-tight">{lectureSubject}</h4>
+            {lectureCategory && (
+              <div className="inline-block rounded-full border px-3 py-1">
+                <p className="text-text-gray-color">{lectureCategory}</p>
+              </div>
+            )}
+          </div>
+
           <div className="mt-2 flex items-center gap-3">
-            <h4 className="text-base font-bold">{lectureNickname || ''}</h4>
+            <h4 className="text-base font-bold">{lectureNickname}</h4>
             <div className="flex gap-1">
               {lectureTags?.map((tag, index) => (
                 <div
@@ -77,6 +88,7 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
           </div>
         </div>
       </div>
+
       {showStar && (
         <div className="mt-2 flex items-center gap-2">
           <div>
@@ -89,7 +101,7 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
       {showUpdate && (
         <button
           onClick={handleDelete}
-          className="mt-[10px] h-[41px] w-[88px] rounded-2xl border border-solid bg-[#EFEFEF] text-[18px] transition-all duration-200 hover:bg-red-50 hover:shadow-md"
+          className="mt-2 h-[41px] w-[88px] rounded-2xl border bg-[#EFEFEF] text-[18px] transition-all duration-200 hover:bg-red-50 hover:shadow-md"
         >
           삭제하기
         </button>
