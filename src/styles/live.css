@@ -167,17 +167,19 @@ body {
 }
 /* 채팅 컨테이너 스타일 */
 .lk-chat {
-  height: 600px;
+  height: calc(100% - 60px); /* 헤더 버튼 컨테이너의 높이만큼 제외 */
   display: flex;
   flex-direction: column;
   background-color: white;
   border-radius: 8px;
+  overflow: hidden; /* 자식 요소가 넘치지 않도록 설정 */
 }
 
 .lk-chat-messages {
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
+  min-height: 0; /* flex 컨테이너 내에서 스크롤이 정상 작동하도록 설정 */
 
   &::-webkit-scrollbar-thumb {
     background: rgba(136, 136, 136, 0.5);
@@ -229,11 +231,9 @@ body {
 }
 
 .lk-chat-form {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  padding: 1rem;
+  padding: 12px;
   border-top: 1px solid #e5e7eb;
+  background-color: white;
 }
 
 .lk-chat-form-input {
@@ -263,13 +263,16 @@ body {
   right: 20px;
   bottom: 20px;
   width: 300px;
+  height: 80vh;
   background-color: #ffffff;
   border-radius: 30px;
-  padding-block: 20px;
-  padding-inline: 15px;
+  padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 자식 요소가 넘치지 않도록 설정 */
 }
 
 .lk-room-container:hover {
@@ -613,6 +616,10 @@ body {
 .chat-container {
   position: relative;
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 자식 요소가 넘치지 않도록 설정 */
 }
 
 .chat-wrapper {
@@ -622,12 +629,17 @@ body {
     opacity 0.3s ease,
     transform 0.3s ease;
   visibility: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 자식 요소가 넘치지 않도록 설정 */
 }
 
 .chat-wrapper.visible {
   opacity: 1;
   transform: translateX(0);
   visibility: visible;
+  height: 100%;
 }
 
 .chat-wrapper.hidden {
@@ -672,6 +684,8 @@ body {
 }
 
 .header-buttons-container {
+  height: 48px; /* 헤더 버튼 컨테이너 높이 고정 */
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 8px;
