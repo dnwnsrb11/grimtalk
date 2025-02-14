@@ -43,6 +43,8 @@ export const LivePage = () => {
   const [roomCreatorExcalidrawAPI, setRoomCreatorExcalidrawAPI] = useState(null);
   const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
 
+  const [isOverlayMode, setIsOverlayMode] = useState(false);
+
   // LiveKit 이벤트 리스너 설정
   useEffect(() => {
     if (liveKitService) {
@@ -180,7 +182,7 @@ export const LivePage = () => {
     room?.disconnect();
     localStorage.removeItem('roomCreator');
     liveStore.reset();
-    navigate('/create-live-test');
+    navigate(-1);
   };
 
   return (
@@ -247,27 +249,70 @@ export const LivePage = () => {
           />
         </div>
       ) : (
-        <div className="whiteboard-container flex gap-2">
-          <div className="excalidraw-wrapper flex-1 rounded-xl border border-gray-border-color bg-white p-4">
-            <h3 className="mb-4 text-xl font-bold">
-              <span className="text-primary-color">방장 </span>화이트보드
-            </h3>
-            <Excalidraw
-              elements={roomCreatorElements}
-              excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
-              viewModeEnabled={true}
-            />
+        <div className="flex flex-col">
+          {/* 겹치기 토글 버튼 */}
+          <div className="mb-4 flex justify-center">
+            <button
+              onClick={() => setIsOverlayMode(!isOverlayMode)}
+              className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:opacity-90"
+            >
+              {isOverlayMode ? '겹치기 해제' : '겹치기'}
+            </button>
           </div>
-          <div className="excalidraw-wrapper flex-1 rounded-xl border border-gray-border-color bg-white p-4">
-            <h3 className="mb-4 text-xl font-bold">
-              <span className="text-primary-color">내 </span>화이트보드
-            </h3>
-            <Excalidraw
-              elements={participantElements}
-              excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
-              viewModeEnabled={false}
-            />
-          </div>
+
+          {isOverlayMode ? (
+            // 겹치기 모드
+            <div className="relative h-full">
+              <div className="absolute inset-0 z-10">
+                <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                  <h3 className="mb-4 text-xl font-bold">
+                    <span className="text-primary-color">내 </span>화이트보드
+                  </h3>
+                  <Excalidraw
+                    elements={participantElements}
+                    excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
+                    viewModeEnabled={false}
+                  />
+                </div>
+              </div>
+              <div className="absolute inset-0 z-0 opacity-50">
+                <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                  <h3 className="mb-4 text-xl font-bold">
+                    <span className="text-primary-color">방장 </span>화이트보드
+                  </h3>
+                  <Excalidraw
+                    elements={roomCreatorElements}
+                    excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
+                    viewModeEnabled={true}
+                  />
+                </div>
+              </div>
+            </div>
+          ) : (
+            // 기본 모드
+            <div className="whiteboard-container flex gap-2">
+              <div className="excalidraw-wrapper flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                <h3 className="mb-4 text-xl font-bold">
+                  <span className="text-primary-color">방장 </span>화이트보드
+                </h3>
+                <Excalidraw
+                  elements={roomCreatorElements}
+                  excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
+                  viewModeEnabled={true}
+                />
+              </div>
+              <div className="excalidraw-wrapper flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                <h3 className="mb-4 text-xl font-bold">
+                  <span className="text-primary-color">내 </span>화이트보드
+                </h3>
+                <Excalidraw
+                  elements={participantElements}
+                  excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
+                  viewModeEnabled={false}
+                />
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
