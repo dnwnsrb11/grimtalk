@@ -45,7 +45,65 @@ export const LivePage = () => {
   // 배열에 쌓을 변수 (useRef로 상태 관리)
   const receivedElementsRef = useRef([]);
 
-  // 요소를 하나씩 추가하거나 최신화하는 함수
+  // 녹화기능
+  const [lastElement, setLastElement] = useState(null); // 마지막 추가된 요소를 저장하는 상태
+  const [isRecording, setIsRecording] = useState(false); // 녹화 상태
+  const [elapsedTime, setElapsedTime] = useState(0); // 경과 시간
+  const [timeHistory, setTimeHistory] = useState([
+    // 초기값을 배열로 설정
+    {
+      time: 0, // 초기값은 0
+      element: null, // 최초에 추가된 요소는 없음
+    },
+  ]);
+  const [sendData, setSendData] = useState(null);
+  const timeRef = useRef(null);
+
+  // 녹화 기능 콜백 함수
+  const startRecording = useCallback(() => {
+    setIsRecording(true);
+    setElapsedTime(0);
+
+    // 0.1초 마다 시간 업데이트
+    timeRef.current = setInterval(() => {
+      setElapsedTime((prevTime) => parseFloat((prevTime + 1).toFixed(1)));
+    }, 100);
+  }, []);
+
+  const stopRecording = useCallback(() => {
+    setIsRecording(false);
+
+    // 타이머도 정지
+    if (timeRef.current) {
+      clearInterval(timeRef.current);
+      setElapsedTime(0);
+    }
+  }, []);
+
+  // timeHistory 업데이트
+  useEffect(() => {
+    if (lastElement !== null) {
+      //null이 아니면 업데이트 시작
+      setTimeHistory((prevHistory) => [
+        ...prevHistory, // 기존 배열에 새 요소 추가
+        {
+          time: elapsedTime,
+          element: lastElement, // lastElement만 추가
+        },
+      ]);
+    }
+  }, [lastElement]); // elapsedTime과 lastElement만 의존성으로 설정
+
+  // 전달기능
+  const sendDataButton = () => {
+    setSendData(timeHistory);
+  };
+  useEffect(() => {
+    console.log('전달 데이터');
+    console.log(sendData);
+  }, [sendData]);
+
+  // 요소를 하나씩 추가하거나 최신화하는 함수(출력)
   const updateOrAddElementToArray = (newElement) => {
     // 삭제된 요소 처리
     if (newElement.type === 'deleted') {
@@ -310,6 +368,20 @@ export const LivePage = () => {
 
       {participantUtils.isCreator(nickname) ? (
         <div className="excalidraw-wrapper">
+          <div>
+            <div className="flex gap-2">
+              <button className="rounded-2xl border p-5" onClick={startRecording}>
+                녹화
+              </button>
+              <button className="rounded-2xl border p-5" onClick={stopRecording}>
+                정지
+              </button>
+              <button className="rounded-2xl border p-5" onClick={sendDataButton}>
+                전송
+              </button>
+            </div>
+            <p>{elapsedTime}</p>
+          </div>
           <h3>내 화이트보드</h3>
           <Excalidraw
             onChange={(elements) => {
@@ -330,15 +402,21 @@ export const LivePage = () => {
                 ]);
               }
 
-              // 2. 일반적인 그리기 요소 처리 (기존 로직)
+              // 2. 일반적인 그리기 요소 처리
               const validElements = elements.filter((element) => !element.isDeleted);
               if (validElements.length > 0) {
                 const latestElement = validElements[validElements.length - 1];
                 if (!deletedElement) {
-                  // 삭제 동작이 아닐 때만 그리기 요소 전달
                   console.log('가장 최근에 추가된 요소:', latestElement);
                   handleInstructorDrawingChange([latestElement]);
                 }
+              }
+
+              // 3. 마지막 요소 변경 체크 추가
+              const newLastElement = elements[elements.length - 1];
+              if (lastElement !== newLastElement) {
+                setLastElement(newLastElement);
+                console.log(timeHistory);
               }
 
               setRoomCreatorElements(elements);
