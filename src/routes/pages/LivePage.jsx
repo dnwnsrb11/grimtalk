@@ -136,7 +136,7 @@ export const LivePage = () => {
     } catch (error) {
       console.error('방 연결 중 오류 발생:', error);
       alert('방 연결에 실패했습니다.');
-      navigate('/create-live-test');
+      navigate(-1);
     }
   };
 
