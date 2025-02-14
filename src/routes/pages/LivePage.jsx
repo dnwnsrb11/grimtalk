@@ -6,7 +6,7 @@ import { Client } from '@stomp/stompjs';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { liveApi } from '@/api/live';
+import { liveApi, useAddStrokeMutation } from '@/api/live';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
 import { VideoComponent } from '@/components/live/VideoComponent';
@@ -98,9 +98,13 @@ export const LivePage = () => {
   const sendDataButton = () => {
     setSendData(timeHistory);
   };
+
+  const { mutate: addStroke } = useAddStrokeMutation(1);
   useEffect(() => {
-    console.log('전달 데이터');
-    console.log(sendData);
+    if (sendData) {
+      console.log('전달 데이터:', sendData);
+      addStroke(sendData); // strokeData는 여기서 전달
+    }
   }, [sendData]);
 
   // 요소를 하나씩 추가하거나 최신화하는 함수(출력)

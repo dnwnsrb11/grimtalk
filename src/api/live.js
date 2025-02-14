@@ -54,19 +54,18 @@ const leaveRoom = async () => {
 };
 
 // 강사 스트로크 저장을 위한 커스텀 훅
-const useAddStrokeMutation = (roomId, strokeData) => {
+const useAddStrokeMutation = (roomId) => {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (strokeData) => {
+      // mutationFn에서 파라미터로 받음
       const { data } = await _axiosAuth.post(`/stroke/${roomId}`, strokeData);
       return data;
     },
     onError: (error) => {
       console.error('스트로크 저장 실패:', error);
-      // 에러 처리 로직 추가 가능
     },
     onSuccess: (data) => {
       console.log('스트로크 저장 성공:', data);
-      // 성공 후 처리 로직 추가 가능
     },
   });
 };
