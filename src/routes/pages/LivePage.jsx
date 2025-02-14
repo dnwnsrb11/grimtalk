@@ -174,7 +174,7 @@ export const LivePage = () => {
   );
 
   // 방 나가기 함수
-  const leaveRoom = async () => {
+  const leaveRoom = useCallback(async () => {
     if (participantUtils.isCreator(nickname)) {
       await InstructorLeaveLive(curriculumId, id);
     } else {
@@ -184,7 +184,31 @@ export const LivePage = () => {
     localStorage.removeItem('roomCreator');
     liveStore.reset();
     navigate(-1);
-  };
+  }, [nickname, curriculumId, id, room, liveStore, navigate]);
+
+  // 브라우저 창 닫기, 새로고침, 뒤로가기 이벤트 처리
+  useEffect(() => {
+    // 강사가 아닌 경우에만 이벤트 리스너 등록
+    if (!participantUtils.isCreator(nickname)) {
+      const handleBeforeUnload = async (e) => {
+        e.preventDefault();
+        e.returnValue = '';
+        await leaveRoom();
+      };
+
+      const handlePopState = async () => {
+        await leaveRoom();
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      window.addEventListener('popstate', handlePopState);
+
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }
+  }, [curriculumId, id, nickname, room, leaveRoom]);
 
   return (
     <div id="room" className="p-6">
