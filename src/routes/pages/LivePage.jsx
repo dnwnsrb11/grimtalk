@@ -2,19 +2,18 @@ import '@/styles/live.css';
 
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
+import { motion } from 'motion/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { InstructorLeaveLive, joinLive, leaveLive, liveApi } from '@/api/live';
-import { AudioComponent } from '@/components/live/AudioComponent';
+import { LeftArrowIcon } from '@/components/common/icons';
 import { CustomChat } from '@/components/live/CustomChat';
-import { VideoComponent } from '@/components/live/VideoComponent';
 import { LiveKitService } from '@/services/liveKitService';
 import { StompService } from '@/services/stompService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useLiveStore } from '@/store/useLiveStore';
 import { participantUtils, TOKEN_TYPES } from '@/utils/participantUtils';
-
 const LIVEKIT_URL = 'wss://www.grimtalk.com:7443/';
 const STOMP_URL = 'wss://www.grimtalk.com:28080/ws';
 
@@ -36,12 +35,15 @@ export const LivePage = () => {
   const [remoteTracks, setRemoteTracks] = useState([]);
   const [chatToken, setChatToken] = useState('');
   const [isConnected, setIsConnected] = useState(false);
+  const [isChatVisible, setIsChatVisible] = useState(true);
 
   // Excalidraw 관련 상태
   const [roomCreatorElements, setRoomCreatorElements] = useState([]);
   const [participantElements, setParticipantElements] = useState([]);
   const [roomCreatorExcalidrawAPI, setRoomCreatorExcalidrawAPI] = useState(null);
   const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
+
+  const [isOverlayMode, setIsOverlayMode] = useState(false);
 
   // LiveKit 이벤트 리스너 설정
   useEffect(() => {
@@ -134,7 +136,7 @@ export const LivePage = () => {
     } catch (error) {
       console.error('방 연결 중 오류 발생:', error);
       alert('방 연결에 실패했습니다.');
-      navigate('/create-live-test');
+      navigate(-1);
     }
   };
 
@@ -180,66 +182,62 @@ export const LivePage = () => {
     room?.disconnect();
     localStorage.removeItem('roomCreator');
     liveStore.reset();
-    navigate('/create-live-test');
+    navigate(-1);
   };
 
   return (
-    <div id="room">
-      <div id="room-header">
-        <h2 id="room-title">{curriculumSubject}</h2>
-        {participantUtils.isCreator(nickname) && (
-          <button className="btn btn-large btn-danger" onClick={leaveRoom}>
-            라이브 종료
-          </button>
-        )}
-        {!participantUtils.isCreator(nickname) && (
-          <button className="btn btn-large btn-danger" onClick={leaveRoom}>
-            라이브 퇴장
-          </button>
-        )}
-      </div>
-
+    <div id="room" className="p-6">
       {/* 비디오 레이아웃 */}
-      <div id="layout-container">
-        {participantUtils.isCreator(nickname) && localTrack && (
-          <VideoComponent track={localTrack} participantIdentity={nickname} local={true} />
-        )}
-        {!participantUtils.isCreator(nickname) && remoteTracks.length > 0 && (
-          <div>
-            {remoteTracks
-              .filter(
-                (track) =>
-                  track.participantIdentity ===
-                  participantUtils.getTokenParticipantName(liveStore.roomCreator, TOKEN_TYPES.RTC),
-              )
-              .map((remoteTrack) =>
-                remoteTrack.trackPublication.kind === 'video' ? (
-                  <VideoComponent
-                    key={remoteTrack.trackPublication.trackSid}
-                    track={remoteTrack.trackPublication.videoTrack}
-                    participantIdentity={participantUtils.removeTokenPrefix(
-                      remoteTrack.participantIdentity,
-                    )}
-                  />
-                ) : (
-                  <AudioComponent
-                    key={remoteTrack.trackPublication.trackSid}
-                    track={remoteTrack.trackPublication.audioTrack}
-                  />
-                ),
-              )}
-          </div>
-        )}
-      </div>
 
       {/* 채팅 컴포넌트 */}
       <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
-        <CustomChat />
+        <CustomChat
+          onLeave={leaveRoom}
+          isCreator={participantUtils.isCreator(nickname)}
+          isVisible={isChatVisible}
+          setIsVisible={setIsChatVisible}
+          curriculumSubject={curriculumSubject}
+          track={
+            participantUtils.isCreator(nickname)
+              ? localTrack
+              : remoteTracks.find(
+                  (track) =>
+                    track.trackPublication?.kind === 'video' &&
+                    track.participantIdentity ===
+                      participantUtils.getTokenParticipantName(
+                        liveStore.roomCreator,
+                        TOKEN_TYPES.RTC,
+                      ),
+                )?.trackPublication?.videoTrack
+          }
+          participantIdentity={
+            participantUtils.isCreator(nickname) ? nickname : liveStore.roomCreator || ''
+          }
+          local={participantUtils.isCreator(nickname)}
+        />
       </LiveKitRoom>
+
+      {/* 채팅 토글 버튼 */}
+      {!isChatVisible && (
+        <motion.div
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -100 }}
+          transition={{ duration: 0.4 }}
+          className="fixed right-0 top-6 z-[1000] p-2"
+        >
+          <button
+            className="toggle-chat-btn rounded-l-lg bg-white p-2 shadow-md hover:bg-gray-50"
+            onClick={() => setIsChatVisible(true)}
+          >
+            <LeftArrowIcon />
+          </button>
+        </motion.div>
+      )}
+
       {/* Excalidraw 컴포넌트 */}
       {participantUtils.isCreator(nickname) ? (
-        <div className="excalidraw-wrapper">
-          <h3>내 화이트보드</h3>
+        <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
           <Excalidraw
             onChange={(elements) => {
               setRoomCreatorElements(elements);
@@ -251,23 +249,80 @@ export const LivePage = () => {
           />
         </div>
       ) : (
-        <div className="whiteboard-container" style={{ display: 'flex', gap: '20px' }}>
-          <div className="excalidraw-wrapper" style={{ flex: 1 }}>
-            <h3>방장 화이트보드</h3>
-            <Excalidraw
-              elements={roomCreatorElements}
-              excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
-              viewModeEnabled={true}
-            />
+        <div className="flex h-[calc(100vh-50px)] flex-col">
+          {/* 겹치기 토글 버튼 */}
+          <div className="mb-4 flex justify-center">
+            <button
+              onClick={() => setIsOverlayMode(!isOverlayMode)}
+              className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
+            >
+              {isOverlayMode ? '겹치기 해제' : '겹치기'}
+            </button>
           </div>
-          <div className="excalidraw-wrapper" style={{ flex: 1 }}>
-            <h3>내 화이트보드</h3>
-            <Excalidraw
-              elements={participantElements}
-              excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
-              viewModeEnabled={false}
-            />
-          </div>
+
+          {isOverlayMode ? (
+            // 겹치기 모드
+            <div className="relative flex-1">
+              {/* 방장 화이트보드 (아래 레이어) */}
+              <div className="absolute inset-0 z-0">
+                <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                  <h3 className="mb-4 text-xl font-bold">
+                    <span className="text-primary-color">방장 </span>화이트보드
+                  </h3>
+                  <div className="h-[calc(100%-40px)]">
+                    <Excalidraw
+                      elements={roomCreatorElements}
+                      excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
+                      viewModeEnabled={true}
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* 내 화이트보드 (위 레이어) */}
+              <div className="absolute inset-0 z-10 bg-white bg-opacity-50">
+                <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                  <h3 className="mb-4 text-xl font-bold">
+                    <span className="text-primary-color">내 </span>화이트보드
+                  </h3>
+                  <div className="h-[calc(100%-40px)]">
+                    <Excalidraw
+                      elements={participantElements}
+                      excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
+                      viewModeEnabled={false}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // 기본 모드
+            <div className="flex h-full gap-2">
+              <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                <h3 className="mb-4 text-xl font-bold">
+                  <span className="text-primary-color">방장 </span>화이트보드
+                </h3>
+                <div className="h-[calc(100%-40px)]">
+                  <Excalidraw
+                    elements={roomCreatorElements}
+                    excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
+                    viewModeEnabled={true}
+                  />
+                </div>
+              </div>
+              <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                <h3 className="mb-4 text-xl font-bold">
+                  <span className="text-primary-color">내 </span>화이트보드
+                </h3>
+                <div className="h-[calc(100%-40px)]">
+                  <Excalidraw
+                    elements={participantElements}
+                    excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
+                    viewModeEnabled={false}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

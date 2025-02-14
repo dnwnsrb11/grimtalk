@@ -31,6 +31,13 @@ export const MyPage = () => {
     '마이 페이지': <MemberSettingsSection />,
   };
 
+  const handleCreateLecture = () => {
+    setSelectedMenu('내 강의 생성하기');
+  };
+
+  const handleLectureCreated = () => {
+    setSelectedMenu('내 강의'); // 강의 생성 후 "내 강의"로 변경
+  };
   const MENU_COMPONENTS = {
     공통메뉴: COMMON_MENU,
     수강생: {
@@ -45,17 +52,15 @@ export const MyPage = () => {
       '질문 확인': <CheckBoardSection />,
 
       '내 강의': <MyLectureSection />,
-      '내 강의 생성하기': <CreateLectureSection />,
+      '내 강의 생성하기': (
+        <CreateLectureSection userDataId={userData.id} onBack={handleLectureCreated} />
+      ),
     },
     default: <div>준비 중입니다.</div>,
   };
 
   const selectedMenuContent = () => {
     return MENU_COMPONENTS[selectedProfileMenu][selectedMenu] || MENU_COMPONENTS.default;
-  };
-
-  const handleCreateLecture = () => {
-    setSelectedMenu('내 강의 생성하기');
   };
 
   return (

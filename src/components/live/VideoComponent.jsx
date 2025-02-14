@@ -18,7 +18,8 @@ export const VideoComponent = ({ track, participantIdentity, local = false }) =>
   return (
     <div id={'camera-' + participantIdentity} className="video-container">
       <div className="participant-data">
-        <p>{participantIdentity + (local ? ' (You)' : '')}</p>
+        {/* 방장 이름 표시 */}
+        {/* <p>{participantIdentity + (local ? ' (You)' : '')}</p>  */}
       </div>
       <video ref={videoElement} id={track.sid}></video>
     </div>
