@@ -32,8 +32,12 @@ export const LectureItem = ({ isMyPage = false, search }) => {
 
   return (
     <div className="relative cursor-pointer rounded-lg p-3" onClick={handleClick}>
-      <div className="h-[160px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-        <img src={searchImage} className="h-full w-full object-cover" alt="검색 이미지" />
+      <div className="max-h-[160px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+        <img
+          src={searchImage}
+          className="h-full max-h-[160px] w-full object-contain"
+          alt="검색 이미지"
+        />
       </div>
 
       <div>
