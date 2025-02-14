@@ -7,6 +7,34 @@ import { useEffect } from 'react';
 import { RightArrowIcon } from '@/components/common/icons';
 import { VideoComponent } from '@/components/live/VideoComponent';
 
+// 이름을 해시화하여 색상을 생성하는 함수
+const getColorFromName = (name) => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  // 미리 정의된 색상 배열 (보기 좋은 색상들로 구성)
+  const colors = [
+    '#FF6B6B',
+    '#4ECDC4',
+    '#45B7D1',
+    '#96CEB4',
+    '#FFEEAD',
+    '#D4A5A5',
+    '#9B59B6',
+    '#3498DB',
+    '#E67E22',
+    '#2ECC71',
+    '#1ABC9C',
+    '#F1C40F',
+  ];
+
+  // 해시값을 사용하여 색상 배열에서 색상 선택
+  const colorIndex = Math.abs(hash) % colors.length;
+  return colors[colorIndex];
+};
+
 export const CustomChat = ({
   onLeave,
   isCreator,
@@ -23,8 +51,13 @@ export const CustomChat = ({
     entries.forEach((entry) => {
       // 이름에서 'chat ' 접두사 제거
       const nameElement = entry.querySelector('.lk-participant-name');
-      if (nameElement && nameElement.textContent.startsWith('chat ')) {
-        nameElement.textContent = nameElement.textContent.substring(5);
+      if (nameElement) {
+        if (nameElement.textContent.startsWith('chat ')) {
+          nameElement.textContent = nameElement.textContent.substring(5);
+        }
+        // 이름에 따른 색상 적용
+        const userName = nameElement.textContent;
+        nameElement.style.color = getColorFromName(userName);
       }
 
       // 빈 meta-data 요소 제거
@@ -56,6 +89,8 @@ export const CustomChat = ({
             const metaData = document.createElement('span');
             metaData.className = 'lk-meta-data';
             const newName = prevName.cloneNode(true);
+            // 이전 메시지의 색상을 유지
+            newName.style.color = prevName.style.color;
             metaData.appendChild(newName);
             entry.insertBefore(metaData, entry.firstChild);
           }
