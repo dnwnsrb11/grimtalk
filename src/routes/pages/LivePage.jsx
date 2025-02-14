@@ -249,7 +249,7 @@ export const LivePage = () => {
           />
         </div>
       ) : (
-        <div className="flex flex-col">
+        <div className="flex h-[calc(100vh-50px)] flex-col">
           {/* 겹치기 토글 버튼 */}
           <div className="mb-4 flex justify-center">
             <button
@@ -262,24 +262,44 @@ export const LivePage = () => {
 
           {isOverlayMode ? (
             // 겹치기 모드
-            <div className="relative h-full">
+            <div className="relative flex-1">
               <div className="absolute inset-0 z-10">
                 <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
                   <h3 className="mb-4 text-xl font-bold">
                     <span className="text-primary-color">내 </span>화이트보드
                   </h3>
-                  <Excalidraw
-                    elements={participantElements}
-                    excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
-                    viewModeEnabled={false}
-                  />
+                  <div className="h-[calc(100%-40px)]">
+                    <Excalidraw
+                      elements={participantElements}
+                      excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
+                      viewModeEnabled={false}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="absolute inset-0 z-0 opacity-50">
+              <div className="z-11 absolute inset-0 opacity-50">
                 <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
                   <h3 className="mb-4 text-xl font-bold">
                     <span className="text-primary-color">방장 </span>화이트보드
                   </h3>
+                  <div className="h-[calc(100%-40px)]">
+                    <Excalidraw
+                      elements={roomCreatorElements}
+                      excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
+                      viewModeEnabled={true}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // 기본 모드
+            <div className="flex h-full gap-2">
+              <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                <h3 className="mb-4 text-xl font-bold">
+                  <span className="text-primary-color">방장 </span>화이트보드
+                </h3>
+                <div className="h-[calc(100%-40px)]">
                   <Excalidraw
                     elements={roomCreatorElements}
                     excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
@@ -287,29 +307,17 @@ export const LivePage = () => {
                   />
                 </div>
               </div>
-            </div>
-          ) : (
-            // 기본 모드
-            <div className="whiteboard-container flex gap-2">
-              <div className="excalidraw-wrapper flex-1 rounded-xl border border-gray-border-color bg-white p-4">
-                <h3 className="mb-4 text-xl font-bold">
-                  <span className="text-primary-color">방장 </span>화이트보드
-                </h3>
-                <Excalidraw
-                  elements={roomCreatorElements}
-                  excalidrawAPI={(api) => setRoomCreatorExcalidrawAPI(api)}
-                  viewModeEnabled={true}
-                />
-              </div>
-              <div className="excalidraw-wrapper flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+              <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
                 <h3 className="mb-4 text-xl font-bold">
                   <span className="text-primary-color">내 </span>화이트보드
                 </h3>
-                <Excalidraw
-                  elements={participantElements}
-                  excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
-                  viewModeEnabled={false}
-                />
+                <div className="h-[calc(100%-40px)]">
+                  <Excalidraw
+                    elements={participantElements}
+                    excalidrawAPI={(api) => setParticipantExcalidrawAPI(api)}
+                    viewModeEnabled={false}
+                  />
+                </div>
               </div>
             </div>
           )}
