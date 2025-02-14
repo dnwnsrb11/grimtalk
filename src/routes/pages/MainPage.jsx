@@ -1,4 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
 import { useFavoriteRoomListTop4 } from '@/api/live';
@@ -7,15 +9,49 @@ import { Lecture } from '@/components/mainPages/home/Lecture';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { PopularInstructor } from '@/components/mainPages/home/PopularInstructor';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useLiveStore } from '@/store/useLiveStore';
+import { participantUtils } from '@/utils/participantUtils';
 
 export const MainPage = () => {
-  const { id } = useAuthStore((state) => state.userData);
+  const navigate = useNavigate();
+  const id = useAuthStore((state) => state.userData.id);
+  const isLogin = useAuthStore((state) => state.isLogin);
+  const { setRoomCreator } = useLiveStore();
 
-  const {
-    data: availableFavoriteLiveRoomsTop4,
-    isLoading: isLoadingFavoriteTop4,
-    error: errorFavoriteTop4,
-  } = useFavoriteRoomListTop4(id);
+  const { data: popularLiveRooms, isLoading, error } = useFavoriteRoomListTop4(id, isLogin);
+
+  const handleJoinLive = async (liveRoom) => {
+    if (!isLogin) {
+      navigate('/login');
+      toast.error('로그인 후 이용해주세요.');
+      return;
+    }
+
+    if (isLogin && !liveRoom.favorite) {
+      toast.error('즐겨찾기를 먼저 해주세요!');
+      navigate(`/lecture/${liveRoom.lectureId}`);
+      return;
+    }
+
+    try {
+      localStorage.setItem(
+        'roomCreator',
+        participantUtils.removeTokenPrefix(liveRoom.instructorName),
+      );
+      setRoomCreator(participantUtils.removeTokenPrefix(liveRoom.instructorName));
+      navigate(`/live/${liveRoom.curriculumName}`, {
+        state: {
+          curriculumId: liveRoom.curriculumId,
+        },
+      });
+    } catch (error) {
+      toast.error('방 참여에 실패했습니다.');
+    }
+  };
+
+  const handleLectureClick = (lectureId) => {
+    navigate(`/lecture/${lectureId}`);
+  };
 
   // 인기 강의 조회
   const { data: popularLectures, isLoading: isLecturesLoading } = useQuery({
@@ -53,16 +89,20 @@ export const MainPage = () => {
             인기 있는 <span className="text-primary-color">라이브</span>
           </h2>
           <div className="flex gap-3">
-            {!availableLiveRoomsTop4 || availableLiveRoomsTop4.length === 0 ? (
+            {!popularLiveRooms || popularLiveRooms.length === 0 ? (
               <div className="flex h-[200px] w-full items-center justify-center rounded-lg bg-gray-50">
                 <p className="text-lg font-medium text-gray-500">
                   현재 진행중인 인기 라이브가 없습니다.
                 </p>
               </div>
             ) : (
-              availableLiveRoomsTop4.map((LiveRoom, index) => (
+              popularLiveRooms.map((liveRoom, index) => (
                 <div key={index} className="mb-[40px] w-[calc(25%_-_0.75rem)]">
-                  <LiveList LiveRoom={LiveRoom} />
+                  <LiveList
+                    LiveRoom={liveRoom}
+                    onJoinClick={() => handleJoinLive(liveRoom)}
+                    onLectureClick={handleLectureClick}
+                  />
                 </div>
               ))
             )}
