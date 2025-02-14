@@ -220,6 +220,10 @@ body {
   color: #374151;
   font-weight: 600;
   white-space: nowrap; /* 추가 보호 장치 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
 
 .lk-message-body {
