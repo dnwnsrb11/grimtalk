@@ -29,32 +29,38 @@ const liveApi = {
     return response.data.token;
   },
 
-  // 라이브 방 목록 조회
-  getRoomList: async () => {
-    const response = await _axios.get('/rooms');
+  // 라이브 즐겨찾기 유/무 방 목록 조회
+  getFavoriteRoomList: async (userId) => {
+    const response = await _axios.get(`/rooms/v2`, {
+      params: { userId },
+    });
     return response.data;
   },
 
-  getRoomListTop4: async () => {
-    const response = await _axios.get('/rooms/top4');
+  getFavoriteRoomListTop4: async (userId) => {
+    const response = await _axios.get(`/rooms/top4/v2`, {
+      params: { userId },
+    });
     return response.data;
   },
 };
 
 // React Query를 사용한 방 목록 자동 갱신 Hook
-const useRoomList = () => {
+const useFavoriteRoomList = (userId) => {
   return useQuery({
-    queryKey: ['rooms'],
-    queryFn: liveApi.getRoomList,
-    refetchInterval: 5000, // - 5초마다 자동으로 방 목록 업데이트
-    staleTime: 1000 * 60, // - 1분간 최신 데이터 유지
+    queryKey: ['rooms', userId], // userId를 키에 포함
+    queryFn: () => liveApi.getFavoriteRoomList(userId), // userId 전달
+    refetchInterval: 5000,
+    staleTime: 1000 * 60,
   });
 };
 
-const useRoomListTop4 = () => {
+const useFavoriteRoomListTop4 = (userId) => {
   return useQuery({
-    queryKey: ['roomsTop4'],
-    queryFn: liveApi.getRoomListTop4,
+    queryKey: ['roomsTop4', userId],
+    queryFn: () => liveApi.getFavoriteRoomListTop4(userId),
+    refetchInterval: 5000,
+    staleTime: 1000 * 60,
   });
 };
 
@@ -125,7 +131,7 @@ export {
   joinLive,
   leaveLive,
   liveApi,
+  useFavoriteRoomList,
+  useFavoriteRoomListTop4,
   useLiveCount,
-  useRoomList,
-  useRoomListTop4,
 };

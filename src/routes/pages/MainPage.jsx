@@ -1,18 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { _axios } from '@/api/instance';
-import { useRoomListTop4 } from '@/api/live';
+import { useFavoriteRoomListTop4 } from '@/api/live';
 import { Banner } from '@/components/mainPages/home/Banner';
 import { Lecture } from '@/components/mainPages/home/Lecture';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { PopularInstructor } from '@/components/mainPages/home/PopularInstructor';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const MainPage = () => {
+  const { id } = useAuthStore((state) => state.userData);
+
   const {
-    data: availableLiveRoomsTop4,
-    isLoading: isLoadingTop4,
-    error: errorTop4,
-  } = useRoomListTop4();
+    data: availableFavoriteLiveRoomsTop4,
+    isLoading: isLoadingFavoriteTop4,
+    error: errorFavoriteTop4,
+  } = useFavoriteRoomListTop4(id);
 
   // 인기 강의 조회
   const { data: popularLectures, isLoading: isLecturesLoading } = useQuery({
