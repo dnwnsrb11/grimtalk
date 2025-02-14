@@ -269,7 +269,7 @@ body {
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
-  z-index: 1000;
+  z-index: 15;
   display: flex;
   flex-direction: column;
   overflow: hidden; /* 자식 요소가 넘치지 않도록 설정 */
