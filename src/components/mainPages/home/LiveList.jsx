@@ -75,10 +75,10 @@ export const LiveList = ({ LiveRoom }) => {
           >
             <h4 className="text-base font-medium">{curriculumName}</h4>
           </button>
-          <div className="mt-1 flex items-center gap-2">
-            {instructorName}
+          <div className="mt-1 flex items-center gap-2 ">
+            <p className="text-lg font-bold">{instructorName}</p>
             <div className="flex flex-wrap gap-1.5">
-              {hashtags?.map((tag, index) => (
+              {hashtags?.slice(0, 2).map((tag, index) => (
                 <div
                   key={index}
                   className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
