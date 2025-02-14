@@ -92,11 +92,18 @@ const leaveLive = async (roomId, userId) => {
 const getLiveCount = async (roomId) => {
   try {
     const response = await _axiosAuth.get(`${LIVE_JOIN_STATUS_URL}/${roomId}/count`);
-    return response.data;
+    return response.data - 1; // 방장 제외
   } catch (error) {
     console.error('참여자 수 조회 실패:', error);
     throw error;
   }
+};
+
+const useLiveCount = (roomId) => {
+  return useQuery({
+    queryKey: ['liveCount', roomId],
+    queryFn: () => getLiveCount(roomId),
+  });
 };
 
 const InstructorLeaveLive = async (curriculumId, userId) => {
@@ -114,11 +121,11 @@ const InstructorLeaveLive = async (curriculumId, userId) => {
 
 export {
   endLive,
-  getLiveCount,
   InstructorLeaveLive,
   joinLive,
   leaveLive,
   liveApi,
+  useLiveCount,
   useRoomList,
   useRoomListTop4,
 };
