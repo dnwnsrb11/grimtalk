@@ -7,7 +7,7 @@ const liveApi = {
   // 강사용 토큰 발급 (방 생성 시 사용)
   getInstructorToken: async (curriculumSubject, userNickname) => {
     const response = await _axiosAuth.post('/token/instructor', {
-      curriculumId: 1,
+      curriculumId: 7,
       curriculumSubject,
       userId: 1,
       userNickname,
