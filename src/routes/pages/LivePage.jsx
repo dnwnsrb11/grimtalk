@@ -109,8 +109,12 @@ export const LivePage = () => {
 
   // 요소를 하나씩 추가하거나 최신화하는 함수(출력)
   const updateOrAddElementToArray = (newElement) => {
+    console.log('🔄 updateOrAddElementToArray 실행. 새로운 요소:', newElement);
+    console.log('현재 화이트보드 요소들:', receivedElementsRef.current);
+
     // 삭제된 요소 처리
     if (newElement.type === 'deleted') {
+      console.log('❌ 삭제 요소 처리 중:', newElement);
       // 삭제할 요소의 인덱스 찾기
       const deleteIndex = receivedElementsRef.current.findIndex(
         (element) => element.id === newElement.id,
@@ -121,8 +125,31 @@ export const LivePage = () => {
         receivedElementsRef.current = receivedElementsRef.current.filter(
           (_, index) => index !== deleteIndex,
         );
+        console.log('삭제 후 화이트보드 요소들:', receivedElementsRef.current);
       }
       return; // 삭제 처리 후 함수 종료
+    }
+
+    // 복원된 요소 처리
+    if (newElement.type === 'restored') {
+      console.log('🔄 복원 요소 처리 중:', newElement);
+      const existingIndex = receivedElementsRef.current.findIndex(
+        (element) => element.id === newElement.id,
+      );
+
+      if (existingIndex === -1) {
+        // 복원된 요소 추가
+        receivedElementsRef.current = [
+          ...receivedElementsRef.current,
+          {
+            ...newElement,
+            type: newElement.elementType, // 원래 타입으로 복원
+            isDeleted: false,
+          },
+        ];
+        console.log('복원 후 화이트보드 요소들:', receivedElementsRef.current);
+      }
+      return;
     }
 
     // 기존 로직: 일반 요소 추가/업데이트
@@ -132,11 +159,14 @@ export const LivePage = () => {
 
     if (existingIndex !== -1) {
       // 기존 요소가 있으면 최신화
+      console.log('🔄 기존 요소 업데이트:', newElement);
       receivedElementsRef.current[existingIndex] = newElement;
     } else {
       // 없으면 새로 추가
+      console.log('➕ 새 요소 추가:', newElement);
       receivedElementsRef.current = [...receivedElementsRef.current, newElement];
     }
+    console.log('최종 화이트보드 요소들:', receivedElementsRef.current);
   };
 
   // STOMP 연결 관리
@@ -155,25 +185,23 @@ export const LivePage = () => {
       setIsStompReady(true);
       setIsConnected(true);
 
-      // 수강생 측 구독 부분 (setupStompConnection 내부)
       if (!participantUtils.isCreator(nickname)) {
         client.subscribe(`/pub/receive/${curriculumSubject}`, (message) => {
           try {
-            // console.log('📩 수신된 원본 메시지:', message.body);
-
             const data = JSON.parse(message.body);
-            console.log('🎨 파싱된 드로잉 데이터:', data.message);
+            console.log('📥 수신된 드로잉 데이터:', data.message);
 
             if (data.message.type === 'drawing') {
-              console.log('✏️ 화이트보드에 적용할 elements:', data.message.elements);
-              // 하나씩 받은 요소를 배열에 추가하거나 최신화
-              const latestElement = data.message.elements[data.message.elements.length - 1];
-              updateOrAddElementToArray(latestElement);
-
-              // 배열에 쌓인 전체 요소로 화면 업데이트
-              roomCreatorAPIRef.current?.updateScene({
-                elements: receivedElementsRef.current, // 최신화된 전체 요소 배열 전달
+              console.log('🎨 화이트보드에 적용할 요소들:', data.message.elements);
+              // 메시지의 모든 요소를 순회하며 업데이트 처리
+              data.message.elements.forEach((el) => {
+                updateOrAddElementToArray(el);
               });
+              console.log('🔄 화이트보드 업데이트 전 현재 요소들:', receivedElementsRef.current);
+              roomCreatorAPIRef.current?.updateScene({
+                elements: receivedElementsRef.current,
+              });
+              console.log('✅ 화이트보드 업데이트 완료');
             }
           } catch (error) {
             console.error('❌ 메시지 파싱 실패:', error);
@@ -389,41 +417,53 @@ export const LivePage = () => {
           <h3>내 화이트보드</h3>
           <Excalidraw
             onChange={(elements) => {
-              // 1. 삭제된 요소 체크
-              const deletedElement = elements.find((currentEl) => {
+              console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
+
+              // 이전 상태와 비교하여 삭제된 요소 찾기
+              const deletedElements = elements.filter((currentEl) => {
                 const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
                 return prevEl && !prevEl.isDeleted && currentEl.isDeleted;
               });
+              console.log('🗑️ 감지된 삭제된 요소들:', deletedElements);
 
-              // 삭제된 요소가 있다면 처리
-              if (deletedElement) {
-                console.log('방금 삭제된 요소:', deletedElement);
-                handleInstructorDrawingChange([
-                  {
-                    ...deletedElement,
-                    type: 'deleted',
-                  },
-                ]);
+              // 이전 상태와 비교하여 복원된(undo) 요소 찾기
+              const restoredElements = elements.filter((currentEl) => {
+                const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
+                return prevEl && prevEl.isDeleted && !currentEl.isDeleted;
+              });
+              console.log('🔄 감지된 복원된 요소들:', restoredElements);
+
+              // 복원된 요소가 있을 경우, 모든 복원된 요소를 한 번에 전송
+              if (restoredElements.length > 0) {
+                console.log('🔄 복원된 요소들 전송:', restoredElements);
+                const allRestoredElements = restoredElements.map((el) => ({
+                  ...el,
+                  type: 'restored',
+                  elementType: el.type,
+                }));
+                handleInstructorDrawingChange(allRestoredElements);
               }
-
-              // 2. 일반적인 그리기 요소 처리
-              const validElements = elements.filter((element) => !element.isDeleted);
-              if (validElements.length > 0) {
-                const latestElement = validElements[validElements.length - 1];
-                if (!deletedElement) {
-                  console.log('가장 최근에 추가된 요소:', latestElement);
+              // 삭제 이벤트가 있을 경우, 모든 삭제된 요소를 한 번에 전송
+              else if (deletedElements.length > 0) {
+                console.log('🗑️ 삭제된 요소들 전송:', deletedElements);
+                const allDeletedElements = deletedElements.map((el) => ({
+                  ...el,
+                  type: 'deleted',
+                }));
+                handleInstructorDrawingChange(allDeletedElements);
+              }
+              // 새로 추가/변경된 요소가 있을 경우
+              else {
+                const validElements = elements.filter((element) => !element.isDeleted);
+                if (validElements.length > 0) {
+                  const latestElement = validElements[validElements.length - 1];
+                  console.log('✏️ 새로 추가 또는 업데이트된 요소 전송:', latestElement);
                   handleInstructorDrawingChange([latestElement]);
                 }
               }
 
-              // 3. 마지막 요소 변경 체크 추가
-              const newLastElement = elements[elements.length - 1];
-              if (lastElement !== newLastElement) {
-                setLastElement(newLastElement);
-                console.log(timeHistory);
-              }
-
               setRoomCreatorElements(elements);
+              console.log('💾 최종 roomCreatorElements 상태:', elements);
             }}
             excalidrawAPI={(api) => {
               roomCreatorAPIRef.current = api;
