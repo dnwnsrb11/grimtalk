@@ -18,9 +18,8 @@ import {
   LeveltwoBadgeIcon,
   SubscribeIcon,
 } from '@/components/common/icons';
-
-import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { LiveClock } from '@/components/lecture/LiveClock';
+import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }) => {
