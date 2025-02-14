@@ -16,12 +16,17 @@ export const LectureItem = ({ isMyPage = false, search }) => {
     }
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+  };
+
   const searchImage = isValidImageURL(search?.image) ? search.image : posterNoneImg;
-  const searchSubject = search.subject;
-  const searchNickname = search.nickname;
+  const searchSubject = truncateText(search.subject, 20);
+  const searchNickname = truncateText(search.nickname, 5);
   const searchStar = search.star || 0;
   const searchTags = search.hashtags;
-  const searchCategory = search.category;
+  const searchCategory = truncateText(search.category, 2);
 
   // 카드 클릭 시 이동
   const handleClick = () => {
@@ -32,12 +37,14 @@ export const LectureItem = ({ isMyPage = false, search }) => {
 
   return (
     <div className="relative cursor-pointer rounded-lg p-3" onClick={handleClick}>
-      <div className="max-h-[160px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-        <img
-          src={searchImage}
-          className="h-full max-h-[160px] w-full object-contain"
-          alt="검색 이미지"
-        />
+      <div className="">
+        <div className="max-h-[160px] min-h-[160px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+          <img
+            src={searchImage}
+            className="h-full max-h-[160px] w-full object-contain"
+            alt="검색 이미지"
+          />
+        </div>
       </div>
 
       <div>
@@ -50,7 +57,7 @@ export const LectureItem = ({ isMyPage = false, search }) => {
                 className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
                 key={index}
               >
-                <p className="text-text-gray-color">{tag}</p>
+                <p className="text-text-gray-color">{truncateText(tag, 2)}</p>
               </div>
             ))}
 
