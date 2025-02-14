@@ -19,10 +19,6 @@ import { participantUtils, TOKEN_TYPES } from '@/utils/participantUtils';
 const LIVEKIT_URL = 'wss://www.grimtalk.com:7443/';
 const STOMP_URL = 'wss://www.grimtalk.com:28080/ws';
 
-// 최적화된 값
-const BATCH_INTERVAL = 100; // 더 짧은 배치 간격
-const DRAW_END_DELAY = 300; // 더 빠른 드로잉 종료 감지
-
 export const LivePage = () => {
   const navigate = useNavigate();
   const { curriculumSubject } = useParams();
@@ -33,7 +29,7 @@ export const LivePage = () => {
   const [stompService] = useState(() => new StompService(STOMP_URL));
   const [liveKitService] = useState(() => new LiveKitService(LIVEKIT_URL));
 
-  // 상태 관리
+  // 기본 상태 관리
   const [room, setRoom] = useState(null);
   const [localTrack, setLocalTrack] = useState(null);
   const [remoteTracks, setRemoteTracks] = useState([]);
@@ -46,15 +42,122 @@ export const LivePage = () => {
   const [participantElements, setParticipantElements] = useState([]);
   const roomCreatorAPIRef = useRef(null);
   const participantAPIRef = useRef(null);
+  // 배열에 쌓을 변수 (useRef로 상태 관리)
+  const receivedElementsRef = useRef([]);
 
-  // Drawing state management
-  const elementBufferRef = useRef(new Map()); // 변경된 요소들을 저장할 버퍼
-  const batchTimeoutRef = useRef(null); // 배치 전송 타이머
-  const drawEndTimeoutRef = useRef(null); // 드로잉 종료 감지 타이머
-  const isDrawingRef = useRef(false); // 현재 드로잉 중인지 여부
-  const connectionAttempts = useRef(0);
-  const maxRetries = 3;
-  const retryDelay = 2000;
+  // 요소를 하나씩 추가하거나 최신화하는 함수
+  const updateOrAddElementToArray = (newElement) => {
+    // 삭제된 요소 처리
+    if (newElement.type === 'deleted') {
+      // 삭제할 요소의 인덱스 찾기
+      const deleteIndex = receivedElementsRef.current.findIndex(
+        (element) => element.id === newElement.id,
+      );
+
+      if (deleteIndex !== -1) {
+        // 해당 요소 제거
+        receivedElementsRef.current = receivedElementsRef.current.filter(
+          (_, index) => index !== deleteIndex,
+        );
+      }
+      return; // 삭제 처리 후 함수 종료
+    }
+
+    // 기존 로직: 일반 요소 추가/업데이트
+    const existingIndex = receivedElementsRef.current.findIndex(
+      (element) => element.id === newElement.id,
+    );
+
+    if (existingIndex !== -1) {
+      // 기존 요소가 있으면 최신화
+      receivedElementsRef.current[existingIndex] = newElement;
+    } else {
+      // 없으면 새로 추가
+      receivedElementsRef.current = [...receivedElementsRef.current, newElement];
+    }
+  };
+
+  // STOMP 연결 관리
+  const setupStompConnection = useCallback(() => {
+    if (!stompService || !curriculumSubject) return;
+
+    const client = new Client({
+      brokerURL: STOMP_URL,
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+    });
+
+    client.onConnect = () => {
+      console.log('STOMP Connected');
+      setIsStompReady(true);
+      setIsConnected(true);
+
+      // 수강생 측 구독 부분 (setupStompConnection 내부)
+      if (!participantUtils.isCreator(nickname)) {
+        client.subscribe(`/pub/receive/${curriculumSubject}`, (message) => {
+          try {
+            // console.log('📩 수신된 원본 메시지:', message.body);
+
+            const data = JSON.parse(message.body);
+            console.log('🎨 파싱된 드로잉 데이터:', data.message);
+
+            if (data.message.type === 'drawing') {
+              console.log('✏️ 화이트보드에 적용할 elements:', data.message.elements);
+              // 하나씩 받은 요소를 배열에 추가하거나 최신화
+              const latestElement = data.message.elements[data.message.elements.length - 1];
+              updateOrAddElementToArray(latestElement);
+
+              // 배열에 쌓인 전체 요소로 화면 업데이트
+              roomCreatorAPIRef.current?.updateScene({
+                elements: receivedElementsRef.current, // 최신화된 전체 요소 배열 전달
+              });
+            }
+          } catch (error) {
+            console.error('❌ 메시지 파싱 실패:', error);
+          }
+        });
+      }
+    };
+
+    client.onStompError = (frame) => {
+      console.error('STOMP Error:', frame.headers['message']);
+      setIsStompReady(false);
+      setIsConnected(false);
+    };
+
+    stompService.client = client;
+    client.activate();
+
+    return () => {
+      if (client.active) {
+        client.deactivate();
+      }
+    };
+  }, [stompService, curriculumSubject, nickname]);
+
+  // 드로잉 변경 핸들러 (강사용)
+  const handleInstructorDrawingChange = useCallback(
+    (elements) => {
+      if (!isStompReady || !participantUtils.isCreator(nickname)) return;
+
+      console.log('🎨 강사가 그린 데이터:', elements);
+
+      const message = {
+        type: 'drawing',
+        elements: elements,
+        timestamp: Date.now(),
+      };
+
+      console.log('📤 전송하는 메시지:', message);
+
+      stompService.client.publish({
+        destination: `/sub/send/${curriculumSubject}`,
+        body: JSON.stringify(message),
+      });
+    },
+    [isStompReady, nickname, curriculumSubject, stompService],
+  );
 
   // LiveKit 이벤트 리스너 설정
   useEffect(() => {
@@ -78,251 +181,40 @@ export const LivePage = () => {
     }
   }, [liveKitService]);
 
-  /**
-   * STOMP 메시지 수신 핸들러
-   * 수신된 드로잉 데이터를 화이트보드에 반영
-   */
-  const handleStompMessage = useCallback((message) => {
-    try {
-      const receivedData = JSON.parse(message.body);
-      console.log('Raw message body:', message.body);
-      console.log('Parsed received data:', receivedData);
-
-      // 메시지 구조 확인
-      const messageData = receivedData.message;
-
-      if (messageData && messageData.type === 'excalidraw') {
-        console.log('Message type:', messageData.type);
-        console.log('Message elements:', messageData.elements);
-
-        // 요소 업데이트 로직
-        setRoomCreatorElements((prevElements) => {
-          const updatedElements = [...prevElements];
-          messageData.elements.forEach((newElement) => {
-            const elementIndex = updatedElements.findIndex((el) => el.id === newElement.id);
-            if (elementIndex !== -1) {
-              updatedElements[elementIndex] = newElement;
-            } else {
-              updatedElements.push(newElement);
-            }
-          });
-
-          // API를 통한 장면 업데이트
-          if (roomCreatorAPIRef.current) {
-            roomCreatorAPIRef.current.updateScene({
-              elements: updatedElements,
-              appState: {
-                viewBackgroundColor: '#ffffff',
-                currentItemStrokeColor: '#000000',
-                currentItemBackgroundColor: '#ffffff',
-                viewModeEnabled: true,
-                theme: 'light',
-              },
-            });
-          }
-
-          return updatedElements;
-        });
-      }
-    } catch (error) {
-      console.error('❌ Error handling STOMP message:', error);
-    }
-  }, []);
-
-  /**
-   * 드로잉 요소들을 서버로 전송하는 함수
-   * @param {Array} elements - 전송할 드로잉 요소들
-   * @returns {boolean} 전송 성공 여부
-   */
-  const sendUpdate = useCallback(
-    (elements) => {
-      if (!stompService?.client?.active || !isStompReady || !participantUtils.isCreator(nickname)) {
-        console.log('STOMP not ready or not authorized');
-        return false;
-      }
-
-      try {
-        const message = {
-          type: 'excalidraw',
-          elements: elements,
-          sender: nickname,
-          timestamp: Date.now(),
-        };
-
-        console.log('🔵 Sending batch update:', message);
-
-        stompService.client.publish({
-          destination: `/sub/send/${curriculumSubject}`,
-          body: JSON.stringify(message),
-        });
-        return true;
-      } catch (error) {
-        console.error('❌ Failed to send update:', error);
-        return false;
-      }
-    },
-    [stompService, isStompReady, curriculumSubject, nickname],
-  );
-
-  /**
-   * 배치 전송을 실행하는 함수
-   * 버퍼에 있는 모든 요소를 전송하고 버퍼를 비움
-   */
-  const executeBatchUpdate = useCallback(() => {
-    if (elementBufferRef.current.size > 0) {
-      const elements = Array.from(elementBufferRef.current.values());
-      const success = sendUpdate(elements);
-
-      if (success) {
-        elementBufferRef.current.clear();
-      }
-    }
-  }, [sendUpdate]);
-
-  /**
-   * 드로잉 변경을 처리하는 함수
-   * @param {Array} elements - 변경된 Excalidraw 요소들
-   */
-  const handleDrawingChange = useCallback(
-    (elements) => {
-      console.log('✏️ Drawing changed:', elements);
-      const activeElements = elements.filter((el) => !el.isDeleted);
-      const latestElement = activeElements[activeElements.length - 1];
-
-      if (!latestElement) return;
-
-      // 새로운 요소를 버퍼에 저장
-      elementBufferRef.current.set(latestElement.id, latestElement);
-
-      // 이전 타이머들 초기화
-      if (batchTimeoutRef.current) {
-        clearTimeout(batchTimeoutRef.current);
-      }
-      if (drawEndTimeoutRef.current) {
-        clearTimeout(drawEndTimeoutRef.current);
-      }
-
-      // 드로잉 시작 상태 갱신
-      if (!isDrawingRef.current) {
-        isDrawingRef.current = true;
-      }
-
-      // 배치 업데이트 예약
-      batchTimeoutRef.current = setTimeout(() => {
-        executeBatchUpdate();
-      }, BATCH_INTERVAL);
-
-      // 드로잉 종료 감지 타이머 설정
-      drawEndTimeoutRef.current = setTimeout(() => {
-        isDrawingRef.current = false;
-        executeBatchUpdate(); // 드로잉 종료 시 마지막 업데이트 실행
-      }, DRAW_END_DELAY);
-    },
-    [executeBatchUpdate],
-  );
-
-  // STOMP 연결 및 구독 설정
+  // STOMP 연결 설정
   useEffect(() => {
-    if (stompService && curriculumSubject) {
-      const connectStomp = () => {
-        // 기존 연결 정리
-        if (stompService.client?.active) {
-          stompService.client.deactivate();
-        }
+    const cleanup = setupStompConnection();
+    return () => {
+      if (cleanup) cleanup();
+    };
+  }, [setupStompConnection]);
 
-        stompService.client = new Client({
-          brokerURL: STOMP_URL,
-          reconnectDelay: retryDelay,
-          heartbeatIncoming: 4000,
-          heartbeatOutgoing: 4000,
-          debug: (str) => {
-            console.log('STOMP Debug:', str);
-          },
-        });
-
-        stompService.client.onConnect = (frame) => {
-          console.log('STOMP Connected:', frame);
-          setIsStompReady(true);
-          setIsConnected(true);
-          connectionAttempts.current = 0;
-
-          if (!participantUtils.isCreator(nickname)) {
-            stompService.client.subscribe(`/pub/receive/${curriculumSubject}`, handleStompMessage);
-          }
-        };
-
-        stompService.client.onStompError = (frame) => {
-          console.error('STOMP error:', frame.headers['message']);
-          setIsStompReady(false);
-          setIsConnected(false);
-
-          if (connectionAttempts.current < maxRetries) {
-            connectionAttempts.current += 1;
-            setTimeout(connectStomp, retryDelay);
-          }
-        };
-
-        stompService.client.onWebSocketClose = () => {
-          console.log('WebSocket Connection Closed');
-          setIsStompReady(false);
-          setIsConnected(false);
-
-          if (connectionAttempts.current < maxRetries) {
-            connectionAttempts.current += 1;
-            setTimeout(connectStomp, retryDelay);
-          }
-        };
-
-        try {
-          stompService.client.activate();
-        } catch (error) {
-          console.error('Failed to activate STOMP client:', error);
-          if (connectionAttempts.current < maxRetries) {
-            connectionAttempts.current += 1;
-            setTimeout(connectStomp, retryDelay);
-          }
-        }
-      };
-
-      connectStomp();
-
-      return () => {
-        if (stompService.client?.active) {
-          stompService.client.deactivate();
-          setIsStompReady(false);
-          setIsConnected(false);
-        }
-      };
-    }
-  }, [stompService, curriculumSubject, nickname, handleStompMessage]);
-
-  // 토큰 발급 함수
-  const getTokens = async (isCreator = false) => {
-    const tokenFunction = isCreator ? liveApi.getInstructorToken : liveApi.getStudentToken;
-
-    const [rtcToken, chatToken] = await Promise.all([
-      tokenFunction(
-        curriculumSubject,
-        participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
-      ),
-      tokenFunction(
-        curriculumSubject,
-        participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
-      ),
-    ]);
-
-    if (!rtcToken || !chatToken) {
-      throw new Error('토큰 발급에 실패했습니다.');
-    }
-
-    return { rtcToken, chatToken };
-  };
-
-  // 방 연결 함수
+  // 토큰 발급 및 방 연결 함수
   const connectToRoom = async () => {
     try {
       const isCreator = participantUtils.isCreator(nickname);
-      const { rtcToken, chatToken } = await getTokens(isCreator);
+      const rtcToken = await (isCreator
+        ? liveApi.getInstructorToken(
+            curriculumSubject,
+            participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
+          )
+        : liveApi.getStudentToken(
+            curriculumSubject,
+            participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
+          ));
+      const chatToken = await (isCreator
+        ? liveApi.getInstructorToken(
+            curriculumSubject,
+            participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
+          )
+        : liveApi.getStudentToken(
+            curriculumSubject,
+            participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
+          ));
+
+      if (!rtcToken || !chatToken) {
+        throw new Error('Failed to get tokens');
+      }
 
       liveStore.setTokens(rtcToken, chatToken);
       setChatToken(chatToken);
@@ -337,42 +229,33 @@ export const LivePage = () => {
         liveStore.setLocalTrack(track);
       }
     } catch (error) {
-      console.error('방 연결 중 오류 발생:', error);
-      alert('방 연결에 실패했습니다.');
+      console.error('Failed to connect to room:', error);
+      alert('Failed to connect to room');
       navigate('/create-live-test');
     }
   };
 
-  // Cleanup function
-  const cleanup = useCallback(() => {
-    if (batchTimeoutRef.current) {
-      clearTimeout(batchTimeoutRef.current);
-    }
-    if (drawEndTimeoutRef.current) {
-      clearTimeout(drawEndTimeoutRef.current);
-    }
-    if (elementBufferRef.current) {
-      elementBufferRef.current.clear();
-    }
-    if (room) {
-      room.disconnect();
-      if (stompService.client?.active) {
-        stompService.client.deactivate();
-      }
-      setIsStompReady(false);
-      setIsConnected(false);
-    }
-  }, [room, stompService]);
-
   // 컴포넌트 마운트 시 방 연결
   useEffect(() => {
     connectToRoom();
-    return cleanup;
-  }, [curriculumSubject, cleanup]);
+    return () => {
+      if (room) {
+        room.disconnect();
+      }
+      if (stompService.client?.active) {
+        stompService.client.deactivate();
+      }
+    };
+  }, []);
 
   // 방 나가기 함수
   const leaveRoom = async () => {
-    cleanup();
+    if (room) {
+      room.disconnect();
+    }
+    if (stompService.client?.active) {
+      stompService.client.deactivate();
+    }
     localStorage.removeItem('roomCreator');
     liveStore.reset();
     navigate('/create-live-test');
@@ -420,18 +303,45 @@ export const LivePage = () => {
           </div>
         )}
       </div>
+
       <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
         <CustomChat />
       </LiveKitRoom>
 
       {participantUtils.isCreator(nickname) ? (
-        // 강사용 화이트보드
         <div className="excalidraw-wrapper">
           <h3>내 화이트보드</h3>
           <Excalidraw
-            onChange={(elements, appState) => {
+            onChange={(elements) => {
+              // 1. 삭제된 요소 체크
+              const deletedElement = elements.find((currentEl) => {
+                const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
+                return prevEl && !prevEl.isDeleted && currentEl.isDeleted;
+              });
+
+              // 삭제된 요소가 있다면 처리
+              if (deletedElement) {
+                console.log('방금 삭제된 요소:', deletedElement);
+                handleInstructorDrawingChange([
+                  {
+                    ...deletedElement,
+                    type: 'deleted',
+                  },
+                ]);
+              }
+
+              // 2. 일반적인 그리기 요소 처리 (기존 로직)
+              const validElements = elements.filter((element) => !element.isDeleted);
+              if (validElements.length > 0) {
+                const latestElement = validElements[validElements.length - 1];
+                if (!deletedElement) {
+                  // 삭제 동작이 아닐 때만 그리기 요소 전달
+                  console.log('가장 최근에 추가된 요소:', latestElement);
+                  handleInstructorDrawingChange([latestElement]);
+                }
+              }
+
               setRoomCreatorElements(elements);
-              handleDrawingChange(elements, appState, 'roomCreator');
             }}
             excalidrawAPI={(api) => {
               roomCreatorAPIRef.current = api;
@@ -448,9 +358,7 @@ export const LivePage = () => {
           />
         </div>
       ) : (
-        // 수강생용 화이트보드 컨테이너
         <div className="whiteboard-container" style={{ display: 'flex', gap: '20px' }}>
-          {/* 방장 화이트보드 (읽기 전용) */}
           <div className="excalidraw-wrapper" style={{ flex: 1 }}>
             <h3>방장 화이트보드</h3>
             <Excalidraw
@@ -471,7 +379,6 @@ export const LivePage = () => {
               }}
             />
           </div>
-          {/* 수강생 개인 화이트보드 */}
           <div className="excalidraw-wrapper" style={{ flex: 1 }}>
             <h3>내 화이트보드</h3>
             <Excalidraw
