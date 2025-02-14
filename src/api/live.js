@@ -29,6 +29,17 @@ const liveApi = {
     return response.data.token;
   },
 
+  // 라이브 방 목록 조회
+  getRoomList: async () => {
+    const response = await _axios.get(`/rooms`);
+    return response.data;
+  },
+
+  getRoomListTop4: async () => {
+    const response = await _axios.get(`/rooms/top4`);
+    return response.data;
+  },
+
   // 라이브 즐겨찾기 유/무 방 목록 조회
   getFavoriteRoomList: async (userId) => {
     const response = await _axios.get(`/rooms/v2`, {
@@ -43,6 +54,25 @@ const liveApi = {
     });
     return response.data;
   },
+};
+
+// 라이브 방 목록 조회
+const useRoomList = () => {
+  return useQuery({
+    queryKey: ['rooms'], // userId를 키에 포함
+    queryFn: () => liveApi.getRoomList(), // userId 전달
+    refetchInterval: 5000,
+    staleTime: 1000 * 60,
+  });
+};
+
+const useRoomListTop4 = () => {
+  return useQuery({
+    queryKey: ['roomsTop4'],
+    queryFn: () => liveApi.getRoomListTop4(),
+    refetchInterval: 5000,
+    staleTime: 1000 * 60,
+  });
 };
 
 // React Query를 사용한 방 목록 자동 갱신 Hook
@@ -134,4 +164,6 @@ export {
   useFavoriteRoomList,
   useFavoriteRoomListTop4,
   useLiveCount,
+  useRoomList,
+  useRoomListTop4,
 };
