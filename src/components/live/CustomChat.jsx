@@ -6,7 +6,14 @@ import { useEffect } from 'react';
 
 import { RightArrowIcon } from '@/components/common/icons';
 
-export const CustomChat = ({ onLeave, isCreator, isVisible, setIsVisible, ...props }) => {
+export const CustomChat = ({
+  onLeave,
+  isCreator,
+  isVisible,
+  setIsVisible,
+  curriculumSubject,
+  ...props
+}) => {
   const applyMessageStyles = () => {
     const entries = document.querySelectorAll('.lk-chat-entry');
     entries.forEach((entry) => {
@@ -105,6 +112,10 @@ export const CustomChat = ({ onLeave, isCreator, isVisible, setIsVisible, ...pro
     <div className="chat-container relative">
       {/* 채팅 컴포넌트 */}
       <div className={`chat-wrapper ${isVisible ? 'visible' : 'hidden'}`}>
+        {/* 과목명 표시 */}
+        <h2 className="mb-4 text-xl font-bold">
+          <span className="text-primary-color">{curriculumSubject}</span>
+        </h2>
         {/* 퇴장 버튼과 토글 버튼 컨테이너 */}
         <div className="header-buttons-container mb-4 flex items-center gap-2">
           <button className="toggle-chat-btn" onClick={() => setIsVisible(false)}>

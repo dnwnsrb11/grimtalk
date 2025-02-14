@@ -187,12 +187,6 @@ export const LivePage = () => {
 
   return (
     <div id="room" className="p-6">
-      <div id="room-header" className="mb-6 flex items-center justify-between">
-        <h2 id="room-title" className="text-2xl font-bold">
-          <span className="text-primary-color">라이브</span> {curriculumSubject}
-        </h2>
-      </div>
-
       {/* 비디오 레이아웃 */}
       <div
         id="layout-container"
@@ -230,16 +224,15 @@ export const LivePage = () => {
       </div>
 
       {/* 채팅 컴포넌트 */}
-      <div className="mb-6 rounded-xl border border-gray-border-color bg-white p-4">
-        <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
-          <CustomChat
-            onLeave={leaveRoom}
-            isCreator={participantUtils.isCreator(nickname)}
-            isVisible={isChatVisible}
-            setIsVisible={setIsChatVisible}
-          />
-        </LiveKitRoom>
-      </div>
+      <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
+        <CustomChat
+          onLeave={leaveRoom}
+          isCreator={participantUtils.isCreator(nickname)}
+          isVisible={isChatVisible}
+          setIsVisible={setIsChatVisible}
+          curriculumSubject={curriculumSubject}
+        />
+      </LiveKitRoom>
 
       {/* 채팅 토글 버튼 */}
       {!isChatVisible && (
