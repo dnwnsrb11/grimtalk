@@ -154,7 +154,7 @@ export const CustomChat = ({
       <div className={`chat-wrapper ${isVisible ? 'visible' : 'hidden'}`}>
         {/* 과목명 표시 */}
         <h2 className="mb-4 flex flex-col gap-2 text-xl font-bold">
-          <span className="text-primary-color">{curriculumSubject}</span>
+          <span className="text-primary-color break-keep">{curriculumSubject}</span>
           <div className="flex items-center justify-end gap-1">
             <span className="flex items-center gap-2 text-sm text-text-gray-color">
               <ParticipantCountIcon />
