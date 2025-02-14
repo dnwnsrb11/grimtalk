@@ -36,7 +36,10 @@ export const LectureItem = ({ isMyPage = false, search }) => {
   };
 
   return (
-    <div className="relative cursor-pointer rounded-lg p-3" onClick={handleClick}>
+    <div
+      className="relative cursor-pointer rounded-lg border border-gray-200 p-3"
+      onClick={handleClick}
+    >
       <div className="">
         <div className="max-h-[175px] min-h-[175px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
           <img

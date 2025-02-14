@@ -14,7 +14,7 @@ export const MainPageCategory = () => {
 
   // ✅ 정렬 기준 상태
   const [sortType, setSortType] = useState('recommendation');
-  const [visibleLecturesCount, setVisibleLecturesCount] = useState(4); // 기본적으로 4개만 표시
+  const [visibleLecturesCount, setVisibleLecturesCount] = useState(8); // 기본적으로 4개만 표시
   const [isExpanded, setIsExpanded] = useState(false); // 항목이 확장되었는지 여부
 
   useEffect(() => {
