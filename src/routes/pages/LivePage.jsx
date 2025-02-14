@@ -255,9 +255,6 @@ export const LivePage = () => {
       {/* Excalidraw 컴포넌트 */}
       {participantUtils.isCreator(nickname) ? (
         <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
-          <h3 className="mb-4 text-xl font-bold">
-            내 <span className="text-primary-color">화이트보드</span>
-          </h3>
           <Excalidraw
             onChange={(elements) => {
               setRoomCreatorElements(elements);
