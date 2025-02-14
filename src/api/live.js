@@ -1,17 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { _axiosAuth } from '@/api/instance';
+import { _axios, _axiosAuth } from '@/api/instance';
 
 const LIVE_JOIN_STATUS_URL = import.meta.env.VITE_LIVE_JOIN_STATUS_URL;
 
 // LiveKit 관련 API 호출 모음
 const liveApi = {
   // 강사용 토큰 발급 (방 생성 시 사용)
-  getInstructorToken: async (curriculumSubject, userNickname) => {
+  getInstructorToken: async (curriculumId, curriculumSubject, userId, userNickname) => {
     const response = await _axiosAuth.post('/token/instructor', {
-      curriculumId: 1,
+      curriculumId,
       curriculumSubject,
-      userId: 1,
+      userId,
       userNickname,
       isLive: true,
     });
@@ -19,11 +19,11 @@ const liveApi = {
   },
 
   // 학생용 토큰 발급 (방 참여 시 사용)
-  getStudentToken: async (curriculumSubject, userNickname) => {
+  getStudentToken: async (curriculumId, curriculumSubject, userId, userNickname) => {
     const response = await _axiosAuth.post('/token/student', {
-      curriculumId: 1,
+      curriculumId,
       curriculumSubject,
-      userId: 1,
+      userId,
       userNickname,
     });
     return response.data.token;
@@ -31,8 +31,13 @@ const liveApi = {
 
   // 라이브 방 목록 조회
   getRoomList: async () => {
-    const response = await _axiosAuth.get('/memory/rooms');
-    return response.data;
+    const response = await _axios.get('/rooms');
+    return response.data.body.data;
+  },
+
+  getRoomListTop4: async () => {
+    const response = await _axios.get('/rooms/top4');
+    return response.data.body.data;
   },
 };
 
@@ -43,6 +48,13 @@ const useRoomList = () => {
     queryFn: liveApi.getRoomList,
     refetchInterval: 5000, // - 5초마다 자동으로 방 목록 업데이트
     staleTime: 1000 * 60, // - 1분간 최신 데이터 유지
+  });
+};
+
+const useRoomListTop4 = () => {
+  return useQuery({
+    queryKey: ['roomsTop4'],
+    queryFn: liveApi.getRoomListTop4,
   });
 };
 
@@ -87,4 +99,26 @@ const getLiveCount = async (roomId) => {
   }
 };
 
-export { endLive, getLiveCount, joinLive, leaveLive, liveApi, useRoomList };
+const InstructorLeaveLive = async (curriculumId, userId) => {
+  try {
+    const response = await _axiosAuth.post('/live/leave/instructor', {
+      curriculumId,
+      userId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('강사 라이브 퇴장 실패:', error);
+    throw error;
+  }
+};
+
+export {
+  endLive,
+  getLiveCount,
+  InstructorLeaveLive,
+  joinLive,
+  leaveLive,
+  liveApi,
+  useRoomList,
+  useRoomListTop4,
+};
