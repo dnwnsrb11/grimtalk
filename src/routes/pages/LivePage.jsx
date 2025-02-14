@@ -17,10 +17,11 @@ import { useLiveStore } from '@/store/useLiveStore';
 import { participantUtils, TOKEN_TYPES } from '@/utils/participantUtils';
 
 const LIVEKIT_URL = 'wss://www.grimtalk.com:7443/';
+// const STOMP_URL = 'ws://localhost:38080/ws';
 const STOMP_URL = 'wss://www.grimtalk.com:28080/ws';
 
 // Constants for update timing
-const ACTIVE_DRAWING_INTERVAL = 200; // Send updates every 100ms during active drawing
+const ACTIVE_DRAWING_INTERVAL = 100; // Send updates every 100ms during active drawing
 const COMPLETED_ACTION_DELAY = 500; // Wait 500ms after drawing stops before sending final update
 
 export const LivePage = () => {
@@ -79,57 +80,37 @@ export const LivePage = () => {
     }
   }, [liveKitService]);
 
+  // STOMP 메시지 처리 함수
   const handleStompMessage = useCallback((message) => {
     try {
-      console.log('🟢 Received STOMP message:', message.body);
 
       const receivedData = JSON.parse(message.body);
       const excalidrawData = receivedData.message || receivedData;
 
-      console.log('📩 Parsed STOMP message:', excalidrawData);
+      console.log('📩 Parsed STOMP message:', excalidrawData); // 파싱된 데이터 로그
 
       if (excalidrawData.type === 'excalidraw' && excalidrawData.boardType === 'roomCreator') {
-        // 새로운 요소 추출
-        const newElement = excalidrawData.elements[0];
+        const activeElements = excalidrawData.elements.filter((el) => !el.isDeleted);
+        setRoomCreatorElements(activeElements);
 
-        if (!newElement) return;
-
-        // 기존 요소들과 새로운 요소를 합치기
-        setRoomCreatorElements((prevElements) => {
-          // 같은 ID를 가진 요소가 있는지 확인
-          const elementIndex = prevElements.findIndex((el) => el.id === newElement.id);
-
-          if (elementIndex !== -1) {
-            // 기존 요소 업데이트
-            const updatedElements = [...prevElements];
-            updatedElements[elementIndex] = newElement;
-            return updatedElements;
-          } else {
-            // 새로운 요소 추가
-            return [...prevElements, newElement];
-          }
-        });
-
-        // 화면 업데이트
         if (roomCreatorAPIRef.current) {
-          roomCreatorAPIRef.current.updateScene((prevScene) => ({
-            ...prevScene,
-            elements: roomCreatorElements,
+          roomCreatorAPIRef.current.updateScene({
+            elements: activeElements,
             appState: {
-              ...prevScene.appState,
               viewBackgroundColor: '#ffffff',
               currentItemStrokeColor: '#000000',
               currentItemBackgroundColor: '#ffffff',
               viewModeEnabled: true,
               theme: 'light',
             },
-          }));
+          });
         }
       }
     } catch (error) {
       console.error('❌ Error handling STOMP message:', error);
     }
   }, []);
+
 
   // Send updates to other participants
   const sendUpdate = useCallback(
@@ -140,16 +121,11 @@ export const LivePage = () => {
       }
 
       try {
-        // Get only the most recently added/modified element
         const activeElements = elements.filter((el) => !el.isDeleted);
-        const latestElement = activeElements[activeElements.length - 1];
-
-        if (!latestElement) return true; // No new elements to send
-
         const message = {
           type: 'excalidraw',
           boardType,
-          elements: [latestElement], // Send only the latest element
+          elements: activeElements,
           appState: {
             ...appState,
             viewBackgroundColor: '#ffffff',
@@ -160,7 +136,7 @@ export const LivePage = () => {
           timestamp: Date.now(),
         };
 
-        console.log('🔵 Sending STOMP message:', message);
+        console.log('🔵 Sending STOMP message:', message); // 메시지 송신 로그
 
         stompService.client.publish({
           destination: `/sub/send/${curriculumSubject}`,
@@ -174,6 +150,7 @@ export const LivePage = () => {
     },
     [stompService, isStompReady, curriculumSubject, nickname],
   );
+
 
   // Handle active drawing updates
   const startActiveUpdates = useCallback(() => {
