@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 // 마이페이지의 유저 소개 섹션을 담당하는 컴포넌트
 export const MemberIntroSection = ({ joinId }) => {
+  const queryClint = useQueryClient();
   const MAX_LENGTH = 255; // 글자 수 제한
   const [isEditing, setIsEditing] = useState(false);
   const [introText, setIntroText] = useState(''); // 초기 소개글 상태
@@ -47,14 +48,19 @@ export const MemberIntroSection = ({ joinId }) => {
       setIntroText(editingText);
       setIsEditing(false);
       toast.success('소개글이 성공적으로 수정되었습니다!');
+      queryClint.invalidateQueries(['useIntroduce'], joinId);
     } catch (error) {
       toast.error('소개글 수정에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
-  const handleEditClick = () => {
-    setEditingText(introText);
-    setIsEditing(true);
+  const handleTextChange = (e) => {
+    const text = e.target.value;
+    if (text.length > MAX_LENGTH) {
+      toast.error(`소개글은 ${MAX_LENGTH}자 이내로 입력해주세요.`);
+      return;
+    }
+    setEditingText(text);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -66,8 +72,8 @@ export const MemberIntroSection = ({ joinId }) => {
           <div className="relative">
             <textarea
               value={editingText}
-              onChange={(e) => setEditingText(e.target.value)}
-              className=" h-[40vh] w-full resize-none overflow-auto rounded-[20px] border border-primary-color p-5 pr-16 transition-[border-color] duration-300 focus:outline-none"
+              onChange={handleTextChange} // ✅ 255자 초과 감지 및 토스트 알림 실행
+              className="h-[40vh] w-full resize-none overflow-auto rounded-[20px] border border-primary-color p-5 pr-16 transition-[border-color] duration-300 focus:outline-none"
               maxLength={MAX_LENGTH}
             />
             {/* 글자 수 표시 - textarea 내부 우측 하단 */}
