@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { _axiosAuth } from '@/api/instance';
 
@@ -53,4 +53,22 @@ const leaveRoom = async () => {
   return response.data;
 };
 
-export { endLive, leaveRoom, liveApi, useRoomList };
+// 강사 스트로크 저장을 위한 커스텀 훅
+const useAddStrokeMutation = (roomId, strokeData) => {
+  return useMutation({
+    mutationFn: async () => {
+      const { data } = await _axiosAuth.post(`/stroke/${roomId}`, strokeData);
+      return data;
+    },
+    onError: (error) => {
+      console.error('스트로크 저장 실패:', error);
+      // 에러 처리 로직 추가 가능
+    },
+    onSuccess: (data) => {
+      console.log('스트로크 저장 성공:', data);
+      // 성공 후 처리 로직 추가 가능
+    },
+  });
+};
+
+export { endLive, leaveRoom, liveApi, useAddStrokeMutation, useRoomList };
