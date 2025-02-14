@@ -90,15 +90,17 @@ export const LectureNoticeDetail = ({ noticeDate, setIsActive, checkInstructor }
           <p className="mt-[60px] text-[18px]">{noticeDetail?.content}</p>
         </div>
       )}
-
-      <hr className="mt-[40px] border border-divider-color" />
+      <div className="mt-[60px] justify-items-end">
+        <div className="text-text-gray-color">작성자 : {noticeDetail?.lectureMemberNickname}</div>
+      </div>
+      <hr className=" border border-divider-color" />
 
       <div className="mt-[20px] flex justify-end gap-3">
         {id === noticeDate.lectureMemberId ? (
           isEditing ? (
             <>
               <button
-                className="rounded-2xl border border-gray-border-color bg-bg-gay-color p-[10px]"
+                className="bg-bg-gay-color rounded-2xl border border-gray-border-color p-[10px]"
                 onClick={() => setIsEditing(false)} // ✨ 수정 취소 버튼
               >
                 <p className="text-[18px] font-semibold">취소</p>
