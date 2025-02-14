@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 
 import { _axiosAuth } from '@/api/instance';
 
-export const CreateLectureSection = () => {
+export const CreateLectureSection = ({ userDataId, onBack }) => {
   const [selectDate, setSelectDate] = useState(false);
   // 강의 정보 상태
   const [lecture, setLecture] = useState({
@@ -108,7 +108,7 @@ export const CreateLectureSection = () => {
     onSuccess: (data) => {
       alert('강의가 성공적으로 생성되었습니다!');
       console.log(data);
-      // window.location.reload();
+      onBack();
     },
     onError: (error) => {
       alert('강의 생성에 실패했습니다.');
@@ -363,7 +363,13 @@ export const CreateLectureSection = () => {
       <hr className="border-divider-color" />
 
       {/* 제출 버튼 */}
-      <div className="flex justify-center">
+      <div className="flex justify-end">
+        <button
+          onClick={() => onBack()}
+          className={`w-[110px] rounded-md px-5 py-3 text-lg font-semibold text-white ${'bg-primary-color hover:bg-primary-color/80'}`}
+        >
+          뒤로가기
+        </button>
         <button
           onClick={handleSubmit}
           className={`w-[110px] rounded-md px-5 py-3 text-lg font-semibold text-white ${'bg-primary-color hover:bg-primary-color/80'}`}
