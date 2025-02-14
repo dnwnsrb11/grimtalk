@@ -646,7 +646,7 @@ body {
 
 .lk-room-container.hidden {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translateX(10px);
   visibility: hidden;
 }
 
