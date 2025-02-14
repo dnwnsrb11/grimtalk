@@ -129,7 +129,18 @@ export const CustomChat = ({
             onClick={onLeave}
             className="flex-1 rounded-lg bg-primary-color px-6 py-2 text-white hover:opacity-90"
           >
-            {isCreator ? '라이브 종료' : '라이브 퇴장'}
+            <div className="flex items-center justify-center gap-2">
+              {isCreator ? (
+                <>
+                  <div className="animate-pulse rounded-full bg-white p-1"></div>
+                  <p>라이브 종료</p>
+                </>
+              ) : (
+                <>
+                  <p>라이브 퇴장</p>
+                </>
+              )}
+            </div>
           </button>
         </div>
         {/* 비디오 컴포넌트 추가 */}
