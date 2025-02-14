@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,16 +19,32 @@ export const MainPage = () => {
   const isLogin = useAuthStore((state) => state.isLogin);
   const { setRoomCreator } = useLiveStore();
 
-  const { data: popularLiveRooms, isLoading, error } = useFavoriteRoomListTop4(id, isLogin);
+  const {
+    data: popularLiveRooms,
+    isLoading,
+    error,
+    refetch: refetchLiveRooms,
+  } = useFavoriteRoomListTop4(id, isLogin);
+
+  // 페이지 진입시 데이터 갱신
+  useEffect(() => {
+    refetchLiveRooms();
+  }, [refetchLiveRooms]);
 
   const handleJoinLive = async (liveRoom) => {
+    // 라이브 입장 전에 최신 데이터 조회
+    await refetchLiveRooms();
+    const updatedRoom = popularLiveRooms?.find(
+      (room) => room.curriculumId === liveRoom.curriculumId,
+    );
+
     if (!isLogin) {
       navigate('/login');
       toast.error('로그인 후 이용해주세요.');
       return;
     }
 
-    if (isLogin && !liveRoom.favorite) {
+    if (isLogin && !updatedRoom?.favorite) {
       toast.error('즐겨찾기를 먼저 해주세요!');
       navigate(`/lecture/${liveRoom.lectureId}`);
       return;

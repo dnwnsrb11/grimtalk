@@ -7,23 +7,66 @@ import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { Banner } from '@/components/mainPages/home/Banner';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useLiveStore } from '@/store/useLiveStore';
+import { participantUtils } from '@/utils/participantUtils';
 
 export const MainPageLive = () => {
   const navigate = useNavigate();
   const id = useAuthStore((state) => state.userData.id);
   const isLogin = useAuthStore((state) => state.isLogin);
+  const { setRoomCreator } = useLiveStore();
 
-  const { data: availableLiveRooms, isLoading, error } = useFavoriteRoomList(id, isLogin);
+  const {
+    data: availableLiveRooms,
+    isLoading,
+    error,
+    refetch: refetchLiveRooms,
+  } = useFavoriteRoomList(id, isLogin);
 
-  const { data: popularLiveRooms } = useFavoriteRoomListTop4(id, isLogin);
+  const { data: popularLiveRooms, refetch: refetchPopularRooms } = useFavoriteRoomListTop4(
+    id,
+    isLogin,
+  );
 
-  const handleLiveClick = (liveRoom) => {
-    if (isLogin && !liveRoom.favorite) {
+  // 페이지 진입시 데이터 갱신
+  useEffect(() => {
+    refetchLiveRooms();
+    refetchPopularRooms();
+  }, [refetchLiveRooms, refetchPopularRooms]);
+
+  const handleJoinLive = async (liveRoom) => {
+    // 라이브 입장 전에 최신 데이터 조회
+    await Promise.all([refetchLiveRooms(), refetchPopularRooms()]);
+    const updatedRoom = [...(availableLiveRooms || []), ...(popularLiveRooms || [])].find(
+      (room) => room.curriculumId === liveRoom.curriculumId,
+    );
+
+    if (!isLogin) {
+      navigate('/login');
+      toast.error('로그인 후 이용해주세요.');
+      return;
+    }
+
+    if (isLogin && !updatedRoom?.favorite) {
       toast.error('즐겨찾기를 먼저 해주세요!');
       navigate(`/lecture/${liveRoom.lectureId}`);
       return;
     }
-    // 라이브룸으로 이동하는 로직
+
+    try {
+      localStorage.setItem(
+        'roomCreator',
+        participantUtils.removeTokenPrefix(liveRoom.instructorName),
+      );
+      setRoomCreator(participantUtils.removeTokenPrefix(liveRoom.instructorName));
+      navigate(`/live/${liveRoom.curriculumName}`, {
+        state: {
+          curriculumId: liveRoom.curriculumId,
+        },
+      });
+    } catch (error) {
+      toast.error('방 참여에 실패했습니다.');
+    }
   };
 
   useEffect(() => {
@@ -53,7 +96,7 @@ export const MainPageLive = () => {
               <div
                 key={index}
                 className="mb-[40px] w-[calc(25%_-_0.75rem)]"
-                onClick={() => handleLiveClick(liveRoom)}
+                onClick={() => handleJoinLive(liveRoom)}
               >
                 <LiveList LiveRoom={liveRoom} />
               </div>
@@ -79,7 +122,7 @@ export const MainPageLive = () => {
                 <div
                   key={index}
                   className="mb-[40px] w-[calc(25%_-_0.75rem)]"
-                  onClick={() => handleLiveClick(liveRoom)}
+                  onClick={() => handleJoinLive(liveRoom)}
                 >
                   <LiveList LiveRoom={liveRoom} />
                 </div>
