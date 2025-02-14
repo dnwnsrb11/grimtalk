@@ -231,6 +231,9 @@ body {
 }
 
 .lk-chat-form {
+  display: flex;
+  flex-direction: row;
+  gap: 0.3rem;
   padding: 12px;
   border-top: 1px solid #e5e7eb;
   background-color: white;
