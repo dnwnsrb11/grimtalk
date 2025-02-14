@@ -69,6 +69,10 @@ export const MainPageLive = () => {
     }
   };
 
+  const handleLectureClick = (lectureId) => {
+    navigate(`/lecture/${lectureId}`);
+  };
+
   useEffect(() => {
     if (error || (availableLiveRooms?.body?.code && availableLiveRooms.body.code !== 200)) {
       navigate('/notfound');
@@ -98,7 +102,11 @@ export const MainPageLive = () => {
                 className="mb-[40px] w-[calc(25%_-_0.75rem)]"
                 onClick={() => handleJoinLive(liveRoom)}
               >
-                <LiveList LiveRoom={liveRoom} />
+                <LiveList
+                  LiveRoom={liveRoom}
+                  onJoinClick={() => handleJoinLive(liveRoom)}
+                  onLectureClick={handleLectureClick}
+                />
               </div>
             ))
           )}
@@ -124,7 +132,11 @@ export const MainPageLive = () => {
                   className="mb-[40px] w-[calc(25%_-_0.75rem)]"
                   onClick={() => handleJoinLive(liveRoom)}
                 >
-                  <LiveList LiveRoom={liveRoom} />
+                  <LiveList
+                    LiveRoom={liveRoom}
+                    onJoinClick={() => handleJoinLive(liveRoom)}
+                    onLectureClick={handleLectureClick}
+                  />
                 </div>
               ))
             )}
