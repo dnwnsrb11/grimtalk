@@ -4,7 +4,7 @@ import '@/styles/live.css';
 import { Chat } from '@livekit/components-react';
 import { useEffect } from 'react';
 
-import { RightArrowIcon } from '@/components/common/icons';
+import { ParticipantCountIcon, RightArrowIcon } from '@/components/common/icons';
 import { VideoComponent } from '@/components/live/VideoComponent';
 
 // 이름을 해시화하여 색상을 생성하는 함수
@@ -44,6 +44,7 @@ export const CustomChat = ({
   track,
   participantIdentity,
   local,
+  liveCount,
   ...props
 }) => {
   const applyMessageStyles = () => {
@@ -152,8 +153,14 @@ export const CustomChat = ({
       {/* 채팅 컴포넌트 */}
       <div className={`chat-wrapper ${isVisible ? 'visible' : 'hidden'}`}>
         {/* 과목명 표시 */}
-        <h2 className="mb-4 text-xl font-bold">
+        <h2 className="mb-4 flex flex-col gap-2 text-xl font-bold">
           <span className="text-primary-color">{curriculumSubject}</span>
+          <div className="flex items-center justify-end gap-1">
+            <span className="flex items-center gap-2 text-sm text-text-gray-color">
+              <ParticipantCountIcon />
+            </span>
+            <span className="text-sm text-text-gray-color">{liveCount}</span>
+          </div>
         </h2>
         {/* 퇴장 버튼과 토글 버튼 컨테이너 */}
         <div className="header-buttons-container mb-4 flex items-center gap-2">

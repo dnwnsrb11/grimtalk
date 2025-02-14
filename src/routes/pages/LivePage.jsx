@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { InstructorLeaveLive, joinLive, leaveLive, liveApi } from '@/api/live';
+import { InstructorLeaveLive, joinLive, leaveLive, liveApi, useLiveCount } from '@/api/live';
 import { LeftArrowIcon } from '@/components/common/icons';
 import { CustomChat } from '@/components/live/CustomChat';
 import { LiveKitService } from '@/services/liveKitService';
@@ -24,6 +24,7 @@ export const LivePage = () => {
   const { id, nickname } = useAuthStore((state) => state.userData);
   const { state } = useLocation();
   const curriculumId = state?.curriculumId;
+  const { data: liveCount } = useLiveCount(curriculumId);
 
   // 서비스 초기화
   const [stompService] = useState(() => new StompService(STOMP_URL));
@@ -214,6 +215,7 @@ export const LivePage = () => {
             participantUtils.isCreator(nickname) ? nickname : liveStore.roomCreator || ''
           }
           local={participantUtils.isCreator(nickname)}
+          liveCount={liveCount}
         />
       </LiveKitRoom>
 
