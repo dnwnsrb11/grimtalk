@@ -3,6 +3,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
+import artDeactiveSVG from '@/assets/category/art-deactive.svg';
+import characterDeactiveSVG from '@/assets/category/character-deactive.svg';
+import coloringDeactiveSVG from '@/assets/category/coloring-deactive.svg';
+import drawingDeactiveSVG from '@/assets/category/drawing-deactive.svg';
+import emoticonDeactiveSVG from '@/assets/category/emoticon-deactive.svg';
+import webtoonDeactiveSVG from '@/assets/category/webtoon-deactive.svg';
 // nonImage 가져오기
 // 아이콘 가져오기
 import {
@@ -12,6 +18,7 @@ import {
   LeveltwoBadgeIcon,
   SubscribeIcon,
 } from '@/components/common/icons';
+import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { useAuthStore } from '@/store/useAuthStore';
 export const LectureProfile = ({ checkInstructor, lecture }) => {
   const { id, email, nickname } = useAuthStore((state) => state.userData);
@@ -158,8 +165,42 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
   return (
     <>
       <div>
-        <div className="mb-[30px] mt-[60px]">
-          <h2 className="text-[32px] font-bold">{lecture?.subject}</h2>
+        <div className="mb-[20px] mt-[60px] flex flex-row justify-between">
+          <div>
+            <h2 className="text-[32px] font-bold">{lecture?.subject}</h2>
+            <span className="flex gap-3">
+              {lecture ? (
+                lecture.instructorInfo.memberTags.map((tag, index) => (
+                  <HashTagChip key={index} hashTag={`#${tag}`} />
+                ))
+              ) : (
+                <div>태그가 없습니다.</div>
+              )}
+            </span>
+          </div>
+          <div className="flex items-end">
+            <div className=" flex items-center gap-2 rounded-full border bg-primary-color px-3 py-1">
+              {lecture.category === '웹툰' && (
+                <img src={webtoonDeactiveSVG} alt="웹툰" className="h-5 w-5" />
+              )}
+              {lecture.category === '이모티콘' && (
+                <img src={emoticonDeactiveSVG} alt="이모티콘" className="h-5 w-5" />
+              )}
+              {lecture.category === '캐릭터' && (
+                <img src={characterDeactiveSVG} alt="캐릭터" className="h-5 w-5" />
+              )}
+              {lecture.category === '드로잉' && (
+                <img src={drawingDeactiveSVG} alt="드로잉" className="h-5 w-5" />
+              )}
+              {lecture.category === '컬러링' && (
+                <img src={coloringDeactiveSVG} alt="컬러링" className="h-5 w-5" />
+              )}
+              {lecture.category === '컨셉 아트' && (
+                <img src={artDeactiveSVG} alt="컨셉아트" className="h-5 w-5" />
+              )}
+              <p className="text-white">{lecture.category}</p>
+            </div>
+          </div>
         </div>
         {/* 강의 프로필 카드 구역 */}
         <div className="flex h-full gap-5">

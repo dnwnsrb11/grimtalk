@@ -22,11 +22,11 @@ export const LectureItem = ({ isMyPage = false, search }) => {
   };
 
   const searchImage = isValidImageURL(search?.image) ? search.image : posterNoneImg;
-  const searchSubject = truncateText(search.subject, 21);
+  const searchSubject = truncateText(search.subject, 13);
   const searchNickname = truncateText(search.nickname, 5);
   const searchStar = search.star || 0;
   const searchTags = search.hashtags;
-  const searchCategory = truncateText(search.category, 2);
+  const searchCategory = search.category;
 
   // 카드 클릭 시 이동
   const handleClick = () => {
@@ -43,12 +43,23 @@ export const LectureItem = ({ isMyPage = false, search }) => {
             src={searchImage}
             className="h-full max-h-[175px] min-h-[175px] w-full object-contain"
             alt="검색 이미지"
+            onError={(e) => {
+              e.target.onerror = null; // 무한 루프 방지
+              e.target.src = posterNoneImg;
+            }}
           />
         </div>
       </div>
 
       <div className="max-w-[300px]">
-        <h4 className="mt-2 text-lg leading-tight">{searchSubject}</h4>
+        <div className="flex flex-row justify-between">
+          <h4 className="mt-2 text-lg leading-tight">{searchSubject}</h4>
+          {!isMyPage && (
+            <div className="inline-block rounded-full border px-3 py-1">
+              <p className="text-text-gray-color">{searchCategory}</p>
+            </div>
+          )}
+        </div>
         <div className="mt-2 flex justify-start gap-3">
           <div className="flex flex-wrap items-center gap-1">
             <h4 className="mr-2 text-base font-bold">{searchNickname}</h4>
@@ -60,12 +71,6 @@ export const LectureItem = ({ isMyPage = false, search }) => {
                 <p className="text-text-gray-color">{truncateText(tag, 2)}</p>
               </div>
             ))}
-
-            {!isMyPage && (
-              <div className="inline-block rounded-full border bg-primary-color px-3 py-1">
-                <p className="text-white">{searchCategory}</p>
-              </div>
-            )}
           </div>
         </div>
       </div>

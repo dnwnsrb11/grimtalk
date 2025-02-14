@@ -280,7 +280,10 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
       {/* 배너 이미지 업로드 섹션 */}
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
-          <label className="text-xl font-bold">배너 이미지</label>
+          <div>
+            <label className="text-xl font-bold">배너 이미지</label>
+            <p></p>
+          </div>
           <div className="grid grid-cols-8 gap-6">
             <input
               type="text"
