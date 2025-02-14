@@ -638,6 +638,18 @@ body {
   overflow: hidden; /* 자식 요소가 넘치지 않도록 설정 */
 }
 
+.lk-room-container.visible {
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.lk-room-container.hidden {
+  opacity: 0;
+  transform: translateX(30px);
+  visibility: hidden;
+}
+
 .chat-wrapper.visible {
   opacity: 1;
   transform: translateX(0);
@@ -678,12 +690,12 @@ body {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  transition: all 0.1s ease;
 }
 
 .toggle-chat-btn:hover {
   background: #f9fafb;
-  transform: scale(1.05);
+  transform: scale(0.95);
 }
 
 .header-buttons-container {

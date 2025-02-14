@@ -2,13 +2,11 @@
 import '@/styles/live.css';
 
 import { Chat } from '@livekit/components-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { LeftArrowIcon, RightArrowIcon } from '@/components/common/icons';
+import { RightArrowIcon } from '@/components/common/icons';
 
-export const CustomChat = ({ onLeave, isCreator, ...props }) => {
-  const [isVisible, setIsVisible] = useState(true);
-
+export const CustomChat = ({ onLeave, isCreator, isVisible, setIsVisible, ...props }) => {
   const applyMessageStyles = () => {
     const entries = document.querySelectorAll('.lk-chat-entry');
     entries.forEach((entry) => {
@@ -60,6 +58,7 @@ export const CustomChat = ({ onLeave, isCreator, ...props }) => {
       const header = document.querySelector('.lk-chat-header');
       const input = document.querySelector('.lk-chat-form-input');
       const button = document.querySelector('.lk-chat-form-button');
+      const container = document.querySelector('.lk-room-container');
 
       applyMessageStyles();
 
@@ -71,6 +70,11 @@ export const CustomChat = ({ onLeave, isCreator, ...props }) => {
       }
       if (button) {
         button.textContent = '전송';
+      }
+
+      if (container) {
+        container.classList.toggle('visible', isVisible);
+        container.classList.toggle('hidden', !isVisible);
       }
 
       if (input && button) {
@@ -95,7 +99,7 @@ export const CustomChat = ({ onLeave, isCreator, ...props }) => {
       clearInterval(interval);
       observer.disconnect();
     };
-  }, []);
+  }, [isVisible]);
 
   return (
     <div className="chat-container relative">
@@ -115,15 +119,6 @@ export const CustomChat = ({ onLeave, isCreator, ...props }) => {
         </div>
         <Chat {...props} />
       </div>
-
-      {/* 채팅 열기 버튼 (숨겨져 있을 때) */}
-      {!isVisible && (
-        <div className="chat-hidden-controls">
-          <button className="toggle-chat-btn" onClick={() => setIsVisible(true)}>
-            <LeftArrowIcon />
-          </button>
-        </div>
-      )}
     </div>
   );
 };

@@ -2,10 +2,12 @@ import '@/styles/live.css';
 
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
+import { motion } from 'motion/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { InstructorLeaveLive, joinLive, leaveLive, liveApi } from '@/api/live';
+import { LeftArrowIcon } from '@/components/common/icons';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
 import { VideoComponent } from '@/components/live/VideoComponent';
@@ -14,7 +16,6 @@ import { StompService } from '@/services/stompService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useLiveStore } from '@/store/useLiveStore';
 import { participantUtils, TOKEN_TYPES } from '@/utils/participantUtils';
-
 const LIVEKIT_URL = 'wss://www.grimtalk.com:7443/';
 const STOMP_URL = 'wss://www.grimtalk.com:28080/ws';
 
@@ -36,6 +37,7 @@ export const LivePage = () => {
   const [remoteTracks, setRemoteTracks] = useState([]);
   const [chatToken, setChatToken] = useState('');
   const [isConnected, setIsConnected] = useState(false);
+  const [isChatVisible, setIsChatVisible] = useState(true);
 
   // Excalidraw 관련 상태
   const [roomCreatorElements, setRoomCreatorElements] = useState([]);
@@ -230,9 +232,32 @@ export const LivePage = () => {
       {/* 채팅 컴포넌트 */}
       <div className="mb-6 rounded-xl border border-gray-border-color bg-white p-4">
         <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
-          <CustomChat onLeave={leaveRoom} isCreator={participantUtils.isCreator(nickname)} />
+          <CustomChat
+            onLeave={leaveRoom}
+            isCreator={participantUtils.isCreator(nickname)}
+            isVisible={isChatVisible}
+            setIsVisible={setIsChatVisible}
+          />
         </LiveKitRoom>
       </div>
+
+      {/* 채팅 토글 버튼 */}
+      {!isChatVisible && (
+        <motion.div
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -100 }}
+          transition={{ duration: 0.4 }}
+          className="fixed right-0 top-6 z-[1000] p-2"
+        >
+          <button
+            className="toggle-chat-btn rounded-l-lg bg-white p-2 shadow-md hover:bg-gray-50"
+            onClick={() => setIsChatVisible(true)}
+          >
+            <LeftArrowIcon />
+          </button>
+        </motion.div>
+      )}
 
       {/* Excalidraw 컴포넌트 */}
       {participantUtils.isCreator(nickname) ? (
