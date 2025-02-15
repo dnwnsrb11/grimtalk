@@ -45,7 +45,9 @@ export const MainPage = () => {
     }
 
     if (isLogin && !updatedRoom?.favorite) {
-      toast.error('즐겨찾기를 먼저 해주세요!');
+      toast('즐겨찾기 후 라이브에 참여할 수 있습니다.', {
+        icon: '💡',
+      });
       navigate(`/lecture/${liveRoom.lectureId}`);
       return;
     }
