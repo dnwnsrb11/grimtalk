@@ -10,7 +10,7 @@ export const IntroductionLecture = ({ lecture }) => {
         <h1 className="text-[32px] font-bold">강의 소개</h1>
         <div className="mt-[10px] min-h-[200px]">
           {/* 강의 소개는 임시 텍스트로 변수에 넣어 작성하였습니다. */}
-          <p className="text-[18px]">{lecture.intro}</p>
+          <p className="whitespace-pre-line text-[18px]">{lecture.intro}</p>
         </div>
       </div>
     </>
