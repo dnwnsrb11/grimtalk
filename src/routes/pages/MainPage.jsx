@@ -1,18 +1,97 @@
 import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
-import { useRoomListTop4 } from '@/api/live';
+import { useFavoriteRoomListTop4 } from '@/api/live';
 import { Banner } from '@/components/mainPages/home/Banner';
 import { Lecture } from '@/components/mainPages/home/Lecture';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { PopularInstructor } from '@/components/mainPages/home/PopularInstructor';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useLiveStore } from '@/store/useLiveStore';
+import { participantUtils } from '@/utils/participantUtils';
 
 export const MainPage = () => {
+  const navigate = useNavigate();
+  const id = useAuthStore((state) => state.userData.id);
+  const isLogin = useAuthStore((state) => state.isLogin);
+  const { setRoomCreator } = useLiveStore();
+
   const {
-    data: availableLiveRoomsTop4,
-    isLoading: isLoadingTop4,
-    error: errorTop4,
-  } = useRoomListTop4();
+    data: popularLiveRooms,
+    isLoading,
+    error,
+    refetch: refetchLiveRooms,
+  } = useFavoriteRoomListTop4(id, isLogin);
+
+  // 페이지 진입시 데이터 갱신
+  useEffect(() => {
+    refetchLiveRooms();
+  }, [refetchLiveRooms]);
+
+  const handleJoinLive = async (liveRoom) => {
+    // 라이브 입장 전에 최신 데이터 조회
+    await refetchLiveRooms();
+    const updatedRoom = popularLiveRooms?.find(
+      (room) => room.curriculumId === liveRoom.curriculumId,
+    );
+
+    if (!isLogin) {
+      navigate('/login');
+      toast.error('로그인 후 이용해주세요.');
+      return;
+    }
+
+    // 강사 본인의 라이브인 경우 바로 입장
+    if (id === liveRoom.instructorId) {
+      try {
+        localStorage.setItem(
+          'roomCreator',
+          participantUtils.removeTokenPrefix(liveRoom.instructorName),
+        );
+        setRoomCreator(participantUtils.removeTokenPrefix(liveRoom.instructorName));
+        navigate(`/live/${liveRoom.curriculumName}`, {
+          state: {
+            curriculumId: liveRoom.curriculumId,
+          },
+        });
+        return;
+      } catch (error) {
+        toast.error('방 참여에 실패했습니다.');
+        return;
+      }
+    }
+
+    // 일반 사용자의 경우 기존 로직 유지
+    if (isLogin && !updatedRoom?.favorite) {
+      toast('즐겨찾기 후 라이브에 참여할 수 있습니다.', {
+        icon: '💡',
+      });
+      navigate(`/lecture/${liveRoom.lectureId}`);
+      return;
+    }
+
+    try {
+      localStorage.setItem(
+        'roomCreator',
+        participantUtils.removeTokenPrefix(liveRoom.instructorName),
+      );
+      setRoomCreator(participantUtils.removeTokenPrefix(liveRoom.instructorName));
+      navigate(`/live/${liveRoom.curriculumName}`, {
+        state: {
+          curriculumId: liveRoom.curriculumId,
+        },
+      });
+    } catch (error) {
+      toast.error('방 참여에 실패했습니다.');
+    }
+  };
+
+  const handleLectureClick = (lectureId) => {
+    navigate(`/lecture/${lectureId}`);
+  };
 
   // 인기 강의 조회
   const { data: popularLectures, isLoading: isLecturesLoading } = useQuery({
@@ -50,16 +129,20 @@ export const MainPage = () => {
             인기 있는 <span className="text-primary-color">라이브</span>
           </h2>
           <div className="flex gap-3">
-            {!availableLiveRoomsTop4 || availableLiveRoomsTop4.length === 0 ? (
+            {!popularLiveRooms || popularLiveRooms.length === 0 ? (
               <div className="flex h-[200px] w-full items-center justify-center rounded-lg bg-gray-50">
                 <p className="text-lg font-medium text-gray-500">
                   현재 진행중인 인기 라이브가 없습니다.
                 </p>
               </div>
             ) : (
-              availableLiveRoomsTop4.map((LiveRoom, index) => (
+              popularLiveRooms.map((liveRoom, index) => (
                 <div key={index} className="mb-[40px] w-[calc(25%_-_0.75rem)]">
-                  <LiveList LiveRoom={LiveRoom} />
+                  <LiveList
+                    LiveRoom={liveRoom}
+                    onJoinClick={() => handleJoinLive(liveRoom)}
+                    onLectureClick={handleLectureClick}
+                  />
                 </div>
               ))
             )}

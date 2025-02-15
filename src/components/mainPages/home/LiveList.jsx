@@ -1,47 +1,17 @@
-import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-
 import posterNoneImg from '@/assets/posterNoneImg.png';
-import { useAuthStore } from '@/store/useAuthStore';
-import { useLiveStore } from '@/store/useLiveStore';
-import { participantUtils } from '@/utils/participantUtils';
 
 // 라이브 방 카드 컴포넌트
-export const LiveList = ({ LiveRoom }) => {
-  const navigate = useNavigate();
-  const { setRoomCreator } = useLiveStore();
-  const { isLogin } = useAuthStore();
-
+export const LiveList = ({ LiveRoom, onJoinClick, onLectureClick }) => {
   // LiveRoom이 undefined인 경우 early return
   if (!LiveRoom) {
     return null;
   }
 
-  const { curriculumId, curriculumName, hashtags, image, instructorName, lectureId } = LiveRoom;
-
-  const handleJoinLive = async () => {
-    if (!isLogin) {
-      navigate('/login');
-      toast.error('로그인 후 이용해주세요.');
-      return;
-    }
-
-    try {
-      localStorage.setItem('roomCreator', participantUtils.removeTokenPrefix(instructorName));
-      setRoomCreator(participantUtils.removeTokenPrefix(instructorName));
-      navigate(`/live/${curriculumName}`, {
-        state: {
-          curriculumId,
-        },
-      });
-    } catch (error) {
-      alert('방 참여에 실패했습니다.');
-    }
-  };
+  const { curriculumName, hashtags, image, instructorName, lectureId } = LiveRoom;
 
   return (
     <div className="group relative">
-      <button onClick={() => handleJoinLive()} className="w-full">
+      <button onClick={onJoinClick} className="w-full">
         <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
           {/* LIVE 뱃지 */}
           <div className="absolute left-3 top-3 z-20">
@@ -69,9 +39,9 @@ export const LiveList = ({ LiveRoom }) => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/lecture/${lectureId}`);
+              onLectureClick(lectureId);
             }}
-            className="active:text-primary-hover-color text-base font-bold text-gray-900 transition-all duration-300 hover:text-primary-color hover:underline"
+            className="active:text-primary-hover-color hover:text-primary-color text-base font-bold text-gray-900 transition-all duration-300 hover:underline"
           >
             <h4 className="text-base font-medium">{curriculumName}</h4>
           </button>
@@ -81,7 +51,7 @@ export const LiveList = ({ LiveRoom }) => {
               {hashtags?.slice(0, 2).map((tag, index) => (
                 <div
                   key={index}
-                  className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
+                  className="bg-bg-gray-color inline-block rounded-full border px-3 py-1"
                 >
                   <p className="text-text-gray-color">{tag}</p>
                 </div>
