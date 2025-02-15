@@ -44,6 +44,27 @@ export const MainPage = () => {
       return;
     }
 
+    // 강사 본인의 라이브인 경우 바로 입장
+    if (id === liveRoom.instructorId) {
+      try {
+        localStorage.setItem(
+          'roomCreator',
+          participantUtils.removeTokenPrefix(liveRoom.instructorName),
+        );
+        setRoomCreator(participantUtils.removeTokenPrefix(liveRoom.instructorName));
+        navigate(`/live/${liveRoom.curriculumName}`, {
+          state: {
+            curriculumId: liveRoom.curriculumId,
+          },
+        });
+        return;
+      } catch (error) {
+        toast.error('방 참여에 실패했습니다.');
+        return;
+      }
+    }
+
+    // 일반 사용자의 경우 기존 로직 유지
     if (isLogin && !updatedRoom?.favorite) {
       toast('즐겨찾기 후 라이브에 참여할 수 있습니다.', {
         icon: '💡',
