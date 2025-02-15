@@ -1,5 +1,6 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 import { _axiosAuth } from '@/api/instance';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
@@ -7,6 +8,8 @@ import { LoadingComponents } from '@/components/common/LoadingComponents';
 export const QuestionLectureWrite = ({ setIsActive, curriculumId, lecture }) => {
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
+  const queryClint = useQueryClient();
+  const MAX_LENGTH = 255;
   // 커리큘럼 이름
   const [curriculumName, setCurriculumName] = useState(null);
   // 커리큘럼 조회
@@ -25,7 +28,16 @@ export const QuestionLectureWrite = ({ setIsActive, curriculumId, lecture }) => 
       navigate('/notfound');
     },
   });
-
+  // 입력 핸들러
+  const handleChange = (setter, value, field) => {
+    if (value.length > MAX_LENGTH) {
+      toast.error(`${field}은(는) ${MAX_LENGTH}자를 초과할 수 없습니다.`, {
+        style: { fontSize: '14px', width: '300px' },
+      });
+      return;
+    }
+    setter(value);
+  };
   // 질문 생성 api
   const addQuestionMutaion = useMutation({
     mutationFn: async () => {
@@ -39,6 +51,7 @@ export const QuestionLectureWrite = ({ setIsActive, curriculumId, lecture }) => 
     onSuccess: () => {
       setIsActive(false);
       alert('질문이 작성되었습니다.');
+      queryClint.invalidateQueries(['questions']);
     },
   });
   const changeActive = () => {
@@ -48,6 +61,23 @@ export const QuestionLectureWrite = ({ setIsActive, curriculumId, lecture }) => 
   if (isLoading) {
     return <LoadingComponents />;
   }
+
+  const handleSubjectChange = (e) => {
+    if (e.target.value.length <= 255) {
+      setSubject(e.target.value);
+    } else {
+      toast.error('질문 제목 글자 수를 초과했습니다.');
+    }
+  };
+
+  const handleContentChange = (e) => {
+    if (e.target.value.length <= 255) {
+      setContent(e.target.value);
+    } else {
+      toast.error('질문 내용 글자 수를 초과했습니다.');
+    }
+  };
+
   return (
     <>
       <div>
@@ -66,19 +96,32 @@ export const QuestionLectureWrite = ({ setIsActive, curriculumId, lecture }) => 
           </select>
         </div>
         <div className="flex flex-col gap-[15px]">
-          <input
-            type="text"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            className="min-h-[60px] rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
-            placeholder="질문 제목을 입려해주세요."
-          />
-          <textarea
-            className="min-h-[300px] resize-none rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
-            placeholder="질문 내용을 입력해주세요."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
+          <div className="flex flex-col">
+            {' '}
+            <input
+              type="text"
+              value={subject}
+              onChange={handleSubjectChange}
+              className="min-h-[60px] rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
+              placeholder="질문 제목을 입력해주세요."
+              maxLength={MAX_LENGTH}
+            />
+            <small className="text-gray-500">
+              {subject.length}/{MAX_LENGTH}
+            </small>
+          </div>
+          <div className="flex flex-col">
+            <textarea
+              className="min-h-[300px] resize-none rounded-2xl border border-gray-border-color p-[20px] focus:border-primary-color focus:outline-none"
+              placeholder="질문 내용을 입력해주세요."
+              value={content}
+              onChange={handleContentChange}
+              maxLength={MAX_LENGTH}
+            ></textarea>
+            <small className="text-gray-500">
+              {content.length}/{MAX_LENGTH}
+            </small>
+          </div>
         </div>
         <hr className="mt-[20px] border-gray-border-color" />
         <div className="mt-[20px]">

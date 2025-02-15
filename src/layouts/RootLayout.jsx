@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
+import { Footer } from '@/components/layout/Footer';
 import { Navbar } from '@/components/layout/Navbar';
 
 export const RootLayout = () => {
@@ -27,6 +28,9 @@ export const RootLayout = () => {
           </div>
           <div className="col-span-2"></div>
         </div>
+        <footer className="mt-[100px]">
+          <Footer />
+        </footer>
       </div>
     </>
   );

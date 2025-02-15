@@ -1,54 +1,65 @@
-import { useNavigate } from 'react-router-dom';
-
-import testImg from '@/assets/banner/Test/TestImg.png';
-import { useLiveStore } from '@/store/useLiveStore';
-import { participantUtils } from '@/utils/participantUtils';
+import posterNoneImg from '@/assets/posterNoneImg.png';
 
 // 라이브 방 카드 컴포넌트
-export const LiveList = ({ curriculumSubject, instructor }) => {
-  const navigate = useNavigate();
+export const LiveList = ({ LiveRoom, onJoinClick, onLectureClick }) => {
+  // LiveRoom이 undefined인 경우 early return
+  if (!LiveRoom) {
+    return null;
+  }
 
-  const { setRoomCreator } = useLiveStore();
-
-  const handleJoinLive = async (selectedRoom, creator) => {
-    try {
-      localStorage.setItem('roomCreator', participantUtils.removeTokenPrefix(creator));
-      setRoomCreator(participantUtils.removeTokenPrefix(creator));
-      navigate(`/live/${selectedRoom}`);
-    } catch (error) {
-      alert('방 참여에 실패했습니다.');
-    }
-  };
+  const { curriculumName, hashtags, image, instructorName, lectureId } = LiveRoom;
 
   return (
-    <div>
-      <div className="relative min-h-[160px] overflow-hidden rounded-lg">
-        <button onClick={() => handleJoinLive(curriculumSubject, instructor)}>
-          <div className="absolute left-[5%] top-[5%]">
-            <div className="inline-block rounded-full bg-black bg-opacity-60 px-3 py-1">
-              <div className="flex items-center gap-1">
-                <div className="h-2 w-2 rounded-full bg-primary-color opacity-100" />
-                <p className="text-white">LIVE</p>
+    <div className="group relative">
+      <button onClick={onJoinClick} className="w-full">
+        <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+          {/* LIVE 뱃지 */}
+          <div className="absolute left-3 top-3 z-20">
+            <div className="flex items-center gap-1.5 rounded-md bg-black/70 px-2 py-1 text-sm font-bold text-white">
+              <div className="animate-pulse">
+                <div className="h-2 w-2 rounded-full bg-red-500" />
               </div>
+              <span>LIVE</span>
             </div>
           </div>
-          <img src={testImg} alt="" className="h-full w-full object-cover" />
-        </button>
-      </div>
-      <div>
-        <h4 className="mt-2 text-lg leading-tight">{curriculumSubject}</h4>
-        <div className="mt-2 flex items-center gap-3">
-          <h4 className="text-base font-bold">{instructor}</h4>
-          <div className="flex gap-1">
-            <div className="inline-block rounded-full border bg-bg-gray-color px-3 py-1">
-              <p className="text-text-gray-color">일러스트</p>
-            </div>
-            <div className="inline-block rounded-full border bg-bg-gray-color px-3 py-1">
-              <p className="text-text-gray-color">캐릭터</p>
+
+          {/* 썸네일 이미지 */}
+          <img
+            src={image || posterNoneImg}
+            alt="poster"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+          />
+
+          {/* 호버 시 오버레이 */}
+          <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+        </div>
+
+        {/* 방송 정보 */}
+        <div className="mt-3 text-left">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onLectureClick(lectureId);
+            }}
+            className="active:text-primary-hover-color hover:text-primary-color text-base font-bold text-gray-900 transition-all duration-300 hover:underline"
+          >
+            <h4 className="text-base font-medium">{curriculumName}</h4>
+          </button>
+          <div className="mt-1 flex items-center gap-2 ">
+            <p className="text-lg font-bold">{instructorName}</p>
+            <div className="flex flex-wrap gap-1.5">
+              {hashtags?.slice(0, 2).map((tag, index) => (
+                <div
+                  key={index}
+                  className="bg-bg-gray-color inline-block rounded-full border px-3 py-1"
+                >
+                  <p className="text-text-gray-color">{tag}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </div>
+      </button>
     </div>
   );
 };

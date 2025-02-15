@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { RootLayout } from '@/layouts/RootLayout';
+import { AiComparePage } from '@/routes/pages/AiComparePage';
 import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
 import { AlarmPage } from '@/routes/pages/AlarmPage';
 import { CreateLiveTestPage } from '@/routes/pages/CreateLiveTestPage';
@@ -14,7 +15,7 @@ import { MainPageCommunity } from '@/routes/pages/MainPageCommunity';
 import { MainPageLive } from '@/routes/pages/MainPageLive';
 import { MyPage } from '@/routes/pages/MyPage';
 import { NotFoundPage } from '@/routes/pages/NotFoundPage';
-import { OpenviduV3ReferencePage } from '@/routes/pages/OpenviduV3ReferencePage';
+import { ReplayPage } from '@/routes/pages/ReplayPage';
 import { SignupPage } from '@/routes/pages/SignupPage';
 import { SignupSuccessPage } from '@/routes/pages/SignupSuccessPage';
 const router = createBrowserRouter([
@@ -27,8 +28,8 @@ const router = createBrowserRouter([
     element: <LivePage />,
   },
   {
-    path: '/open-vidu-reference',
-    element: <OpenviduV3ReferencePage />,
+    path: '/replay',
+    element: <ReplayPage />,
   },
   {
     element: <RootLayout />,
@@ -79,12 +80,16 @@ const router = createBrowserRouter([
         element: <AlarmPage />,
       },
       {
-        path: '/lecture/:lectuerId',
+        path: '/lecture/:lectureId',
         element: <LecturePage />,
       },
       {
         path: '/notfound',
         element: <NotFoundPage />,
+      },
+      {
+        path: '/aicompare',
+        element: <AiComparePage />,
       },
     ],
   },

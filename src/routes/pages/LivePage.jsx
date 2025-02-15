@@ -3,13 +3,31 @@ import '@/styles/live.css';
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { Client } from '@stomp/stompjs';
+import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { liveApi, useAddStrokeMutation } from '@/api/live';
-import { AudioComponent } from '@/components/live/AudioComponent';
+import {
+  InstructorLeaveLive,
+  joinLive,
+  leaveLive,
+  liveApi,
+  useAddStrokeMutation,
+  useLiveCount,
+} from '@/api/live';
+import { LeftArrowIcon } from '@/components/common/icons';
 import { CustomChat } from '@/components/live/CustomChat';
-import { VideoComponent } from '@/components/live/VideoComponent';
+import { LoadingScreen } from '@/components/live/LoadingScreen';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { LiveKitService } from '@/services/liveKitService';
 import { StompService } from '@/services/stompService';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -23,19 +41,23 @@ export const LivePage = () => {
   const navigate = useNavigate();
   const { curriculumSubject } = useParams();
   const liveStore = useLiveStore();
-  const { nickname } = useAuthStore((state) => state.userData);
+  const { id, nickname } = useAuthStore((state) => state.userData);
+  const { state } = useLocation();
+  const curriculumId = state?.curriculumId;
+  const { data: liveCount } = useLiveCount(curriculumId);
 
   // 서비스 초기화
   const [stompService] = useState(() => new StompService(STOMP_URL));
   const [liveKitService] = useState(() => new LiveKitService(LIVEKIT_URL));
 
-  // 기본 상태 관리
+  // 상태 관리
   const [room, setRoom] = useState(null);
   const [localTrack, setLocalTrack] = useState(null);
   const [remoteTracks, setRemoteTracks] = useState([]);
   const [chatToken, setChatToken] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [isStompReady, setIsStompReady] = useState(false);
+  const [isChatVisible, setIsChatVisible] = useState(true);
 
   // Excalidraw 관련 상태
   const [roomCreatorElements, setRoomCreatorElements] = useState([]);
@@ -248,6 +270,35 @@ export const LivePage = () => {
     },
     [isStompReady, nickname, curriculumSubject, stompService],
   );
+  // const [roomCreatorExcalidrawAPI, setRoomCreatorExcalidrawAPI] = useState(null);
+  // const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
+
+  const [isOverlayMode, setIsOverlayMode] = useState(false);
+
+  // 방 나가기 확인 상태
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingStep, setLoadingStep] = useState(0);
+
+  useEffect(() => {
+    let stepInterval;
+    if (isLoading) {
+      stepInterval = setInterval(() => {
+        setLoadingStep((prev) => {
+          if (prev === 3) {
+            clearInterval(stepInterval);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 1500);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, 1500);
+    }
+    return () => clearInterval(stepInterval);
+  }, [isLoading]);
 
   // LiveKit 이벤트 리스너 설정
   useEffect(() => {
@@ -279,251 +330,705 @@ export const LivePage = () => {
     };
   }, [setupStompConnection]);
 
-  // 토큰 발급 및 방 연결 함수
-  const connectToRoom = async () => {
-    try {
-      const isCreator = participantUtils.isCreator(nickname);
-      const rtcToken = await (isCreator
-        ? liveApi.getInstructorToken(
-            curriculumSubject,
-            participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
-          )
-        : liveApi.getStudentToken(
-            curriculumSubject,
-            participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
-          ));
-      const chatToken = await (isCreator
-        ? liveApi.getInstructorToken(
-            curriculumSubject,
-            participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
-          )
-        : liveApi.getStudentToken(
-            curriculumSubject,
-            participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
-          ));
+  // // 토큰 발급 및 방 연결 함수
+  // const connectToRoom = async () => {
+  //   try {
+  //     const isCreator = participantUtils.isCreator(nickname);
+  //     const rtcToken = await (isCreator
+  //       ? liveApi.getInstructorToken(
+  //           curriculumSubject,
+  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
+  //         )
+  //       : liveApi.getStudentToken(
+  //           curriculumSubject,
+  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
+  //         ));
+  //     const chatToken = await (isCreator
+  //       ? liveApi.getInstructorToken(
+  //           curriculumSubject,
+  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
+  //         )
+  //       : liveApi.getStudentToken(
+  //           curriculumSubject,
+  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
+  //         ));
 
-      if (!rtcToken || !chatToken) {
-        throw new Error('Failed to get tokens');
+  //     if (!rtcToken || !chatToken) {
+  //       throw new Error('Failed to get tokens');
+  //     }
+
+  //     liveStore.setTokens(rtcToken, chatToken);
+  //     setChatToken(chatToken);
+
+  // 토큰 발급 함수
+  const getTokens = async (isCreator = false) => {
+    const tokenFunction = isCreator ? liveApi.getInstructorToken : liveApi.getStudentToken;
+
+    const [rtcToken, chatToken] = await Promise.all([
+      tokenFunction(
+        curriculumId,
+        curriculumSubject,
+        id,
+        participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
+      ),
+      tokenFunction(
+        curriculumId,
+        curriculumSubject,
+        id,
+        participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
+      ),
+    ]);
+
+    if (!rtcToken || !chatToken) {
+      throw new Error('토큰 발급에 실패했습니다.');
+    }
+
+    return { rtcToken, chatToken };
+  };
+
+  // 방 연결 함수
+  const connectToRoom = async () => {
+    setIsLoading(true);
+    try {
+      // 1. STOMP 연결
+      // stompService.connect();
+      await joinLive(curriculumId, id);
+
+      // 강사 닉네임을 localStorage와 liveStore에 저장
+      const { state } = location;
+      if (state?.instructorNickname) {
+        localStorage.setItem('roomCreator', state.instructorNickname);
+        liveStore.setRoomCreator(state.instructorNickname);
+      } else {
+        // localStorage에서 roomCreator를 가져와서 liveStore에도 저장
+        const storedRoomCreator = localStorage.getItem('roomCreator');
+        if (storedRoomCreator) {
+          liveStore.setRoomCreator(storedRoomCreator);
+        }
       }
+
+      // 2. 토큰 발급
+      const isCreator = participantUtils.isCreator(nickname);
+      const { rtcToken, chatToken } = await getTokens(isCreator);
 
       liveStore.setTokens(rtcToken, chatToken);
       setChatToken(chatToken);
 
+      // 3. LiveKit 방 연결
       const newRoom = await liveKitService.connect(rtcToken);
       setRoom(newRoom);
       liveStore.setRoom(newRoom);
 
+      // 4. 방장일 경우 미디어 활성화
       if (isCreator) {
         const track = await liveKitService.enableMedia();
         setLocalTrack(track);
         liveStore.setLocalTrack(track);
       }
+
+      setIsConnected(true);
     } catch (error) {
-      console.error('Failed to connect to room:', error);
-      alert('Failed to connect to room');
-      navigate('/create-live-test');
+      console.error('방 연결 중 오류 발생:', error);
+      alert('방 연결에 실패했습니다.');
+      navigate(-1);
     }
   };
 
   // 컴포넌트 마운트 시 방 연결
   useEffect(() => {
     connectToRoom();
+    // <<<<<<< HEAD
+    //   return () => {
+    //     if (room) {
+    //       room.disconnect();
+    //     }
+    //     if (stompService.client?.active) {
+    //       stompService.client.deactivate();
+    //     }
+    //   };
+    // }, []);
+
+    // // 방 나가기 함수
+    // const leaveRoom = async () => {
+    //   if (room) {
+    //     room.disconnect();
+    //   }
+    //   if (stompService.client?.active) {
+    //     stompService.client.deactivate();
+    //   }
+    //   localStorage.removeItem('roomCreator');
+    //   liveStore.reset();
+    //   navigate('/create-live-test');
+    // };
+
+    // return (
+    //   <div id="room">
+    //     <div id="room-header">
+    //       <h2 id="room-title">{curriculumSubject}</h2>
+    //       {participantUtils.isCreator(nickname) && (
+    //         <button className="btn btn-large btn-danger" onClick={leaveRoom}>
+    //           Leave Room
+    //         </button>
+    //       )}
+    //     </div>
+
+    //     <div id="layout-container">
+    //       {participantUtils.isCreator(nickname) && localTrack && (
+    //         <VideoComponent track={localTrack} participantIdentity={nickname} local={true} />
+    //       )}
+    //       {!participantUtils.isCreator(nickname) && remoteTracks.length > 0 && (
+    //         <div>
+    //           {remoteTracks
+    //             .filter(
+    //               (track) =>
+    //                 track.participantIdentity ===
+    //                 participantUtils.getTokenParticipantName(liveStore.roomCreator, TOKEN_TYPES.RTC),
+    //             )
+    //             .map((remoteTrack) =>
+    //               remoteTrack.trackPublication.kind === 'video' ? (
+    //                 <VideoComponent
+    //                   key={remoteTrack.trackPublication.trackSid}
+    //                   track={remoteTrack.trackPublication.videoTrack}
+    //                   participantIdentity={participantUtils.removeTokenPrefix(
+    //                     remoteTrack.participantIdentity,
+    //                   )}
+    //                 />
+    //               ) : (
+    //                 <AudioComponent
+    //                   key={remoteTrack.trackPublication.trackSid}
+    //                   track={remoteTrack.trackPublication.audioTrack}
+    //                 />
+    //               ),
+    //             )}
+    //         </div>
+    //       )}
+    //     </div>
+
+    //     <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
+    //       <CustomChat />
+    //     </LiveKitRoom>
+
+    // {participantUtils.isCreator(nickname) ? (
+    //   <div className="excalidraw-wrapper">
+    //     <div>
+    //       <div className="flex gap-2">
+    //         <button className="rounded-2xl border p-5" onClick={startRecording}>
+    //           녹화
+    //         </button>
+    //         <button className="rounded-2xl border p-5" onClick={stopRecording}>
+    //           정지
+    //         </button>
+    //         <button className="rounded-2xl border p-5" onClick={sendDataButton}>
+    //           전송
+    //         </button>
+    //       </div>
+    //       <p>{elapsedTime}</p>
+    //     </div>
+    //     <Excalidraw
+    //       onChange={(elements) => {
+    //         console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
+
+    //         // 이전 상태와 비교하여 삭제된 요소 찾기
+    //         const deletedElements = elements.filter((currentEl) => {
+    //           const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
+    //           return prevEl && !prevEl.isDeleted && currentEl.isDeleted;
+    //         });
+    //         console.log('🗑️ 감지된 삭제된 요소들:', deletedElements);
+
+    //         // 이전 상태와 비교하여 복원된(undo) 요소 찾기
+    //         const restoredElements = elements.filter((currentEl) => {
+    //           const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
+    //           return prevEl && prevEl.isDeleted && !currentEl.isDeleted;
+    //         });
+    //         console.log('🔄 감지된 복원된 요소들:', restoredElements);
+
+    //         // 복원된 요소가 있을 경우, 모든 복원된 요소를 한 번에 전송
+    //         if (restoredElements.length > 0) {
+    //           console.log('🔄 복원된 요소들 전송:', restoredElements);
+    //           const allRestoredElements = restoredElements.map((el) => ({
+    //             ...el,
+    //             type: 'restored',
+    //             elementType: el.type,
+    //           }));
+    //           handleInstructorDrawingChange(allRestoredElements);
+    //         }
+    //         // 삭제 이벤트가 있을 경우, 모든 삭제된 요소를 한 번에 전송
+    //         else if (deletedElements.length > 0) {
+    //           console.log('🗑️ 삭제된 요소들 전송:', deletedElements);
+    //           const allDeletedElements = deletedElements.map((el) => ({
+    //             ...el,
+    //             type: 'deleted',
+    //           }));
+    //           handleInstructorDrawingChange(allDeletedElements);
+    //         }
+    //         // 새로 추가/변경된 요소가 있을 경우
+    //         else {
+    //           const validElements = elements.filter((element) => !element.isDeleted);
+    //           if (validElements.length > 0) {
+    //             const latestElement = validElements[validElements.length - 1];
+    //             console.log('✏️ 새로 추가 또는 업데이트된 요소 전송:', latestElement);
+    //             handleInstructorDrawingChange([latestElement]);
+    //           }
+    //         }
+
+    //         setRoomCreatorElements(elements);
+    //         console.log('💾 최종 roomCreatorElements 상태:', elements);
+    //       }}
+    //       excalidrawAPI={(api) => {
+    //         roomCreatorAPIRef.current = api;
+    //       }}
+    //       viewModeEnabled={false}
+    //       initialData={{
+    //         elements: roomCreatorElements,
+    //         appState: {
+    //           viewBackgroundColor: '#ffffff',
+    //           currentItemStrokeColor: '#000000',
+    //           currentItemBackgroundColor: '#ffffff',
+    //         },
+    //       }}
+    //     />
+    //   </div>
+    //   ) : (
+    //     <div className="whiteboard-container" style={{ display: 'flex', gap: '20px' }}>
+    //       <div className="excalidraw-wrapper" style={{ flex: 1 }}>
+    //         <h3>방장 화이트보드</h3>
+    //         <Excalidraw
+    //           excalidrawAPI={(api) => {
+    //             roomCreatorAPIRef.current = api;
+    //           }}
+    //           elements={roomCreatorElements}
+    //           viewModeEnabled={true}
+    //           initialData={{
+    //             elements: roomCreatorElements,
+    //             appState: {
+    //               viewBackgroundColor: '#ffffff',
+    //               currentItemStrokeColor: '#000000',
+    //               currentItemBackgroundColor: '#ffffff',
+    //               viewModeEnabled: true,
+    //               theme: 'light',
+    //             },
+    //           }}
+    //         />
+    //       </div>
+    //       <div className="excalidraw-wrapper" style={{ flex: 1 }}>
+    //         <h3>내 화이트보드</h3>
+    //         <Excalidraw
+    //           onChange={(elements) => {
+    //             setParticipantElements(elements);
+    //           }}
+    //           excalidrawAPI={(api) => {
+    //             participantAPIRef.current = api;
+    //           }}
+    //           elements={participantElements}
+    //           viewModeEnabled={false}
+    //           initialData={{
+    //             elements: participantElements,
+    //             appState: {
+    //               viewBackgroundColor: '#ffffff',
+    //               currentItemStrokeColor: '#000000',
+    //               currentItemBackgroundColor: '#ffffff',
+    //             },
+    //           }}
+    //         />
+    //       </div>
+    //     </div>
+    //   )}
+    // </div>
+
+    // 컴포넌트 언마운트 시 정리
     return () => {
       if (room) {
         room.disconnect();
-      }
-      if (stompService.client?.active) {
-        stompService.client.deactivate();
+        stompService.disconnect();
+        setIsConnected(false);
       }
     };
-  }, []);
+  }, [curriculumSubject]);
+
+  // 화이트보드 업데이트 함수
+  const updateBoard = useCallback(
+    (elements, boardType) => {
+      if (stompService?.active && isConnected) {
+        stompService.publish({
+          destination: `/sub/receive/${curriculumSubject}`,
+          body: JSON.stringify({
+            type: 'excalidraw',
+            boardType,
+            elements,
+            sender: nickname,
+          }),
+        });
+      }
+    },
+    [stompService, isConnected, nickname, curriculumSubject],
+  );
 
   // 방 나가기 함수
-  const leaveRoom = async () => {
-    if (room) {
-      room.disconnect();
+  const leaveRoom = useCallback(async () => {
+    if (participantUtils.isCreator(nickname)) {
+      await InstructorLeaveLive(curriculumId, id);
+    } else {
+      await leaveLive(curriculumId, id);
     }
-    if (stompService.client?.active) {
-      stompService.client.deactivate();
-    }
+    room?.disconnect();
     localStorage.removeItem('roomCreator');
     liveStore.reset();
-    navigate('/create-live-test');
-  };
+    navigate(-1);
+  }, [nickname, curriculumId, id, room, liveStore, navigate]);
+
+  // 방 나가기 시도 함수
+  const handleLeaveAttempt = useCallback(() => {
+    setIsLeaveDialogOpen(true);
+  }, []);
+
+  // 브라우저 창 닫기, 새로고침, 뒤로가기 이벤트 처리
+  useEffect(() => {
+    // 강사가 아닌 경우에만 이벤트 리스너 등록
+    if (!participantUtils.isCreator(nickname)) {
+      const handleBeforeUnload = async (e) => {
+        e.preventDefault();
+        e.returnValue = '';
+        await leaveRoom();
+      };
+
+      const handlePopState = async (e) => {
+        e.preventDefault();
+        if (participantUtils.isCreator(nickname)) {
+          await InstructorLeaveLive(curriculumId, id);
+        } else {
+          await leaveLive(curriculumId, id);
+        }
+        room?.disconnect();
+        localStorage.removeItem('roomCreator');
+        liveStore.reset();
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      window.addEventListener('popstate', handlePopState);
+
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }
+  }, [curriculumId, id, nickname, room, leaveRoom]);
 
   return (
-    <div id="room">
-      <div id="room-header">
-        <h2 id="room-title">{curriculumSubject}</h2>
-        {participantUtils.isCreator(nickname) && (
-          <button className="btn btn-large btn-danger" onClick={leaveRoom}>
-            Leave Room
-          </button>
-        )}
-      </div>
-
-      <div id="layout-container">
-        {participantUtils.isCreator(nickname) && localTrack && (
-          <VideoComponent track={localTrack} participantIdentity={nickname} local={true} />
-        )}
-        {!participantUtils.isCreator(nickname) && remoteTracks.length > 0 && (
-          <div>
-            {remoteTracks
-              .filter(
-                (track) =>
-                  track.participantIdentity ===
-                  participantUtils.getTokenParticipantName(liveStore.roomCreator, TOKEN_TYPES.RTC),
-              )
-              .map((remoteTrack) =>
-                remoteTrack.trackPublication.kind === 'video' ? (
-                  <VideoComponent
-                    key={remoteTrack.trackPublication.trackSid}
-                    track={remoteTrack.trackPublication.videoTrack}
-                    participantIdentity={participantUtils.removeTokenPrefix(
-                      remoteTrack.participantIdentity,
-                    )}
-                  />
-                ) : (
-                  <AudioComponent
-                    key={remoteTrack.trackPublication.trackSid}
-                    track={remoteTrack.trackPublication.audioTrack}
-                  />
-                ),
-              )}
-          </div>
-        )}
-      </div>
-
-      <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
-        <CustomChat />
-      </LiveKitRoom>
-
-      {participantUtils.isCreator(nickname) ? (
-        <div className="excalidraw-wrapper">
-          <div>
-            <div className="flex gap-2">
-              <button className="rounded-2xl border p-5" onClick={startRecording}>
-                녹화
-              </button>
-              <button className="rounded-2xl border p-5" onClick={stopRecording}>
-                정지
-              </button>
-              <button className="rounded-2xl border p-5" onClick={sendDataButton}>
-                전송
-              </button>
-            </div>
-            <p>{elapsedTime}</p>
-          </div>
-          <h3>내 화이트보드</h3>
-          <Excalidraw
-            onChange={(elements) => {
-              console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
-
-              // 이전 상태와 비교하여 삭제된 요소 찾기
-              const deletedElements = elements.filter((currentEl) => {
-                const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
-                return prevEl && !prevEl.isDeleted && currentEl.isDeleted;
-              });
-              console.log('🗑️ 감지된 삭제된 요소들:', deletedElements);
-
-              // 이전 상태와 비교하여 복원된(undo) 요소 찾기
-              const restoredElements = elements.filter((currentEl) => {
-                const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
-                return prevEl && prevEl.isDeleted && !currentEl.isDeleted;
-              });
-              console.log('🔄 감지된 복원된 요소들:', restoredElements);
-
-              // 복원된 요소가 있을 경우, 모든 복원된 요소를 한 번에 전송
-              if (restoredElements.length > 0) {
-                console.log('🔄 복원된 요소들 전송:', restoredElements);
-                const allRestoredElements = restoredElements.map((el) => ({
-                  ...el,
-                  type: 'restored',
-                  elementType: el.type,
-                }));
-                handleInstructorDrawingChange(allRestoredElements);
-              }
-              // 삭제 이벤트가 있을 경우, 모든 삭제된 요소를 한 번에 전송
-              else if (deletedElements.length > 0) {
-                console.log('🗑️ 삭제된 요소들 전송:', deletedElements);
-                const allDeletedElements = deletedElements.map((el) => ({
-                  ...el,
-                  type: 'deleted',
-                }));
-                handleInstructorDrawingChange(allDeletedElements);
-              }
-              // 새로 추가/변경된 요소가 있을 경우
-              else {
-                const validElements = elements.filter((element) => !element.isDeleted);
-                if (validElements.length > 0) {
-                  const latestElement = validElements[validElements.length - 1];
-                  console.log('✏️ 새로 추가 또는 업데이트된 요소 전송:', latestElement);
-                  handleInstructorDrawingChange([latestElement]);
-                }
-              }
-
-              setRoomCreatorElements(elements);
-              console.log('💾 최종 roomCreatorElements 상태:', elements);
-            }}
-            excalidrawAPI={(api) => {
-              roomCreatorAPIRef.current = api;
-            }}
-            viewModeEnabled={false}
-            initialData={{
-              elements: roomCreatorElements,
-              appState: {
-                viewBackgroundColor: '#ffffff',
-                currentItemStrokeColor: '#000000',
-                currentItemBackgroundColor: '#ffffff',
-              },
-            }}
-          />
-        </div>
+    <AnimatePresence mode="wait">
+      {isLoading ? (
+        <LoadingScreen loadingStep={loadingStep} />
       ) : (
-        <div className="whiteboard-container" style={{ display: 'flex', gap: '20px' }}>
-          <div className="excalidraw-wrapper" style={{ flex: 1 }}>
-            <h3>방장 화이트보드</h3>
-            <Excalidraw
-              excalidrawAPI={(api) => {
-                roomCreatorAPIRef.current = api;
-              }}
-              elements={roomCreatorElements}
-              viewModeEnabled={true}
-              initialData={{
-                elements: roomCreatorElements,
-                appState: {
-                  viewBackgroundColor: '#ffffff',
-                  currentItemStrokeColor: '#000000',
-                  currentItemBackgroundColor: '#ffffff',
-                  viewModeEnabled: true,
-                  theme: 'light',
-                },
-              }}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          id="room"
+          className="p-6"
+        >
+          {/* 비디오 레이아웃 */}
+
+          {/* 채팅 컴포넌트 */}
+          <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
+            <CustomChat
+              onLeave={handleLeaveAttempt}
+              isCreator={participantUtils.isCreator(nickname)}
+              isVisible={isChatVisible}
+              setIsVisible={setIsChatVisible}
+              curriculumSubject={curriculumSubject}
+              track={
+                participantUtils.isCreator(nickname)
+                  ? localTrack
+                  : remoteTracks.find(
+                      (track) =>
+                        track.trackPublication?.kind === 'video' &&
+                        track.participantIdentity ===
+                          participantUtils.getTokenParticipantName(
+                            liveStore.roomCreator,
+                            TOKEN_TYPES.RTC,
+                          ),
+                    )?.trackPublication?.videoTrack
+              }
+              participantIdentity={
+                participantUtils.isCreator(nickname) ? nickname : liveStore.roomCreator || ''
+              }
+              local={participantUtils.isCreator(nickname)}
+              liveCount={liveCount}
             />
-          </div>
-          <div className="excalidraw-wrapper" style={{ flex: 1 }}>
-            <h3>내 화이트보드</h3>
-            <Excalidraw
-              onChange={(elements) => {
-                setParticipantElements(elements);
-              }}
-              excalidrawAPI={(api) => {
-                participantAPIRef.current = api;
-              }}
-              elements={participantElements}
-              viewModeEnabled={false}
-              initialData={{
-                elements: participantElements,
-                appState: {
-                  viewBackgroundColor: '#ffffff',
-                  currentItemStrokeColor: '#000000',
-                  currentItemBackgroundColor: '#ffffff',
-                },
-              }}
-            />
-          </div>
-        </div>
+          </LiveKitRoom>
+
+          {/* 퇴장 확인 다이얼로그 */}
+          <AlertDialog open={isLeaveDialogOpen} onOpenChange={setIsLeaveDialogOpen}>
+            <AlertDialogContent className="border-gray-border-color">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-2xl font-bold">
+                  ⚠️
+                  {participantUtils.isCreator(nickname) ? (
+                    <>
+                      <span className="text-primary-color">라이브</span> 종료
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-primary-color">라이브</span> 퇴장
+                    </>
+                  )}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-base">
+                  {participantUtils.isCreator(nickname) ? (
+                    <>
+                      <span className="text-red-500">라이브를 종료</span>하시겠습니까? 모든 참가자가
+                      <span className="text-red-500"> 퇴장</span>됩니다.
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-red-500">라이브를 퇴장</span>하시겠습니까?
+                    </>
+                  )}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
+                  취소
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                  onClick={leaveRoom}
+                >
+                  {participantUtils.isCreator(nickname) ? '종료' : '퇴장'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          {/* 채팅 토글 버튼 */}
+          {!isChatVisible && (
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.4 }}
+              className="fixed right-0 top-6 z-[1000] p-2"
+            >
+              <button
+                className="toggle-chat-btn rounded-l-lg bg-white p-2 shadow-md hover:bg-gray-50"
+                onClick={() => setIsChatVisible(true)}
+              >
+                <LeftArrowIcon />
+              </button>
+            </motion.div>
+          )}
+
+          {/* Excalidraw 컴포넌트 */}
+          {participantUtils.isCreator(nickname) ? (
+            <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
+              <div>
+                <div className="flex gap-2">
+                  <button className="rounded-2xl border p-5" onClick={startRecording}>
+                    녹화
+                  </button>
+                  <button className="rounded-2xl border p-5" onClick={stopRecording}>
+                    정지
+                  </button>
+                  <button className="rounded-2xl border p-5" onClick={sendDataButton}>
+                    전송
+                  </button>
+                </div>
+                <p>{elapsedTime}</p>
+              </div>
+              <Excalidraw
+                onChange={(elements) => {
+                  console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
+
+                  // 이전 상태와 비교하여 삭제된 요소 찾기
+                  const deletedElements = elements.filter((currentEl) => {
+                    const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
+                    return prevEl && !prevEl.isDeleted && currentEl.isDeleted;
+                  });
+                  console.log('🗑️ 감지된 삭제된 요소들:', deletedElements);
+
+                  // 이전 상태와 비교하여 복원된(undo) 요소 찾기
+                  const restoredElements = elements.filter((currentEl) => {
+                    const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
+                    return prevEl && prevEl.isDeleted && !currentEl.isDeleted;
+                  });
+                  console.log('🔄 감지된 복원된 요소들:', restoredElements);
+
+                  // 복원된 요소가 있을 경우, 모든 복원된 요소를 한 번에 전송
+                  if (restoredElements.length > 0) {
+                    console.log('🔄 복원된 요소들 전송:', restoredElements);
+                    const allRestoredElements = restoredElements.map((el) => ({
+                      ...el,
+                      type: 'restored',
+                      elementType: el.type,
+                    }));
+                    handleInstructorDrawingChange(allRestoredElements);
+                  }
+                  // 삭제 이벤트가 있을 경우, 모든 삭제된 요소를 한 번에 전송
+                  else if (deletedElements.length > 0) {
+                    console.log('🗑️ 삭제된 요소들 전송:', deletedElements);
+                    const allDeletedElements = deletedElements.map((el) => ({
+                      ...el,
+                      type: 'deleted',
+                    }));
+                    handleInstructorDrawingChange(allDeletedElements);
+                  }
+                  // 새로 추가/변경된 요소가 있을 경우
+                  else {
+                    const validElements = elements.filter((element) => !element.isDeleted);
+                    if (validElements.length > 0) {
+                      const latestElement = validElements[validElements.length - 1];
+                      console.log('✏️ 새로 추가 또는 업데이트된 요소 전송:', latestElement);
+                      handleInstructorDrawingChange([latestElement]);
+                    }
+                  }
+
+                  setRoomCreatorElements(elements);
+                  console.log('💾 최종 roomCreatorElements 상태:', elements);
+                }}
+                excalidrawAPI={(api) => {
+                  roomCreatorAPIRef.current = api;
+                }}
+                viewModeEnabled={false}
+                initialData={{
+                  elements: roomCreatorElements,
+                  appState: {
+                    viewBackgroundColor: '#ffffff',
+                    currentItemStrokeColor: '#000000',
+                    currentItemBackgroundColor: '#ffffff',
+                  },
+                }}
+              />
+            </div>
+          ) : (
+            <div className="flex h-[calc(100vh-50px)] flex-col">
+              {/* 겹치기 토글 버튼 */}
+              <div className="mb-4 flex justify-center">
+                <button
+                  onClick={() => setIsOverlayMode(!isOverlayMode)}
+                  className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
+                >
+                  {isOverlayMode ? '겹치기 해제' : '겹치기'}
+                </button>
+              </div>
+
+              {isOverlayMode ? (
+                // 겹치기 모드
+                <div className="relative flex-1">
+                  {/* 방장 화이트보드 (아래 레이어) */}
+                  <div className="absolute inset-0 z-0">
+                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                      <h3 className="mb-4 text-xl font-bold">
+                        <span className="text-primary-color">방장 </span>화이트보드
+                      </h3>
+                      <div className="h-[calc(100%-40px)]">
+                        <Excalidraw
+                          excalidrawAPI={(api) => {
+                            roomCreatorAPIRef.current = api;
+                          }}
+                          elements={roomCreatorElements}
+                          viewModeEnabled={true}
+                          initialData={{
+                            elements: roomCreatorElements,
+                            appState: {
+                              viewBackgroundColor: '#ffffff',
+                              currentItemStrokeColor: '#000000',
+                              currentItemBackgroundColor: '#ffffff',
+                              viewModeEnabled: true,
+                              theme: 'light',
+                            },
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  {/* 내 화이트보드 (위 레이어) */}
+                  <div className="absolute inset-0 z-10 bg-white bg-opacity-50">
+                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                      <h3 className="mb-4 text-xl font-bold">
+                        <span className="text-primary-color">내 </span>화이트보드
+                      </h3>
+                      <div className="h-[calc(100%-40px)]">
+                        <Excalidraw
+                          onChange={(elements) => {
+                            setParticipantElements(elements);
+                          }}
+                          excalidrawAPI={(api) => {
+                            participantAPIRef.current = api;
+                          }}
+                          elements={participantElements}
+                          viewModeEnabled={false}
+                          initialData={{
+                            elements: participantElements,
+                            appState: {
+                              viewBackgroundColor: '#ffffff',
+                              currentItemStrokeColor: '#000000',
+                              currentItemBackgroundColor: '#ffffff',
+                            },
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // 기본 모드
+                <div className="flex h-full gap-2">
+                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                    <h3 className="mb-4 text-xl font-bold">
+                      <span className="text-primary-color">방장 </span>화이트보드
+                    </h3>
+                    <div className="h-[calc(100%-40px)]">
+                      <Excalidraw
+                        excalidrawAPI={(api) => {
+                          roomCreatorAPIRef.current = api;
+                        }}
+                        elements={roomCreatorElements}
+                        viewModeEnabled={true}
+                        initialData={{
+                          elements: roomCreatorElements,
+                          appState: {
+                            viewBackgroundColor: '#ffffff',
+                            currentItemStrokeColor: '#000000',
+                            currentItemBackgroundColor: '#ffffff',
+                            viewModeEnabled: true,
+                            theme: 'light',
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                    <h3 className="mb-4 text-xl font-bold">
+                      <span className="text-primary-color">내 </span>화이트보드
+                    </h3>
+                    <div className="h-[calc(100%-40px)]">
+                      <Excalidraw
+                        onChange={(elements) => {
+                          setParticipantElements(elements);
+                        }}
+                        excalidrawAPI={(api) => {
+                          participantAPIRef.current = api;
+                        }}
+                        elements={participantElements}
+                        viewModeEnabled={false}
+                        initialData={{
+                          elements: participantElements,
+                          appState: {
+                            viewBackgroundColor: '#ffffff',
+                            currentItemStrokeColor: '#000000',
+                            currentItemBackgroundColor: '#ffffff',
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </motion.div>
       )}
-    </div>
+    </AnimatePresence>
+    // >>>>>>> develop
   );
 };

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import posterNoneImg from '@/assets/posterNoneImg.png';
@@ -10,7 +11,11 @@ export const SubscriptionCard = ({
   memberId,
 }) => {
   const navigate = useNavigate();
-  const profileImage = image || posterNoneImg; // 이미지가 없으면 기본 이미지 사용
+  const [profileImage, setProfileImage] = useState(image || posterNoneImg);
+
+  useEffect(() => {
+    setProfileImage(image || posterNoneImg);
+  }, [image]); // image 값이 변경될 때마다 profileImage 업데이트
 
   return (
     <button

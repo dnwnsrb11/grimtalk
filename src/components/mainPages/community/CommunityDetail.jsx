@@ -53,11 +53,20 @@ export const CommunityDetail = ({ communityId, onBack }) => {
       <hr />
       <div className="flex justify-end gap-3">
         <button
-          onClick={() => navigate(`/lecture/${lectureIdWithCommunityId}`)}
+          onClick={() => {
+            try {
+              // navigate(`/lecture/${lectureIdWithCommunityId}`);
+              alert('이동에 실패했습니다. 다시 시도해주세요.');
+            } catch (error) {
+              alert('이동에 실패했습니다. 다시 시도해주세요.');
+              console.error('Navigation Error:', error);
+            }
+          }}
           className="mt-[20px] flex rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
         >
           <p className="text-[18px] font-semibold text-white">강의 이동</p>
         </button>
+
         <button
           className="mt-[20px] flex rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
           onClick={onBack}

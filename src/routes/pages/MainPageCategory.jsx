@@ -14,7 +14,7 @@ export const MainPageCategory = () => {
 
   // ✅ 정렬 기준 상태
   const [sortType, setSortType] = useState('recommendation');
-  const [visibleLecturesCount, setVisibleLecturesCount] = useState(4); // 기본적으로 4개만 표시
+  const [visibleLecturesCount, setVisibleLecturesCount] = useState(8); // 기본적으로 4개만 표시
   const [isExpanded, setIsExpanded] = useState(false); // 항목이 확장되었는지 여부
 
   useEffect(() => {
@@ -73,13 +73,14 @@ export const MainPageCategory = () => {
       <hr />
 
       {/* ✅ 정렬된 데이터 렌더링 */}
-      <div className="mt-[40px] flex flex-wrap gap-3">
+      {/* ✅ 정렬된 데이터 렌더링 */}
+      <div className="mt-[40px] grid grid-cols-4 gap-4 ">
         {categorySearch.length > 0 ? (
           sortedLectures
             .slice(0, visibleLecturesCount)
             .map((search, index) => <LectureItem key={index} search={search} />)
         ) : (
-          <div className="flex h-[200px] w-full items-center justify-center rounded-lg border border-gray-300">
+          <div className="col-span-4 flex h-[200px] w-full items-center justify-center rounded-lg border border-gray-300">
             <p className="text-lg font-medium text-gray-500">조회한 결과가 없습니다.</p>
           </div>
         )}

@@ -33,7 +33,7 @@ export const ProfileSection = ({
     if (location.state?.selectedProfileMenu) {
       setSelectedProfileMenu(location.state.selectedProfileMenu);
     }
-  }, [location.state, targetid]);
+  }, [location, targetid, setSelectedMenu, selectedProfileMenu, setSelectedProfileMenu]);
 
   const handleProfileMenuClick = (menu) => {
     setSelectedMenu('유저소개');
@@ -42,14 +42,19 @@ export const ProfileSection = ({
   const { id } = useAuthStore((state) => state.userData);
   const { id: urlid } = useParams();
   // 유저 데이터 조회
-  const { data: profileSectionCheck } = useQuery({
+  const { data: profileSectionCheck, refetch } = useQuery({
     queryKey: ['profileSectionCheck', id, targetid],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/user/${targetid}`);
       return data.body.data;
     },
+    enabled: !!targetid,
   });
-
+  useEffect(() => {
+    if (location.state) {
+      refetch(); // 새로고침 없이 강제 데이터 갱신
+    }
+  }, [location.state, refetch]);
   return (
     <div className="mt-10 flex flex-col  items-start">
       {/* 프로필 정보 영역 */}

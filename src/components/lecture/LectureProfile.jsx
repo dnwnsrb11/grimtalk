@@ -1,8 +1,14 @@
-import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
+import artDeactiveSVG from '@/assets/category/art-deactive.svg';
+import characterDeactiveSVG from '@/assets/category/character-deactive.svg';
+import coloringDeactiveSVG from '@/assets/category/coloring-deactive.svg';
+import drawingDeactiveSVG from '@/assets/category/drawing-deactive.svg';
+import emoticonDeactiveSVG from '@/assets/category/emoticon-deactive.svg';
+import webtoonDeactiveSVG from '@/assets/category/webtoon-deactive.svg';
 // nonImage 가져오기
 // 아이콘 가져오기
 import {
@@ -12,13 +18,17 @@ import {
   LeveltwoBadgeIcon,
   SubscribeIcon,
 } from '@/components/common/icons';
+import { LiveClock } from '@/components/lecture/LiveClock';
+import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { useAuthStore } from '@/store/useAuthStore';
-export const LectureProfile = ({ checkInstructor, lecture }) => {
+
+export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }) => {
   const { id, email, nickname } = useAuthStore((state) => state.userData);
   const navigate = useNavigate();
   const [checkFavorite, setCheckFavorite] = useState(false);
   //   구독시 값에 따라 버튼 활성화, 비활성화 기능 구현
   const [checkSubscribe, setCheckSubscribe] = useState(false);
+
   // 강의 즐겨찾기 추가
   const lectureFavorite = useMutation({
     mutationFn: async () => {
@@ -64,7 +74,7 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
   const lectureSubmit = useMutation({
     mutationFn: async () => {
       const { data } = await _axiosAuth.post(`/subscribe`, {
-        memberId: lecture?.instructorInfo.id,
+        memberId: lecture?.instructorInfo?.id,
       });
       return data;
     },
@@ -80,7 +90,7 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
   // 강사 구독 취소
   const lectureSubmitCancel = useMutation({
     mutationFn: async () => {
-      const { data } = await _axiosAuth.delete(`/subscribe/${lecture?.instructorInfo.id}`);
+      const { data } = await _axiosAuth.delete(`/subscribe/${lecture?.instructorInfo?.id}`);
       return data;
     },
     onSuccess: () => {
@@ -101,13 +111,99 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
       setCheckSubscribe(false);
     }
   };
-  console.log('targetid:', lecture?.instructorInfo.id);
-  console.log('myid:', id);
+  // console.log('targetid:', lecture?.instructorInfo?.id);
+  // console.log('myid:', id);
+  const { data: check } = useQuery({
+    queryKey: ['check'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/subscribe`);
+      return data.body?.data ?? []; // ❗ 항상 배열을 반환하도록 처리
+    },
+  });
+
+  useEffect(() => {
+    if (!check || check.length === 0) return; // check가 없거나 빈 배열이면 실행 X
+
+    console.log('✅ check 값 변경됨:', check);
+
+    // check 배열을 돌면서 lecture.instructorInfo.nickname과 비교
+    const isMatched = check.some((item) => item.nickname === lecture?.instructorInfo?.nickname);
+
+    if (isMatched) {
+      console.log('✅ 매칭된 닉네임 발견:', lecture?.instructorInfo?.nickname);
+      setCheckSubscribe(true);
+    } else {
+      console.log('❌ 매칭된 닉네임 없음');
+      setCheckSubscribe(false);
+    }
+  }, [check, lecture?.instructorInfo?.nickname]); // check 또는 nickname이 변경될 때 실행
+
+  const { data: checkF } = useQuery({
+    queryKey: ['favorite'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(`/favorite`);
+      return data.body?.data ?? []; // ❗ 항상 배열 반환
+    },
+  });
+
+  useEffect(() => {
+    if (!checkF || checkF.length === 0) return; // checkF가 없거나 빈 배열이면 실행 X
+    console.log(checkF);
+    console.log('✅ 즐겨찾기 데이터 변경됨:', checkF);
+
+    // checkF 배열을 돌면서 lecture.id와 비교
+    const isMatched = checkF.list.some(
+      (item) => item.nickname === lecture?.instructorInfo?.nickname,
+    );
+
+    if (isMatched) {
+      console.log('✅ 즐겨찾기된 강의 발견:', lecture?.instructorInfo?.nickname);
+      setCheckFavorite(true);
+    } else {
+      console.log('❌ 즐겨찾기된 강의 없음');
+      setCheckFavorite(false);
+    }
+  }, [checkF, lecture?.instructorInfo?.nickname]); // checkF 또는 lecture.id 변경 시 실행
+
   return (
     <>
       <div>
-        <div className="mb-[30px] mt-[60px]">
-          <h2 className="text-[32px] font-bold">{lecture?.subject}</h2>
+        <div className="mb-[20px] mt-[60px] flex flex-row justify-between">
+          <div>
+            <h2 className="text-[32px] font-bold">{lecture?.subject}</h2>
+            <span className="flex gap-3">
+              {lecture ? (
+                lecture?.hashtags?.map((tag, index) => (
+                  <HashTagChip key={index} hashTag={`#${tag}`} />
+                ))
+              ) : (
+                <div>태그가 없습니다.</div>
+              )}
+            </span>
+          </div>
+          <div className="flex items-end">
+            <div className=" flex items-center gap-2 rounded-full border bg-primary-color px-3 py-1">
+              {lecture.category === '웹툰' && (
+                <img src={webtoonDeactiveSVG} alt="웹툰" className="h-5 w-5" />
+              )}
+              {lecture.category === '이모티콘' && (
+                <img src={emoticonDeactiveSVG} alt="이모티콘" className="h-5 w-5" />
+              )}
+              {lecture.category === '캐릭터' && (
+                <img src={characterDeactiveSVG} alt="캐릭터" className="h-5 w-5" />
+              )}
+              {lecture.category === '드로잉' && (
+                <img src={drawingDeactiveSVG} alt="드로잉" className="h-5 w-5" />
+              )}
+              {lecture.category === '컬러링' && (
+                <img src={coloringDeactiveSVG} alt="컬러링" className="h-5 w-5" />
+              )}
+              {lecture.category === '컨셉 아트' && (
+                <img src={artDeactiveSVG} alt="컨셉아트" className="h-5 w-5" />
+              )}
+              <p className="text-white">{lecture.category}</p>
+            </div>
+          </div>
         </div>
         {/* 강의 프로필 카드 구역 */}
         <div className="flex h-full gap-5">
@@ -118,7 +214,7 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
                 {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
                 <div className="overflow-hidden rounded-full">
                   <img
-                    src={lecture.instructorInfo.image}
+                    src={lecture.instructorInfo?.image}
                     alt="profileimg"
                     className="h-[162px] w-[162px]"
                   />
@@ -139,12 +235,12 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
               {/* 강사 인포 */}
               <div>
                 <h2 className="mb-[15px] text-[24px] font-bold">
-                  {lecture?.instructorInfo.nickname}
+                  {lecture?.instructorInfo?.nickname}
                 </h2>
-                {lecture?.instructorInfo.intro === null ? (
+                {lecture?.instructorInfo?.intro === null ? (
                   <p className="font-medium text-text-gray-color">작성된 소개 메시지가 없습니다.</p>
                 ) : (
-                  <p> {lecture?.instructorInfo.intro} </p>
+                  <p> {lecture?.instructorInfo?.intro} </p>
                 )}
               </div>
               <div className="mt-[15px] flex gap-3">
@@ -152,9 +248,9 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
                 <button
                   className="rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white"
                   onClick={() =>
-                    navigate(`/mypage/${lecture?.instructorInfo.id}`, {
+                    navigate(`/mypage/${lecture?.instructorInfo?.id}`, {
                       state: {
-                        joinId: lecture?.instructorInfo.id,
+                        joinId: lecture?.instructorInfo?.id,
                         selectedMenu: '유저소개',
                         selectedProfileMenu: '강사',
                       },
@@ -250,27 +346,15 @@ export const LectureProfile = ({ checkInstructor, lecture }) => {
 
             <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl border border-gray-border-color">
               {/* 라이브 카드 부분 */}
-              <h3 className="text-[24px] font-medium text-[#565252]">2024.01.24</h3>
-              <h2 className="text-[30px] font-bold">09:00</h2>
-              {checkInstructor ? (
-                lecture?.liveId === null ? (
-                  <div className="rounded-xl bg-bg-gray-color p-3 px-5 transition-all duration-200 hover:px-7">
-                    <button className="font-semibold text-black">라이브 시작하기</button>
-                  </div>
-                ) : (
-                  <div className="rounded-xl bg-primary-color p-3 px-5 transition-all duration-200 hover:px-7">
-                    <button className="font-semibold text-white">라이브 진행중</button>
-                  </div>
-                )
-              ) : lecture?.liveId === null ? (
-                <div className="rounded-xl bg-bg-gray-color p-3 px-5">
-                  <button className="font-semibold">라이브 시작 전 입니다.</button>
-                </div>
-              ) : (
-                <div className="rounded-xl bg-primary-color p-3 px-5 transition-all duration-200 hover:px-7">
-                  <button className="font-semibold text-white">라이브 시청하기.</button>
-                </div>
-              )}
+              <LiveClock />
+              <button
+                className={
+                  'rounded-xl bg-primary-color p-3 px-5 font-semibold text-white transition-all duration-200 hover:px-7'
+                }
+                onClick={() => setSelectedCategory('커리큘럼')}
+              >
+                {checkInstructor ? '라이브 시작하기' : '라이브 살펴보기'}
+              </button>
             </div>
           </div>
         </div>
