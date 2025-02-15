@@ -66,7 +66,7 @@ export const CurriculumLectureCard = ({ curriculum, instructorId, instructorNick
                   : curriculum.live
                     ? 'text-common-font-color'
                     : ''
-              }`}
+              } whitespace-pre-line`}
             >
               {curriculum.content}
             </p>
