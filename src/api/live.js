@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { _axios, _axiosAuth } from '@/api/instance';
 
@@ -110,6 +110,23 @@ const joinLive = async (roomId, userId) => {
   }
 };
 
+// 강사 스트로크 저장을 위한 커스텀 훅
+const useAddStrokeMutation = (roomId) => {
+  return useMutation({
+    mutationFn: async (strokeData) => {
+      // mutationFn에서 파라미터로 받음
+      const { data } = await _axiosAuth.post(`/stroke/${roomId}`, strokeData);
+      return data;
+    },
+    onError: (error) => {
+      console.error('스트로크 저장 실패:', error);
+    },
+    onSuccess: (data) => {
+      console.log('스트로크 저장 성공:', data);
+    },
+  });
+};
+
 // 라이브 퇴장 함수
 // roomId: 커리큘럼 id
 // userId: 사용자 id
@@ -161,6 +178,7 @@ export {
   joinLive,
   leaveLive,
   liveApi,
+  useAddStrokeMutation,
   useFavoriteRoomList,
   useFavoriteRoomListTop4,
   useLiveCount,
