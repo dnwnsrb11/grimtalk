@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { _axiosAuth } from '@/api/instance';
 import posterNoneImg from '@/assets/posterNoneImg.png';
 import { useAuthStore } from '@/store/useAuthStore';
-export const QuestionContentCard = ({ comment, boardId }) => {
+export const QuestionContentCard = ({ comment, boardId, picked }) => {
   const queryClient = useQueryClient();
   const { id, email, nickname } = useAuthStore((state) => state.userData);
 
@@ -45,23 +45,19 @@ export const QuestionContentCard = ({ comment, boardId }) => {
             </div>
 
             {/* 오른쪽: 기타 요소 */}
-            {boardId === id ? (
-              comment.picked ? (
-                <span className="rounded-md bg-gray-300 px-2 py-1 text-xs font-medium text-gray-700">
-                  채택 완료
-                </span>
-              ) : (
-                <button
-                  onClick={() => addCommentCheckMutation.mutate()}
-                  className="rounded-md bg-primary-color px-2 py-1 text-xs font-medium text-white"
-                >
-                  채택하기
-                </button>
-              )
-            ) : comment.picked ? (
+            {comment.picked ? (
+              // 현재 댓글이 채택된 경우 "채택 완료" 표시
               <span className="rounded-md bg-gray-300 px-2 py-1 text-xs font-medium text-gray-700">
                 채택 완료
               </span>
+            ) : boardId === id && !picked ? (
+              // 로그인한 사용자가 질문자이고, 아직 다른 댓글이 채택되지 않은 경우만 "채택하기" 버튼 표시
+              <button
+                onClick={() => addCommentCheckMutation.mutate()}
+                className="rounded-md bg-primary-color px-2 py-1 text-xs font-medium text-white"
+              >
+                채택하기
+              </button>
             ) : null}
           </div>
 
