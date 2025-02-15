@@ -214,8 +214,16 @@ export const LivePage = () => {
         await leaveRoom();
       };
 
-      const handlePopState = async () => {
-        await leaveRoom();
+      const handlePopState = async (e) => {
+        e.preventDefault();
+        if (participantUtils.isCreator(nickname)) {
+          await InstructorLeaveLive(curriculumId, id);
+        } else {
+          await leaveLive(curriculumId, id);
+        }
+        room?.disconnect();
+        localStorage.removeItem('roomCreator');
+        liveStore.reset();
       };
 
       window.addEventListener('beforeunload', handleBeforeUnload);
