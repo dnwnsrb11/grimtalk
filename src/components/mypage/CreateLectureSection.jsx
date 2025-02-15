@@ -341,9 +341,20 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <div>
-            <label className="text-xl font-bold">배너 이미지</label>
-            <p></p>
+            <div className="flex flex-row items-center gap-3">
+              <label className="text-xl font-bold">배너 이미지</label>
+              <div className="relative inline-block">
+                {/* ? 아이콘 (원형 버튼) */}
+                <div className="group flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-gray-300 text-sm font-bold text-gray-800">
+                  ?{/* 툴팁 */}
+                  <span className="absolute bottom-full left-1/2 mb-2 hidden w-max -translate-x-1/2 rounded-md bg-gray-800 px-3 py-1 text-sm text-white group-hover:block">
+                    배너 이미지는 1200x300px 권장
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
+
           <div className="grid grid-cols-8 gap-6">
             <input
               type="text"
