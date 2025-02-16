@@ -13,13 +13,15 @@ export const BadgeInformation = ({
 }) => {
   return (
     <div className="flex h-full w-full flex-row items-center gap-5">
-      <div className="rounded-md bg-bg-gray-color p-3">
-        {subscribeNumber <= 10 ? (
-          <LeveloneBadgeIcon />
-        ) : subscribeNumber <= 100 ? (
-          <LeveltwoBadgeIcon />
-        ) : (
+      <div className="flex min-h-[65px] min-w-[65px] items-center justify-center rounded-md bg-bg-gray-color p-3">
+        {subscribeNumber >= 101 ? (
           <LevelthirdBadgeIcon />
+        ) : subscribeNumber >= 10 ? (
+          <LeveltwoBadgeIcon />
+        ) : subscribeNumber >= 3 ? (
+          <LeveloneBadgeIcon />
+        ) : (
+          <span className="text-2xl">😭</span>
         )}
       </div>
       <div className="flex flex-col justify-center">

@@ -1,5 +1,9 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { _axiosAuth } from '@/api/instance';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const NavigationMenu = ({
   selectedMenu,
@@ -8,6 +12,8 @@ export const NavigationMenu = ({
   myid,
   targetid,
 }) => {
+  const { logoutAuth } = useAuthStore();
+  const navigate = useNavigate();
   // 네비게이션 메뉴 아이템 목록을 상태로 관리
   const [studentMenuItems, setStudentMenuItems] = useState([]);
   const [instructorMenuItems, setInstructorMenuItems] = useState([]);
@@ -29,6 +35,19 @@ export const NavigationMenu = ({
       queryClient.invalidateQueries(['profileSectionCheck']);
     }
   }, [myid, targetid]);
+
+  // 회원 탈퇴
+  const deleteUserMutation = useMutation({
+    mutationFn: async () => {
+      const { data } = await _axiosAuth.delete(`/user`);
+      return data;
+    },
+    onSuccess: () => {
+      logoutAuth();
+      alert('회원탈퇴가 완료되었습니다.');
+      navigate('/');
+    },
+  });
 
   return (
     <div className="mt-[40px] flex flex-col items-baseline gap-3 text-xl">
@@ -52,6 +71,18 @@ export const NavigationMenu = ({
               {item}
             </button>
           ))}
+      {myid && myid === targetid && (
+        <button
+          className="mt-[100%] font-bold text-black hover:font-semibold hover:text-black"
+          onClick={() => {
+            if (window.confirm('정말 회원탈퇴를 진행하시겠습니까?')) {
+              deleteUserMutation.mutate();
+            }
+          }}
+        >
+          회원탈퇴
+        </button>
+      )}
     </div>
   );
 };

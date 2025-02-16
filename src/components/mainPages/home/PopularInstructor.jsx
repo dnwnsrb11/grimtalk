@@ -10,8 +10,8 @@ export const PopularInstructor = ({ index, instroductor }) => {
   const instroductorNickname = instroductor?.nickname || '더미닉네임';
   const instroductorImg = instroductor?.image || posterNoneImg;
   const instroductorTags =
-    Array.isArray(instroductor?.tags) && instroductor?.tags.length > 0
-      ? instroductor?.tags
+    Array.isArray(instroductor?.memberTags) && instroductor?.memberTags.length > 0
+      ? instroductor?.memberTags
       : ['더미태그1', '더미태그2'];
   const instroductorMemberId = instroductor?.memberId;
   // console.log('현재 로그인한 유저 ID:', id);
