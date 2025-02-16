@@ -267,7 +267,7 @@ export const AiComparePage = () => {
                 </h1>
               </div>
               <div>
-                <p>{analysisResult.line_comment}</p>
+                <p className="break-keep">{analysisResult.line_comment}</p>
               </div>
             </div>
             <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
@@ -280,7 +280,7 @@ export const AiComparePage = () => {
                 </h1>
               </div>
               <div>
-                <p>{analysisResult.color_comment}</p>
+                <p className="break-keep">{analysisResult.color_comment}</p>
               </div>
             </div>
           </div>
