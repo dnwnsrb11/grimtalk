@@ -44,6 +44,11 @@ export const CustomChat = ({
   participantIdentity,
   local,
   liveCount,
+  stopRecording,
+  startRecording,
+  sendDataButton,
+  elapsedTime,
+  isRecording,
   ...props
 }) => {
   const applyMessageStyles = () => {
@@ -165,6 +170,21 @@ export const CustomChat = ({
 
   return (
     <div className="chat-container relative">
+      {/* 강사의 경우에만 보임 */}
+      {isCreator && (
+        <div className="flex gap-2">
+          {isRecording ? (
+            <button onClick={stopRecording}>정지</button>
+          ) : (
+            <button onClick={startRecording}>녹화</button>
+          )}
+          <button onClick={sendDataButton}>저장</button>
+          <div>
+            <p>{(elapsedTime / 10).toFixed(0)}초</p>
+          </div>
+        </div>
+      )}
+      <hr className="my-2" />
       {/* 채팅 컴포넌트 */}
       <div className={`chat-wrapper ${isVisible ? 'visible' : 'hidden'}`}>
         {/* 과목명 표시 */}
