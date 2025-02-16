@@ -2,9 +2,10 @@
 import '@/styles/live.css';
 
 import { Chat } from '@livekit/components-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect } from 'react';
 
-import { ParticipantCountIcon, RightArrowIcon } from '@/components/common/icons';
+import { ParticipantCountIcon, RightArrowIcon, SendIcon } from '@/components/common/icons';
 import { VideoComponent } from '@/components/live/VideoComponent';
 
 // 이름을 해시화하여 색상을 생성하는 함수
@@ -50,6 +51,8 @@ export const CustomChat = ({
   elapsedTime,
   isRecording,
   completeRecording,
+  isLeaveDialogOpen,
+  sendData,
   ...props
 }) => {
   const applyMessageStyles = () => {
@@ -174,33 +177,61 @@ export const CustomChat = ({
       {/* 강사의 경우에만 보임 */}
       {isCreator && (
         <div className="group relative">
-          <div className="flex items-center justify-between gap-2">
-            {isRecording ? (
-              <button
-                onClick={stopRecording}
-                className="rounded-lg border bg-[#EFEFEF] px-[10px] py-[5px] transition-colors duration-200 hover:bg-black"
+          <div className="relative flex items-center justify-between gap-2">
+            <div className="relative">
+              {/* 경고 테두리 애니메이션 - 버튼만 감싸도록 수정 */}
+
+              {/* 녹화 버튼들 */}
+              <div
+                className={`relative z-10 ${isLeaveDialogOpen ? 'animate-[pulse_1.0s_ease-in-out_infinite]' : ''}`}
               >
-                정지
-              </button>
-            ) : (
-              !completeRecording && (
-                <button
-                  onClick={startRecording}
-                  className="rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white transition-colors duration-200 hover:bg-[#792b1a]"
-                >
-                  녹화
-                </button>
-              )
-            )}
-            {completeRecording && (
-              <button
-                onClick={sendDataButton}
-                className="rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white"
-              >
-                저장
-              </button>
-            )}
-            <div className="flex w-[30%] justify-center rounded-lg border border-[#ffb3a1] px-[20px] py-[5px]">
+                {isRecording ? (
+                  <button
+                    onClick={stopRecording}
+                    className="relative rounded-lg border bg-[#EFEFEF] px-[10px] py-[5px] transition-colors duration-200 hover:bg-[#cfcfcf]"
+                  >
+                    정지
+                  </button>
+                ) : (
+                  !completeRecording && (
+                    <button
+                      onClick={startRecording}
+                      className="relative rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white transition-colors duration-200 hover:bg-[#fc7051]"
+                    >
+                      녹화
+                    </button>
+                  )
+                )}
+                {completeRecording && (
+                  <AnimatePresence>
+                    {!sendData ? (
+                      <motion.button
+                        onClick={sendDataButton}
+                        initial={{ x: 0, opacity: 1 }}
+                        exit={{ x: 100, opacity: 0 }}
+                        className="relative rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white hover:bg-[#fc7051]"
+                      >
+                        저장
+                      </motion.button>
+                    ) : (
+                      <motion.div
+                        initial={{ x: -50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        className="flex items-center gap-2"
+                      >
+                        <div className="rounded-lg bg-black px-[10px] py-[5px] text-white">
+                          <SendIcon width={20} height={20} fill="white" />
+                        </div>
+                        <span className=" text-black">저장됨</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                )}
+              </div>
+            </div>
+
+            {/* 타이머 - 테두리 애니메이션 밖으로 분리 */}
+            <div className="relative flex w-[30%] justify-center rounded-lg border border-[#ffb3a1] px-[20px] py-[5px]">
               <p>
                 {(elapsedTime / 10).toFixed(0)}{' '}
                 <span className="text-[14px] font-light text-[#828282]">초</span>{' '}
@@ -219,12 +250,12 @@ export const CustomChat = ({
       <div className={`chat-wrapper ${isVisible ? 'visible' : 'hidden'}`}>
         {/* 과목명 표시 */}
         <h2 className="mb-4 flex flex-col gap-2 text-xl font-bold">
-          <span className="text-primary-color break-keep">{curriculumSubject}</span>
+          <span className="break-keep text-primary-color">{curriculumSubject}</span>
           <div className="flex items-center justify-end gap-1">
-            <span className="text-text-gray-color flex items-center gap-2 text-sm">
+            <span className="flex items-center gap-2 text-sm text-text-gray-color">
               <ParticipantCountIcon />
             </span>
-            <span className="text-text-gray-color text-sm">{liveCount}</span>
+            <span className="text-sm text-text-gray-color">{liveCount}</span>
           </div>
         </h2>
         {/* 퇴장 버튼과 토글 버튼 컨테이너 */}
@@ -234,7 +265,7 @@ export const CustomChat = ({
           </button>
           <button
             onClick={onLeave}
-            className="bg-primary-color flex-1 rounded-lg px-6 py-2 text-white hover:opacity-90"
+            className="flex-1 rounded-lg bg-primary-color px-6 py-2 text-white hover:opacity-90"
           >
             <div className="flex items-center justify-center gap-2">
               {isCreator ? (

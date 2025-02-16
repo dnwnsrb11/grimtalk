@@ -29,7 +29,7 @@ const router = createBrowserRouter([
     element: <LivePage />,
   },
   {
-    path: '/replay',
+    path: '/replay/:curriculumId',
     element: <ReplayPage />,
   },
   {
