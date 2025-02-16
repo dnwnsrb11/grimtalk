@@ -2,9 +2,10 @@
 import '@/styles/live.css';
 
 import { Chat } from '@livekit/components-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect } from 'react';
 
-import { ParticipantCountIcon, RightArrowIcon } from '@/components/common/icons';
+import { ParticipantCountIcon, RightArrowIcon, SendIcon } from '@/components/common/icons';
 import { VideoComponent } from '@/components/live/VideoComponent';
 
 // 이름을 해시화하여 색상을 생성하는 함수
@@ -51,6 +52,7 @@ export const CustomChat = ({
   isRecording,
   completeRecording,
   isLeaveDialogOpen,
+  sendData,
   ...props
 }) => {
   const applyMessageStyles = () => {
@@ -186,7 +188,7 @@ export const CustomChat = ({
                 {isRecording ? (
                   <button
                     onClick={stopRecording}
-                    className="relative rounded-lg border bg-[#EFEFEF] px-[10px] py-[5px] transition-colors duration-200 hover:bg-black"
+                    className="relative rounded-lg border bg-[#EFEFEF] px-[10px] py-[5px] transition-colors duration-200 hover:bg-[#cfcfcf]"
                   >
                     정지
                   </button>
@@ -194,19 +196,36 @@ export const CustomChat = ({
                   !completeRecording && (
                     <button
                       onClick={startRecording}
-                      className="relative rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white transition-colors duration-200 hover:bg-[#792b1a]"
+                      className="relative rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white transition-colors duration-200 hover:bg-[#fc7051]"
                     >
                       녹화
                     </button>
                   )
                 )}
                 {completeRecording && (
-                  <button
-                    onClick={sendDataButton}
-                    className="relative rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white"
-                  >
-                    저장
-                  </button>
+                  <AnimatePresence>
+                    {!sendData ? (
+                      <motion.button
+                        onClick={sendDataButton}
+                        initial={{ x: 0, opacity: 1 }}
+                        exit={{ x: 100, opacity: 0 }}
+                        className="relative rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white hover:bg-[#fc7051]"
+                      >
+                        저장
+                      </motion.button>
+                    ) : (
+                      <motion.div
+                        initial={{ x: -50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        className="flex items-center gap-2"
+                      >
+                        <div className="rounded-lg bg-black px-[10px] py-[5px] text-white">
+                          <SendIcon width={20} height={20} fill="white" />
+                        </div>
+                        <span className=" text-black">저장됨</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 )}
               </div>
             </div>
