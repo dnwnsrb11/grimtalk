@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
-import { DrawingIcon } from '@/components/common/icons';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 
 // 이미지 URL을 Blob으로 변환하는 유틸리티 함수
@@ -62,7 +61,7 @@ export const AiComparePage = () => {
     queryKey: ['InstructorBlob'],
     queryFn: async () => {
       // 특정 ID(4)를 사용하여 이미지 URL 요청
-      const { data } = await _axiosAuth.get(`/curriculum/completed-image/${30}`);
+      const { data } = await _axiosAuth.get(`/curriculum/completed-image/${25}`);
       // 응답 데이터 유효성 검사
       if (data.body?.code !== 200) {
         throw new Error(data.body.message || '데이터를 찾을 수 없습니다.');
@@ -103,10 +102,10 @@ export const AiComparePage = () => {
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
+          timeout: 30000, // 30초로 증가
         },
       );
-      // 일부로 로딩시간 2초로 awati 걸어서 잠시 멈처줌
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       return response.data.data;
     },
     // 성공 시 분석 결과 로깅
@@ -241,14 +240,48 @@ export const AiComparePage = () => {
         </div>
         {/* 분석 결과 섹션 */}
         {analysisResult && !isAnalyzing && (
-          <div className="animate-fade-slide-down mt-[10px] rounded-2xl border p-6">
-            <h1 className="text-primary-color text-[46px] font-bold">
-              <span className="text-text-gray-color font-light">유사도:</span>{' '}
-              <CountUpAnimation targetNumber={Number(analysisResult.color_similarity)} />%
-            </h1>
-            <p>{analysisResult.color_comment}</p>
-            <div>
-              <DrawingIcon />
+          <div className="flex gap-3">
+            <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
+              <div className="flex w-[100%] flex-col items-center">
+                <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
+                  <span className="text-text-gray-color text-[18px] font-light">색감 유사도</span>
+                </div>
+                <h1 className="text-primary-color text-[66px] font-bold">
+                  <CountUpAnimation targetNumber={Number(analysisResult.color_similarity)} />%
+                </h1>
+              </div>
+              <div>
+                <p className="break-keep">{analysisResult.color_comment}</p>
+              </div>
+            </div>
+            <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
+              <div className="flex w-[100%] flex-col items-center">
+                <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
+                  <span className="text-text-gray-color text-[18px] font-light">선 유사도</span>
+                </div>
+                <h1 className="text-primary-color text-[66px] font-bold">
+                  <CountUpAnimation
+                    targetNumber={Number(analysisResult.line_thickness_similarity)}
+                  />
+                  %
+                </h1>
+              </div>
+              <div>
+                <p>{analysisResult.line_comment}</p>
+              </div>
+            </div>
+            <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
+              <div className="flex w-[100%] flex-col items-center">
+                <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
+                  <span className="text-text-gray-color text-[18px] font-light">구조 유사도</span>
+                </div>
+                <h1 className="text-primary-color text-[66px] font-bold">
+                  <CountUpAnimation targetNumber={Number(analysisResult.structure_similarity)} />%
+                </h1>
+              </div>
+              <div>
+                <p>{analysisResult.color_comment}</p>
+              </div>
             </div>
           </div>
         )}
