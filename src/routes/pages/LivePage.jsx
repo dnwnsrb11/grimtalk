@@ -80,7 +80,7 @@ export const LivePage = () => {
   ]);
   const [sendData, setSendData] = useState(null);
   const timeRef = useRef(null);
-
+  const [completeRecording, setCompleteRecording] = useState(false);
   // 녹화 기능 콜백 함수
   const startRecording = useCallback(() => {
     setIsRecording(true);
@@ -94,7 +94,7 @@ export const LivePage = () => {
 
   const stopRecording = useCallback(() => {
     setIsRecording(false);
-
+    setCompleteRecording(true);
     // 타이머도 정지
     if (timeRef.current) {
       clearInterval(timeRef.current);
@@ -736,6 +736,13 @@ export const LivePage = () => {
               isVisible={isChatVisible}
               setIsVisible={setIsChatVisible}
               curriculumSubject={curriculumSubject}
+              // 녹화 기능 props로 전달
+              stopRecording={stopRecording}
+              startRecording={startRecording}
+              sendDataButton={sendDataButton}
+              elapsedTime={elapsedTime}
+              isRecording={isRecording}
+              completeRecording={completeRecording}
               track={
                 participantUtils.isCreator(nickname)
                   ? localTrack
@@ -821,25 +828,6 @@ export const LivePage = () => {
           {/* Excalidraw 컴포넌트 */}
           {participantUtils.isCreator(nickname) ? (
             <div className="excalidraw-wrapper border-gray-border-color rounded-xl border bg-white p-4">
-              <div>
-                <div className="flex gap-2">
-                  {isRecording ? (
-                    // 녹화 중에 정지 클릭
-                    <button className="rounded-2xl border p-5" onClick={stopRecording}>
-                      정지
-                    </button>
-                  ) : (
-                    // 녹화 전에는 고화 버튼
-                    <button className="rounded-2xl border p-5" onClick={startRecording}>
-                      녹화
-                    </button>
-                  )}
-                  <button className="rounded-2xl border p-5" onClick={sendDataButton}>
-                    전송
-                  </button>
-                </div>
-                <p>{elapsedTime}</p>
-              </div>
               <Excalidraw
                 onChange={(elements) => {
                   console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
