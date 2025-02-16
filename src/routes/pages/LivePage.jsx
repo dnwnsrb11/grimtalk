@@ -1,6 +1,6 @@
 import '@/styles/live.css';
 
-import { Excalidraw } from '@excalidraw/excalidraw';
+import { Excalidraw, exportToBlob } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { Client } from '@stomp/stompjs';
 import { AnimatePresence, motion } from 'motion/react';
@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import {
+  InstructorExportImage,
   InstructorLeaveLive,
   joinLive,
   leaveLive,
@@ -634,10 +635,41 @@ export const LivePage = () => {
     [stompService, isConnected, nickname, curriculumSubject],
   );
 
+  // 강사 이미지 추출 함수
+  const handleInstructorExportImage = async () => {
+    if (!roomCreatorAPIRef.current) return;
+
+    try {
+      const elements = roomCreatorAPIRef.current.getSceneElements();
+      const appState = roomCreatorAPIRef.current.getAppState();
+
+      const blob = await exportToBlob({
+        elements,
+        appState,
+        mimeType: 'image/png',
+        exportPadding: 10,
+        // quality 속성 제거 (PNG에서는 무시됨)
+      });
+
+      // Blob을 File 객체로 변환
+      const file = new File([blob], 'whiteboard.png', { type: 'image/png' });
+
+      const formData = new FormData();
+      formData.append('curriculumId', curriculumId);
+      formData.append('image', file);
+
+      const base64Image = await InstructorExportImage(formData);
+      console.log('이미지 추출 성공', base64Image);
+    } catch (error) {
+      console.log('이미지 추출 실패', error);
+    }
+  };
+
   // 방 나가기 함수
   const leaveRoom = useCallback(async () => {
     if (participantUtils.isCreator(nickname)) {
       await InstructorLeaveLive(curriculumId, id);
+      handleInstructorExportImage();
     } else {
       await leaveLive(curriculumId, id);
     }
@@ -725,6 +757,42 @@ export const LivePage = () => {
     }
   };
 
+  const handleParticipantExportImage = async () => {
+    if (!participantAPIRef.current) return;
+
+    const elements = participantAPIRef.current.getSceneElements();
+    const appState = participantAPIRef.current.getAppState();
+
+    const blob = await exportToBlob({
+      elements,
+      appState,
+      mimeType: 'image/png',
+      quality: 1,
+      exportPadding: 10,
+    });
+    console.log('이미지 추출 성공', blob);
+
+    // 직렬화를 통해 전송 가능한 상태로 변경하자
+    const base64Image = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      // 먼저 값을 받아서 변환한다.
+      reader.readAsDataURL(blob);
+      // 성공하면 성공 내용을 반환
+      reader.onloadend = () => resolve(reader.result);
+      // 실패하면 실패를 반환
+      reader.onerror = reject;
+    });
+
+    // 네비게이션으로 ai 페이지로 이동
+    navigate('/aicompare', {
+      state: { curriculumId: curriculumId, ImageData: base64Image },
+    });
+  };
+
+  const goReplayPage = () => {
+    navigate(`/replay/${curriculumId}`);
+  };
+
   return (
     <AnimatePresence mode="wait">
       {isLoading ? (
@@ -773,6 +841,8 @@ export const LivePage = () => {
               }
               local={participantUtils.isCreator(nickname)}
               liveCount={liveCount}
+              isLeaveDialogOpen={isLeaveDialogOpen}
+              sendData={sendData}
             />
           </LiveKitRoom>
 
@@ -792,29 +862,92 @@ export const LivePage = () => {
                     </>
                   )}
                 </AlertDialogTitle>
-                <AlertDialogDescription className="text-base">
+                <AlertDialogDescription className="break-keep text-base">
                   {participantUtils.isCreator(nickname) ? (
                     <>
-                      <span className="text-red-500">라이브를 종료</span>하시겠습니까? 모든 참가자가
-                      <span className="text-red-500"> 퇴장</span>됩니다.
+                      <h2 className="mb-3 text-xl font-bold text-primary-color">
+                        라이브 종료 전 확인
+                      </h2>
+                      <p className="mb-2">
+                        라이브 방송을 종료하기 전,{' '}
+                        <strong className="text-primary-color">화면 녹화 저장 버튼</strong>을 눌러
+                        녹화 파일이 저장되었는지 확인해 주세요.
+                      </p>
+                      <p className="mb-2">
+                        종료 후,{' '}
+                        <span className="font-semibold text-primary-color">최종 완성 이미지</span>가
+                        다시보기 페이지에 업로드되어 수강생들이 확인할 수 있습니다. (
+                        <span className="font-semibold text-primary-color">이미지</span>는 종료 시{' '}
+                        <span className="font-semibold text-primary-color">자동으로 업로드</span>
+                        됩니다.)
+                      </p>
+                      <p className="text-right font-semibold text-primary-color">
+                        정말로 종료하시겠습니까?
+                      </p>
                     </>
                   ) : (
                     <>
-                      <span className="text-red-500">라이브를 퇴장</span>하시겠습니까?
+                      <h2 className="mb-3 text-xl font-bold text-primary-color">
+                        라이브 퇴장 전 확인
+                      </h2>
+                      <p className="mb-2">
+                        라이브를 퇴장하기 전,{' '}
+                        <strong className="text-primary-color">AI 비교 버튼</strong>을 누르면 본인의
+                        현재 이미지가 AI 비교 페이지에 업로드되어 강사의 그림과{' '}
+                        <span className="font-semibold text-primary-color">얼마나 유사한지 </span>
+                        비교를 받아보실 수 있습니다.
+                      </p>
+                      <p className="mb-2">
+                        종료 후,{' '}
+                        <span className="font-semibold text-primary-color">
+                          강사의 최종 완성 이미지
+                        </span>
+                        가 <span className="font-semibold text-primary-color">다시보기 페이지</span>
+                        에 업로드되니 다시{' '}
+                        <span className="font-semibold text-primary-color">강사의 그림</span>을 따라
+                        그려보고 싶다면, 꼭 이용해주세요!
+                      </p>
+                      <p className="text-right font-semibold text-primary-color">
+                        정말로 퇴장하시겠습니까?
+                      </p>
                     </>
                   )}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
-                  취소
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-primary-color hover:bg-primary-color hover:opacity-90"
-                  onClick={leaveRoom}
-                >
-                  {participantUtils.isCreator(nickname) ? '종료' : '퇴장'}
-                </AlertDialogAction>
+                <div className="flex w-full flex-row items-center justify-between">
+                  <div className="flex gap-2">
+                    {!participantUtils.isCreator(nickname) && (
+                      <>
+                        <AlertDialogAction
+                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                          onClick={handleParticipantExportImage}
+                        >
+                          AI 비교
+                        </AlertDialogAction>
+
+                        <AlertDialogAction
+                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                          onClick={goReplayPage}
+                        >
+                          다시보기
+                        </AlertDialogAction>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
+                      취소
+                    </AlertDialogCancel>
+
+                    <AlertDialogAction
+                      className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                      onClick={leaveRoom}
+                    >
+                      {participantUtils.isCreator(nickname) ? '종료' : '퇴장'}
+                    </AlertDialogAction>
+                  </div>
+                </div>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

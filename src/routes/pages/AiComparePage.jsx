@@ -61,7 +61,8 @@ export const AiComparePage = () => {
     queryKey: ['InstructorBlob'],
     queryFn: async () => {
       // 특정 ID(4)를 사용하여 이미지 URL 요청
-      const { data } = await _axiosAuth.get(`/curriculum/completed-image/${25}`);
+      const { data } = await _axiosAuth.get(`/image-similarity/${location.state?.curriculumId}`);
+
       // 응답 데이터 유효성 검사
       if (data.body?.code !== 200) {
         throw new Error(data.body.message || '데이터를 찾을 수 없습니다.');
