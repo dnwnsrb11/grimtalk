@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,9 +14,15 @@ export const SignupPage = () => {
   const [answer, setAnswer] = useState('');
 
   const navigate = useNavigate();
-
-  // 입력 길이 제한
   const MAX_LENGTH = 255;
+
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const password2Ref = useRef(null);
+  const nicknameRef = useRef(null);
+  const questionRef = useRef(null);
+  const answerRef = useRef(null);
+  const submitButtonRef = useRef(null);
 
   const handleChange = (setter, value, maxLength) => {
     if (value.length > maxLength) {
@@ -28,7 +34,17 @@ export const SignupPage = () => {
     setter(value);
   };
 
-  // 회원가입 API 요청
+  const handleKeyDown = (e, nextRef) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (email && password && password2 && nickname && question && answer) {
+        signupMutation.mutate();
+      } else if (nextRef && nextRef.current) {
+        nextRef.current.focus();
+      }
+    }
+  };
+
   const signupMutation = useMutation({
     mutationFn: async () => {
       const response = await _axios.post('/user', {
@@ -43,7 +59,7 @@ export const SignupPage = () => {
     },
     onSuccess: (data) => {
       if (data.body.code === 200) {
-        navigate('/signup-success', { state: { nickname: nickname } });
+        navigate('/signup-success', { state: { nickname } });
       } else {
         alert(data.body.message);
       }
@@ -87,52 +103,47 @@ export const SignupPage = () => {
         >
           <div className="flex flex-col gap-2">
             <input
+              ref={emailRef}
               type="text"
               placeholder="이메일을 입력하세요."
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={email}
               onChange={(e) => handleChange(setEmail, e.target.value, MAX_LENGTH)}
+              onKeyDown={(e) => handleKeyDown(e, passwordRef)}
             />
             <input
+              ref={passwordRef}
               type="password"
               placeholder="비밀번호를 입력하세요."
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={password}
               onChange={(e) => handleChange(setPassword, e.target.value, MAX_LENGTH)}
+              onKeyDown={(e) => handleKeyDown(e, password2Ref)}
             />
             <input
+              ref={password2Ref}
               type="password"
               placeholder="비밀번호를 다시 입력하세요."
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={password2}
               onChange={(e) => handleChange(setPassword2, e.target.value, MAX_LENGTH)}
+              onKeyDown={(e) => handleKeyDown(e, nicknameRef)}
             />
-            <br />
-            <div className="flex flex-col">
-              {' '}
-              <input
-                type="text"
-                placeholder="닉네임을 알려주세요."
-                className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
-                value={nickname}
-                onChange={(e) => handleChange(setNickname, e.target.value, MAX_LENGTH)}
-              />
-              <small className="text-gray-500">
-                {nickname.length}/{MAX_LENGTH}
-              </small>
-            </div>
+            <input
+              ref={nicknameRef}
+              type="text"
+              placeholder="닉네임을 입력하세요."
+              className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
+              value={nickname}
+              onChange={(e) => handleChange(setNickname, e.target.value, MAX_LENGTH)}
+              onKeyDown={(e) => handleKeyDown(e, questionRef)}
+            />
             <select
+              ref={questionRef}
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={question}
-              onChange={(e) => {
-                if (!/^\d*$/.test(e.target.value)) {
-                  toast.error('질문은 숫자로만 선택할 수 있습니다.', {
-                    style: { fontSize: '14px', width: '300px' },
-                  });
-                  return;
-                }
-                setQuestion(e.target.value);
-              }}
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e, answerRef)}
             >
               <option value="">-- 질문을 선택하세요 --</option>
               <option value="1">첫 번째 애완동물의 이름은 무엇인가요?</option>
@@ -142,17 +153,17 @@ export const SignupPage = () => {
               <option value="5">좋아하는 영화의 제목은 무엇인가요?</option>
             </select>
             <input
+              ref={answerRef}
               type="text"
               placeholder="질문 답변을 작성해주세요."
               className="mb-[7px] h-10 rounded-md border border-gray-border-color pl-3"
               value={answer}
               onChange={(e) => handleChange(setAnswer, e.target.value, MAX_LENGTH)}
+              onKeyDown={(e) => handleKeyDown(e, submitButtonRef)}
             />
-            <small className="text-gray-500">
-              {answer.length}/{MAX_LENGTH}
-            </small>
             <div className="flex justify-center pt-2">
               <button
+                ref={submitButtonRef}
                 type="submit"
                 className="h-10 w-full rounded-full bg-primary-color text-center text-white"
               >
