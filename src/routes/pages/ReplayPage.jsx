@@ -21,7 +21,7 @@ export const ReplayPage = () => {
   } = useQuery({
     queryKey: ['replayData'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/stroke/${4}`); //추후 api 요청 하드코딩에서 변경 예정
+      const { data } = await _axiosAuth.get(`/stroke/${25}`); //추후 api 요청 하드코딩에서 변경 예정
       // 만약 데이터가 없다면
       if (data.body?.code !== undefined) {
         // 코드가 200이 아닌 경우 에러 처리

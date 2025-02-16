@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
-import { DrawingIcon } from '@/components/common/icons';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 
 // 이미지 URL을 Blob으로 변환하는 유틸리티 함수
@@ -59,18 +58,18 @@ export const AiComparePage = () => {
   // React Query를 사용하여 강사 이미지 불러오기
   // 쿼리 키: ['InstructorImg']로 캐싱 및 식별
   const { data: InstructorBlob, isLoading } = useQuery({
-    queryKey: ['InstructorImg'],
+    queryKey: ['InstructorBlob'],
     queryFn: async () => {
       // 특정 ID(4)를 사용하여 이미지 URL 요청
-      const { data } = await _axiosAuth.get(`/image-similarity/${4}`);
-
+      const { data } = await _axiosAuth.get(`/curriculum/completed-image/${25}`);
       // 응답 데이터 유효성 검사
       if (data.body?.code !== 200) {
         throw new Error(data.body.message || '데이터를 찾을 수 없습니다.');
       }
 
       // 받아온 이미지 URL을 Blob으로 변환
-      const imageUrl = data.body.data.completedImageUrl;
+      const imageUrl = data.body.data.imageUrl;
+      console.log('complete');
       return fetchImageAsBlob(imageUrl);
     },
     // 오류 발생 시 콘솔에 로깅
@@ -99,14 +98,14 @@ export const AiComparePage = () => {
 
       // FastAPI 엔드포인트로 이미지 비교 분석 요청
       const response = await _axiosAuth.post(
-        'https://www.grimtalk.com/fastapi/analysis/compare_images',
+        'https://www.grimtalk.com/fastapi/analysis/compare-images',
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
+          timeout: 30000, // 30초로 증가
         },
       );
-      // 일부로 로딩시간 2초로 awati 걸어서 잠시 멈처줌
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       return response.data.data;
     },
     // 성공 시 분석 결과 로깅
@@ -175,7 +174,7 @@ export const AiComparePage = () => {
       <div className="mt-[60px] flex flex-col">
         {/* 헤더 부분 */}
         <div className="rounded-2xl border p-6">
-          <h1 className="text-[36px] font-bold text-text-gray-color">
+          <h1 className="text-text-gray-color text-[36px] font-bold">
             그림 <span className="text-primary-color">유사도</span>를 확인해보세요!
           </h1>
           <p className="text-text-gray-color">
@@ -203,16 +202,16 @@ export const AiComparePage = () => {
         </div>
 
         {/* 버튼과 결과 섹션 */}
-        <div className="mt-[20px] flex justify-between rounded-2xl border bg-bg-gray-color p-6 transition-all duration-200">
+        <div className="bg-bg-gray-color mt-[20px] flex justify-between rounded-2xl border p-6 transition-all duration-200">
           <div>
             <p>
               그려주신 그림을 강사그림과 비교하여 유사도를 통하여 그림 실력을 확인해보실수 있습니다.
             </p>
-            <p className="text-[14px] font-normal text-text-gray-color">
+            <p className="text-text-gray-color text-[14px] font-normal">
               분석 시작 버튼을 클릭하면 분석이 시작됩니다.
             </p>
             {isAnalyzing && (
-              <p className="mt-2 animate-pulse text-primary-color">
+              <p className="text-primary-color mt-2 animate-pulse">
                 AI가 그림을 분석하고 있습니다... 잠시만 기다려주세요.
               </p>
             )}
@@ -222,7 +221,7 @@ export const AiComparePage = () => {
               className={`w-40 rounded-lg px-6 py-3 text-white transition-colors duration-300 disabled:bg-gray-300
                 ${
                   isAnalyzing
-                    ? 'animate-gradient relative overflow-hidden bg-gradient-to-r from-primary-color via-[#FF451C] to-primary-color bg-[length:200%_auto]'
+                    ? 'animate-gradient from-primary-color to-primary-color relative overflow-hidden bg-gradient-to-r via-[#FF451C] bg-[length:200%_auto]'
                     : 'bg-primary-color hover:bg-[#FF451C]'
                 }`}
               onClick={handleAnalysis}
@@ -241,13 +240,48 @@ export const AiComparePage = () => {
         </div>
         {/* 분석 결과 섹션 */}
         {analysisResult && !isAnalyzing && (
-          <div className="animate-fade-slide-down mt-[10px] rounded-2xl border p-6">
-            <h1 className="text-[46px] font-bold text-primary-color">
-              <span className="font-light text-text-gray-color">유사도:</span>{' '}
-              <CountUpAnimation targetNumber={Number(analysisResult.accuracy)} />%
-            </h1>
-            <div>
-              <DrawingIcon />
+          <div className="flex gap-3">
+            <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
+              <div className="flex w-[100%] flex-col items-center">
+                <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
+                  <span className="text-text-gray-color text-[18px] font-light">색감 유사도</span>
+                </div>
+                <h1 className="text-primary-color text-[66px] font-bold">
+                  <CountUpAnimation targetNumber={Number(analysisResult.color_similarity)} />%
+                </h1>
+              </div>
+              <div>
+                <p className="break-keep">{analysisResult.color_comment}</p>
+              </div>
+            </div>
+            <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
+              <div className="flex w-[100%] flex-col items-center">
+                <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
+                  <span className="text-text-gray-color text-[18px] font-light">선 유사도</span>
+                </div>
+                <h1 className="text-primary-color text-[66px] font-bold">
+                  <CountUpAnimation
+                    targetNumber={Number(analysisResult.line_thickness_similarity)}
+                  />
+                  %
+                </h1>
+              </div>
+              <div>
+                <p>{analysisResult.line_comment}</p>
+              </div>
+            </div>
+            <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
+              <div className="flex w-[100%] flex-col items-center">
+                <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
+                  <span className="text-text-gray-color text-[18px] font-light">구조 유사도</span>
+                </div>
+                <h1 className="text-primary-color text-[66px] font-bold">
+                  <CountUpAnimation targetNumber={Number(analysisResult.structure_similarity)} />%
+                </h1>
+              </div>
+              <div>
+                <p>{analysisResult.color_comment}</p>
+              </div>
             </div>
           </div>
         )}
