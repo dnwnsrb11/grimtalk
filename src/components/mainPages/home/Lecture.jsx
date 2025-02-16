@@ -51,7 +51,7 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
   };
 
   return (
-    <div className="relative cursor-pointer rounded-lg border border-gray-200 p-3">
+    <div className="group relative cursor-pointer rounded-lg border border-gray-200 p-3">
       <div onClick={() => navigate(`/lecture/${lectureId}`)}>
         {/* 🔹 이미지 크기 통일 */}
         <div className="max-h-[175px] min-h-[175px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
@@ -99,12 +99,14 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
       )}
 
       {showUpdate && (
-        <button
-          onClick={handleDelete}
-          className="mt-2 h-[41px] w-[88px] rounded-2xl border bg-[#EFEFEF] text-[18px] transition-all duration-200 hover:bg-red-50 hover:shadow-md"
-        >
-          삭제하기
-        </button>
+        <div className="absolute right-2 top-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <button
+            onClick={handleDelete}
+            className="h-[36px] w-[80px] rounded-lg border bg-primary-color text-sm text-white transition-all duration-300 hover:opacity-80 hover:shadow-md"
+          >
+            삭제
+          </button>
+        </div>
       )}
     </div>
   );
