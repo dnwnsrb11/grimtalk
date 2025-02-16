@@ -820,15 +820,20 @@ export const LivePage = () => {
 
           {/* Excalidraw 컴포넌트 */}
           {participantUtils.isCreator(nickname) ? (
-            <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
+            <div className="excalidraw-wrapper border-gray-border-color rounded-xl border bg-white p-4">
               <div>
                 <div className="flex gap-2">
-                  <button className="rounded-2xl border p-5" onClick={startRecording}>
-                    녹화
-                  </button>
-                  <button className="rounded-2xl border p-5" onClick={stopRecording}>
-                    정지
-                  </button>
+                  {isRecording ? (
+                    // 녹화 중에 정지 클릭
+                    <button className="rounded-2xl border p-5" onClick={stopRecording}>
+                      정지
+                    </button>
+                  ) : (
+                    // 녹화 전에는 고화 버튼
+                    <button className="rounded-2xl border p-5" onClick={startRecording}>
+                      녹화
+                    </button>
+                  )}
                   <button className="rounded-2xl border p-5" onClick={sendDataButton}>
                     전송
                   </button>
@@ -905,7 +910,7 @@ export const LivePage = () => {
               <div className="mb-4 flex justify-center">
                 <button
                   onClick={() => setIsOverlayMode(!isOverlayMode)}
-                  className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
+                  className="bg-primary-color rounded-lg px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
                 >
                   {isOverlayMode ? '겹치기 해제' : '겹치기'}
                 </button>
@@ -916,7 +921,7 @@ export const LivePage = () => {
                 <div className="relative flex-1">
                   {/* 방장 화이트보드 (아래 레이어) */}
                   <div className="absolute inset-0 z-0">
-                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                    <div className="border-gray-border-color h-full rounded-xl border bg-white p-4">
                       <h3 className="mb-4 text-xl font-bold">
                         <span className="text-primary-color">방장 </span>화이트보드
                       </h3>
@@ -943,7 +948,7 @@ export const LivePage = () => {
                   </div>
                   {/* 내 화이트보드 (위 레이어) */}
                   <div className="absolute inset-0 z-10 bg-white bg-opacity-50">
-                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                    <div className="border-gray-border-color h-full rounded-xl border bg-white p-4">
                       <h3 className="mb-4 text-xl font-bold">
                         <span className="text-primary-color">내 </span>화이트보드
                       </h3>
@@ -973,7 +978,7 @@ export const LivePage = () => {
               ) : (
                 // 기본 모드
                 <div className="flex h-full gap-2">
-                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                  <div className="border-gray-border-color flex-1 rounded-xl border bg-white p-4">
                     <h3 className="mb-4 text-xl font-bold">
                       <span className="text-primary-color">방장 </span>화이트보드
                     </h3>
@@ -997,7 +1002,7 @@ export const LivePage = () => {
                       />
                     </div>
                   </div>
-                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                  <div className="border-gray-border-color flex-1 rounded-xl border bg-white p-4">
                     <h3 className="mb-4 text-xl font-bold">
                       <span className="text-primary-color">내 </span>화이트보드
                     </h3>
