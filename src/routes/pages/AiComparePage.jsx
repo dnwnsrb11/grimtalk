@@ -322,7 +322,7 @@ export const AiComparePage = () => {
             </div>
             <div>
               {console.log('chartData:', chartData)} {/* 데이터 확인용 */}
-              <AiCompareComponent data={chartData} />
+              <AiCompareComponent data={chartData} analysisResult={analysisResult} />
             </div>
           </div>
         )}
