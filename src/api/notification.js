@@ -48,7 +48,7 @@ const subscribeToNotifications = () => {
   try {
     // EventSourcePolyfill을 사용하여 SSE 연결 생성
     const newEventSource = new EventSourcePolyfill(
-      `${import.meta.env.VITE_API_BASE_URL}/notification/subscribe`,
+      `${import.meta.env.VITE_API_BASE_URL}/sse/notification/subscribe`,
       {
         headers: {
           'X-Access-Token': `Bearer ${accessToken}`,
@@ -97,7 +97,7 @@ const useNotifications = () => {
   return useQuery({
     queryKey: ['notifications'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get('/notification');
+      const { data } = await _axiosAuth.get('/sse/notification');
       return data.body.data;
     },
   });
@@ -108,7 +108,7 @@ const useMarkAsRead = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (notificationId) => {
-      const response = await _axiosAuth.patch(`/notification/${notificationId}/read`);
+      const response = await _axiosAuth.patch(`/sse/notification/${notificationId}/read`);
       return response.data;
     },
     onSuccess: () => {
@@ -122,7 +122,7 @@ const useMarkAllAsRead = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      const response = await _axiosAuth.patch('/notification/read-all');
+      const response = await _axiosAuth.patch('/sse/notification/read-all');
       return response.data;
     },
     onSuccess: () => {
