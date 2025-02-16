@@ -48,7 +48,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
       const formData = new FormData();
       formData.append('video', video); // 파일 데이터
 
-      const { data } = await _axiosAuth.put(`/replay/${replayDate.replayId}`, formData, {
+      const { data } = await _axiosAuth.post(`/replay/${replayDate.replayId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
