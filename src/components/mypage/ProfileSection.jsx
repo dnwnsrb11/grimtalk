@@ -69,12 +69,12 @@ export const ProfileSection = ({
         {/* 사용자 이름과 뱃지 */}
         <div className="flex items-center gap-1">
           {/* 뱃지 이미지 추가 */}
-          {profileSectionCheck?.subscribeNumber <= 10 ? (
-            <LeveloneBadgeIcon />
-          ) : profileSectionCheck?.subscribeNumber <= 100 ? (
-            <LeveltwoBadgeIcon />
-          ) : profileSectionCheck?.subscribeNumber >= 101 ? (
+          {profileSectionCheck?.subscribeNumber >= 101 ? (
             <LevelthirdBadgeIcon />
+          ) : profileSectionCheck?.subscribeNumber >= 10 ? (
+            <LeveltwoBadgeIcon />
+          ) : profileSectionCheck?.subscribeNumber >= 3 ? (
+            <LeveloneBadgeIcon />
           ) : null}
 
           <span className="text-2xl font-bold">{profileSectionCheck?.nickname}</span>
