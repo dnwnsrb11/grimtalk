@@ -855,11 +855,28 @@ export const LivePage = () => {
                     </>
                   )}
                 </AlertDialogTitle>
-                <AlertDialogDescription className="text-base">
+                <AlertDialogDescription className="break-keep text-base">
                   {participantUtils.isCreator(nickname) ? (
                     <>
-                      <span className="text-red-500">라이브를 종료</span>하시겠습니까? 모든 참가자가
-                      <span className="text-red-500"> 퇴장</span>됩니다.
+                      <h2 className="mb-3 text-xl font-bold text-primary-color">
+                        라이브 종료 전 확인
+                      </h2>
+                      <p className="mb-2">
+                        라이브 방송을 종료하기 전,{' '}
+                        <strong className="text-primary-color">화면 녹화 저장 버튼</strong>을 눌러
+                        녹화 파일이 저장되었는지 확인해 주세요.
+                      </p>
+                      <p className="mb-2">
+                        종료 후,{' '}
+                        <span className="font-semibold text-primary-color">최종 완성 이미지</span>가
+                        다시보기 페이지에 업로드되어 수강생들이 확인할 수 있습니다. (
+                        <span className="font-semibold text-primary-color">이미지</span>는 종료 시{' '}
+                        <span className="font-semibold text-primary-color">자동으로 업로드</span>
+                        됩니다.)
+                      </p>
+                      <p className="text-right font-semibold text-primary-color">
+                        정말로 종료하시겠습니까?
+                      </p>
                     </>
                   ) : (
                     <>
