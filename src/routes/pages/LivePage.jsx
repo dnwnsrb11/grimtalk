@@ -15,7 +15,7 @@ import {
   useAddStrokeMutation,
   useLiveCount,
 } from '@/api/live';
-import { LeftArrowIcon } from '@/components/common/icons';
+import { LeftArrowIcon, OpacityIcon } from '@/components/common/icons';
 import { CustomChat } from '@/components/live/CustomChat';
 import { LoadingScreen } from '@/components/live/LoadingScreen';
 import {
@@ -273,7 +273,7 @@ export const LivePage = () => {
   // const [roomCreatorExcalidrawAPI, setRoomCreatorExcalidrawAPI] = useState(null);
   // const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
 
-  const [isOverlayMode, setIsOverlayMode] = useState(false);
+  const [isOverlayMode, setIsOverlayMode] = useState(true);
 
   // 방 나가기 확인 상태
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
@@ -329,36 +329,6 @@ export const LivePage = () => {
       if (cleanup) cleanup();
     };
   }, [setupStompConnection]);
-
-  // // 토큰 발급 및 방 연결 함수
-  // const connectToRoom = async () => {
-  //   try {
-  //     const isCreator = participantUtils.isCreator(nickname);
-  //     const rtcToken = await (isCreator
-  //       ? liveApi.getInstructorToken(
-  //           curriculumSubject,
-  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
-  //         )
-  //       : liveApi.getStudentToken(
-  //           curriculumSubject,
-  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
-  //         ));
-  //     const chatToken = await (isCreator
-  //       ? liveApi.getInstructorToken(
-  //           curriculumSubject,
-  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
-  //         )
-  //       : liveApi.getStudentToken(
-  //           curriculumSubject,
-  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
-  //         ));
-
-  //     if (!rtcToken || !chatToken) {
-  //       throw new Error('Failed to get tokens');
-  //     }
-
-  //     liveStore.setTokens(rtcToken, chatToken);
-  //     setChatToken(chatToken);
 
   // 토큰 발급 함수
   const getTokens = async (isCreator = false) => {
@@ -713,6 +683,47 @@ export const LivePage = () => {
     }
   }, [curriculumId, id, nickname, room, leaveRoom]);
 
+  // 이전 opacity 값을 저장할 state 추가
+  const [savedOpacity, setSavedOpacity] = useState(100);
+  const [rangeProgress, setRangeProgress] = useState(100);
+  const opacityInputRef = useRef(null);
+  const instructorBoardRef = useRef(null);
+
+  // isOverlayMode 상태가 변경될 때마다 실행되는 useEffect
+  useEffect(() => {
+    if (!isOverlayMode) {
+      // 오버레이 모드 해제 시 현재 opacity 값 저장
+      setSavedOpacity(rangeProgress);
+
+      // 투명도 100%로 설정
+      if (instructorBoardRef.current) {
+        instructorBoardRef.current.style.opacity = 1;
+      }
+      if (opacityInputRef.current) {
+        opacityInputRef.current.value = 100;
+      }
+      setRangeProgress(100);
+    } else {
+      // 오버레이 모드로 돌아올 때 저장된 값 복원
+      if (instructorBoardRef.current) {
+        instructorBoardRef.current.style.opacity = savedOpacity / 100;
+      }
+      if (opacityInputRef.current) {
+        opacityInputRef.current.value = savedOpacity;
+      }
+      setRangeProgress(savedOpacity);
+    }
+  }, [isOverlayMode]);
+
+  // 투명도 변경 함수
+  const changeOpacity = () => {
+    if (instructorBoardRef.current && opacityInputRef.current && isOverlayMode) {
+      const value = opacityInputRef.current.value;
+      instructorBoardRef.current.style.opacity = value / 100;
+      setRangeProgress(value);
+    }
+  };
+
   return (
     <AnimatePresence mode="wait">
       {isLoading ? (
@@ -922,18 +933,18 @@ export const LivePage = () => {
                   <div
                     className={`h-full rounded-xl border border-gray-border-color ${isOverlayMode ? 'bg-transparent' : 'bg-white'} p-4`}
                   >
-                      <h3 className="mb-4 text-xl font-bold">
+                    <h3 className="mb-4 text-xl font-bold">
                       <span className="text-primary-color">내 </span>화이트보드
-                      </h3>
-                      <div className="h-[calc(100%-40px)]">
-                        <Excalidraw
-                          excalidrawAPI={(api) => {
+                    </h3>
+                    <div className="h-[calc(100%-40px)]">
+                      <Excalidraw
+                        excalidrawAPI={(api) => {
                           participantAPIRef.current = api;
-                          }}
-                          initialData={{
-                            appState: {
+                        }}
+                        initialData={{
+                          appState: {
                             viewBackgroundColor: 'transparent',
-                              theme: 'light',
+                            theme: 'light',
                             scrollX: 0, // 초기 X 좌표 (스크롤 위치)
                             scrollY: 0, // 초기 Y 좌표 (스크롤 위치)
                           },
@@ -941,12 +952,12 @@ export const LivePage = () => {
                         UIOptions={{
                           canvasActions: {
                             changeViewBackgroundColor: false,
-                            },
-                          }}
-                        />
-                      </div>
+                          },
+                        }}
+                      />
                     </div>
                   </div>
+                </div>
 
                 {/* 방장 화이트보드 */}
                 <div
@@ -986,33 +997,60 @@ export const LivePage = () => {
                       />
                     </div>
                   </div>
-                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
-                    <h3 className="mb-4 text-xl font-bold">
-                      <span className="text-primary-color">내 </span>화이트보드
-                    </h3>
-                    <div className="h-[calc(100%-40px)]">
-                      <Excalidraw
-                        onChange={(elements) => {
-                          setParticipantElements(elements);
+                </div>
+
+                {/* 투명도 조절 UI - 오버레이 모드에서만 표시 */}
+                {isOverlayMode && (
+                  <div className="absolute left-1/2 top-3 z-30 flex h-[50px] w-[200px] -translate-x-1/2 items-center gap-2 rounded-xl border border-gray-border-color bg-white p-4">
+                    <div className="group relative flex w-full items-center justify-center rounded-xl border">
+                      <div className="absolute left-3 z-10 flex items-center gap-2">
+                        <OpacityIcon
+                          width={22}
+                          height={22}
+                          fill={'#494949'}
+                          className="pointer-events-none"
+                        />
+                      </div>
+                      <input
+                        type="range"
+                        ref={opacityInputRef}
+                        defaultValue={100}
+                        min={0}
+                        max={100}
+                        step={1}
+                        className={`
+                          [&::-webkit-slider-thumb]:scale-120
+                          relative m-0 h-10 w-full
+                          cursor-pointer appearance-none rounded-xl p-0
+                          after:absolute after:left-0 after:top-[50%]
+                          after:h-10 after:w-[var(--range-progress)]
+                          after:-translate-y-1/2 after:rounded-xl
+                          after:bg-[#E7E7EF]
+                          [&::-webkit-slider-runnable-track]:h-10
+                          [&::-webkit-slider-runnable-track]:rounded-xl
+                          [&::-webkit-slider-runnable-track]:bg-gradient-to-r
+                          [&::-webkit-slider-thumb]:w-4
+                          [&::-webkit-slider-thumb]:appearance-none
+                          [&::-webkit-slider-thumb]:rounded-xl
+                          [&::-webkit-slider-thumb]:bg-primary-color
+                          [&::-webkit-slider-thumb]:transition-all
+                          [&::-webkit-slider-thumb]:hover:scale-150
+                          [&::-webkit-slider-thumb]:hover:shadow-lg
+                        `}
+                        style={{
+                          '--range-progress': `${rangeProgress}%`,
+                          '--tw-gradient-from': '#E7E7EF var(--range-progress)',
+                          '--tw-gradient-to': '#F4F4F4 var(--range-progress)',
                         }}
-                        excalidrawAPI={(api) => {
-                          participantAPIRef.current = api;
-                        }}
-                        elements={participantElements}
-                        viewModeEnabled={false}
-                        initialData={{
-                          elements: participantElements,
-                          appState: {
-                            viewBackgroundColor: '#ffffff',
-                            currentItemStrokeColor: '#000000',
-                            currentItemBackgroundColor: '#ffffff',
-                          },
-                        }}
+                        onChange={changeOpacity}
                       />
+                      <p className="absolute right-3 z-10 text-text-gray-color opacity-0 transition-all duration-300 group-hover:opacity-100">
+                        {rangeProgress}%
+                      </p>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           )}
         </motion.div>
