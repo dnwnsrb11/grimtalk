@@ -167,7 +167,21 @@ export const MemberSettingsSection = () => {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <label className="text-lg font-semibold">프로필 이미지</label>
+        <div>
+          <div>
+            <div className="flex flex-row items-center gap-3">
+              <label className="text-xl font-bold">배너 이미지</label>
+              <div className="relative inline-block">
+                <div className="group flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-gray-300 text-sm font-bold text-gray-800">
+                  ?
+                  <span className="absolute bottom-full left-1/2 mb-2 hidden w-max -translate-x-1/2 rounded-md bg-gray-800 px-3 py-1 text-sm text-white group-hover:block">
+                    정사각형 (1:1) 비율 이미지를 권장합니다. (최소 160x160px)
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {previewImage && (
           <img
