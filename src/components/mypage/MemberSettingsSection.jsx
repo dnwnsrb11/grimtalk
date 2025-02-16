@@ -181,7 +181,7 @@ export const MemberSettingsSection = () => {
             type="text"
             disabled
             className="flex-[70%] rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
-            value={memberProfileImage}
+            value={selectedFile ? selectedFile.name : ''}
           />
           <button
             onClick={handleImageSelect}
