@@ -1,11 +1,10 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { LoadingComponents } from '@/components/common/LoadingComponents';
+import { queryClient } from '@/lib/queryClient';
 import Router from '@/routes';
 import { useAuthStore } from '@/store/useAuthStore';
-
-const queryClient = new QueryClient();
 
 export default function App() {
   const isInitialized = useAuthStore((state) => state.isInitialized);
