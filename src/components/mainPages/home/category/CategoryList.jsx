@@ -34,7 +34,7 @@ export const CategoryList = ({ onCategoryChange }) => {
   };
 
   return (
-    <>
+    <button>
       <div className="flex gap-7">
         <div className="flex flex-col items-center">
           <div
@@ -190,6 +190,6 @@ export const CategoryList = ({ onCategoryChange }) => {
           </div>
         </div>
       </div>
-    </>
+    </button>
   );
 };
