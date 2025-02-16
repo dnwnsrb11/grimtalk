@@ -190,6 +190,30 @@ export const AiComparePage = () => {
     return <>{count}</>;
   };
 
+  const addDataMuntation = useMutation({
+    mutationFn: async () => {
+      const { data } = await _axiosAuth.post(`/image-similarity`, {
+        curriculumId: 25,
+        colorSimilarity: analysisResult.color_similarity,
+        lineThicknessSimilarity: analysisResult.line_thickness_similarity,
+        structureSimilarity: analysisResult.structure_similarity,
+        colorComment: analysisResult.color_comment,
+        lineComment: analysisResult.line_comment,
+        structureComment: analysisResult.structure_comment,
+        overallFeedback: analysisResult.overall_feedback,
+      });
+      return data;
+    },
+    onSuccess: (data) => {
+      // 성공 시 처리 (예: 토스트 메시지, 상태 업데이트 등)
+      console.log('데이터 저장 성공:', data);
+    },
+    onError: (error) => {
+      // 에러 처리
+      console.error('데이터 저장 실패:', error);
+    },
+  });
+
   // 이미지 로딩 중 로딩 컴포넌트 표시
   if (isLoading) {
     return <LoadingComponents />;
@@ -323,6 +347,14 @@ export const AiComparePage = () => {
             <div>
               {console.log('chartData:', chartData)} {/* 데이터 확인용 */}
               <AiCompareComponent data={chartData} analysisResult={analysisResult} />
+            </div>
+            <div>
+              <button
+                className="mx-[15px] mt-[5px] rounded-xl border"
+                onClick={() => addDataMuntation.mutate()}
+              >
+                데이터 저장하기
+              </button>
             </div>
           </div>
         )}
