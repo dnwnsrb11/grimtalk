@@ -62,7 +62,7 @@ export const ProfileSection = ({
         {/* 프로필 이미지 */}
         {/* 프로필 이미지 -> 값이 없을 경우 랜더링 유무 체크 */}
         <img
-          className="h-40 w-40 rounded-full bg-gray-600"
+          className=" h-40 w-40 rounded-full bg-white"
           src={profileSectionCheck?.image || posterNoneImg}
           alt="profile"
         />
