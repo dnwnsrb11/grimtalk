@@ -26,6 +26,7 @@ export const LectureNotice = ({ checkInstructor, lecture }) => {
       const { data } = await _axios.get(`/notice/${lecture.lectureId}`);
       return data.body.data.list;
     },
+    staleTime: 0,
     onError: () => {
       navigate('/notfound');
     },
