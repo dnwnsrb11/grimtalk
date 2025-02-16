@@ -30,9 +30,9 @@ export const ProfileSection = ({
     if (location.state?.selectedMenu) {
       setSelectedMenu(location.state.selectedMenu);
     }
-    if (location.state?.selectedProfileMenu) {
-      setSelectedProfileMenu(location.state.selectedProfileMenu);
-    }
+    // if (location.state?.selectedProfileMenu) {
+    //   setSelectedProfileMenu(location.state.selectedProfileMenu);
+    // }
   }, [location, targetid, setSelectedMenu, selectedProfileMenu, setSelectedProfileMenu]);
 
   const handleProfileMenuClick = (menu) => {
