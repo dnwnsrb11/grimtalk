@@ -112,12 +112,16 @@ export const MemberSettingsSection = () => {
   });
 
   const handleSubmit = async () => {
+    if (!nickname.trim() || !memberIntro.trim() || !selectedFile) {
+      alert('프로필 이미지를 선택해주세요.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('nickname', nickname);
-    formData.append('intro', memberIntro || '');
-    if (selectedFile) {
-      formData.append('image', selectedFile);
-    }
+    formData.append('intro', memberIntro);
+    formData.append('image', selectedFile);
+
     formData.forEach((value, key) => {
       console.log(`${key}:`, value);
     });
@@ -189,8 +193,9 @@ export const MemberSettingsSection = () => {
             onClick={() => {
               setMemberProfileImage('');
               setPreviewImage(''); // 🔥 미리보기까지 초기화
+              setSelectedFile('');
             }}
-            className="flex-[15%] rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 focus:bg-red-600 active:bg-red-700"
+            className="flex-[15%] rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:opacity-80 focus:bg-primary-color"
           >
             초기화
           </button>
