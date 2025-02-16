@@ -65,7 +65,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
             )}
           </DashboardCard>
         </div>
-        <DashboardCard title="나의 강의" subInfo={`전체 ${myLectures?.length || 0}`}>
+        <DashboardCard title="최신 나의 강의" subInfo={`TOP${myLectures?.length || 0}`}>
           {myLectures?.length > 0 ? (
             <div className="flex flex-col gap-7">
               {myLectures.map((lecture) => (
