@@ -13,6 +13,7 @@ export const CheckBoardSection = () => {
       const { data } = await _axiosAuth.get(`/mypage/question`);
       return data.body.data.list;
     },
+    staleTime: 0,
   });
 
   // ✅ 선택된 boardId에 해당하는 lectureId 찾기

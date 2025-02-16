@@ -26,6 +26,7 @@ export const MemberIntroSection = ({ joinId }) => {
       return data.body.data.intro;
     },
     enabled: !!joinId, // joinId가 있을 때만 요청
+    staleTime: 0,
   });
 
   // 가져온 소개글을 상태에 저장

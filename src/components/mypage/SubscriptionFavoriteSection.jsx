@@ -16,6 +16,7 @@ export const SubscriptionFavoriteSection = () => {
       const { data } = await _axiosAuth.get('/favorite');
       return data.body.data.list;
     },
+    staleTime: 0,
   });
 
   // 구독 목록 데이터
