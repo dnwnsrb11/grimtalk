@@ -282,7 +282,7 @@ export const AiComparePage = () => {
                   <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
                     <span className="text-text-gray-color text-[18px] font-light">색감 유사도</span>
                   </div>
-                  <h1 className="text-primary-color text-[66px] font-bold">
+                  <h1 className="text-primary-color text-[46px] font-bold">
                     <CountUpAnimation targetNumber={Number(analysisResult.color_similarity)} />%
                   </h1>
                 </div>
@@ -295,7 +295,7 @@ export const AiComparePage = () => {
                   <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
                     <span className="text-text-gray-color text-[18px] font-light">선 유사도</span>
                   </div>
-                  <h1 className="text-primary-color text-[66px] font-bold">
+                  <h1 className="text-primary-color text-[46px] font-bold">
                     <CountUpAnimation
                       targetNumber={Number(analysisResult.line_thickness_similarity)}
                     />
@@ -311,7 +311,7 @@ export const AiComparePage = () => {
                   <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
                     <span className="text-text-gray-color text-[18px] font-light">구조 유사도</span>
                   </div>
-                  <h1 className="text-primary-color text-[66px] font-bold">
+                  <h1 className="text-primary-color text-[46px] font-bold">
                     <CountUpAnimation targetNumber={Number(analysisResult.structure_similarity)} />%
                   </h1>
                 </div>
