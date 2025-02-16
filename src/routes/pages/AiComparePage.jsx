@@ -62,7 +62,7 @@ export const AiComparePage = () => {
     queryKey: ['InstructorImg'],
     queryFn: async () => {
       // 특정 ID(4)를 사용하여 이미지 URL 요청
-      const { data } = await _axiosAuth.get(`/image-similarity/${4}`);
+      const { data } = await _axiosAuth.get(`/image-similarity/${location.state?.curriculumId}`);
 
       // 응답 데이터 유효성 검사
       if (data.body?.code !== 200) {
