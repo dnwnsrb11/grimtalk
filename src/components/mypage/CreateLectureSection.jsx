@@ -1,8 +1,20 @@
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { _axiosAuth } from '@/api/instance';
+import { CalendarIcon, ClockIcon } from '@/components/common/icons';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const MAX_LENGTH = 1000;
 const MAX_LENGTH_SUBJECT = 100;
@@ -208,14 +220,30 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
     setCurriculumForm((prev) => ({ ...prev, [field]: strValue })); // 문자열로 변환하여 저장
   };
 
-  const handleInputSubjectChange = (field, value) => {
-    const strValue = value.toString(); // 숫자도 문자열 변환하여 처리
-    if (!validateSubjectInput(strValue)) {
-      toast.error(`입력값이 ${MAX_LENGTH_SUBJECT}자를 초과할 수 없습니다.`);
-      return;
+  // 시간 옵션 생성 (9시부터 22시까지, 10분 간격)
+  const timeOptions = [];
+  for (let hour = 9; hour <= 22; hour++) {
+    for (let minute = 0; minute < 60; minute += 10) {
+      timeOptions.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
     }
-    setLecture((prev) => ({ ...prev, [field]: strValue })); // 숫자가 아니라 문자열로 저장
-  };
+  }
+
+  const [date, setDate] = useState();
+  const [time, setTime] = useState();
+
+  // date와 time이 변경될 때 curriculumForm 업데이트
+  useEffect(() => {
+    if (date && time) {
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      setCurriculumForm((prev) => ({
+        ...prev,
+        date: formattedDate,
+        time: time,
+      }));
+      setSelectDate(true);
+    }
+  }, [date, time]);
+
   return (
     <div className="flex w-full flex-col gap-6">
       {/* 강의 제목 입력 섹션 */}
@@ -258,28 +286,41 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
         <small className="text-gray-500">
           {curriculumForm.curriculumContent.length}/{MAX_LENGTH}
         </small>
-        <div className="grid grid-cols-2 gap-3">
-          <input
-            type="date"
-            value={curriculumForm.date}
-            onChange={(e) => {
-              setCurriculumForm({ ...curriculumForm, date: e.target.value });
-              setSelectDate(true);
-            }}
-            className="rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal"
-          />
+        <div className="flex w-[50%] gap-2 [&>*]:flex-1">
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="flex w-full items-center gap-2 rounded-3xl border bg-bg-gray-color px-3 py-1 text-sm text-text-gray-color">
+                <CalendarIcon width={16} height={16} />
+                {date ? format(date, 'PPP', { locale: ko }) : '날짜 선택'}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                locale={ko}
+                initialFocus
+                disabled={(date) => date < new Date()}
+              />
+            </PopoverContent>
+          </Popover>
 
-          <input
-            type="time"
-            value={curriculumForm.time}
-            onChange={(e) => {
-              setCurriculumForm({ ...curriculumForm, time: e.target.value });
-              setSelectDate(true);
-            }}
-            className="rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal"
-          />
+          <Select value={time} onValueChange={setTime} disabled={!date}>
+            <SelectTrigger className="flex w-full items-center gap-2 rounded-3xl border bg-bg-gray-color px-3 py-1 text-sm text-text-gray-color">
+              <ClockIcon width={16} height={16} />
+              <SelectValue placeholder="시간 선택" />
+            </SelectTrigger>
+            <SelectContent>
+              {timeOptions.map((timeOption) => (
+                <SelectItem key={timeOption} value={timeOption}>
+                  {timeOption}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="flex w-[50%] gap-2 [&>*]:flex-1">
           {!curriculumForm.date ? (
             <p className="pl-[10px] text-primary-color">라이브 시작 날짜를 선택해주세요.</p>
           ) : (
