@@ -14,6 +14,8 @@ export const QuestionLectureDetail = ({
   checkInstructor,
   lectureInstructorInfoId,
   boardCreatedMemberId,
+  routerBoardCreatedId,
+  routerBoardBoardId,
 }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -32,18 +34,28 @@ export const QuestionLectureDetail = ({
   } = useQuery({
     queryKey: ['board', questionId],
     queryFn: async () => {
-      const { data } = await _axios.get(`/board/${questionId}`);
+      let response;
 
-      if (!data.body.data) {
+      if (routerBoardBoardId) {
+        response = await _axios.get(`/board/${routerBoardBoardId}`);
+      } else {
+        response = await _axios.get(`/board/${questionId}`);
+      }
+
+      const data = response.data.body.data;
+
+      if (!data) {
         throw new Error('데이터가 없습니다.');
       }
-      setAnserId(data?.body?.data?.comments[0]?.commentId);
-      return data.body.data;
+
+      setAnserId(data?.comments[0]?.commentId);
+      return data;
     },
     onError: () => {
       navigate('/notfound');
     },
   });
+
   const boardComments = board?.comments;
 
   // 작성 api
@@ -66,19 +78,6 @@ export const QuestionLectureDetail = ({
     },
   });
 
-  // 채택 기능
-  // const addCommentCheckMutation = useMutation({
-  //   mutationFn: async () => {
-  //     const { data } = await _axiosAuth.put('/board/pick', {
-  //       answerId: answerId,
-  //     });
-  //     return data;
-  //   },
-  //   onSuccess: () => {
-  //     alert('답변을 채택하였습니다.');
-  //     setIsActive(false);
-  //   },
-  // });
   // 질문 삭제
   const deleteBoardMutation = useMutation({
     mutationFn: async () => {
@@ -107,13 +106,13 @@ export const QuestionLectureDetail = ({
   };
 
   const changeActive = () => {
-    setIsActive(false);
+    navigate(-1); // 브라우저의 뒤로 가기 기능 실행
   };
 
   if (isLoading) {
     return <LoadingComponents />;
   }
-  if (isError) return <div>에러가 발생했습니다.</div>;
+  if (isError) return <div>에러가 발생했습니다.ㅁㄴㅇ</div>;
 
   return (
     <>
@@ -217,14 +216,6 @@ export const QuestionLectureDetail = ({
           <p className="text-[18px] font-semibold">뒤로가기</p>
         </button>
 
-        {/* {!checkInstructor && board?.comments?.length > 0 && (
-          <button
-            className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]"
-            onClick={() => addCommentCheckMutation.mutate()}
-          >
-            <p className="text-[18px] font-semibold text-white">답변완료</p>
-          </button>
-        )} */}
         {lectureInstructorInfoId === id ? (
           <button
             className="ml-[10px] rounded-2xl border border-gray-border-color bg-gray-800 p-[10px] px-[15px]"
