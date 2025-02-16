@@ -635,10 +635,41 @@ export const LivePage = () => {
     [stompService, isConnected, nickname, curriculumSubject],
   );
 
+  // 강사 이미지 추출 함수
+  const handleInstructorExportImage = async () => {
+    if (!roomCreatorAPIRef.current) return;
+
+    try {
+      const elements = roomCreatorAPIRef.current.getSceneElements();
+      const appState = roomCreatorAPIRef.current.getAppState();
+
+      const blob = await exportToBlob({
+        elements,
+        appState,
+        mimeType: 'image/png',
+        exportPadding: 10,
+        // quality 속성 제거 (PNG에서는 무시됨)
+      });
+
+      // Blob을 File 객체로 변환
+      const file = new File([blob], 'whiteboard.png', { type: 'image/png' });
+
+      const formData = new FormData();
+      formData.append('curriculumId', curriculumId);
+      formData.append('image', file);
+
+      const base64Image = await InstructorExportImage(formData);
+      console.log('이미지 추출 성공', base64Image);
+    } catch (error) {
+      console.log('이미지 추출 실패', error);
+    }
+  };
+
   // 방 나가기 함수
   const leaveRoom = useCallback(async () => {
     if (participantUtils.isCreator(nickname)) {
       await InstructorLeaveLive(curriculumId, id);
+      handleInstructorExportImage();
     } else {
       await leaveLive(curriculumId, id);
     }
@@ -726,36 +757,6 @@ export const LivePage = () => {
     }
   };
 
-  // 강사 이미지 추출 함수
-  const handleInstructorExportImage = async () => {
-    if (!roomCreatorAPIRef.current) return;
-
-    try {
-      const elements = roomCreatorAPIRef.current.getSceneElements();
-      const appState = roomCreatorAPIRef.current.getAppState();
-
-      const blob = await exportToBlob({
-        elements,
-        appState,
-        mimeType: 'image/png',
-        exportPadding: 10,
-        // quality 속성 제거 (PNG에서는 무시됨)
-      });
-
-      // Blob을 File 객체로 변환
-      const file = new File([blob], 'whiteboard.png', { type: 'image/png' });
-
-      const formData = new FormData();
-      formData.append('curriculumId', curriculumId);
-      formData.append('image', file);
-
-      const base64Image = await InstructorExportImage(formData);
-      console.log('이미지 추출 성공', base64Image);
-    } catch (error) {
-      console.log('이미지 추출 실패', error);
-    }
-  };
-
   const handleParticipantExportImage = async () => {
     if (!participantAPIRef.current) return;
 
@@ -836,6 +837,8 @@ export const LivePage = () => {
               }
               local={participantUtils.isCreator(nickname)}
               liveCount={liveCount}
+              isLeaveDialogOpen={isLeaveDialogOpen}
+              sendData={sendData}
             />
           </LiveKitRoom>
 
@@ -847,7 +850,7 @@ export const LivePage = () => {
                   ⚠️
                   {participantUtils.isCreator(nickname) ? (
                     <>
-                      <span className="text-primary-color">라이브</span> 종료
+                      <span className="text-primary-color">라이브</span> 종료 전 확인
                     </>
                   ) : (
                     <>
