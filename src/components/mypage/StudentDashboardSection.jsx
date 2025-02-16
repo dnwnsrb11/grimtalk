@@ -287,14 +287,9 @@ export const StudentDashboardSection = ({ isActive }) => {
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.5, delay: 1.0 }} // 🚀 동일한 딜레이 적용
                 >
-                  <DashboardCard
-                    title="최근 구독한 강사"
-                    className="flex h-full flex-col justify-center"
-                  >
-                    <p className="flex items-center justify-center p-[10%] text-[20px]">
-                      최근 구독한 강사가 없습니다.
-                    </p>
-                  </DashboardCard>
+                  <p className="flex items-center justify-center p-[10%] text-[20px]">
+                    최근 구독한 강사가 없습니다.
+                  </p>
                 </motion.div>
               )}
             </DashboardCard>

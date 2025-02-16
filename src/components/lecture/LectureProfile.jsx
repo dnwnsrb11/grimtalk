@@ -314,8 +314,8 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                     className="stroke-white transition-colors duration-0 group-hover:stroke-black"
                     stroke="currentColor"
                   />
-                  <p className="text-[18px] font-semibold transition-colors duration-0 group-hover:text-black">
-                    강의 수정하기
+                  <p className="text-[16px] font-semibold transition-colors duration-0 group-hover:text-black">
+                    마이페이지에서 수정하기
                   </p>
                 </button>
               </div>

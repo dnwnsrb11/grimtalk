@@ -90,11 +90,7 @@ export const MemberSettingsSection = () => {
   // 수정 api 요청
   const memberSettingsChange = useMutation({
     mutationFn: async (formData) => {
-      const { data } = await _axiosAuth.put(`/user`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', // 명시적으로 헤더 설정
-        },
-      });
+      const { data } = await _axiosAuth.put(`/user`, formData);
       return data;
     },
     onSuccess: () => {
