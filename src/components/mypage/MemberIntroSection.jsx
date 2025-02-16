@@ -39,7 +39,7 @@ export const MemberIntroSection = ({ joinId }) => {
   }, [joinId, refetch, userIntroduce]);
 
   const handleSave = async () => {
-    if (editingText.length >= MAX_LENGTH) {
+    if (editingText?.length >= MAX_LENGTH) {
       toast.error(`소개글은 ${MAX_LENGTH}자 이내로 입력해주세요.`);
       return;
     }
@@ -58,7 +58,7 @@ export const MemberIntroSection = ({ joinId }) => {
 
   const handleTextChange = (e) => {
     const text = e.target.value;
-    if (text.length > MAX_LENGTH) {
+    if (text?.length > MAX_LENGTH) {
       toast.error(`소개글은 ${MAX_LENGTH}자 이내로 입력해주세요.`);
       return;
     }
@@ -80,7 +80,7 @@ export const MemberIntroSection = ({ joinId }) => {
             />
             {/* 글자 수 표시 - textarea 내부 우측 하단 */}
             <small className="absolute bottom-4 right-5 text-xs text-gray-500">
-              {editingText.length} / {MAX_LENGTH}
+              {editingText?.length} / {MAX_LENGTH}
             </small>
           </div>
 
