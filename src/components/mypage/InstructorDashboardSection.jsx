@@ -20,6 +20,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
     onError: () => {
       alert('에러');
     },
+    staleTime: 0,
   });
 
   // 나의 최근 라이브 변수

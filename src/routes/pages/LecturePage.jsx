@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { _axios } from '@/api/instance';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
@@ -24,6 +24,11 @@ export const LecturePage = () => {
 
   //로그인 체크를 위한 데이터
   const { id } = useAuthStore((state) => state.userData);
+  const location = useLocation();
+  const initialCategory = location.state?.selectMenu || '강의소개';
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory || '강의소개');
+  const routerBoardCreatedId = location.state?.routerBoardCreatedId || null;
+  const routerBoardBoardId = location.state?.routerBoardBoardId || null;
 
   // 페이지 진입 시 맨 위로 스크롤
   useEffect(() => {
@@ -57,7 +62,6 @@ export const LecturePage = () => {
     }
   }, [lectureId, id, lecture]); // lecture나 id가 변경될 때마다 체크
 
-  const [selectedCategory, setSelectedCategory] = useState('강의소개');
   const contentRef = useRef(null);
 
   const handleCatagory = (childData) => {
@@ -77,7 +81,14 @@ export const LecturePage = () => {
     커리큘럼: <CurriculumLecture checkInstructor={checkInstructor} lecture={lecture} />,
     default: <p>now Testing</p>,
     공지사항: <LectureNotice checkInstructor={checkInstructor} lecture={lecture} />,
-    질문사항: <LectureQuestions checkInstructor={checkInstructor} lecture={lecture} />,
+    질문사항: (
+      <LectureQuestions
+        checkInstructor={checkInstructor}
+        lecture={lecture}
+        routerBoardCreatedId={routerBoardCreatedId}
+        routerBoardBoardId={routerBoardBoardId}
+      />
+    ),
     리뷰하기: <LectureReview checkInstructor={checkInstructor} lecture={lecture} />,
   };
 
