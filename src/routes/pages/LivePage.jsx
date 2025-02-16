@@ -80,7 +80,7 @@ export const LivePage = () => {
   ]);
   const [sendData, setSendData] = useState(null);
   const timeRef = useRef(null);
-
+  const [completeRecording, setCompleteRecording] = useState(false);
   // 녹화 기능 콜백 함수
   const startRecording = useCallback(() => {
     setIsRecording(true);
@@ -94,11 +94,10 @@ export const LivePage = () => {
 
   const stopRecording = useCallback(() => {
     setIsRecording(false);
-
+    setCompleteRecording(true);
     // 타이머도 정지
     if (timeRef.current) {
       clearInterval(timeRef.current);
-      setElapsedTime(0);
     }
   }, []);
 
@@ -119,9 +118,11 @@ export const LivePage = () => {
   // 전달기능
   const sendDataButton = () => {
     setSendData(timeHistory);
+    console.log('~!!!!데이터');
+    console.log(timeHistory);
   };
 
-  const { mutate: addStroke } = useAddStrokeMutation(1);
+  const { mutate: addStroke } = useAddStrokeMutation(curriculumId);
   useEffect(() => {
     if (sendData) {
       console.log('전달 데이터:', sendData);
@@ -747,6 +748,13 @@ export const LivePage = () => {
               isVisible={isChatVisible}
               setIsVisible={setIsChatVisible}
               curriculumSubject={curriculumSubject}
+              // 녹화 기능 props로 전달
+              stopRecording={stopRecording}
+              startRecording={startRecording}
+              sendDataButton={sendDataButton}
+              elapsedTime={elapsedTime}
+              isRecording={isRecording}
+              completeRecording={completeRecording}
               track={
                 participantUtils.isCreator(nickname)
                   ? localTrack
@@ -832,20 +840,6 @@ export const LivePage = () => {
           {/* Excalidraw 컴포넌트 */}
           {participantUtils.isCreator(nickname) ? (
             <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
-              <div>
-                <div className="flex gap-2">
-                  <button className="rounded-2xl border p-5" onClick={startRecording}>
-                    녹화
-                  </button>
-                  <button className="rounded-2xl border p-5" onClick={stopRecording}>
-                    정지
-                  </button>
-                  <button className="rounded-2xl border p-5" onClick={sendDataButton}>
-                    전송
-                  </button>
-                </div>
-                <p>{elapsedTime}</p>
-              </div>
               <Excalidraw
                 onChange={(elements) => {
                   console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
@@ -895,6 +889,13 @@ export const LivePage = () => {
 
                   setRoomCreatorElements(elements);
                   console.log('💾 최종 roomCreatorElements 상태:', elements);
+
+                  // 녹화 기능
+                  const newLastElement = elements[elements.length - 1];
+                  if (lastElement !== newLastElement) {
+                    // 녹화 업데이트
+                    setLastElement(newLastElement);
+                  }
                 }}
                 excalidrawAPI={(api) => {
                   roomCreatorAPIRef.current = api;

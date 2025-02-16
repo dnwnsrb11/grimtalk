@@ -116,6 +116,7 @@ const useAddStrokeMutation = (roomId) => {
     mutationFn: async (strokeData) => {
       // mutationFn에서 파라미터로 받음
       const { data } = await _axiosAuth.post(`/stroke/${roomId}`, strokeData);
+      console.log(strokeData);
       return data;
     },
     onError: (error) => {

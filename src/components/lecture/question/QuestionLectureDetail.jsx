@@ -185,6 +185,7 @@ export const QuestionLectureDetail = ({
                     key={index}
                     comment={comment}
                     boardId={board?.boardCreatedMemberId}
+                    picked={board?.picked}
                     // picked={board?.picked}
                   />
                 </div>
