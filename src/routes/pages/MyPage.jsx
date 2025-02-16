@@ -11,6 +11,7 @@ import { MyLectureSection } from '@/components/mypage/MyLectureSection';
 import { ProfileSection } from '@/components/mypage/ProfileSection';
 import { StudentDashboardSection } from '@/components/mypage/StudentDashboardSection';
 import { SubscriptionFavoriteSection } from '@/components/mypage/SubscriptionFavoriteSection';
+import { UpdateLectureSection } from '@/components/mypage/UpdateLectureSection';
 import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -54,6 +55,9 @@ export const MyPage = () => {
       '내 강의': <MyLectureSection />,
       '내 강의 생성하기': (
         <CreateLectureSection userDataId={userData.id} onBack={handleLectureCreated} />
+      ),
+      '강의 수정하기': (
+        <UpdateLectureSection userDataId={userData.id} onBack={handleLectureCreated} />
       ),
     },
     default: <div>준비 중입니다.</div>,
