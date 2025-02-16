@@ -892,7 +892,7 @@ export const LivePage = () => {
                 initialData={{
                   elements: roomCreatorElements,
                   appState: {
-                    viewBackgroundColor: '#ffffff',
+                    viewBackgroundColor: 'transparent',
                     currentItemStrokeColor: '#000000',
                     currentItemBackgroundColor: '#ffffff',
                   },
@@ -911,70 +911,53 @@ export const LivePage = () => {
                 </button>
               </div>
 
-              {isOverlayMode ? (
-                // 겹치기 모드
-                <div className="relative flex-1">
-                  {/* 방장 화이트보드 (아래 레이어) */}
-                  <div className="absolute inset-0 z-0">
-                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+              <div className={`relative flex-1 ${isOverlayMode ? '' : 'flex gap-2'}`}>
+                {/* 내 화이트보드 */}
+                <div
+                  className={`
+                    ${isOverlayMode ? 'absolute inset-0 z-20' : 'flex-1'}
+                    ${isOverlayMode ? 'bg-transparent' : 'bg-white'} order-2
+                  `}
+                >
+                  <div
+                    className={`h-full rounded-xl border border-gray-border-color ${isOverlayMode ? 'bg-transparent' : 'bg-white'} p-4`}
+                  >
                       <h3 className="mb-4 text-xl font-bold">
-                        <span className="text-primary-color">방장 </span>화이트보드
+                      <span className="text-primary-color">내 </span>화이트보드
                       </h3>
                       <div className="h-[calc(100%-40px)]">
                         <Excalidraw
                           excalidrawAPI={(api) => {
-                            roomCreatorAPIRef.current = api;
+                          participantAPIRef.current = api;
                           }}
-                          elements={roomCreatorElements}
-                          viewModeEnabled={true}
                           initialData={{
-                            elements: roomCreatorElements,
                             appState: {
-                              viewBackgroundColor: '#ffffff',
-                              currentItemStrokeColor: '#000000',
-                              currentItemBackgroundColor: '#ffffff',
-                              viewModeEnabled: true,
+                            viewBackgroundColor: 'transparent',
                               theme: 'light',
+                            scrollX: 0, // 초기 X 좌표 (스크롤 위치)
+                            scrollY: 0, // 초기 Y 좌표 (스크롤 위치)
+                          },
+                        }}
+                        UIOptions={{
+                          canvasActions: {
+                            changeViewBackgroundColor: false,
                             },
                           }}
                         />
                       </div>
                     </div>
                   </div>
-                  {/* 내 화이트보드 (위 레이어) */}
-                  <div className="absolute inset-0 z-10 bg-white bg-opacity-50">
-                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
-                      <h3 className="mb-4 text-xl font-bold">
-                        <span className="text-primary-color">내 </span>화이트보드
-                      </h3>
-                      <div className="h-[calc(100%-40px)]">
-                        <Excalidraw
-                          onChange={(elements) => {
-                            setParticipantElements(elements);
-                          }}
-                          excalidrawAPI={(api) => {
-                            participantAPIRef.current = api;
-                          }}
-                          elements={participantElements}
-                          viewModeEnabled={false}
-                          initialData={{
-                            elements: participantElements,
-                            appState: {
-                              viewBackgroundColor: '#ffffff',
-                              currentItemStrokeColor: '#000000',
-                              currentItemBackgroundColor: '#ffffff',
-                            },
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                // 기본 모드
-                <div className="flex h-full gap-2">
-                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
-                    <h3 className="mb-4 text-xl font-bold">
+
+                {/* 방장 화이트보드 */}
+                <div
+                  ref={instructorBoardRef}
+                  className={`
+                    ${isOverlayMode ? 'absolute inset-0 z-10' : 'flex-1'}
+                    order-1 bg-transparent
+                  `}
+                >
+                  <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                    <h3 className={`mb-4 text-xl font-bold ${isOverlayMode ? 'invisible' : ''}`}>
                       <span className="text-primary-color">방장 </span>화이트보드
                     </h3>
                     <div className="h-[calc(100%-40px)]">
@@ -987,11 +970,17 @@ export const LivePage = () => {
                         initialData={{
                           elements: roomCreatorElements,
                           appState: {
-                            viewBackgroundColor: '#ffffff',
+                            viewBackgroundColor: 'transparent',
                             currentItemStrokeColor: '#000000',
-                            currentItemBackgroundColor: '#ffffff',
                             viewModeEnabled: true,
                             theme: 'light',
+                            scrollX: 0, // 초기 X 좌표 (스크롤 위치)
+                            scrollY: 0, // 초기 Y 좌표 (스크롤 위치)
+                          },
+                        }}
+                        UIOptions={{
+                          canvasActions: {
+                            changeViewBackgroundColor: false,
                           },
                         }}
                       />
