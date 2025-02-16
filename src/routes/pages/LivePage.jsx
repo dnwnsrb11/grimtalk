@@ -98,7 +98,6 @@ export const LivePage = () => {
     // 타이머도 정지
     if (timeRef.current) {
       clearInterval(timeRef.current);
-      setElapsedTime(0);
     }
   }, []);
 
