@@ -34,17 +34,6 @@ export const SignupPage = () => {
     setter(value);
   };
 
-  const handleKeyDown = (e, nextRef) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (email && password && password2 && nickname && question && answer) {
-        signupMutation.mutate();
-      } else if (nextRef && nextRef.current) {
-        nextRef.current.focus();
-      }
-    }
-  };
-
   const signupMutation = useMutation({
     mutationFn: async () => {
       const response = await _axios.post('/user', {
@@ -68,6 +57,39 @@ export const SignupPage = () => {
       console.error(error);
     },
   });
+
+  const handleEmailChange = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setEmail(value);
+
+    if (!emailRegex.test(value)) {
+      toast.error('올바른 이메일 형식을 입력하세요.', {
+        style: { fontSize: '14px', width: '300px' },
+      });
+    }
+  };
+  const handleKeyDown = (e, nextRef) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      // 이메일 필드는 유효성 검사 후 이동
+      if (e.target === emailRef.current) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          toast.error('올바른 이메일을 입력하세요.', {
+            style: { fontSize: '14px', width: '300px' },
+          });
+          return;
+        }
+      }
+
+      if (email && password && password2 && nickname && question && answer) {
+        signupMutation.mutate();
+      } else if (nextRef && nextRef.current) {
+        nextRef.current.focus();
+      }
+    }
+  };
 
   return (
     <div className="relative mt-[160px] flex h-full items-center justify-center gap-2 pb-[250px]">
@@ -94,6 +116,13 @@ export const SignupPage = () => {
             }
             if (!passwordRegex.test(password)) {
               toast.error('비밀번호는 10자 이상, 숫자, 문자, 기호를 포함해야 합니다.', {
+                style: { fontSize: '14px', width: '300px' },
+              });
+              return;
+            }
+            const emails = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emails.test(email)) {
+              toast.error('올바른 이메일을 입력하세요.', {
                 style: { fontSize: '14px', width: '300px' },
               });
               return;
