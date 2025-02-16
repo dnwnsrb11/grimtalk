@@ -756,7 +756,37 @@ export const LivePage = () => {
     }
   };
 
+  const handleParticipantExportImage = async () => {
+    if (!participantAPIRef.current) return;
 
+    const elements = participantAPIRef.current.getSceneElements();
+    const appState = participantAPIRef.current.getAppState();
+
+    const blob = await exportToBlob({
+      elements,
+      appState,
+      mimeType: 'image/png',
+      quality: 1,
+      exportPadding: 10,
+    });
+    console.log('이미지 추출 성공', blob);
+
+    // 직렬화를 통해 전송 가능한 상태로 변경하자
+    const base64Image = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      // 먼저 값을 받아서 변환한다.
+      reader.readAsDataURL(blob);
+      // 성공하면 성공 내용을 반환
+      reader.onloadend = () => resolve(reader.result);
+      // 실패하면 실패를 반환
+      reader.onerror = reject;
+    });
+
+    // 네비게이션으로 ai 페이지로 이동
+    navigate('/aicompare', {
+      state: { curriculumId: curriculumId, ImageData: base64Image },
+    });
+  };
 
   return (
     <AnimatePresence mode="wait">
