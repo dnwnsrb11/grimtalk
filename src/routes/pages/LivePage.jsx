@@ -1,6 +1,6 @@
 import '@/styles/live.css';
 
-import { Excalidraw } from '@excalidraw/excalidraw';
+import { Excalidraw, exportToBlob } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { Client } from '@stomp/stompjs';
 import { AnimatePresence, motion } from 'motion/react';
@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import {
+  InstructorExportImage,
   InstructorLeaveLive,
   joinLive,
   leaveLive,
@@ -724,6 +725,38 @@ export const LivePage = () => {
       setRangeProgress(value);
     }
   };
+
+  // 강사 이미지 추출 함수
+  const handleInstructorExportImage = async () => {
+    if (!roomCreatorAPIRef.current) return;
+
+    try {
+      const elements = roomCreatorAPIRef.current.getSceneElements();
+      const appState = roomCreatorAPIRef.current.getAppState();
+
+      const blob = await exportToBlob({
+        elements,
+        appState,
+        mimeType: 'image/png',
+        exportPadding: 10,
+        // quality 속성 제거 (PNG에서는 무시됨)
+      });
+
+      // Blob을 File 객체로 변환
+      const file = new File([blob], 'whiteboard.png', { type: 'image/png' });
+
+      const formData = new FormData();
+      formData.append('curriculumId', curriculumId);
+      formData.append('image', file);
+
+      const base64Image = await InstructorExportImage(formData);
+      console.log('이미지 추출 성공', base64Image);
+    } catch (error) {
+      console.log('이미지 추출 실패', error);
+    }
+  };
+
+
 
   return (
     <AnimatePresence mode="wait">
