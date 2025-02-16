@@ -12,6 +12,7 @@ export const MyLectureSection = () => {
 
       return data.body.data.list;
     },
+    staleTime: 0,
   });
   return (
     <div className="grid grid-cols-3 gap-3">

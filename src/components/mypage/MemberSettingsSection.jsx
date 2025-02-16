@@ -17,6 +17,7 @@ export const MemberSettingsSection = () => {
       const { data } = await _axiosAuth.get(`/user/${id}`);
       return data.body.data;
     },
+    staleTime: 0,
   });
   const { memberId, memberPassword, memberSubscribeNumber, memberIntro, memberImage } = {
     memberId: memberSettings?.email,
