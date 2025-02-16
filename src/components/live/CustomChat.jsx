@@ -44,6 +44,12 @@ export const CustomChat = ({
   participantIdentity,
   local,
   liveCount,
+  stopRecording,
+  startRecording,
+  sendDataButton,
+  elapsedTime,
+  isRecording,
+  completeRecording,
   ...props
 }) => {
   const applyMessageStyles = () => {
@@ -165,6 +171,50 @@ export const CustomChat = ({
 
   return (
     <div className="chat-container relative">
+      {/* 강사의 경우에만 보임 */}
+      {isCreator && (
+        <div className="group relative">
+          <div className="flex items-center justify-between gap-2">
+            {isRecording ? (
+              <button
+                onClick={stopRecording}
+                className="rounded-lg border bg-[#EFEFEF] px-[10px] py-[5px] transition-colors duration-200 hover:bg-black"
+              >
+                정지
+              </button>
+            ) : (
+              !completeRecording && (
+                <button
+                  onClick={startRecording}
+                  className="rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white transition-colors duration-200 hover:bg-[#792b1a]"
+                >
+                  녹화
+                </button>
+              )
+            )}
+            {completeRecording && (
+              <button
+                onClick={sendDataButton}
+                className="rounded-lg border bg-[#FF5C38] px-[10px] py-[5px] text-white"
+              >
+                저장
+              </button>
+            )}
+            <div className="flex w-[30%] justify-center rounded-lg border border-[#ffb3a1] px-[20px] py-[5px]">
+              <p>
+                {(elapsedTime / 10).toFixed(0)}{' '}
+                <span className="text-[14px] font-light text-[#828282]">초</span>{' '}
+              </p>
+            </div>
+          </div>
+          <div className="absolute mt-[5px] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <p className="whitespace-pre-line text-[14px] leading-tight text-[#C1C1C1]">
+              녹화를 통하여 다시보기에 업로드가 {'\n'}가능합니다.
+            </p>
+          </div>
+          <hr className="my-2 transition-[margin] duration-300 ease-in-out group-hover:mt-[50px]" />
+        </div>
+      )}
       {/* 채팅 컴포넌트 */}
       <div className={`chat-wrapper ${isVisible ? 'visible' : 'hidden'}`}>
         {/* 과목명 표시 */}

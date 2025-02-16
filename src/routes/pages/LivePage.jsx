@@ -80,7 +80,7 @@ export const LivePage = () => {
   ]);
   const [sendData, setSendData] = useState(null);
   const timeRef = useRef(null);
-
+  const [completeRecording, setCompleteRecording] = useState(false);
   // 녹화 기능 콜백 함수
   const startRecording = useCallback(() => {
     setIsRecording(true);
@@ -94,11 +94,10 @@ export const LivePage = () => {
 
   const stopRecording = useCallback(() => {
     setIsRecording(false);
-
+    setCompleteRecording(true);
     // 타이머도 정지
     if (timeRef.current) {
       clearInterval(timeRef.current);
-      setElapsedTime(0);
     }
   }, []);
 
@@ -119,9 +118,11 @@ export const LivePage = () => {
   // 전달기능
   const sendDataButton = () => {
     setSendData(timeHistory);
+    console.log('~!!!!데이터');
+    console.log(timeHistory);
   };
 
-  const { mutate: addStroke } = useAddStrokeMutation(1);
+  const { mutate: addStroke } = useAddStrokeMutation(curriculumId);
   useEffect(() => {
     if (sendData) {
       console.log('전달 데이터:', sendData);
@@ -736,6 +737,13 @@ export const LivePage = () => {
               isVisible={isChatVisible}
               setIsVisible={setIsChatVisible}
               curriculumSubject={curriculumSubject}
+              // 녹화 기능 props로 전달
+              stopRecording={stopRecording}
+              startRecording={startRecording}
+              sendDataButton={sendDataButton}
+              elapsedTime={elapsedTime}
+              isRecording={isRecording}
+              completeRecording={completeRecording}
               track={
                 participantUtils.isCreator(nickname)
                   ? localTrack
@@ -820,21 +828,7 @@ export const LivePage = () => {
 
           {/* Excalidraw 컴포넌트 */}
           {participantUtils.isCreator(nickname) ? (
-            <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
-              <div>
-                <div className="flex gap-2">
-                  <button className="rounded-2xl border p-5" onClick={startRecording}>
-                    녹화
-                  </button>
-                  <button className="rounded-2xl border p-5" onClick={stopRecording}>
-                    정지
-                  </button>
-                  <button className="rounded-2xl border p-5" onClick={sendDataButton}>
-                    전송
-                  </button>
-                </div>
-                <p>{elapsedTime}</p>
-              </div>
+            <div className="excalidraw-wrapper border-gray-border-color rounded-xl border bg-white p-4">
               <Excalidraw
                 onChange={(elements) => {
                   console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
@@ -884,6 +878,13 @@ export const LivePage = () => {
 
                   setRoomCreatorElements(elements);
                   console.log('💾 최종 roomCreatorElements 상태:', elements);
+
+                  // 녹화 기능
+                  const newLastElement = elements[elements.length - 1];
+                  if (lastElement !== newLastElement) {
+                    // 녹화 업데이트
+                    setLastElement(newLastElement);
+                  }
                 }}
                 excalidrawAPI={(api) => {
                   roomCreatorAPIRef.current = api;
@@ -905,7 +906,7 @@ export const LivePage = () => {
               <div className="mb-4 flex justify-center">
                 <button
                   onClick={() => setIsOverlayMode(!isOverlayMode)}
-                  className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
+                  className="bg-primary-color rounded-lg px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
                 >
                   {isOverlayMode ? '겹치기 해제' : '겹치기'}
                 </button>
@@ -916,7 +917,7 @@ export const LivePage = () => {
                 <div className="relative flex-1">
                   {/* 방장 화이트보드 (아래 레이어) */}
                   <div className="absolute inset-0 z-0">
-                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                    <div className="border-gray-border-color h-full rounded-xl border bg-white p-4">
                       <h3 className="mb-4 text-xl font-bold">
                         <span className="text-primary-color">방장 </span>화이트보드
                       </h3>
@@ -943,7 +944,7 @@ export const LivePage = () => {
                   </div>
                   {/* 내 화이트보드 (위 레이어) */}
                   <div className="absolute inset-0 z-10 bg-white bg-opacity-50">
-                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                    <div className="border-gray-border-color h-full rounded-xl border bg-white p-4">
                       <h3 className="mb-4 text-xl font-bold">
                         <span className="text-primary-color">내 </span>화이트보드
                       </h3>
@@ -973,7 +974,7 @@ export const LivePage = () => {
               ) : (
                 // 기본 모드
                 <div className="flex h-full gap-2">
-                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                  <div className="border-gray-border-color flex-1 rounded-xl border bg-white p-4">
                     <h3 className="mb-4 text-xl font-bold">
                       <span className="text-primary-color">방장 </span>화이트보드
                     </h3>
@@ -997,7 +998,7 @@ export const LivePage = () => {
                       />
                     </div>
                   </div>
-                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
+                  <div className="border-gray-border-color flex-1 rounded-xl border bg-white p-4">
                     <h3 className="mb-4 text-xl font-bold">
                       <span className="text-primary-color">내 </span>화이트보드
                     </h3>
