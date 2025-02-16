@@ -142,7 +142,16 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
 
   // 강의 생성 제출
   const handleSubmit = async () => {
-    if (!lecture.subject || !lecture.intro || !lecture.selectedFile || curriculums.length === 0) {
+    if (
+      !lecture.category ||
+      lecture.category.length === 0 || // category가 빈 문자열이거나 빈 배열인지 체크
+      !lecture.subject ||
+      !lecture.intro ||
+      !lecture.selectedFile ||
+      !lecture.hashtags ||
+      lecture.hashtags.length === 0 || // hashtags도 동일한 방식으로 체크
+      curriculums.length === 0
+    ) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
@@ -375,7 +384,6 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
             </button>
           </div>
         </div>
-
         {/* 태그 입력 섹션 */}
         <div className="flex flex-col gap-3">
           <p className="text-xl font-bold">태그 생성</p>
@@ -427,26 +435,24 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
             )}
           </div>
         </div>
-
         {/* 카테고리 선택 */}
-        <div className="flex flex-col gap-3">
-          <p className="text-xl font-bold">카테고리 선택</p>
-          <select
-            className="w-full rounded-md border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal text-text-gray-color"
-            value={lecture.category}
-            onChange={(e) => setLecture({ ...lecture, category: e.target.value })}
-          >
-            <option value="" disabled>
-              옵션에서 카테고리를 선택하세요.
-            </option>
-            <option value="CHARACTER">캐릭터</option>
-            <option value="EMOTICON">이모티콘</option>
-            <option value="DRAWING">드로잉</option>
-            <option value="COLORING">컬러링</option>
-            <option value="WEBTOON">웹툰</option>
-            <option value="CONCEPT_ART">컨셉 아트</option>
-          </select>
-        </div>
+        <select
+          className="w-full rounded-md border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal text-text-gray-color"
+          value={lecture.category}
+          onChange={(e) => {
+            setLecture({ ...lecture, category: e.target.value });
+          }}
+        >
+          <option value="" disabled>
+            옵션에서 카테고리를 선택하세요.
+          </option>
+          <option value="CHARACTER">캐릭터</option>
+          <option value="EMOTICON">이모티콘</option>
+          <option value="DRAWING">드로잉</option>
+          <option value="COLORING">컬러링</option>
+          <option value="WEBTOON">웹툰</option>
+          <option value="CONCEPT_ART">컨셉 아트</option>
+        </select>
       </div>
 
       <hr className="border-divider-color" />
