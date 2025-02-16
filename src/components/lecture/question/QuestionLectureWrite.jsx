@@ -88,7 +88,7 @@ export const QuestionLectureWrite = ({ setIsActive, curriculumId, lecture }) => 
             className="h-10 w-full rounded-xl border border-gray-border-color p-2 pl-3 text-[#afafaf]"
           >
             <option value="">커리큘럼을 선택해주세요.</option>
-            {curriculums.map((curriculum, index) => (
+            {curriculums?.map((curriculum, index) => (
               <option value={curriculum.curriculumId} key={index}>
                 {curriculum.subject}
               </option>
