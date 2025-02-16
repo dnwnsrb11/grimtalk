@@ -73,15 +73,6 @@ export const SignupPage = () => {
       e.preventDefault();
 
       // 이메일 필드는 유효성 검사 후 이동
-      if (e.target === emailRef.current) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          toast.error('올바른 이메일을 입력하세요.', {
-            style: { fontSize: '14px', width: '300px' },
-          });
-          return;
-        }
-      }
 
       if (email && password && password2 && nickname && question && answer) {
         signupMutation.mutate();
