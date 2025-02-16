@@ -292,12 +292,12 @@ export const LivePage = () => {
             clearInterval(stepInterval);
             setTimeout(() => {
               setIsLoading(false);
-            }, 1500);
+            }, 1000);
             return prev;
           }
           return prev + 1;
         });
-      }, 1500);
+      }, 1000);
     }
     return () => clearInterval(stepInterval);
   }, [isLoading]);
