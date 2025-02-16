@@ -850,7 +850,7 @@ export const LivePage = () => {
                   ⚠️
                   {participantUtils.isCreator(nickname) ? (
                     <>
-                      <span className="text-primary-color">라이브</span> 종료 전 확인
+                      <span className="text-primary-color">라이브</span> 종료
                     </>
                   ) : (
                     <>
@@ -883,7 +883,29 @@ export const LivePage = () => {
                     </>
                   ) : (
                     <>
-                      <span className="text-red-500">라이브를 퇴장</span>하시겠습니까?
+                      <h2 className="mb-3 text-xl font-bold text-primary-color">
+                        라이브 퇴장 전 확인
+                      </h2>
+                      <p className="mb-2">
+                        라이브를 퇴장하기 전,{' '}
+                        <strong className="text-primary-color">AI 비교 버튼</strong>을 누르면 본인의
+                        현재 이미지가 AI 비교 페이지에 업로드되어 강사의 그림과{' '}
+                        <span className="font-semibold text-primary-color">얼마나 유사한지 </span>
+                        비교를 받아보실 수 있습니다.
+                      </p>
+                      <p className="mb-2">
+                        종료 후,{' '}
+                        <span className="font-semibold text-primary-color">
+                          강사의 최종 완성 이미지
+                        </span>
+                        가 <span className="font-semibold text-primary-color">다시보기 페이지</span>
+                        에 업로드되니 다시{' '}
+                        <span className="font-semibold text-primary-color">강사의 그림</span>을 따라
+                        그려보고 싶다면, 꼭 이용해주세요!
+                      </p>
+                      <p className="text-right font-semibold text-primary-color">
+                        정말로 퇴장하시겠습니까?
+                      </p>
                     </>
                   )}
                 </AlertDialogDescription>
