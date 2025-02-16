@@ -19,8 +19,9 @@ export const MemberIntroSection = ({ joinId }) => {
     data: userIntroduce,
     isLoading,
     isError,
+    refetch,
   } = useQuery({
-    queryKey: ['userIntroduce', joinId],
+    queryKey: ['userIntroduce', joinId, id],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/user/${joinId}`);
       return data.body.data.intro;
@@ -28,14 +29,14 @@ export const MemberIntroSection = ({ joinId }) => {
     enabled: !!joinId, // joinId가 있을 때만 요청
     staleTime: 0,
   });
-
-  // 가져온 소개글을 상태에 저장
+  // fetch로 바로 조회
   useEffect(() => {
-    if (userIntroduce) {
-      setIntroText(userIntroduce);
-      setEditingText(userIntroduce);
+    if (joinId) {
+      refetch(); // ✅ 새로운 유저 정보 가져오기
     }
-  }, [userIntroduce]);
+    setIntroText(userIntroduce);
+    setEditingText(userIntroduce);
+  }, [joinId, refetch, userIntroduce]);
 
   const handleSave = async () => {
     if (editingText.length >= MAX_LENGTH) {
