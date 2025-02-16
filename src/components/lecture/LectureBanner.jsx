@@ -8,7 +8,7 @@ export const LectureBanner = ({ lecture }) => {
         <img
           src={lecture.image}
           alt="BannerIMG"
-          className="h-full max-h-[300px] w-full rounded-xl object-contain"
+          className="h-full max-h-[300px] w-full rounded-xl object-cover"
         />
       </div>
     </>

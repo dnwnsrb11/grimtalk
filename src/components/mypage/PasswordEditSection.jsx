@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { _axiosAuth } from '@/api/instance';
 import {
@@ -12,14 +12,24 @@ import {
 import { useAuthStore } from '@/store/useAuthStore';
 
 export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
+  const MAX_LENGTH = 50;
+
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
+  const questionRef = useRef(null);
+  const answerRef = useRef(null);
+  const submitButtonRef = useRef(null);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
   const { email } = useAuthStore((state) => state.userData);
   // 비밀번호 유효성 검사 로직(추후 변경)
   const isPasswordValid = (password) => {
-    return password.length >= 8;
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)|(?=.*[A-Za-z])(?=.*[!@#$%^&*])|(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{10,16}$/;
+    return passwordRegex.test(password);
   };
+
   const { mutate: changePassword, isLoading } = useMutation({
     mutationFn: async () => {
       const { data } = await _axiosAuth.put(`/user/password`, {
@@ -57,7 +67,22 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
     }
     changePassword();
   };
-  // 회원 이메일
+  // 질문
+  const handleChange = (setter, value, maxLength) => {
+    if (value.length > maxLength) {
+      toast.error(`최대 ${maxLength}자까지 입력할 수 있습니다.`, {
+        style: { fontSize: '14px', width: '300px' },
+      });
+      return;
+    }
+    setter(value);
+  };
+  const handleKeyDown = (e, nextRef) => {
+    if (e.key === 'Enter' && nextRef?.current) {
+      e.preventDefault();
+      nextRef.current.focus();
+    }
+  };
 
   return (
     <div className="flex w-[65%] flex-col gap-5">
@@ -125,6 +150,35 @@ export const PasswordEditSection = ({ onGoBack, memberPassword }) => {
           ) : (
             <p className="text-[18px] text-red-500">비밀번호가 일치하지 않습니다.</p>
           )}
+        </div>
+        <div className="flex flex-col items-baseline gap-2">
+          <select
+            ref={questionRef}
+            className="relative mb-[7px] h-[54px] w-full rounded-[10px] border border-gray-border-color pl-3"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e, answerRef)}
+          >
+            <option value="">-- 질문을 선택하세요 --</option>
+            <option value="1">첫 번째 애완동물의 이름은 무엇인가요?</option>
+            <option value="2">어렸을 때 좋아하던 음식은 무엇인가요?</option>
+            <option value="3">첫 번째 학교의 이름은 무엇인가요?</option>
+            <option value="4">부모님의 출생지는 어디인가요?</option>
+            <option value="5">좋아하는 영화의 제목은 무엇인가요?</option>
+          </select>
+          <input
+            ref={answerRef}
+            type="text"
+            placeholder="질문 답변을 작성해주세요."
+            className="relative mb-[7px] h-[54px] w-full rounded-md border border-gray-border-color pl-3"
+            value={answer}
+            onChange={(e) => {
+              if (e.target.value.length <= MAX_LENGTH) {
+                setAnswer(e.target.value);
+              }
+            }}
+            onKeyDown={(e) => handleKeyDown(e, submitButtonRef)}
+          />
         </div>
       </div>
       <div className="mt-5 flex flex-row justify-end gap-2">

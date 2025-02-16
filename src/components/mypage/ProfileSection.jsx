@@ -30,9 +30,9 @@ export const ProfileSection = ({
     if (location.state?.selectedMenu) {
       setSelectedMenu(location.state.selectedMenu);
     }
-    if (location.state?.selectedProfileMenu) {
-      setSelectedProfileMenu(location.state.selectedProfileMenu);
-    }
+    // if (location.state?.selectedProfileMenu) {
+    //   setSelectedProfileMenu(location.state.selectedProfileMenu);
+    // }
   }, [location, targetid, setSelectedMenu, selectedProfileMenu, setSelectedProfileMenu]);
 
   const handleProfileMenuClick = (menu) => {
@@ -62,19 +62,19 @@ export const ProfileSection = ({
         {/* 프로필 이미지 */}
         {/* 프로필 이미지 -> 값이 없을 경우 랜더링 유무 체크 */}
         <img
-          className="h-40 w-40 rounded-full bg-gray-600"
+          className=" h-40 w-40 rounded-full bg-white"
           src={profileSectionCheck?.image || posterNoneImg}
           alt="profile"
         />
         {/* 사용자 이름과 뱃지 */}
         <div className="flex items-center gap-1">
           {/* 뱃지 이미지 추가 */}
-          {profileSectionCheck?.subscribeNumber <= 10 ? (
-            <LeveloneBadgeIcon />
-          ) : profileSectionCheck?.subscribeNumber <= 100 ? (
-            <LeveltwoBadgeIcon />
-          ) : profileSectionCheck?.subscribeNumber >= 101 ? (
+          {profileSectionCheck?.subscribeNumber >= 101 ? (
             <LevelthirdBadgeIcon />
+          ) : profileSectionCheck?.subscribeNumber >= 10 ? (
+            <LeveltwoBadgeIcon />
+          ) : profileSectionCheck?.subscribeNumber >= 3 ? (
+            <LeveloneBadgeIcon />
           ) : null}
 
           <span className="text-2xl font-bold">{profileSectionCheck?.nickname}</span>

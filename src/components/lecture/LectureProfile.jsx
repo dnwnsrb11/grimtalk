@@ -210,7 +210,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
           <div className="flex h-full w-[80%] items-center gap-[40px] rounded-3xl border border-gray-border-color px-[40px] py-[22px]">
             <div>
               {/* 프로필 이미지 */}
-              <div className="relative h-[162px] w-[162px] rounded-full bg-[#565252]">
+              <div className="relative h-[162px] w-[162px] rounded-full bg-white">
                 {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
                 <div className="overflow-hidden rounded-full">
                   <img
