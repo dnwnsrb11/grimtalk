@@ -913,7 +913,7 @@ export const LivePage = () => {
           ) : (
             <div className="flex h-[calc(100vh-50px)] flex-col">
               {/* 겹치기 토글 버튼 */}
-              <div className="mb-4 flex justify-center">
+              <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
                 <button
                   onClick={() => setIsOverlayMode(!isOverlayMode)}
                   className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
