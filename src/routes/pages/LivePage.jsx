@@ -118,9 +118,11 @@ export const LivePage = () => {
   // 전달기능
   const sendDataButton = () => {
     setSendData(timeHistory);
+    console.log('~!!!!데이터');
+    console.log(timeHistory);
   };
 
-  const { mutate: addStroke } = useAddStrokeMutation(1);
+  const { mutate: addStroke } = useAddStrokeMutation(curriculumId);
   useEffect(() => {
     if (sendData) {
       console.log('전달 데이터:', sendData);
@@ -876,6 +878,13 @@ export const LivePage = () => {
 
                   setRoomCreatorElements(elements);
                   console.log('💾 최종 roomCreatorElements 상태:', elements);
+
+                  // 녹화 기능
+                  const newLastElement = elements[elements.length - 1];
+                  if (lastElement !== newLastElement) {
+                    // 녹화 업데이트
+                    setLastElement(newLastElement);
+                  }
                 }}
                 excalidrawAPI={(api) => {
                   roomCreatorAPIRef.current = api;
