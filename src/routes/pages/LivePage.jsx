@@ -789,6 +789,10 @@ export const LivePage = () => {
     });
   };
 
+  const goReplayPage = () => {
+    navigate(`/replay/${curriculumId}`);
+  };
+
   return (
     <AnimatePresence mode="wait">
       {isLoading ? (
@@ -911,15 +915,39 @@ export const LivePage = () => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
-                  취소
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-primary-color hover:bg-primary-color hover:opacity-90"
-                  onClick={leaveRoom}
-                >
-                  {participantUtils.isCreator(nickname) ? '종료' : '퇴장'}
-                </AlertDialogAction>
+                <div className="flex w-full flex-row items-center justify-between">
+                  <div className="flex gap-2">
+                    {!participantUtils.isCreator(nickname) && (
+                      <>
+                        <AlertDialogAction
+                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                          onClick={handleParticipantExportImage}
+                        >
+                          AI 비교
+                        </AlertDialogAction>
+
+                        <AlertDialogAction
+                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                          onClick={goReplayPage}
+                        >
+                          다시보기
+                        </AlertDialogAction>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
+                      취소
+                    </AlertDialogCancel>
+
+                    <AlertDialogAction
+                      className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                      onClick={leaveRoom}
+                    >
+                      {participantUtils.isCreator(nickname) ? '종료' : '퇴장'}
+                    </AlertDialogAction>
+                  </div>
+                </div>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
