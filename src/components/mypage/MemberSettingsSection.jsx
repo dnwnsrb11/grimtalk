@@ -112,12 +112,16 @@ export const MemberSettingsSection = () => {
   });
 
   const handleSubmit = async () => {
+    if (!nickname.trim() || !memberIntro.trim() || !selectedFile) {
+      alert('프로필 이미지를 선택해주세요.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('nickname', nickname);
-    formData.append('intro', memberIntro || '');
-    if (selectedFile) {
-      formData.append('image', selectedFile);
-    }
+    formData.append('intro', memberIntro);
+    formData.append('image', selectedFile);
+
     formData.forEach((value, key) => {
       console.log(`${key}:`, value);
     });
@@ -163,6 +167,7 @@ export const MemberSettingsSection = () => {
       </div>
       <div className="flex flex-col gap-2">
         <label className="text-lg font-semibold">프로필 이미지</label>
+
         {previewImage && (
           <img
             src={previewImage}
@@ -170,18 +175,29 @@ export const MemberSettingsSection = () => {
             className="h-[150px] w-[150px] rounded-full border border-gray-300 object-cover"
           />
         )}
+
         <div className="flex flex-row justify-between gap-2">
           <input
             type="text"
             disabled
-            className="flex-[80%] rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
-            value={memberProfileImage}
+            className="flex-[70%] rounded-md border border-[#000000] border-opacity-20 bg-[#E6E6E6] p-2 text-[#C6C6C6]"
+            value={selectedFile ? selectedFile.name : ''}
           />
           <button
             onClick={handleImageSelect}
-            className="flex-[20%] rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-primary-color hover:text-white focus:bg-primary-color focus:text-white active:bg-primary-color active:text-white"
+            className="flex-[15%] rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color hover:bg-primary-color hover:text-white focus:bg-primary-color focus:text-white active:bg-primary-color active:text-white"
           >
             이미지 찾기
+          </button>
+          <button
+            onClick={() => {
+              setMemberProfileImage('');
+              setPreviewImage(''); // 🔥 미리보기까지 초기화
+              setSelectedFile('');
+            }}
+            className="flex-[15%] rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white hover:opacity-80 focus:bg-primary-color"
+          >
+            초기화
           </button>
         </div>
       </div>
@@ -199,14 +215,14 @@ export const MemberSettingsSection = () => {
       </div>
       <hr className="mt-5 border-divider-color" />
       <div className="flex flex-row justify-end gap-2">
-        <button
+        {/* <button
           className="rounded-md bg-bg-gray-color px-4 py-2 text-sm font-semibold text-common-font-color 
             hover:bg-bg-gray-color/60 
             focus:bg-bg-gray-color/60 
             active:bg-bg-gray-color/60"
         >
           뒤로가기
-        </button>
+        </button> */}
         <button
           onClick={handleSubmit}
           disabled={!memberSettings} // memberSettings가 없으면 비활성화

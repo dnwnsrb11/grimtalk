@@ -61,7 +61,11 @@ export const LoginPage = () => {
             회원가입
           </button>{' '}
           <span> | </span>
-          <button type="button" className="transition-transform duration-150 hover:scale-105">
+          <button
+            type="button"
+            className="transition-transform duration-150 hover:scale-105"
+            onClick={() => navigate(`/findpassword`)}
+          >
             비밀번호 찾기
           </button>
         </div>

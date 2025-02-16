@@ -20,6 +20,7 @@ export const StudentDashboardSection = ({ isActive }) => {
       const { data } = await _axiosAuth.get('/dashboard/common');
       return data.body.data;
     },
+    staleTime: 0,
   });
   // 네비게이트 함수
   const navigate = useNavigate();

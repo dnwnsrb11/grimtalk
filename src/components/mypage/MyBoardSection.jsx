@@ -12,6 +12,7 @@ export const MyBoardSection = () => {
       const { data } = await _axiosAuth.get('/mypage/board');
       return data.body.data.list;
     },
+    staleTime: 0, // 🔥 매번 새로운 데이터를 가져오도록 설정
   });
 
   return (

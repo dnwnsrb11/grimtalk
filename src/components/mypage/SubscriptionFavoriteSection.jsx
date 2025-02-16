@@ -25,6 +25,7 @@ export const SubscriptionFavoriteSection = () => {
       const { data } = await _axiosAuth.get('/subscribe');
       return data.body.data;
     },
+    staleTime: 0,
   });
   return (
     <div className="flex flex-col gap-3">
