@@ -2,19 +2,30 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { LoadingComponents } from '@/components/common/LoadingComponents';
+import { useAuthInitialize } from '@/hooks/useAuthInitialize';
 import { queryClient } from '@/lib/queryClient';
 import Router from '@/routes';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function App() {
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const isInitialized = useAuthInitialize();
 
-  // 애플리케이션이 처음 시작될 때(새로고침 포함)
-  // localStorage 에 저장된 토큰을 조회하여 로그인 상태를 초기화(userData 복원)
-  // 사용자가 로그인 후 브라우저를 닫았다가 다시 열어도 토큰이 유효하다면 자동으로 로그인 상태 유지
+  const isLogin = useAuthStore((state) => state.isLogin);
+
+  // 로그인 상태 변경 시 SSE 구독 처리
+  // SSE(Server-Sent Events)는 서버에서 클라이언트로 실시간 데이터를 보내는 단방향 통신 방식
+  // 웹소켓과 달리 서버->클라이언트 단방향 통신만 가능하지만, 구현이 간단하고 자동 재연결을 지원
   useEffect(() => {
-    useAuthStore.getState().initializeAuth(); // 앱 시작 시 토큰 조회 후 로그인 상태 초기화
-  }, []);
+    if (isLogin) {
+      // 로그인 시 SSE 연결 시작
+      const unsubscribe = subscribeToNotifications();
+      return () => {
+        // 컴포넌트 언마운트 또는 로그아웃 시 SSE 연결 정리
+        unsubscribe?.();
+        unsubscribeFromNotifications();
+      };
+    }
+  }, [isLogin]);
 
   return (
     <QueryClientProvider client={queryClient}>
