@@ -766,9 +766,59 @@ const SendIcon = ({ className = '', width = 24, height = 24, fill = 'black' }) =
   </svg>
 );
 
+// 캘린더 아이콘
+const CalendarIcon = ({ className = '', width = 24, height = 24, stroke = 'black' }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z"
+      stroke={stroke}
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// 시계 아이콘
+const ClockIcon = ({ className = '', width = 24, height = 24, stroke = 'black' }) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+      stroke={stroke}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 6V12L16 14"
+      stroke={stroke}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export {
   AlarmIcon,
+  CalendarIcon,
   CheckIcon,
+  ClockIcon,
   DefaultBadgeIcon,
   DrawingIcon,
   FavoriteIcon,
