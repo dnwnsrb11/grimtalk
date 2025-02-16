@@ -68,7 +68,7 @@ export const QuestionContentCard = ({ comment, boardId, picked }) => {
           </div>
         </div>
       </div>
-      <div>{comment?.content}</div>
+      <div className="whitespace-pre-wrap">{comment?.content}</div>
       <hr className="mt-[15px]" />
     </div>
   );
