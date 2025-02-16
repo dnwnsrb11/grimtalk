@@ -55,6 +55,7 @@ export const AiComparePage = () => {
   // React Router의 location 훅을 사용해 이전 페이지에서 전달된 이미지 데이터 추출
   const location = useLocation();
   const imageData = location.state?.ImageData;
+  const curriculumId = location.state?.curriculumId;
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [chartData, setChartData] = useState([]); // 차트 데이터를 저장할 상태 추가
 
@@ -64,7 +65,7 @@ export const AiComparePage = () => {
     queryKey: ['InstructorBlob'],
     queryFn: async () => {
       // 특정 ID(4)를 사용하여 이미지 URL 요청
-      const { data } = await _axiosAuth.get(`/curriculum/completed-image/${25}`);
+      const { data } = await _axiosAuth.get(`/curriculum/completed-image/${curriculumId}`);
       // 응답 데이터 유효성 검사
       if (data.body?.code !== 200) {
         throw new Error(data.body.message || '데이터를 찾을 수 없습니다.');
@@ -193,7 +194,7 @@ export const AiComparePage = () => {
   const addDataMuntation = useMutation({
     mutationFn: async () => {
       const { data } = await _axiosAuth.post(`/image-similarity`, {
-        curriculumId: 25,
+        curriculumId: curriculumId,
         colorSimilarity: analysisResult.color_similarity,
         lineThicknessSimilarity: analysisResult.line_thickness_similarity,
         structureSimilarity: analysisResult.structure_similarity,
