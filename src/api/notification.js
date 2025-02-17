@@ -71,12 +71,12 @@ const subscribeToNotifications = () => {
 
     // 에러 발생 시 처리 및 재연결 로직
     newEventSource.onerror = (error) => {
-      // 5초 후 재연결 시도
+      // 1초 후 재연결 시도
       setTimeout(() => {
         if (!NotificationEventSource.getInstance()) {
           subscribeToNotifications();
         }
-      }, 5000);
+      }, 1000);
       console.error('SSE Error:', error);
     };
 
