@@ -65,7 +65,7 @@ export const Navbar = () => {
   return (
     <div className="flex items-center">
       {/* 로고 */}
-      <button onClick={() => navigate('/')} className="focus:outline-none">
+      <button onClick={() => navigate('/')} className="hover:scale-105 focus:outline-none">
         <LogoIcon />
       </button>
 
