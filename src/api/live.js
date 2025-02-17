@@ -173,8 +173,24 @@ const InstructorLeaveLive = async (curriculumId, userId) => {
   }
 };
 
+// 강사 이미지 추출 함수
+const InstructorExportImage = async (formData) => {
+  try {
+    const response = await _axiosAuth.post(`/curriculum/completed-image`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('강사 이미지 추출 실패:', error);
+    throw error;
+  }
+};
+
 export {
   endLive,
+  InstructorExportImage,
   InstructorLeaveLive,
   joinLive,
   leaveLive,

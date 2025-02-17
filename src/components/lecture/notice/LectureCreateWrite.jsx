@@ -10,7 +10,7 @@ export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate, lecture }
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
 
-  const MAX_LENGTH = 255;
+  const MAX_LENGTH = 1000;
 
   // 입력 핸들러
   const handleChange = (setter, value, field) => {

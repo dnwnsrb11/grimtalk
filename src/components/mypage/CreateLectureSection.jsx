@@ -4,8 +4,8 @@ import { toast } from 'react-hot-toast';
 
 import { _axiosAuth } from '@/api/instance';
 
-const MAX_LENGTH = 255;
-const MAX_TAGS_LENGTH = 255;
+const MAX_LENGTH = 1000;
+const MAX_LENGTH_SUBJECT = 100;
 
 export const CreateLectureSection = ({ userDataId, onBack }) => {
   const [selectDate, setSelectDate] = useState(false);
@@ -30,14 +30,21 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
 
   // 입력 값 validation 함수
   const validateInput = (value, maxLength = MAX_LENGTH) => {
-    return value.length <= maxLength;
+    if (value === null || value === undefined) return false;
+    const strValue = value.toString(); // 무조건 문자열로 변환
+
+    return strValue.length + 1 < maxLength;
+  };
+
+  const validateSubjectInput = (value, maxLength = MAX_LENGTH_SUBJECT) => {
+    if (value === null || value === undefined) return false;
+    const strValue = value.toString(); // 무조건 문자열로 변환
+
+    return strValue.length + 1 < maxLength;
   };
 
   // 태그 validation 함수
-  const validateTags = (tags, newTag = '') => {
-    const totalLength = tags.reduce((acc, tag) => acc + tag.text.length, 0) + newTag.length;
-    return totalLength <= MAX_TAGS_LENGTH;
-  };
+
   // 이미지 업로드 핸들러
   const handleImageSelect = () => {
     const input = document.createElement('input');
@@ -69,12 +76,12 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
     }
 
     if (!validateInput(curriculumForm.curriculumSubject)) {
-      toast.error('커리큘럼 제목은 255자를 초과할 수 없습니다.');
+      toast.error('커리큘럼 제목은 1000자를 초과할 수 없습니다.');
       return;
     }
 
     if (!validateInput(curriculumForm.curriculumContent)) {
-      toast.error('커리큘럼 내용은 255자를 초과할 수 없습니다.');
+      toast.error('커리큘럼 내용은 1000자를 초과할 수 없습니다.');
       return;
     }
 
@@ -94,15 +101,9 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
     if (!tagInput.trim()) return;
 
     if (!validateInput(tagInput.trim())) {
-      toast.error('태그는 255자를 초과할 수 없습니다.');
+      toast.error('태그는 1000자를 초과할 수 없습니다.');
       return;
     }
-
-    // if (!validateTags(lecture.hashtags, tagInput.trim())) {
-    //   // tags를 hashtags로 변경
-    //   toast.error('전체 태그의 길이가 255자를 초과할 수 없습니다.');
-    //   return;
-    // }
 
     setLecture({
       ...lecture,
@@ -117,14 +118,6 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
       ...lecture,
       hashtags: lecture.hashtags.filter((tag) => tag.id !== tagId), // tags를 hashtags로 변경
     });
-  };
-
-  // 태그 입력에서 Enter 키 처리
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddTag();
-    }
   };
 
   // 강의 생성 요청
@@ -149,7 +142,16 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
 
   // 강의 생성 제출
   const handleSubmit = async () => {
-    if (!lecture.subject || !lecture.intro || !lecture.selectedFile || curriculums.length === 0) {
+    if (
+      !lecture.category ||
+      lecture.category.length === 0 || // category가 빈 문자열이거나 빈 배열인지 체크
+      !lecture.subject ||
+      !lecture.intro ||
+      !lecture.selectedFile ||
+      !lecture.hashtags ||
+      lecture.hashtags.length === 0 || // hashtags도 동일한 방식으로 체크
+      curriculums.length === 0
+    ) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
@@ -189,19 +191,30 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
   };
 
   const handleInputChange = (field, value) => {
-    if (!validateInput(value)) {
-      toast.error(`입력값이 255자를 초과할 수 없습니다.`);
+    const strValue = value.toString(); // 숫자도 문자열 변환하여 처리
+    if (!validateInput(strValue)) {
+      toast.error(`입력값이 ${MAX_LENGTH}자를 초과할 수 없습니다.`);
       return;
     }
-    setLecture({ ...lecture, [field]: value });
+    setLecture((prev) => ({ ...prev, [field]: strValue })); // 숫자가 아니라 문자열로 저장
   };
 
   const handleCurriculumFormChange = (field, value) => {
-    if (!validateInput(value)) {
-      toast.error(`입력값이 255자를 초과할 수 없습니다.`);
+    const strValue = value.toString(); // 숫자 변환 처리
+    if (!validateInput(strValue)) {
+      toast.error(`입력값이 ${MAX_LENGTH}자를 초과할 수 없습니다.`);
       return;
     }
-    setCurriculumForm({ ...curriculumForm, [field]: value });
+    setCurriculumForm((prev) => ({ ...prev, [field]: strValue })); // 문자열로 변환하여 저장
+  };
+
+  const handleInputSubjectChange = (field, value) => {
+    const strValue = value.toString(); // 숫자도 문자열 변환하여 처리
+    if (!validateSubjectInput(strValue)) {
+      toast.error(`입력값이 ${MAX_LENGTH_SUBJECT}자를 초과할 수 없습니다.`);
+      return;
+    }
+    setLecture((prev) => ({ ...prev, [field]: strValue })); // 숫자가 아니라 문자열로 저장
   };
   return (
     <div className="flex w-full flex-col gap-6">
@@ -210,13 +223,13 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
         <input
           type="text"
           value={lecture.subject}
-          onChange={(e) => handleInputChange('subject', e.target.value)}
-          maxLength={MAX_LENGTH}
+          onChange={(e) => handleInputSubjectChange('subject', e.target.value)}
+          maxLength={MAX_LENGTH_SUBJECT}
           className="w-full rounded-[10px] border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal placeholder:font-semibold"
           placeholder="강의 제목을 입력해주세요."
         />
         <small className="text-gray-500">
-          {lecture.subject.length}/{MAX_LENGTH}
+          {lecture.subject.length}/{MAX_LENGTH_SUBJECT}
         </small>
       </div>
 
@@ -371,7 +384,6 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
             </button>
           </div>
         </div>
-
         {/* 태그 입력 섹션 */}
         <div className="flex flex-col gap-3">
           <p className="text-xl font-bold">태그 생성</p>
@@ -379,11 +391,11 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
             type="text"
             value={tagInput}
             onChange={(e) => {
-              // 입력 값이 255자를 초과하지 않을 때만 상태 업데이트
+              // 입력 값이 1000자를 초과하지 않을 때만 상태 업데이트
               if (e.target.value.length <= MAX_LENGTH) {
                 setTagInput(e.target.value);
               } else {
-                toast.error('태그는 255자를 초과할 수 없습니다.');
+                toast.error('태그는 1000자를 초과할 수 없습니다.');
               }
             }}
             onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
@@ -423,26 +435,24 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
             )}
           </div>
         </div>
-
         {/* 카테고리 선택 */}
-        <div className="flex flex-col gap-3">
-          <p className="text-xl font-bold">카테고리 선택</p>
-          <select
-            className="w-full rounded-md border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal text-text-gray-color"
-            value={lecture.category}
-            onChange={(e) => setLecture({ ...lecture, category: e.target.value })}
-          >
-            <option value="" disabled>
-              옵션에서 카테고리를 선택하세요.
-            </option>
-            <option value="CHARACTER">캐릭터</option>
-            <option value="EMOTICON">이모티콘</option>
-            <option value="DRAWING">드로잉</option>
-            <option value="COLORING">컬러링</option>
-            <option value="WEBTOON">웹툰</option>
-            <option value="CONCEPT_ART">컨셉 아트</option>
-          </select>
-        </div>
+        <select
+          className="w-full rounded-md border border-black border-opacity-20 px-5 py-3 text-[18px] font-normal text-text-gray-color"
+          value={lecture.category}
+          onChange={(e) => {
+            setLecture({ ...lecture, category: e.target.value });
+          }}
+        >
+          <option value="" disabled>
+            옵션에서 카테고리를 선택하세요.
+          </option>
+          <option value="CHARACTER">캐릭터</option>
+          <option value="EMOTICON">이모티콘</option>
+          <option value="DRAWING">드로잉</option>
+          <option value="COLORING">컬러링</option>
+          <option value="WEBTOON">웹툰</option>
+          <option value="CONCEPT_ART">컨셉 아트</option>
+        </select>
       </div>
 
       <hr className="border-divider-color" />
