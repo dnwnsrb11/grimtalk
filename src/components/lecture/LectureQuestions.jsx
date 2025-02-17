@@ -7,7 +7,12 @@ import { QuestionLectureCard } from '@/components/lecture/question/QuestionLectu
 import { QuestionLectureDetail } from '@/components/lecture/question/QuestionLectureDetail';
 import { QuestionLectureWrite } from '@/components/lecture/question/QuestionLectureWrite';
 
-export const LectureQuestions = ({ checkInstructor, lecture }) => {
+export const LectureQuestions = ({
+  checkInstructor,
+  lecture,
+  routerBoardCreatedId,
+  routerBoardBoardId,
+}) => {
   // 상세 페이지 기능
   const [isActive, setIsActive] = useState('/');
   const [questionId, setQuestionId] = useState('');
@@ -30,6 +35,7 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
 
       return data.body.data.list;
     },
+    staleTime: 0,
     onError: (error) => {
       alert('에러');
     },
@@ -64,7 +70,8 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
   if (isError) return <div>에러가 발생했습니다.</div>;
 
   // 컴포넌트 생성 분기
-  if (isActive === '질문 상세페이지') {
+  console.log(routerBoardBoardId);
+  if (isActive === '질문 상세페이지' || !!routerBoardBoardId || !!routerBoardCreatedId) {
     return (
       <QuestionLectureDetail
         setIsActive={setIsActive}
@@ -72,6 +79,8 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
         checkInstructor={checkInstructor}
         lectureInstructorInfoId={lecture?.instructorInfo?.id}
         boardCreatedMemberId={boardCreatedMemberId}
+        routerBoardCreatedId={routerBoardCreatedId}
+        routerBoardBoardId={routerBoardBoardId}
       />
     );
   } else if (isActive === '질문 작성페이지') {
@@ -84,6 +93,20 @@ export const LectureQuestions = ({ checkInstructor, lecture }) => {
     );
   }
 
+  // 마이페이지에서 방문할땐
+  if (routerBoardCreatedId || routerBoardBoardId) {
+    return (
+      <QuestionLectureDetail
+        setIsActive={setIsActive}
+        questionId={routerBoardBoardId} // 📌 boardId 전달
+        checkInstructor={checkInstructor}
+        lectureInstructorInfoId={lecture?.instructorInfo?.id}
+        boardCreatedMemberId={routerBoardCreatedId}
+        routerBoardCreatedId={routerBoardCreatedId}
+        routerBoardBoardId={routerBoardBoardId}
+      />
+    );
+  }
   return (
     <>
       <div className="mt-[60px]">

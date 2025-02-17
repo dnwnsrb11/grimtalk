@@ -8,7 +8,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 // 마이페이지의 유저 소개 섹션을 담당하는 컴포넌트
 export const MemberIntroSection = ({ joinId }) => {
   const queryClint = useQueryClient();
-  const MAX_LENGTH = 255; // 글자 수 제한
+  const MAX_LENGTH = 1000; // 글자 수 제한
   const [isEditing, setIsEditing] = useState(false);
   const [introText, setIntroText] = useState(''); // 초기 소개글 상태
   const [editingText, setEditingText] = useState(''); // 수정할 텍스트 상태
@@ -19,25 +19,27 @@ export const MemberIntroSection = ({ joinId }) => {
     data: userIntroduce,
     isLoading,
     isError,
+    refetch,
   } = useQuery({
-    queryKey: ['userIntroduce', joinId],
+    queryKey: ['userIntroduce', joinId, id],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/user/${joinId}`);
       return data.body.data.intro;
     },
     enabled: !!joinId, // joinId가 있을 때만 요청
+    staleTime: 0,
   });
-
-  // 가져온 소개글을 상태에 저장
+  // fetch로 바로 조회
   useEffect(() => {
-    if (userIntroduce) {
-      setIntroText(userIntroduce);
-      setEditingText(userIntroduce);
+    if (joinId) {
+      refetch(); // ✅ 새로운 유저 정보 가져오기
     }
-  }, [userIntroduce]);
+    setIntroText(userIntroduce);
+    setEditingText(userIntroduce);
+  }, [joinId, refetch, userIntroduce]);
 
   const handleSave = async () => {
-    if (editingText.length >= MAX_LENGTH) {
+    if (editingText?.length >= MAX_LENGTH) {
       toast.error(`소개글은 ${MAX_LENGTH}자 이내로 입력해주세요.`);
       return;
     }
@@ -56,7 +58,7 @@ export const MemberIntroSection = ({ joinId }) => {
 
   const handleTextChange = (e) => {
     const text = e.target.value;
-    if (text.length > MAX_LENGTH) {
+    if (text?.length > MAX_LENGTH) {
       toast.error(`소개글은 ${MAX_LENGTH}자 이내로 입력해주세요.`);
       return;
     }
@@ -72,13 +74,13 @@ export const MemberIntroSection = ({ joinId }) => {
           <div className="relative">
             <textarea
               value={editingText}
-              onChange={handleTextChange} // ✅ 255자 초과 감지 및 토스트 알림 실행
+              onChange={handleTextChange} // ✅ 1000자 초과 감지 및 토스트 알림 실행
               className="h-[40vh] w-full resize-none overflow-auto rounded-[20px] border border-primary-color p-5 pr-16 transition-[border-color] duration-300 focus:outline-none"
               maxLength={MAX_LENGTH}
             />
             {/* 글자 수 표시 - textarea 내부 우측 하단 */}
             <small className="absolute bottom-4 right-5 text-xs text-gray-500">
-              {editingText.length} / {MAX_LENGTH}
+              {editingText?.length} / {MAX_LENGTH}
             </small>
           </div>
 

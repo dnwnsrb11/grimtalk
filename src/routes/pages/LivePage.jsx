@@ -1,6 +1,6 @@
 import '@/styles/live.css';
 
-import { Excalidraw } from '@excalidraw/excalidraw';
+import { Excalidraw, exportToBlob } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { Client } from '@stomp/stompjs';
 import { AnimatePresence, motion } from 'motion/react';
@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import {
+  InstructorExportImage,
   InstructorLeaveLive,
   joinLive,
   leaveLive,
@@ -15,7 +16,7 @@ import {
   useAddStrokeMutation,
   useLiveCount,
 } from '@/api/live';
-import { LeftArrowIcon } from '@/components/common/icons';
+import { LeftArrowIcon, OpacityIcon } from '@/components/common/icons';
 import { CustomChat } from '@/components/live/CustomChat';
 import { LoadingScreen } from '@/components/live/LoadingScreen';
 import {
@@ -80,7 +81,7 @@ export const LivePage = () => {
   ]);
   const [sendData, setSendData] = useState(null);
   const timeRef = useRef(null);
-
+  const [completeRecording, setCompleteRecording] = useState(false);
   // 녹화 기능 콜백 함수
   const startRecording = useCallback(() => {
     setIsRecording(true);
@@ -94,11 +95,10 @@ export const LivePage = () => {
 
   const stopRecording = useCallback(() => {
     setIsRecording(false);
-
+    setCompleteRecording(true);
     // 타이머도 정지
     if (timeRef.current) {
       clearInterval(timeRef.current);
-      setElapsedTime(0);
     }
   }, []);
 
@@ -119,9 +119,11 @@ export const LivePage = () => {
   // 전달기능
   const sendDataButton = () => {
     setSendData(timeHistory);
+    console.log('~!!!!데이터');
+    console.log(timeHistory);
   };
 
-  const { mutate: addStroke } = useAddStrokeMutation(1);
+  const { mutate: addStroke } = useAddStrokeMutation(curriculumId);
   useEffect(() => {
     if (sendData) {
       console.log('전달 데이터:', sendData);
@@ -273,7 +275,7 @@ export const LivePage = () => {
   // const [roomCreatorExcalidrawAPI, setRoomCreatorExcalidrawAPI] = useState(null);
   // const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
 
-  const [isOverlayMode, setIsOverlayMode] = useState(false);
+  const [isOverlayMode, setIsOverlayMode] = useState(true);
 
   // 방 나가기 확인 상태
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
@@ -329,36 +331,6 @@ export const LivePage = () => {
       if (cleanup) cleanup();
     };
   }, [setupStompConnection]);
-
-  // // 토큰 발급 및 방 연결 함수
-  // const connectToRoom = async () => {
-  //   try {
-  //     const isCreator = participantUtils.isCreator(nickname);
-  //     const rtcToken = await (isCreator
-  //       ? liveApi.getInstructorToken(
-  //           curriculumSubject,
-  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
-  //         )
-  //       : liveApi.getStudentToken(
-  //           curriculumSubject,
-  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.RTC),
-  //         ));
-  //     const chatToken = await (isCreator
-  //       ? liveApi.getInstructorToken(
-  //           curriculumSubject,
-  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
-  //         )
-  //       : liveApi.getStudentToken(
-  //           curriculumSubject,
-  //           participantUtils.getTokenParticipantName(nickname, TOKEN_TYPES.CHAT),
-  //         ));
-
-  //     if (!rtcToken || !chatToken) {
-  //       throw new Error('Failed to get tokens');
-  //     }
-
-  //     liveStore.setTokens(rtcToken, chatToken);
-  //     setChatToken(chatToken);
 
   // 토큰 발급 함수
   const getTokens = async (isCreator = false) => {
@@ -663,10 +635,41 @@ export const LivePage = () => {
     [stompService, isConnected, nickname, curriculumSubject],
   );
 
+  // 강사 이미지 추출 함수
+  const handleInstructorExportImage = async () => {
+    if (!roomCreatorAPIRef.current) return;
+
+    try {
+      const elements = roomCreatorAPIRef.current.getSceneElements();
+      const appState = roomCreatorAPIRef.current.getAppState();
+
+      const blob = await exportToBlob({
+        elements,
+        appState,
+        mimeType: 'image/png',
+        exportPadding: 10,
+        // quality 속성 제거 (PNG에서는 무시됨)
+      });
+
+      // Blob을 File 객체로 변환
+      const file = new File([blob], 'whiteboard.png', { type: 'image/png' });
+
+      const formData = new FormData();
+      formData.append('curriculumId', curriculumId);
+      formData.append('image', file);
+
+      const base64Image = await InstructorExportImage(formData);
+      console.log('이미지 추출 성공', base64Image);
+    } catch (error) {
+      console.log('이미지 추출 실패', error);
+    }
+  };
+
   // 방 나가기 함수
   const leaveRoom = useCallback(async () => {
     if (participantUtils.isCreator(nickname)) {
       await InstructorLeaveLive(curriculumId, id);
+      handleInstructorExportImage();
     } else {
       await leaveLive(curriculumId, id);
     }
@@ -713,6 +716,83 @@ export const LivePage = () => {
     }
   }, [curriculumId, id, nickname, room, leaveRoom]);
 
+  // 이전 opacity 값을 저장할 state 추가
+  const [savedOpacity, setSavedOpacity] = useState(100);
+  const [rangeProgress, setRangeProgress] = useState(100);
+  const opacityInputRef = useRef(null);
+  const instructorBoardRef = useRef(null);
+
+  // isOverlayMode 상태가 변경될 때마다 실행되는 useEffect
+  useEffect(() => {
+    if (!isOverlayMode) {
+      // 오버레이 모드 해제 시 현재 opacity 값 저장
+      setSavedOpacity(rangeProgress);
+
+      // 투명도 100%로 설정
+      if (instructorBoardRef.current) {
+        instructorBoardRef.current.style.opacity = 1;
+      }
+      if (opacityInputRef.current) {
+        opacityInputRef.current.value = 100;
+      }
+      setRangeProgress(100);
+    } else {
+      // 오버레이 모드로 돌아올 때 저장된 값 복원
+      if (instructorBoardRef.current) {
+        instructorBoardRef.current.style.opacity = savedOpacity / 100;
+      }
+      if (opacityInputRef.current) {
+        opacityInputRef.current.value = savedOpacity;
+      }
+      setRangeProgress(savedOpacity);
+    }
+  }, [isOverlayMode]);
+
+  // 투명도 변경 함수
+  const changeOpacity = () => {
+    if (instructorBoardRef.current && opacityInputRef.current && isOverlayMode) {
+      const value = opacityInputRef.current.value;
+      instructorBoardRef.current.style.opacity = value / 100;
+      setRangeProgress(value);
+    }
+  };
+
+  const handleParticipantExportImage = async () => {
+    if (!participantAPIRef.current) return;
+
+    const elements = participantAPIRef.current.getSceneElements();
+    const appState = participantAPIRef.current.getAppState();
+
+    const blob = await exportToBlob({
+      elements,
+      appState,
+      mimeType: 'image/png',
+      quality: 1,
+      exportPadding: 10,
+    });
+    console.log('이미지 추출 성공', blob);
+
+    // 직렬화를 통해 전송 가능한 상태로 변경하자
+    const base64Image = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      // 먼저 값을 받아서 변환한다.
+      reader.readAsDataURL(blob);
+      // 성공하면 성공 내용을 반환
+      reader.onloadend = () => resolve(reader.result);
+      // 실패하면 실패를 반환
+      reader.onerror = reject;
+    });
+
+    // 네비게이션으로 ai 페이지로 이동
+    navigate('/aicompare', {
+      state: { curriculumId: curriculumId, ImageData: base64Image },
+    });
+  };
+
+  const goReplayPage = () => {
+    navigate(`/replay/${curriculumId}`);
+  };
+
   return (
     <AnimatePresence mode="wait">
       {isLoading ? (
@@ -736,6 +816,13 @@ export const LivePage = () => {
               isVisible={isChatVisible}
               setIsVisible={setIsChatVisible}
               curriculumSubject={curriculumSubject}
+              // 녹화 기능 props로 전달
+              stopRecording={stopRecording}
+              startRecording={startRecording}
+              sendDataButton={sendDataButton}
+              elapsedTime={elapsedTime}
+              isRecording={isRecording}
+              completeRecording={completeRecording}
               track={
                 participantUtils.isCreator(nickname)
                   ? localTrack
@@ -754,6 +841,8 @@ export const LivePage = () => {
               }
               local={participantUtils.isCreator(nickname)}
               liveCount={liveCount}
+              isLeaveDialogOpen={isLeaveDialogOpen}
+              sendData={sendData}
             />
           </LiveKitRoom>
 
@@ -773,29 +862,92 @@ export const LivePage = () => {
                     </>
                   )}
                 </AlertDialogTitle>
-                <AlertDialogDescription className="text-base">
+                <AlertDialogDescription className="break-keep text-base">
                   {participantUtils.isCreator(nickname) ? (
                     <>
-                      <span className="text-red-500">라이브를 종료</span>하시겠습니까? 모든 참가자가
-                      <span className="text-red-500"> 퇴장</span>됩니다.
+                      <h2 className="mb-3 text-xl font-bold text-primary-color">
+                        라이브 종료 전 확인
+                      </h2>
+                      <p className="mb-2">
+                        라이브 방송을 종료하기 전,{' '}
+                        <strong className="text-primary-color">화면 녹화 저장 버튼</strong>을 눌러
+                        녹화 파일이 저장되었는지 확인해 주세요.
+                      </p>
+                      <p className="mb-2">
+                        종료 후,{' '}
+                        <span className="font-semibold text-primary-color">최종 완성 이미지</span>가
+                        다시보기 페이지에 업로드되어 수강생들이 확인할 수 있습니다. (
+                        <span className="font-semibold text-primary-color">이미지</span>는 종료 시{' '}
+                        <span className="font-semibold text-primary-color">자동으로 업로드</span>
+                        됩니다.)
+                      </p>
+                      <p className="text-right font-semibold text-primary-color">
+                        정말로 종료하시겠습니까?
+                      </p>
                     </>
                   ) : (
                     <>
-                      <span className="text-red-500">라이브를 퇴장</span>하시겠습니까?
+                      <h2 className="mb-3 text-xl font-bold text-primary-color">
+                        라이브 퇴장 전 확인
+                      </h2>
+                      <p className="mb-2">
+                        라이브를 퇴장하기 전,{' '}
+                        <strong className="text-primary-color">AI 비교 버튼</strong>을 누르면 본인의
+                        현재 이미지가 AI 비교 페이지에 업로드되어 강사의 그림과{' '}
+                        <span className="font-semibold text-primary-color">얼마나 유사한지 </span>
+                        비교를 받아보실 수 있습니다.
+                      </p>
+                      <p className="mb-2">
+                        종료 후,{' '}
+                        <span className="font-semibold text-primary-color">
+                          강사의 최종 완성 이미지
+                        </span>
+                        가 <span className="font-semibold text-primary-color">다시보기 페이지</span>
+                        에 업로드되니 다시{' '}
+                        <span className="font-semibold text-primary-color">강사의 그림</span>을 따라
+                        그려보고 싶다면, 꼭 이용해주세요!
+                      </p>
+                      <p className="text-right font-semibold text-primary-color">
+                        정말로 퇴장하시겠습니까?
+                      </p>
                     </>
                   )}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
-                  취소
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-primary-color hover:bg-primary-color hover:opacity-90"
-                  onClick={leaveRoom}
-                >
-                  {participantUtils.isCreator(nickname) ? '종료' : '퇴장'}
-                </AlertDialogAction>
+                <div className="flex w-full flex-row items-center justify-between">
+                  <div className="flex gap-2">
+                    {!participantUtils.isCreator(nickname) && (
+                      <>
+                        <AlertDialogAction
+                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                          onClick={handleParticipantExportImage}
+                        >
+                          AI 비교
+                        </AlertDialogAction>
+
+                        <AlertDialogAction
+                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                          onClick={goReplayPage}
+                        >
+                          다시보기
+                        </AlertDialogAction>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
+                      취소
+                    </AlertDialogCancel>
+
+                    <AlertDialogAction
+                      className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                      onClick={leaveRoom}
+                    >
+                      {participantUtils.isCreator(nickname) ? '종료' : '퇴장'}
+                    </AlertDialogAction>
+                  </div>
+                </div>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -821,20 +973,6 @@ export const LivePage = () => {
           {/* Excalidraw 컴포넌트 */}
           {participantUtils.isCreator(nickname) ? (
             <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
-              <div>
-                <div className="flex gap-2">
-                  <button className="rounded-2xl border p-5" onClick={startRecording}>
-                    녹화
-                  </button>
-                  <button className="rounded-2xl border p-5" onClick={stopRecording}>
-                    정지
-                  </button>
-                  <button className="rounded-2xl border p-5" onClick={sendDataButton}>
-                    전송
-                  </button>
-                </div>
-                <p>{elapsedTime}</p>
-              </div>
               <Excalidraw
                 onChange={(elements) => {
                   console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
@@ -884,6 +1022,13 @@ export const LivePage = () => {
 
                   setRoomCreatorElements(elements);
                   console.log('💾 최종 roomCreatorElements 상태:', elements);
+
+                  // 녹화 기능
+                  const newLastElement = elements[elements.length - 1];
+                  if (lastElement !== newLastElement) {
+                    // 녹화 업데이트
+                    setLastElement(newLastElement);
+                  }
                 }}
                 excalidrawAPI={(api) => {
                   roomCreatorAPIRef.current = api;
@@ -892,7 +1037,7 @@ export const LivePage = () => {
                 initialData={{
                   elements: roomCreatorElements,
                   appState: {
-                    viewBackgroundColor: '#ffffff',
+                    viewBackgroundColor: 'transparent',
                     currentItemStrokeColor: '#000000',
                     currentItemBackgroundColor: '#ffffff',
                   },
@@ -902,7 +1047,7 @@ export const LivePage = () => {
           ) : (
             <div className="flex h-[calc(100vh-50px)] flex-col">
               {/* 겹치기 토글 버튼 */}
-              <div className="mb-4 flex justify-center">
+              <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
                 <button
                   onClick={() => setIsOverlayMode(!isOverlayMode)}
                   className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
@@ -911,70 +1056,53 @@ export const LivePage = () => {
                 </button>
               </div>
 
-              {isOverlayMode ? (
-                // 겹치기 모드
-                <div className="relative flex-1">
-                  {/* 방장 화이트보드 (아래 레이어) */}
-                  <div className="absolute inset-0 z-0">
-                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
-                      <h3 className="mb-4 text-xl font-bold">
-                        <span className="text-primary-color">방장 </span>화이트보드
-                      </h3>
-                      <div className="h-[calc(100%-40px)]">
-                        <Excalidraw
-                          excalidrawAPI={(api) => {
-                            roomCreatorAPIRef.current = api;
-                          }}
-                          elements={roomCreatorElements}
-                          viewModeEnabled={true}
-                          initialData={{
-                            elements: roomCreatorElements,
-                            appState: {
-                              viewBackgroundColor: '#ffffff',
-                              currentItemStrokeColor: '#000000',
-                              currentItemBackgroundColor: '#ffffff',
-                              viewModeEnabled: true,
-                              theme: 'light',
-                            },
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* 내 화이트보드 (위 레이어) */}
-                  <div className="absolute inset-0 z-10 bg-white bg-opacity-50">
-                    <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
-                      <h3 className="mb-4 text-xl font-bold">
-                        <span className="text-primary-color">내 </span>화이트보드
-                      </h3>
-                      <div className="h-[calc(100%-40px)]">
-                        <Excalidraw
-                          onChange={(elements) => {
-                            setParticipantElements(elements);
-                          }}
-                          excalidrawAPI={(api) => {
-                            participantAPIRef.current = api;
-                          }}
-                          elements={participantElements}
-                          viewModeEnabled={false}
-                          initialData={{
-                            elements: participantElements,
-                            appState: {
-                              viewBackgroundColor: '#ffffff',
-                              currentItemStrokeColor: '#000000',
-                              currentItemBackgroundColor: '#ffffff',
-                            },
-                          }}
-                        />
-                      </div>
+              <div className={`relative flex-1 ${isOverlayMode ? '' : 'flex gap-2'}`}>
+                {/* 내 화이트보드 */}
+                <div
+                  className={`
+                    ${isOverlayMode ? 'absolute inset-0 z-20' : 'flex-1'}
+                    ${isOverlayMode ? 'bg-transparent' : 'bg-white'} order-2
+                  `}
+                >
+                  <div
+                    className={`h-full rounded-xl border border-gray-border-color ${isOverlayMode ? 'bg-transparent' : 'bg-white'} p-4`}
+                  >
+                    <h3 className="mb-4 text-xl font-bold">
+                      <span className="text-primary-color">내 </span>화이트보드
+                    </h3>
+                    <div className="h-[calc(100%-40px)]">
+                      <Excalidraw
+                        excalidrawAPI={(api) => {
+                          participantAPIRef.current = api;
+                        }}
+                        initialData={{
+                          appState: {
+                            viewBackgroundColor: 'transparent',
+                            theme: 'light',
+                            scrollX: 0, // 초기 X 좌표 (스크롤 위치)
+                            scrollY: 0, // 초기 Y 좌표 (스크롤 위치)
+                          },
+                        }}
+                        UIOptions={{
+                          canvasActions: {
+                            changeViewBackgroundColor: false,
+                          },
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
-              ) : (
-                // 기본 모드
-                <div className="flex h-full gap-2">
-                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
-                    <h3 className="mb-4 text-xl font-bold">
+
+                {/* 방장 화이트보드 */}
+                <div
+                  ref={instructorBoardRef}
+                  className={`
+                    ${isOverlayMode ? 'absolute inset-0 z-10' : 'flex-1'}
+                    order-1 bg-transparent
+                  `}
+                >
+                  <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                    <h3 className={`mb-4 text-xl font-bold ${isOverlayMode ? 'invisible' : ''}`}>
                       <span className="text-primary-color">방장 </span>화이트보드
                     </h3>
                     <div className="h-[calc(100%-40px)]">
@@ -987,43 +1115,76 @@ export const LivePage = () => {
                         initialData={{
                           elements: roomCreatorElements,
                           appState: {
-                            viewBackgroundColor: '#ffffff',
+                            viewBackgroundColor: 'transparent',
                             currentItemStrokeColor: '#000000',
-                            currentItemBackgroundColor: '#ffffff',
                             viewModeEnabled: true,
                             theme: 'light',
+                            scrollX: 0, // 초기 X 좌표 (스크롤 위치)
+                            scrollY: 0, // 초기 Y 좌표 (스크롤 위치)
                           },
                         }}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex-1 rounded-xl border border-gray-border-color bg-white p-4">
-                    <h3 className="mb-4 text-xl font-bold">
-                      <span className="text-primary-color">내 </span>화이트보드
-                    </h3>
-                    <div className="h-[calc(100%-40px)]">
-                      <Excalidraw
-                        onChange={(elements) => {
-                          setParticipantElements(elements);
-                        }}
-                        excalidrawAPI={(api) => {
-                          participantAPIRef.current = api;
-                        }}
-                        elements={participantElements}
-                        viewModeEnabled={false}
-                        initialData={{
-                          elements: participantElements,
-                          appState: {
-                            viewBackgroundColor: '#ffffff',
-                            currentItemStrokeColor: '#000000',
-                            currentItemBackgroundColor: '#ffffff',
+                        UIOptions={{
+                          canvasActions: {
+                            changeViewBackgroundColor: false,
                           },
                         }}
                       />
                     </div>
                   </div>
                 </div>
-              )}
+
+                {/* 투명도 조절 UI - 오버레이 모드에서만 표시 */}
+                {isOverlayMode && (
+                  <div className="absolute left-1/2 top-3 z-30 flex h-[50px] w-[200px] -translate-x-1/2 items-center gap-2 rounded-xl border border-gray-border-color bg-white p-4">
+                    <div className="group relative flex w-full items-center justify-center rounded-xl border">
+                      <div className="absolute left-3 z-10 flex items-center gap-2">
+                        <OpacityIcon
+                          width={22}
+                          height={22}
+                          fill={'#494949'}
+                          className="pointer-events-none"
+                        />
+                      </div>
+                      <input
+                        type="range"
+                        ref={opacityInputRef}
+                        defaultValue={100}
+                        min={0}
+                        max={100}
+                        step={1}
+                        className={`
+                          [&::-webkit-slider-thumb]:scale-120
+                          relative m-0 h-10 w-full
+                          cursor-pointer appearance-none rounded-xl p-0
+                          after:absolute after:left-0 after:top-[50%]
+                          after:h-10 after:w-[var(--range-progress)]
+                          after:-translate-y-1/2 after:rounded-xl
+                          after:bg-[#E7E7EF]
+                          [&::-webkit-slider-runnable-track]:h-10
+                          [&::-webkit-slider-runnable-track]:rounded-xl
+                          [&::-webkit-slider-runnable-track]:bg-gradient-to-r
+                          [&::-webkit-slider-thumb]:w-4
+                          [&::-webkit-slider-thumb]:appearance-none
+                          [&::-webkit-slider-thumb]:rounded-xl
+                          [&::-webkit-slider-thumb]:bg-primary-color
+                          [&::-webkit-slider-thumb]:transition-all
+                          [&::-webkit-slider-thumb]:hover:scale-150
+                          [&::-webkit-slider-thumb]:hover:shadow-lg
+                        `}
+                        style={{
+                          '--range-progress': `${rangeProgress}%`,
+                          '--tw-gradient-from': '#E7E7EF var(--range-progress)',
+                          '--tw-gradient-to': '#F4F4F4 var(--range-progress)',
+                        }}
+                        onChange={changeOpacity}
+                      />
+                      <p className="absolute right-3 z-10 text-text-gray-color opacity-0 transition-all duration-300 group-hover:opacity-100">
+                        {rangeProgress}%
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </motion.div>

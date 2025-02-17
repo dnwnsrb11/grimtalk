@@ -20,6 +20,9 @@ importers:
       '@nivo/bar':
         specifier: ^0.88.0
         version: 0.88.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@nivo/radar':
+        specifier: ^0.88.0
+        version: 0.88.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-alert-dialog':
         specifier: ^1.1.6
         version: 1.1.6(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -41,6 +44,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      event-source-polyfill:
+        specifier: ^1.0.31
+        version: 1.0.31
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
@@ -556,6 +562,11 @@ packages:
 
   '@nivo/legends@0.88.0':
     resolution: {integrity: sha512-d4DF9pHbD8LmGJlp/Gp1cF4e8y2wfQTcw3jVhbZj9zkb7ZWB7JfeF60VHRfbXNux9bjQ9U78/SssQqueVDPEmg==}
+    peerDependencies:
+      react: '>= 16.14.0 < 19.0.0'
+
+  '@nivo/radar@0.88.0':
+    resolution: {integrity: sha512-KYdfbKPl8n5NUanqrVm2GVS+xeesrxu6bgh1t7PJmKoxGbJ5mTQMvHtadjXei3N+1/3RlNOxi5ZZDx+LuoupSQ==}
     peerDependencies:
       react: '>= 16.14.0 < 19.0.0'
 
@@ -1599,6 +1610,9 @@ packages:
   esutils@2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
+
+  event-source-polyfill@1.0.31:
+    resolution: {integrity: sha512-4IJSItgS/41IxN5UVAVuAyczwZF7ZIEsM1XAoUzIHA6A+xzusEZUutdXz2Nr+MQPLxfTiCvqE79/C8HT8fKFvA==}
 
   events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
@@ -3416,6 +3430,21 @@ snapshots:
     transitivePeerDependencies:
       - react-dom
 
+  '@nivo/radar@0.88.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@nivo/colors': 0.88.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@nivo/core': 0.88.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@nivo/legends': 0.88.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@nivo/tooltip': 0.88.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-spring/web': 9.7.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/d3-scale': 4.0.8
+      '@types/d3-shape': 3.1.7
+      d3-scale: 4.0.2
+      d3-shape: 3.2.0
+      react: 18.3.1
+    transitivePeerDependencies:
+      - react-dom
+
   '@nivo/scales@0.88.0':
     dependencies:
       '@types/d3-scale': 4.0.8
@@ -4561,6 +4590,8 @@ snapshots:
   estraverse@5.3.0: {}
 
   esutils@2.0.3: {}
+
+  event-source-polyfill@1.0.31: {}
 
   events@3.3.0: {}
 

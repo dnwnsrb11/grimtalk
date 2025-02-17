@@ -16,6 +16,7 @@ export const SubscriptionFavoriteSection = () => {
       const { data } = await _axiosAuth.get('/favorite');
       return data.body.data.list;
     },
+    staleTime: 0,
   });
 
   // 구독 목록 데이터
@@ -25,6 +26,7 @@ export const SubscriptionFavoriteSection = () => {
       const { data } = await _axiosAuth.get('/subscribe');
       return data.body.data;
     },
+    staleTime: 0,
   });
   return (
     <div className="flex flex-col gap-3">

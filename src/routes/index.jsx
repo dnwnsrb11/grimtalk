@@ -6,6 +6,7 @@ import { AiSimilarityPage } from '@/routes/pages/AiSimilarityPage';
 import { AlarmPage } from '@/routes/pages/AlarmPage';
 import { CreateLiveTestPage } from '@/routes/pages/CreateLiveTestPage';
 import { DemoPage } from '@/routes/pages/DemoPage';
+import { FindPasswordPage } from '@/routes/pages/FindPasswordPage';
 import { LecturePage } from '@/routes/pages/LecturePage';
 import { LivePage } from '@/routes/pages/LivePage';
 import { LoginPage } from '@/routes/pages/LoginPage';
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
     element: <LivePage />,
   },
   {
-    path: '/replay',
+    path: '/replay/:curriculumId',
     element: <ReplayPage />,
   },
   {
@@ -90,6 +91,10 @@ const router = createBrowserRouter([
       {
         path: '/aicompare',
         element: <AiComparePage />,
+      },
+      {
+        path: '/findpassword',
+        element: <FindPasswordPage />,
       },
     ],
   },

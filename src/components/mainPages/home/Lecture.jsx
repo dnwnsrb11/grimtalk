@@ -51,61 +51,65 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
   };
 
   return (
-    <div className="relative cursor-pointer rounded-lg border border-gray-200 p-3">
-      <div onClick={() => navigate(`/lecture/${lectureId}`)}>
-        {/* 🔹 이미지 크기 통일 */}
-        <div className="max-h-[175px] min-h-[175px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-          <img
-            src={lectureImg}
-            alt={lectureSubject}
-            className="h-full max-h-[175px] min-h-[175px] w-full object-contain"
-            onError={handleImageError}
-          />
-        </div>
-
-        <div className="max-w-[300px]">
-          <div className="flex flex-row justify-between">
-            <h4 className="mt-2 text-lg leading-tight">{lectureSubject}</h4>
-            {lectureCategory && (
-              <div className="inline-block rounded-full border px-3 py-1">
-                <p className="text-text-gray-color">{lectureCategory}</p>
-              </div>
-            )}
+    <div className="w-full">
+      <div>
+        <div onClick={() => navigate(`/lecture/${lectureId}`)}>
+          {/* 🔹 이미지 크기 통일 */}
+          <div className="max-h-[175px] min-h-[175px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+            <img
+              src={lectureImg}
+              alt={lectureSubject}
+              className="h-full max-h-[175px] min-h-[175px] w-full object-contain"
+              onError={handleImageError}
+            />
           </div>
 
-          <div className="mt-2 flex items-center gap-3">
-            <h4 className="text-base font-bold">{lectureNickname}</h4>
-            <div className="flex gap-1">
-              {lectureTags?.map((tag, index) => (
-                <div
-                  key={index}
-                  className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
-                >
-                  <p className="text-text-gray-color">{tag}</p>
+          <div className="max-w-[300px]">
+            <div className="flex flex-row justify-between">
+              <h4 className="mt-2 text-lg leading-tight">{lectureSubject}</h4>
+              {lectureCategory && (
+                <div className="inline-block rounded-full border px-3 py-1">
+                  <p className="text-text-gray-color">{lectureCategory}</p>
                 </div>
-              ))}
+              )}
+            </div>
+
+            <div className="mt-2 flex items-center gap-3">
+              <h4 className="text-base font-bold">{lectureNickname}</h4>
+              <div className="flex gap-1">
+                {lectureTags?.map((tag, index) => (
+                  <div
+                    key={index}
+                    className="inline-block rounded-full border bg-bg-gray-color px-3 py-1"
+                  >
+                    <p className="text-text-gray-color">{tag}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {showStar && (
-        <div className="mt-2 flex items-center gap-2">
-          <div>
-            <img src={starSVG} alt="starIcon" />
+        {showStar && (
+          <div className="mt-2 flex items-center gap-2">
+            <div>
+              <img src={starSVG} alt="starIcon" />
+            </div>
+            <p className="text-text-gray-color">{lectureStar} / 5</p>
           </div>
-          <p className="text-text-gray-color">{lectureStar} / 5</p>
-        </div>
-      )}
+        )}
 
-      {showUpdate && (
-        <button
-          onClick={handleDelete}
-          className="mt-2 h-[41px] w-[88px] rounded-2xl border bg-[#EFEFEF] text-[18px] transition-all duration-200 hover:bg-red-50 hover:shadow-md"
-        >
-          삭제하기
-        </button>
-      )}
+        {showUpdate && (
+          <div className="absolute right-2 top-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <button
+              onClick={handleDelete}
+              className="h-[36px] w-[80px] rounded-lg border bg-primary-color text-sm text-white transition-all duration-300 hover:opacity-80 hover:shadow-md"
+            >
+              삭제
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

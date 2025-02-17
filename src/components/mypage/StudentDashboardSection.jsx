@@ -20,6 +20,7 @@ export const StudentDashboardSection = ({ isActive }) => {
       const { data } = await _axiosAuth.get('/dashboard/common');
       return data.body.data;
     },
+    staleTime: 0,
   });
   // 네비게이트 함수
   const navigate = useNavigate();
@@ -141,7 +142,7 @@ export const StudentDashboardSection = ({ isActive }) => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5, delay: 0.3 }} // 🚀 0.3초 딜레이 추가
+                transition={{ duration: 0.5, delay: 0.2 }} // 🚀 0.3초 딜레이 추가
               >
                 <DashboardCard
                   title="나의 가장 높은 유사도"
@@ -168,7 +169,7 @@ export const StudentDashboardSection = ({ isActive }) => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5, delay: 0.3 }} // 🚀 동일한 딜레이 적용
+                transition={{ duration: 0.5, delay: 0.2 }} // 🚀 동일한 딜레이 적용
               >
                 <DashboardCard
                   title="나의 가장 높은 유사도"
@@ -214,7 +215,7 @@ export const StudentDashboardSection = ({ isActive }) => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5, delay: 1.2 }} // 🚀 동일한 딜레이 적용
+                transition={{ duration: 0.5, delay: 1.0 }} // 🚀 동일한 딜레이 적용
               >
                 <DashboardCard
                   title="예정 커리큘럼"
@@ -237,7 +238,7 @@ export const StudentDashboardSection = ({ isActive }) => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.5, delay: 0.6 }} // ✅ 0.6초 딜레이 적용
+            transition={{ duration: 0.5, delay: 0.4 }} // ✅ 0.6초 딜레이 적용
           >
             <DashboardCard title="최근 구독한 강사">
               {recentSubscribedInstructor ? (
@@ -278,9 +279,18 @@ export const StudentDashboardSection = ({ isActive }) => {
                   </div>
                 </button>
               ) : (
-                <p className="flex items-center justify-center p-[10%] text-[20px]">
-                  최근 구독한 강사가 없습니다.
-                </p>
+                <motion.div
+                  key="expected-curriculum-empty"
+                  className="flex h-full flex-col justify-center"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5, delay: 1.0 }} // 🚀 동일한 딜레이 적용
+                >
+                  <p className="flex items-center justify-center p-[10%] text-[20px]">
+                    최근 구독한 강사가 없습니다.
+                  </p>
+                </motion.div>
               )}
             </DashboardCard>
           </motion.div>
@@ -321,7 +331,7 @@ export const StudentDashboardSection = ({ isActive }) => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.5, delay: 1.2 }} // 🚀 1.2초 딜레이 추가
+          transition={{ duration: 0.5, delay: 0.6 }} // 🚀 1.2초 딜레이 추가
         >
           <DashboardCard title="월간 진척도" subtitle="그림 제출 기준입니다.">
             <div>{monthlyProgressData?.year}</div>

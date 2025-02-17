@@ -43,7 +43,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       alert('즐겨찾기 추가 실패'); // ❌ 실패 알림 추가
     },
   });
-
+  console.log(lecture, '!@#@!#2!#!@#');
   // 강의 즐겨찾기 취소
   const lectureFavoriteCancel = useMutation({
     mutationFn: async () => {
@@ -119,6 +119,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       const { data } = await _axiosAuth.get(`/subscribe`);
       return data.body?.data ?? []; // ❗ 항상 배열을 반환하도록 처리
     },
+    staleTime: 0,
   });
 
   useEffect(() => {
@@ -126,17 +127,20 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
 
     console.log('✅ check 값 변경됨:', check);
 
-    // check 배열을 돌면서 lecture.instructorInfo.nickname과 비교
-    const isMatched = check.some((item) => item.nickname === lecture?.instructorInfo?.nickname);
+    // check 배열을 돌면서 lecture.instructorInfo.id와 비교
+    const isMatched = check.some((item) => {
+      console.log('🔍 비교 중:', item.memberId, lecture?.instructorInfo?.id);
+      return item.memberId === lecture?.instructorInfo?.id; // 올바르게 return 추가
+    });
 
     if (isMatched) {
-      console.log('✅ 매칭된 닉네임 발견:', lecture?.instructorInfo?.nickname);
+      console.log('✅ 매칭된 ID 발견:', lecture?.instructorInfo?.id);
       setCheckSubscribe(true);
     } else {
-      console.log('❌ 매칭된 닉네임 없음');
+      console.log('❌ 매칭된 ID 없음');
       setCheckSubscribe(false);
     }
-  }, [check, lecture?.instructorInfo?.nickname]); // check 또는 nickname이 변경될 때 실행
+  }, [check, lecture?.instructorInfo?.id]); // check 또는 instructor ID가 변경될 때 실행
 
   const { data: checkF } = useQuery({
     queryKey: ['favorite'],
@@ -144,26 +148,28 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       const { data } = await _axiosAuth.get(`/favorite`);
       return data.body?.data ?? []; // ❗ 항상 배열 반환
     },
+    staleTime: 0,
   });
 
   useEffect(() => {
-    if (!checkF || checkF.length === 0) return; // checkF가 없거나 빈 배열이면 실행 X
-    console.log(checkF);
+    if (!checkF || !checkF.list || checkF.list.length === 0) return; // checkF.list가 없거나 빈 배열이면 실행 X
+
     console.log('✅ 즐겨찾기 데이터 변경됨:', checkF);
 
-    // checkF 배열을 돌면서 lecture.id와 비교
-    const isMatched = checkF.list.some(
-      (item) => item.nickname === lecture?.instructorInfo?.nickname,
-    );
+    // checkF.list 배열을 돌면서 lecture.lectureId와 비교
+    const isMatched = checkF.list.some((item) => {
+      console.log('🔍 비교 중:', item.lectureId, lecture?.lectureId);
+      return item.lectureId === lecture?.lectureId; // return 추가
+    });
 
     if (isMatched) {
-      console.log('✅ 즐겨찾기된 강의 발견:', lecture?.instructorInfo?.nickname);
+      console.log('✅ 즐겨찾기된 강의 발견:', lecture?.lectureId);
       setCheckFavorite(true);
     } else {
       console.log('❌ 즐겨찾기된 강의 없음');
       setCheckFavorite(false);
     }
-  }, [checkF, lecture?.instructorInfo?.nickname]); // checkF 또는 lecture.id 변경 시 실행
+  }, [checkF, lecture?.lectureId]); // checkF 또는 lecture.id 변경 시 실행
 
   return (
     <>
@@ -210,7 +216,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
           <div className="flex h-full w-[80%] items-center gap-[40px] rounded-3xl border border-gray-border-color px-[40px] py-[22px]">
             <div>
               {/* 프로필 이미지 */}
-              <div className="relative h-[162px] w-[162px] rounded-full bg-[#565252]">
+              <div className="relative h-[162px] w-[162px] rounded-full bg-white">
                 {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
                 <div className="overflow-hidden rounded-full">
                   <img
@@ -308,8 +314,8 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                     className="stroke-white transition-colors duration-0 group-hover:stroke-black"
                     stroke="currentColor"
                   />
-                  <p className="text-[18px] font-semibold transition-colors duration-0 group-hover:text-black">
-                    강의 수정하기
+                  <p className="text-[16px] font-semibold transition-colors duration-0 group-hover:text-black">
+                    마이페이지에서 수정하기
                   </p>
                 </button>
               </div>
