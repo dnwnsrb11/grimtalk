@@ -1190,6 +1190,5 @@ export const LivePage = () => {
         </motion.div>
       )}
     </AnimatePresence>
-    // >>>>>>> develop
   );
 };

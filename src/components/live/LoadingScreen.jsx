@@ -15,7 +15,7 @@ export const LoadingScreen = ({ loadingStep }) => {
         // 마지막 단계에서는 100%까지, 그 외에는 95%까지만 진행
         const maxProgress = loadingStep === loadingMessages.length - 1 ? 100 : 95;
         if (prev < maxProgress) {
-          return Math.min(prev + 0.2, maxProgress);
+          return Math.min(prev + 0.24, maxProgress);
         }
         return prev;
       });
