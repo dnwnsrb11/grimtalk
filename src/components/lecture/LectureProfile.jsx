@@ -189,25 +189,25 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
           </div>
           <div className="flex items-end">
             <div className=" flex items-center gap-2 rounded-full border bg-primary-color px-3 py-1">
-              {lecture.category === '웹툰' && (
+              {lecture?.category === '웹툰' && (
                 <img src={webtoonDeactiveSVG} alt="웹툰" className="h-5 w-5" />
               )}
-              {lecture.category === '이모티콘' && (
+              {lecture?.category === '이모티콘' && (
                 <img src={emoticonDeactiveSVG} alt="이모티콘" className="h-5 w-5" />
               )}
-              {lecture.category === '캐릭터' && (
+              {lecture?.category === '캐릭터' && (
                 <img src={characterDeactiveSVG} alt="캐릭터" className="h-5 w-5" />
               )}
-              {lecture.category === '드로잉' && (
+              {lecture?.category === '드로잉' && (
                 <img src={drawingDeactiveSVG} alt="드로잉" className="h-5 w-5" />
               )}
-              {lecture.category === '컬러링' && (
+              {lecture?.category === '컬러링' && (
                 <img src={coloringDeactiveSVG} alt="컬러링" className="h-5 w-5" />
               )}
-              {lecture.category === '컨셉 아트' && (
+              {lecture?.category === '컨셉 아트' && (
                 <img src={artDeactiveSVG} alt="컨셉아트" className="h-5 w-5" />
               )}
-              <p className="text-white">{lecture.category}</p>
+              <p className="text-white">{lecture?.category}</p>
             </div>
           </div>
         </div>
@@ -220,18 +220,18 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                 {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
                 <div className="overflow-hidden rounded-full">
                   <img
-                    src={lecture.instructorInfo?.image}
+                    src={lecture?.instructorInfo?.image || null}
                     alt="profileimg"
                     className="h-[162px] w-[162px]"
                   />
                 </div>
                 <div className="absolute bottom-0 right-0 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-disabled-font-color">
                   {/* 뱃지 svg로 초기화 */}
-                  {lecture.instructorInfo?.subscribeNumber <= 10 ? (
+                  {lecture?.instructorInfo?.subscribeNumber <= 10 ? (
                     <LeveloneBadgeIcon />
-                  ) : lecture.instructorInfo?.subscribeNumber <= 100 ? (
+                  ) : lecture?.instructorInfo?.subscribeNumber <= 100 ? (
                     <LeveltwoBadgeIcon />
-                  ) : lecture.instructorInfo?.subscribeNumber >= 101 ? (
+                  ) : lecture?.instructorInfo?.subscribeNumber >= 101 ? (
                     <LevelthirdBadgeIcon />
                   ) : null}
                 </div>
@@ -246,7 +246,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                 {lecture?.instructorInfo?.intro === null ? (
                   <p className="font-medium text-text-gray-color">작성된 소개 메시지가 없습니다.</p>
                 ) : (
-                  <p> {lecture?.instructorInfo?.intro} </p>
+                  <p className="whitespace-pre-line">{lecture?.instructorInfo?.intro}</p>
                 )}
               </div>
               <div className="mt-[15px] flex gap-3">
