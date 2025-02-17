@@ -51,7 +51,7 @@ export const LiveList = ({ LiveRoom, onJoinClick, onLectureClick }) => {
               {hashtags?.slice(0, 2).map((tag, index) => (
                 <p
                   key={index}
-                  className="inline-block max-w-[100px]  overflow-hidden text-ellipsis whitespace-nowrap rounded-full border bg-bg-gray-color px-3 py-1 text-text-gray-color"
+                  className="inline-block max-w-[80px]  overflow-hidden text-ellipsis whitespace-nowrap rounded-full border bg-bg-gray-color px-3 py-1 text-text-gray-color"
                   title={tag}
                 >
                   {tag}
