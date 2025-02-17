@@ -41,7 +41,7 @@ export const LiveList = ({ LiveRoom, onJoinClick, onLectureClick }) => {
               e.stopPropagation();
               onLectureClick(lectureId);
             }}
-            className="active:text-primary-hover-color hover:text-primary-color text-base font-bold text-gray-900 transition-all duration-300 hover:underline"
+            className="active:text-primary-hover-color text-base font-bold text-gray-900 transition-all duration-300 hover:text-primary-color hover:underline"
           >
             <h4 className="text-base font-medium">{curriculumName}</h4>
           </button>
@@ -49,12 +49,13 @@ export const LiveList = ({ LiveRoom, onJoinClick, onLectureClick }) => {
             <p className="text-lg font-bold">{instructorName}</p>
             <div className="flex flex-wrap gap-1.5">
               {hashtags?.slice(0, 2).map((tag, index) => (
-                <div
+                <p
                   key={index}
-                  className="bg-bg-gray-color inline-block rounded-full border px-3 py-1"
+                  className="inline-block max-w-[100px]  overflow-hidden text-ellipsis whitespace-nowrap rounded-full border bg-bg-gray-color px-3 py-1 text-text-gray-color"
+                  title={tag}
                 >
-                  <p className="text-text-gray-color">{tag}</p>
-                </div>
+                  {tag}
+                </p>
               ))}
             </div>
           </div>
