@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import Lottie from 'react-lottie';
 
 import MainBannerMove from '@/assets/lottie/MainBannerMove.json';
@@ -11,6 +12,8 @@ export const HomeBanner = () => {
       preserveAspectRatio: 'xMidYMid slice',
     },
   };
+  const text1 = '강사의 붓 터치가';
+  const text2 = '내 캔버스로 !';
 
   return (
     <>
@@ -18,7 +21,25 @@ export const HomeBanner = () => {
         {/* 제목,소제목, 내용 */}
         <div>
           <h1 className="text-[64px] font-extrabold leading-tight text-[#FF5C38]">
-            강사의 붓 터치가 <br /> 내 캔버스로 !
+            {text1}
+            <br />
+            {text2.split('').map((char, index) => (
+              <motion.span
+                key={index}
+                initial={{ opacity: 0.5, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  repeat: Infinity,
+                  repeatType: 'reverse',
+                  duration: 1,
+                  delay: index * 0.1,
+                }}
+                className={char === ' ' ? 'inline-block' : 'inline-block'}
+                style={char === ' ' ? { whiteSpace: 'pre' } : {}}
+              >
+                {char}
+              </motion.span>
+            ))}
           </h1>
           <div className="mt-[25px] inline-block rounded-full border px-[25px] py-[5px]">
             <h3 className="text-[24px] font-semibold text-[#828282]">
