@@ -151,18 +151,20 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
     formData.append('category', lecture.category);
 
     // 이미지 파일이 새로 선택된 경우에만 추가
-    if (lecture.bannerImage) {
-      formData.append('imgUrl', lecture.bannerImage || null);
+    if (lecture.selectedFile) {
+      // 새로운 파일이 선택된 경우에만 파일 추가
+      formData.append('imgUrl', lecture.selectedFile);
     }
-
     // 커리큘럼 정보
     curriculums.forEach((item, index) => {
-      formData.append(`curriculum[${index}].curriculumId`, item.curriculumId);
+      // curriculumId가 있고 유효한 경우에만 추가
+      if (item.curriculumId && item.curriculumId !== 'undefined') {
+        formData.append(`curriculum[${index}].curriculumId`, item.curriculumId);
+      }
       formData.append(`curriculum[${index}].curriculumSubject`, item.curriculumSubject);
       formData.append(`curriculum[${index}].curriculumContent`, item.curriculumContent);
       formData.append(`curriculum[${index}].liveTime`, `${item.date}T${item.time}`);
     });
-
     // 해시태그
     lecture.hashtags.forEach((tag, index) => {
       formData.append(`hashtags[${index}]`, tag.text);
@@ -283,7 +285,6 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
     }
     setLecture((prev) => ({ ...prev, [field]: strValue })); // 숫자가 아니라 문자열로 저장
   };
-
   return (
     <div className="flex w-full flex-col gap-6">
       {/* 강의 제목 입력 섹션 */}
