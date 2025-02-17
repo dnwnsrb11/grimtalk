@@ -16,7 +16,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
   } = useQuery({
     queryKey: ['replay'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/replay/detail/${replayDate.replayId}`);
+      const { data } = await _axiosAuth.get(`/replay/detail/${replayDate.curriculumId}`);
       return data.body.data;
     },
     onError: () => {
@@ -79,7 +79,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
   });
 
   const navigateReplay = () => {
-    navigate(`/replay/${replay.curriculumId}`);
+    navigate(`/replay/${replayDate.curriculumId}`);
   };
 
   if (isLoading) {
