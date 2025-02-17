@@ -79,7 +79,11 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
   });
 
   const navigateReplay = () => {
-    navigate(`/replay/${replayDate.curriculumId}`);
+    navigate(`/replay/${replayDate.curriculumId}`, {
+      state: {
+        replayUrl: replay.replayUrl,
+      },
+    });
   };
 
   if (isLoading) {
