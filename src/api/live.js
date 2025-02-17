@@ -165,6 +165,7 @@ const InstructorLeaveLive = async (curriculumId, userId) => {
     const response = await _axiosAuth.post('/live/leave/instructor', {
       curriculumId,
       userId,
+      isLive: false,
     });
     return response.data;
   } catch (error) {
