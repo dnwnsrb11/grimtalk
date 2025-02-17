@@ -65,9 +65,15 @@ export const Navbar = () => {
   return (
     <div className="flex items-center">
       {/* 로고 */}
-      <button onClick={() => navigate('/')} className="hover:scale-105 focus:outline-none">
+      <motion.button
+        onClick={() => navigate('/')}
+        className="focus:outline-none"
+        whileHover={{ scale: 1.1, rotate: 3 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 10 }}
+      >
         <LogoIcon />
-      </button>
+      </motion.button>
 
       {/* 네비게이션 메뉴 */}
       <div className="ml-[50px] flex flex-row gap-[25px] text-[18px]">
