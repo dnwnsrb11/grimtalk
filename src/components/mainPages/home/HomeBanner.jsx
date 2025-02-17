@@ -1,13 +1,26 @@
+import Lottie from 'react-lottie';
+
+import HomeBannerMottion from '@/assets/lottie/mainBannerMottion.json';
+
 export const HomeBanner = () => {
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: HomeBannerMottion,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
+
   return (
     <>
-      <div className="mb-28">
+      <div className="mb-28 flex items-center justify-between">
         {/* 제목,소제목, 내용 */}
         <div>
           <h1 className="text-[64px] font-extrabold leading-tight text-[#FF5C38]">
             강사의 붓 터치가 <br /> 내 캠버스로 !
           </h1>
-          <div className="py-[5px mt-[15px] inline-block rounded-full border px-[25px]">
+          <div className="mt-[15px] inline-block rounded-full border px-[25px] py-[5px]">
             <h3 className="text-[24px] font-semibold text-[#828282]">
               실시간 그림 공유로 더 가까운 배움
             </h3>
@@ -21,6 +34,9 @@ export const HomeBanner = () => {
             <br />
             그림톡에서 당신의 창의력을 마음껏 펼쳐보세요!
           </p>
+        </div>
+        <div>
+          <Lottie options={defaultOptions} height={500} width={550} />
         </div>
       </div>
     </>
