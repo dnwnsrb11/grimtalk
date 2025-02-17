@@ -22,7 +22,7 @@ export const PopularInstructor = ({ index, instroductor }) => {
   const instroductorMemberId = instroductor?.memberId;
   // console.log('현재 로그인한 유저 ID:', id);
   // const icons = [rankOneBadgeIcon, rankTwoBadgeIcon, rankThreeBadgeIcon, rankFourBadgeIcon];
-  console.log(index);
+
   return (
     <>
       <div className="flex items-center justify-between rounded-2xl border p-[20px]">
@@ -57,7 +57,7 @@ export const PopularInstructor = ({ index, instroductor }) => {
             <div className="mt-1">
               <div className="flex flex-row">
                 {' '}
-                <div className="bg-primary-color mr-1 flex flex-row items-center gap-2 rounded-2xl border px-3 py-1 text-white">
+                <div className="mr-1 flex flex-row items-center gap-2 rounded-2xl border bg-primary-color px-3 py-1 text-white">
                   {/* <SubscribeIcon className=" stroke-white text-white transition-colors duration-0 group-hover:stroke-black" /> */}
 
                   <div className="flex items-center gap-1 font-bold">
@@ -67,7 +67,7 @@ export const PopularInstructor = ({ index, instroductor }) => {
                 </div>
                 {instroductorTags?.map((tag, index) => (
                   <div
-                    className="bg-bg-gray-color mr-1 inline-block rounded-full border px-3 py-1"
+                    className="mr-1 inline-block rounded-full border bg-bg-gray-color px-3 py-1"
                     key={index}
                   >
                     <p className="text-text-gray-color">{tag}</p>
