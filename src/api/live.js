@@ -61,8 +61,8 @@ const useRoomList = () => {
   return useQuery({
     queryKey: ['rooms'], // userId를 키에 포함
     queryFn: () => liveApi.getRoomList(), // userId 전달
-    refetchInterval: 5000,
-    staleTime: 1000 * 60,
+    refetchInterval: 10000, // 10초마다 데이터 갱신
+    staleTime: 1000 * 10, // 10초 동안 데이터 유지
   });
 };
 
@@ -70,8 +70,8 @@ const useRoomListTop4 = () => {
   return useQuery({
     queryKey: ['roomsTop4'],
     queryFn: () => liveApi.getRoomListTop4(),
-    refetchInterval: 5000,
-    staleTime: 1000 * 60,
+    refetchInterval: 10000, // 10초마다 데이터 갱신
+    staleTime: 1000 * 10, // 10초 동안 데이터 유지
   });
 };
 
@@ -80,8 +80,8 @@ const useFavoriteRoomList = (userId, isLogin = false) => {
   return useQuery({
     queryKey: ['rooms', userId],
     queryFn: () => (isLogin ? liveApi.getFavoriteRoomList(userId) : liveApi.getRoomList()),
-    refetchInterval: 5000,
-    staleTime: 1000 * 60,
+    refetchInterval: 10000, // 10초마다 데이터 갱신
+    staleTime: 1000 * 10, // 10초 동안 데이터 유지
   });
 };
 
@@ -89,8 +89,8 @@ const useFavoriteRoomListTop4 = (userId, isLogin = false) => {
   return useQuery({
     queryKey: ['roomsTop4', userId],
     queryFn: () => (isLogin ? liveApi.getFavoriteRoomListTop4(userId) : liveApi.getRoomListTop4()),
-    refetchInterval: 5000,
-    staleTime: 1000 * 60,
+    refetchInterval: 10000, // 10초마다 데이터 갱신
+    staleTime: 1000 * 10, // 10초 동안 데이터 유지
   });
 };
 
@@ -161,6 +161,7 @@ const useLiveCount = (roomId) => {
     queryKey: ['liveCount', roomId],
     queryFn: () => getLiveCount(roomId),
     refetchInterval: 10000, // 10초마다 데이터 갱신
+    staleTime: 1000 * 10, // 10초 동안 데이터 유지
   });
 };
 
