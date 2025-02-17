@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -52,6 +52,24 @@ export const LectureNoticeDetail = ({ noticeDate, setIsActive, checkInstructor }
     }
   };
 
+  const noticeDelete = useMutation({
+    mutationFn: async () => {
+      const { data } = await _axiosAuth.delete(`/notice/${noticeDetail?.noticeId}`);
+      return data;
+    },
+    onSuccess: () => {
+      alert('공지사항이 삭제되었습니다.');
+      setIsActive('/');
+    },
+    onError: (err) => {
+      window.confirm(err);
+    },
+  });
+  const handleDelete = () => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      noticeDelete.mutate();
+    }
+  };
   if (isLoading) return <LoadingComponents />;
 
   return (
@@ -113,20 +131,31 @@ export const LectureNoticeDetail = ({ noticeDate, setIsActive, checkInstructor }
               </button>
             </div>
           ) : (
-            <>
-              <button
-                className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
-                onClick={() => setIsActive('/')}
-              >
-                <p className="text-[18px] font-semibold">뒤로가기</p>
-              </button>
-              <button
-                className="rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
-                onClick={handleEditClick} // ✨ 수정 버튼
-              >
-                <p className="text-[18px] font-semibold text-white">수정하기</p>
-              </button>
-            </>
+            <div className="flex w-full flex-row justify-between gap-3">
+              <div>
+                <button
+                  className="rounded-2xl border border-gray-border-color bg-black p-[10px]"
+                  onClick={handleDelete} // ✨ 수정 버튼
+                >
+                  <p className="text-[18px] font-semibold text-white">삭제하기</p>
+                </button>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
+                  onClick={() => setIsActive('/')}
+                >
+                  <p className="text-[18px] font-semibold">뒤로가기</p>
+                </button>
+
+                <button
+                  className="rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
+                  onClick={handleEditClick} // ✨ 수정 버튼
+                >
+                  <p className="text-[18px] font-semibold text-white">수정하기</p>
+                </button>
+              </div>
+            </div>
           )
         ) : (
           <button
