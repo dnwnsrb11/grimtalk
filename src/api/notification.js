@@ -1,9 +1,16 @@
 import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import { toast } from 'react-hot-toast';
+import { create } from 'zustand';
 
 import { _axiosAuth } from '@/api/instance';
 import { useAuthStore } from '@/store/useAuthStore';
+
+// 알림 상태 관리를 위한 store 생성
+export const useNotificationStore = create((set) => ({
+  lastNotification: null,
+  setLastNotification: (notification) => set({ lastNotification: notification }),
+}));
 
 // SSE 연결 관리를 위한 클래스
 class NotificationEventSource {
@@ -60,6 +67,8 @@ const subscribeToNotifications = () => {
     // 새로운 알림 수신 시 이벤트 핸들러
     newEventSource.addEventListener('notification', (event) => {
       const notification = JSON.parse(event.data);
+      // 알림 상태 업데이트
+      useNotificationStore.getState().setLastNotification(notification);
       // 토스트 메시지로 알림 표시 (커스텀 알림 아이콘 사용)
       toast(notification.message, {
         icon: '🔔',

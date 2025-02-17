@@ -16,6 +16,7 @@ import {
   useAddStrokeMutation,
   useLiveCount,
 } from '@/api/live';
+import { useNotificationStore } from '@/api/notification';
 import { LeftArrowIcon, OpacityIcon } from '@/components/common/icons';
 import { CustomChat } from '@/components/live/CustomChat';
 import { LoadingScreen } from '@/components/live/LoadingScreen';
@@ -46,6 +47,7 @@ export const LivePage = () => {
   const { state } = useLocation();
   const curriculumId = state?.curriculumId;
   const { data: liveCount } = useLiveCount(curriculumId);
+  const lastNotification = useNotificationStore((state) => state.lastNotification);
 
   // 서비스 초기화
   const [stompService] = useState(() => new StompService(STOMP_URL));
@@ -890,26 +892,34 @@ export const LivePage = () => {
                       <h2 className="mb-3 text-xl font-bold text-primary-color">
                         라이브 퇴장 전 확인
                       </h2>
-                      <p className="mb-2">
-                        라이브를 퇴장하기 전,{' '}
-                        <strong className="text-primary-color">AI 비교 버튼</strong>을 누르면 본인의
-                        현재 이미지가 AI 비교 페이지에 업로드되어 강사의 그림과{' '}
-                        <span className="font-semibold text-primary-color">얼마나 유사한지 </span>
-                        비교를 받아보실 수 있습니다.
-                      </p>
-                      <p className="mb-2">
-                        종료 후,{' '}
-                        <span className="font-semibold text-primary-color">
-                          강사의 최종 완성 이미지
-                        </span>
-                        가 <span className="font-semibold text-primary-color">다시보기 페이지</span>
-                        에 업로드되니 다시{' '}
-                        <span className="font-semibold text-primary-color">강사의 그림</span>을 따라
-                        그려보고 싶다면, 꼭 이용해주세요!
-                      </p>
-                      <p className="text-right font-semibold text-primary-color">
-                        정말로 퇴장하시겠습니까?
-                      </p>
+                      {lastNotification?.type === 'LIVE_END' ? (
+                        <>
+                          <p className="mb-2">
+                            라이브를 퇴장하기 전,{' '}
+                            <strong className="text-primary-color">AI 비교 버튼</strong>을 누르면
+                            본인의 현재 이미지가 AI 비교 페이지에 업로드되어 강사의 그림과{' '}
+                            <span className="font-semibold text-primary-color">
+                              얼마나 유사한지{' '}
+                            </span>
+                            비교를 받아보실 수 있습니다.
+                          </p>
+                          <p className="mb-2">
+                            종료 후,{' '}
+                            <span className="font-semibold text-primary-color">
+                              강사의 최종 완성 이미지
+                            </span>
+                            가{' '}
+                            <span className="font-semibold text-primary-color">
+                              다시보기 페이지
+                            </span>
+                            에 업로드되니 다시{' '}
+                            <span className="font-semibold text-primary-color">강사의 그림</span>을
+                            따라 그려보고 싶다면, 꼭 이용해주세요!
+                          </p>
+                        </>
+                      ) : (
+                        <p className="mb-2">현재 진행 중인 라이브 방송에서 퇴장하시겠습니까?</p>
+                      )}
                     </>
                   )}
                 </AlertDialogDescription>
@@ -917,23 +927,24 @@ export const LivePage = () => {
               <AlertDialogFooter>
                 <div className="flex w-full flex-row items-center justify-between">
                   <div className="flex gap-2">
-                    {!participantUtils.isCreator(nickname) && (
-                      <>
-                        <AlertDialogAction
-                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
-                          onClick={handleParticipantExportImage}
-                        >
-                          AI 비교
-                        </AlertDialogAction>
+                    {!participantUtils.isCreator(nickname) &&
+                      lastNotification?.type === 'LIVE_END' && (
+                        <>
+                          <AlertDialogAction
+                            className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                            onClick={handleParticipantExportImage}
+                          >
+                            AI 비교
+                          </AlertDialogAction>
 
-                        <AlertDialogAction
-                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
-                          onClick={goReplayPage}
-                        >
-                          다시보기
-                        </AlertDialogAction>
-                      </>
-                    )}
+                          <AlertDialogAction
+                            className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                            onClick={goReplayPage}
+                          >
+                            다시보기
+                          </AlertDialogAction>
+                        </>
+                      )}
                   </div>
                   <div className="flex gap-2">
                     <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
