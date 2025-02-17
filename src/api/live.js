@@ -146,6 +146,9 @@ const leaveLive = async (roomId, userId) => {
 const getLiveCount = async (roomId) => {
   try {
     const response = await _axiosAuth.get(`${LIVE_JOIN_STATUS_URL}/${roomId}/count`);
+    if (response.data === 0) {
+      return 0;
+    }
     return response.data - 1; // 방장 제외
   } catch (error) {
     console.error('참여자 수 조회 실패:', error);
@@ -157,6 +160,7 @@ const useLiveCount = (roomId) => {
   return useQuery({
     queryKey: ['liveCount', roomId],
     queryFn: () => getLiveCount(roomId),
+    refetchInterval: 10000, // 10초마다 데이터 갱신
   });
 };
 
