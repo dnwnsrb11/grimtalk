@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
@@ -37,7 +38,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       return data;
     },
     onSuccess: () => {
-      alert('즐겨찾기가 추가되었습니다.'); // ✅ 성공 알림 추가
+      toast.success('즐겨찾기가 추가되었습니다.'); // ✅ 성공 알림 추가
       setCheckFavorite(true);
     },
     onError: (error) => {
@@ -51,7 +52,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       return data;
     },
     onSuccess: () => {
-      alert('즐겨찾기가 삭제되었습니다.'); // ✅ 성공 알림 추가
+      toast.success('즐겨찾기가 삭제되었습니다.'); // ✅ 성공 알림 추가
       setCheckFavorite(false);
     },
     onError: (error) => {
@@ -63,10 +64,8 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
   const favoriteSubmit = async () => {
     if (!checkFavorite) {
       lectureFavorite.mutate();
-      console.log('추가');
     } else {
       lectureFavoriteCancel.mutate();
-      console.log('삭제');
     }
   };
 
@@ -79,7 +78,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       return data;
     },
     onSuccess: () => {
-      alert('강사 구독이 추가되었습니다.');
+      toast.success('강사 구독이 추가되었습니다.');
       setCheckSubscribe(true);
     },
     onError: (error) => {
@@ -94,7 +93,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       return data;
     },
     onSuccess: () => {
-      alert('강사 구독이 취소되었습니다.');
+      toast.success('강사 구독이 취소되었습니다.');
       setCheckSubscribe(false);
     },
     onError: (error) => {
