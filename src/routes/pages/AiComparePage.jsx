@@ -15,6 +15,7 @@ const fetchImageAsBlob = async (imageUrl) => {
     const response = await fetch(imageUrl);
     // 응답을 Blob(이진 대형 객체) 형식으로 변환
     const blob = await response.blob();
+    console.log(blob);
     return blob;
   } catch (error) {
     // 이미지 불러오기 중 발생하는 오류 로깅 및 전파
@@ -64,7 +65,6 @@ export const AiComparePage = () => {
   const { data: InstructorBlob, isLoading } = useQuery({
     queryKey: ['InstructorBlob'],
     queryFn: async () => {
-      // 특정 ID(4)를 사용하여 이미지 URL 요청
       const { data } = await _axiosAuth.get(
         `/curriculum/completed-image/${location.state?.curriculumId}`,
       );
