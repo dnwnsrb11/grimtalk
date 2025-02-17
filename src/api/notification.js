@@ -61,32 +61,47 @@ const subscribeToNotifications = () => {
           'X-Access-Token': `Bearer ${accessToken}`,
         },
         withCredentials: true,
+        // 재연결 시도 간격을 1초로 설정
+        reconnectInterval: 1000,
       },
     );
 
+    // 연결 시작 시 로그
+    newEventSource.onopen = () => {};
+
     // 새로운 알림 수신 시 이벤트 핸들러
     newEventSource.addEventListener('notification', (event) => {
-      const notification = JSON.parse(event.data);
-      // 알림 상태 업데이트
-      useNotificationStore.getState().setLastNotification(notification);
-      // 토스트 메시지로 알림 표시 (커스텀 알림 아이콘 사용)
-      toast(notification.message, {
-        icon: '🔔',
-        position: 'top-right',
-      });
-      // 알림 목록 갱신
-      queryClient.invalidateQueries(['notifications']);
+      try {
+        const notification = JSON.parse(event.data);
+        // 알림 상태 업데이트
+        useNotificationStore.getState().setLastNotification(notification);
+        // 토스트 메시지로 알림 표시
+        toast(notification.message, {
+          icon: '🔔',
+          position: 'top-right',
+        });
+        // 알림 목록 갱신
+        queryClient.invalidateQueries(['notifications']);
+      } catch (error) {
+        // 오류 발생 시 연결 재설정
+        NotificationEventSource.closeConnection();
+        setTimeout(subscribeToNotifications, 1000);
+      }
     });
 
     // 에러 발생 시 처리 및 재연결 로직
     newEventSource.onerror = (error) => {
-      // 1초 후 재연결 시도
-      setTimeout(() => {
-        if (!NotificationEventSource.getInstance()) {
-          subscribeToNotifications();
-        }
-      }, 1000);
-      console.error('SSE Error:', error);
+      // 연결 상태 확인
+      if (newEventSource.readyState === EventSource.CLOSED) {
+        console.error('연결이 종료되었습니다. 재연결 시도 중...');
+        NotificationEventSource.closeConnection();
+        // 1초 후 재연결 시도
+        setTimeout(() => {
+          if (!NotificationEventSource.getInstance()) {
+            subscribeToNotifications();
+          }
+        }, 1000);
+      }
     };
 
     // 연결 상태 모니터링을 위한 변수와 상수 선언
