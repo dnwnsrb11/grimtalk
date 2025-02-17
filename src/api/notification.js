@@ -80,6 +80,30 @@ const subscribeToNotifications = () => {
       console.error('SSE Error:', error);
     };
 
+    // 연결 상태 모니터링을 위한 변수와 상수 선언
+    const HEARTBEAT_TIMEOUT = 45000; // 45초
+    const HEARTBEAT_CHECK_INTERVAL = 15000; // 15초
+    let lastHeartbeatTime = Date.now();
+
+    newEventSource.addEventListener('ping', (event) => {
+      lastHeartbeatTime = Date.now();
+    });
+
+    // 연결 상태 모니터링
+    const heartbeatInterval = setInterval(() => {
+      const now = Date.now();
+      if (now - lastHeartbeatTime > HEARTBEAT_TIMEOUT) {
+        clearInterval(heartbeatInterval);
+        NotificationEventSource.closeConnection();
+        subscribeToNotifications(); // 재연결
+      }
+    }, HEARTBEAT_CHECK_INTERVAL);
+
+    // 연결 종료 시 heartbeat 인터벌 정리
+    newEventSource.addEventListener('close', () => {
+      clearInterval(heartbeatInterval);
+    });
+
     NotificationEventSource.setInstance(newEventSource);
   } catch (error) {
     console.error('SSE Connection Error:', error);
