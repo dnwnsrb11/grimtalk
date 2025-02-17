@@ -54,7 +54,7 @@ export const MyPage = () => {
       대시보드: <InstructorDashboardSection nickname={userData.nickname} />,
       '질문 확인': <CheckBoardSection />,
 
-      '내 강의': <MyLectureSection joinId={joinId} myid={userData.id} />,
+      '내 강의': <MyLectureSection joinId={joinId} myid={userData?.id} />,
       '내 강의 생성하기': (
         <CreateLectureSection userDataId={userData.id} onBack={handleLectureCreated} />
       ),
@@ -86,7 +86,8 @@ export const MyPage = () => {
         <MyPageContentLayout
           navMenuTitle={selectedMenu}
           navMenuSubButton={
-            selectedMenu === '내 강의' && (
+            selectedMenu === '내 강의' &&
+            joinId === userData.id && (
               <button
                 className="rounded-[10px] bg-primary-color px-3 py-1 text-white hover:bg-primary-color/80"
                 onClick={handleCreateLecture}

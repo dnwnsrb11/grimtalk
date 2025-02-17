@@ -27,7 +27,7 @@ export const NavigationMenu = ({
       setInstructorMenuItems(['유저소개', '대시보드', '마이 페이지', '내 강의', '질문 확인']);
     } else if (targetid && targetid !== myid) {
       setStudentMenuItems(['유저소개']);
-      setInstructorMenuItems(['유저소개']);
+      setInstructorMenuItems(['유저소개', '내 강의']);
     }
   }, [myid, targetid]); // myid나 targetid가 변경될 때마다 실행
   useEffect(() => {

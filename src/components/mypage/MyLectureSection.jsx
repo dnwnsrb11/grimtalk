@@ -6,8 +6,8 @@ import { Lecture } from '@/components/mainPages/home/Lecture';
 import { UpdateLectureSection } from '@/components/mypage/UpdateLectureSection';
 import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
 
-export const MyLectureSection = ({ joinId, myId }) => {
-  console.log(joinId, myId);
+export const MyLectureSection = ({ joinId, myid }) => {
+  console.log(joinId, myid);
   // 강의 수정하기
   const [selectedLecture, setSelectedLecture] = useState(null);
   // 내 강의 목록 조회
@@ -37,8 +37,20 @@ export const MyLectureSection = ({ joinId, myId }) => {
                 key={index}
                 className="group relative cursor-pointer rounded-lg border border-gray-200 p-3"
               >
-                <Lecture lecture={myLecture} showStar={false} showUpdate={true} />
-                <button onClick={() => handleUpdate(myLecture)}>수정</button>
+                {/* Lecture 컴포넌트 */}
+                <Lecture lecture={myLecture} showStar={false} showUpdate={myid === joinId} />
+
+                {/* 수정 버튼 (마우스를 올렸을 때만 보임) */}
+                {myid === joinId && (
+                  <div className="opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <button
+                      onClick={() => handleUpdate(myLecture)}
+                      className="absolute right-2 top-12 h-[36px] w-[80px] rounded-lg border bg-black text-sm text-white  transition-all duration-300 hover:opacity-60 hover:shadow-md"
+                    >
+                      수정
+                    </button>
+                  </div>
+                )}
               </div>
             ))
           ) : (
@@ -47,8 +59,6 @@ export const MyLectureSection = ({ joinId, myId }) => {
         </div>
       ) : (
         <div className="w-full">
-          {' '}
-          {/* MyPageContentLayout을 감싸는 div에도 width: 100% 추가 */}
           <MyPageContentLayout
             navMenuTitle="강의 수정하기"
             children={
