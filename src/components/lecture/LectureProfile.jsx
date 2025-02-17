@@ -172,23 +172,15 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
           </div>
           <div className="flex items-end">
             <div className=" flex items-center gap-2 rounded-full border bg-primary-color px-3 py-1">
-              {lecture?.category === '웹툰' && (
-                <img src={webtoonDeactiveSVG} alt="웹툰" className="h-5 w-5" />
-              )}
+              {lecture?.category === '웹툰' && <WebtoonIcon className="h-5 w-5" fill="white" />}
               {lecture?.category === '이모티콘' && (
-                <img src={emoticonDeactiveSVG} alt="이모티콘" className="h-5 w-5" />
+                <EmoticonIcon className="h-5 w-5" fill="white" />
               )}
-              {lecture?.category === '캐릭터' && (
-                <img src={characterDeactiveSVG} alt="캐릭터" className="h-5 w-5" />
-              )}
-              {lecture?.category === '드로잉' && (
-                <img src={drawingDeactiveSVG} alt="드로잉" className="h-5 w-5" />
-              )}
-              {lecture?.category === '컬러링' && (
-                <img src={coloringDeactiveSVG} alt="컬러링" className="h-5 w-5" />
-              )}
+              {lecture?.category === '캐릭터' && <CharacterIcon className="h-5 w-5" fill="white" />}
+              {lecture?.category === '드로잉' && <DrawingIcon className="h-5 w-5" fill="white" />}
+              {lecture?.category === '컬러링' && <ColoringIcon className="h-5 w-5" fill="white" />}
               {lecture?.category === '컨셉 아트' && (
-                <img src={artDeactiveSVG} alt="컨셉아트" className="h-5 w-5" />
+                <ConceptArtIcon className="h-5 w-5" fill="white" />
               )}
               <p className="text-white">{lecture?.category}</p>
             </div>
