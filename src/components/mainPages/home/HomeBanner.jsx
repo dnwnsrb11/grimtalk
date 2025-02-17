@@ -14,7 +14,7 @@ export const HomeBanner = () => {
 
   return (
     <>
-      <div className="mb-28 flex items-center justify-between">
+      <div className="mb-28 flex items-center justify-between gap-2">
         {/* 제목,소제목, 내용 */}
         <div>
           <h1 className="text-[64px] font-extrabold leading-tight text-[#FF5C38]">
