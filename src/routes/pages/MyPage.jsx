@@ -20,9 +20,11 @@ export const MyPage = () => {
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
   // 헤더 요청한 사람과로그인 한 살마 id가 같으면 강사로 설정
   const { userData } = useAuthStore();
+  console.log(userData);
   const navigate = useNavigate();
   const location = useLocation();
-  const { joinId } = location.state || userData.id;
+  const joinId = location.state.joinId || userData.id;
+  // console.log(joinId, 'joinId는?');
   // joinId 감지
   // useEffect(() => {
   //   navigate(`/mypage/${joinId}`, { state: { joinId } });
@@ -52,7 +54,7 @@ export const MyPage = () => {
       대시보드: <InstructorDashboardSection nickname={userData.nickname} />,
       '질문 확인': <CheckBoardSection />,
 
-      '내 강의': <MyLectureSection />,
+      '내 강의': <MyLectureSection joinId={joinId} myid={userData.id} />,
       '내 강의 생성하기': (
         <CreateLectureSection userDataId={userData.id} onBack={handleLectureCreated} />
       ),

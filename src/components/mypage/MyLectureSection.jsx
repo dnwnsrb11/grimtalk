@@ -6,7 +6,8 @@ import { Lecture } from '@/components/mainPages/home/Lecture';
 import { UpdateLectureSection } from '@/components/mypage/UpdateLectureSection';
 import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
 
-export const MyLectureSection = () => {
+export const MyLectureSection = ({ joinId, myId }) => {
+  console.log(joinId, myId);
   // 강의 수정하기
   const [selectedLecture, setSelectedLecture] = useState(null);
   // 내 강의 목록 조회
