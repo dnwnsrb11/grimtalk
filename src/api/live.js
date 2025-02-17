@@ -61,8 +61,6 @@ const useRoomList = () => {
   return useQuery({
     queryKey: ['rooms'], // userId를 키에 포함
     queryFn: () => liveApi.getRoomList(), // userId 전달
-    refetchInterval: 5000,
-    staleTime: 1000 * 60,
   });
 };
 
@@ -70,8 +68,6 @@ const useRoomListTop4 = () => {
   return useQuery({
     queryKey: ['roomsTop4'],
     queryFn: () => liveApi.getRoomListTop4(),
-    refetchInterval: 5000,
-    staleTime: 1000 * 60,
   });
 };
 
@@ -80,8 +76,6 @@ const useFavoriteRoomList = (userId, isLogin = false) => {
   return useQuery({
     queryKey: ['rooms', userId],
     queryFn: () => (isLogin ? liveApi.getFavoriteRoomList(userId) : liveApi.getRoomList()),
-    refetchInterval: 5000,
-    staleTime: 1000 * 60,
   });
 };
 
@@ -89,8 +83,6 @@ const useFavoriteRoomListTop4 = (userId, isLogin = false) => {
   return useQuery({
     queryKey: ['roomsTop4', userId],
     queryFn: () => (isLogin ? liveApi.getFavoriteRoomListTop4(userId) : liveApi.getRoomListTop4()),
-    refetchInterval: 5000,
-    staleTime: 1000 * 60,
   });
 };
 
@@ -146,6 +138,9 @@ const leaveLive = async (roomId, userId) => {
 const getLiveCount = async (roomId) => {
   try {
     const response = await _axiosAuth.get(`${LIVE_JOIN_STATUS_URL}/${roomId}/count`);
+    if (response.data === 0) {
+      return 0;
+    }
     return response.data - 1; // 방장 제외
   } catch (error) {
     console.error('참여자 수 조회 실패:', error);
@@ -157,6 +152,8 @@ const useLiveCount = (roomId) => {
   return useQuery({
     queryKey: ['liveCount', roomId],
     queryFn: () => getLiveCount(roomId),
+    refetchInterval: 10000, // 10초마다 데이터 갱신
+    staleTime: 1000 * 10, // 10초 동안 데이터 유지
   });
 };
 
@@ -165,6 +162,7 @@ const InstructorLeaveLive = async (curriculumId, userId) => {
     const response = await _axiosAuth.post('/live/leave/instructor', {
       curriculumId,
       userId,
+      isLive: false,
     });
     return response.data;
   } catch (error) {
