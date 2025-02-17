@@ -63,6 +63,7 @@ const subscribeToNotifications = () => {
       // 토스트 메시지로 알림 표시 (커스텀 알림 아이콘 사용)
       toast(notification.message, {
         icon: '🔔',
+        position: 'top-right',
       });
       // 알림 목록 갱신
       queryClient.invalidateQueries(['notifications']);
