@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { _axios } from '@/api/instance';
 import { useFavoriteRoomListTop4 } from '@/api/live';
 import { Banner } from '@/components/mainPages/home/Banner';
+import { HomeBanner } from '@/components/mainPages/home/HomeBanner';
 import { Lecture } from '@/components/mainPages/home/Lecture';
 import { LiveList } from '@/components/mainPages/home/LiveList';
 import { PopularInstructor } from '@/components/mainPages/home/PopularInstructor';
@@ -123,7 +124,10 @@ export const MainPage = () => {
 
   return (
     <>
-      <div className="mt-10">
+      <div className="mt-24">
+        <div>
+          <HomeBanner />
+        </div>
         <div>
           <h2 className="mb-[15px] text-2xl font-bold">
             인기 있는 <span className="text-primary-color">라이브</span>

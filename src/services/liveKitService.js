@@ -37,13 +37,48 @@ export class LiveKitService {
   }
 
   // 카메라/마이크 활성화
-  async enableMedia() {
+  async enableMedia(askPermission = true) {
     try {
-      await this.room.localParticipant.enableCameraAndMicrophone();
+      let enableCamera = true;
+      let enableMic = true;
+
+      if (askPermission) {
+        // 사용자에게 카메라/마이크 활성화 여부 확인
+        enableCamera = window.confirm('카메라를 활성화하시겠습니까?');
+        enableMic = window.confirm('마이크를 활성화하시겠습니까?');
+      }
+
+      const promises = [];
+
+      // 사용자가 선택한 디바이스만 활성화
+      if (enableCamera) {
+        promises.push(
+          this.room.localParticipant.setCameraEnabled(true).catch((err) => {
+            console.warn('LiveKitService - 카메라 활성화 실패:', err);
+            return null;
+          }),
+        );
+      }
+
+      if (enableMic) {
+        promises.push(
+          this.room.localParticipant.setMicrophoneEnabled(true).catch((err) => {
+            console.warn('LiveKitService - 마이크 활성화 실패:', err);
+            return null;
+          }),
+        );
+      }
+
+      // 선택된 디바이스 활성화 처리
+      if (promises.length > 0) {
+        await Promise.all(promises);
+      }
+
+      // 카메라 트랙 반환 (이전과 동일)
       return this.room.localParticipant.videoTrackPublications.values().next().value?.videoTrack;
     } catch (error) {
-      console.error('LiveKitService - 미디어 활성화 실패:', error);
-      throw error;
+      console.warn('LiveKitService - 미디어 활성화 중 예상치 못한 오류:', error);
+      return null;
     }
   }
 

@@ -15,6 +15,7 @@ const fetchImageAsBlob = async (imageUrl) => {
     const response = await fetch(imageUrl);
     // 응답을 Blob(이진 대형 객체) 형식으로 변환
     const blob = await response.blob();
+    console.log(blob);
     return blob;
   } catch (error) {
     // 이미지 불러오기 중 발생하는 오류 로깅 및 전파
@@ -64,8 +65,9 @@ export const AiComparePage = () => {
   const { data: InstructorBlob, isLoading } = useQuery({
     queryKey: ['InstructorBlob'],
     queryFn: async () => {
-      // 특정 ID(4)를 사용하여 이미지 URL 요청
-      const { data } = await _axiosAuth.get(`/image-similarity/${location.state?.curriculumId}`);
+      const { data } = await _axiosAuth.get(
+        `/curriculum/completed-image/${location.state?.curriculumId}`,
+      );
 
       // 응답 데이터 유효성 검사
       if (data.body?.code !== 200) {
@@ -192,6 +194,7 @@ export const AiComparePage = () => {
     return <>{count}</>;
   };
 
+  const [checkDataSave, setCheckDataSave] = useState(false);
   const addDataMuntation = useMutation({
     mutationFn: async () => {
       const { data } = await _axiosAuth.post(`/image-similarity`, {
@@ -204,6 +207,7 @@ export const AiComparePage = () => {
         structureComment: analysisResult.structure_comment,
         overallFeedback: analysisResult.overall_feedback,
       });
+      setCheckDataSave(true);
       return data;
     },
     onSuccess: (data) => {
@@ -350,13 +354,18 @@ export const AiComparePage = () => {
               {console.log('chartData:', chartData)} {/* 데이터 확인용 */}
               <AiCompareComponent data={chartData} analysisResult={analysisResult} />
             </div>
-            <div>
-              <button
-                className="mx-[15px] mt-[5px] rounded-xl border"
-                onClick={() => addDataMuntation.mutate()}
-              >
-                데이터 저장하기
-              </button>
+            <div className="mt-[40px] border-t pt-[20px]">
+              <div className="bg-bg-gray-color mt-[20px] flex items-center justify-between rounded-2xl border p-6 transition-all duration-200">
+                <p className="text-[18px] font-semibold">
+                  비교한 데이터는 저장하여 관리할 수 있습니다.
+                </p>
+                <button
+                  className="mx-[15px] mt-[5px] rounded-xl border bg-[#FF5C38] px-[20px] py-[15px] text-white transition-colors duration-200 hover:bg-black"
+                  onClick={() => addDataMuntation.mutate()}
+                >
+                  {checkDataSave ? <p>데이터 저장완료</p> : <p>데이터 저장하기</p>}
+                </button>
+              </div>
             </div>
           </div>
         )}
