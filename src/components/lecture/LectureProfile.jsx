@@ -21,11 +21,12 @@ import {
 import { LiveClock } from '@/components/lecture/LiveClock';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useFavoriteStore } from '@/store/useFavoriteStore';
 
 export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }) => {
   const { id, email, nickname } = useAuthStore((state) => state.userData);
+  const { checkFavorite, setCheckFavorite } = useFavoriteStore();
   const navigate = useNavigate();
-  const [checkFavorite, setCheckFavorite] = useState(false);
   //   구독시 값에 따라 버튼 활성화, 비활성화 기능 구현
   const [checkSubscribe, setCheckSubscribe] = useState(false);
 
@@ -43,7 +44,6 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       alert('즐겨찾기 추가 실패'); // ❌ 실패 알림 추가
     },
   });
-  console.log(lecture, '!@#@!#2!#!@#');
   // 강의 즐겨찾기 취소
   const lectureFavoriteCancel = useMutation({
     mutationFn: async () => {
@@ -51,7 +51,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       return data;
     },
     onSuccess: () => {
-      alert('즐겨찾기가 삭제제되었습니다.'); // ✅ 성공 알림 추가
+      alert('즐겨찾기가 삭제되었습니다.'); // ✅ 성공 알림 추가
       setCheckFavorite(false);
     },
     onError: (error) => {
@@ -125,19 +125,14 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
   useEffect(() => {
     if (!check || check.length === 0) return; // check가 없거나 빈 배열이면 실행 X
 
-    console.log('✅ check 값 변경됨:', check);
-
     // check 배열을 돌면서 lecture.instructorInfo.id와 비교
     const isMatched = check.some((item) => {
-      console.log('🔍 비교 중:', item.memberId, lecture?.instructorInfo?.id);
       return item.memberId === lecture?.instructorInfo?.id; // 올바르게 return 추가
     });
 
     if (isMatched) {
-      console.log('✅ 매칭된 ID 발견:', lecture?.instructorInfo?.id);
       setCheckSubscribe(true);
     } else {
-      console.log('❌ 매칭된 ID 없음');
       setCheckSubscribe(false);
     }
   }, [check, lecture?.instructorInfo?.id]); // check 또는 instructor ID가 변경될 때 실행
@@ -152,24 +147,13 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
   });
 
   useEffect(() => {
-    if (!checkF || !checkF.list || checkF.list.length === 0) return; // checkF.list가 없거나 빈 배열이면 실행 X
-
-    console.log('✅ 즐겨찾기 데이터 변경됨:', checkF);
-
-    // checkF.list 배열을 돌면서 lecture.lectureId와 비교
+    if (!checkF || !checkF.list || checkF.list.length === 0) return;
     const isMatched = checkF.list.some((item) => {
-      console.log('🔍 비교 중:', item.lectureId, lecture?.lectureId);
-      return item.lectureId === lecture?.lectureId; // return 추가
+      return item.lectureId === lecture?.lectureId;
     });
 
-    if (isMatched) {
-      console.log('✅ 즐겨찾기된 강의 발견:', lecture?.lectureId);
-      setCheckFavorite(true);
-    } else {
-      console.log('❌ 즐겨찾기된 강의 없음');
-      setCheckFavorite(false);
-    }
-  }, [checkF, lecture?.lectureId]); // checkF 또는 lecture.id 변경 시 실행
+    setCheckFavorite(isMatched);
+  }, [checkF, lecture?.lectureId, setCheckFavorite]);
 
   return (
     <>

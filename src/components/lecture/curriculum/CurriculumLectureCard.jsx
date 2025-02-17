@@ -1,19 +1,23 @@
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/store/useAuthStore';
+import { useFavoriteStore } from '@/store/useFavoriteStore';
 import { formatDateWithTime } from '@/utils/dateFormatter';
 
 export const CurriculumLectureCard = ({ curriculum, instructorId, instructorNickname }) => {
   const navigate = useNavigate();
   const { id, nickname } = useAuthStore((state) => state.userData);
+  const checkFavorite = useFavoriteStore((state) => state.checkFavorite);
   const isInstructor = id === instructorId;
 
   const handleJoinLive = () => {
     if (!id) {
-      alert('로그인이 필요한 서비스입니다.');
+      toast.error('로그인이 필요한 서비스입니다.');
       navigate('/login');
       return;
     }
+
     if (isInstructor) {
       // 강사인 경우 createRoom 로직
       localStorage.setItem('roomCreator', instructorNickname);
@@ -26,7 +30,15 @@ export const CurriculumLectureCard = ({ curriculum, instructorId, instructorNick
         },
       });
     } else {
-      // 학생인 경우 joinRoom 로직
+      // 학생인 경우 즐겨찾기 확인 후 joinRoom 로직
+      if (!checkFavorite) {
+        toast('즐겨찾기 후 라이브에 참여할 수 있습니다.', {
+          icon: '💡',
+        });
+        navigate(`/lecture/${curriculum.lectureId}`);
+        return;
+      }
+
       localStorage.setItem('roomCreator', instructorNickname);
       navigate(`/live/${curriculum.subject}`, {
         state: {
