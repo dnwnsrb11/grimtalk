@@ -4,20 +4,20 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
-import artDeactiveSVG from '@/assets/category/art-deactive.svg';
-import characterDeactiveSVG from '@/assets/category/character-deactive.svg';
-import coloringDeactiveSVG from '@/assets/category/coloring-deactive.svg';
-import drawingDeactiveSVG from '@/assets/category/drawing-deactive.svg';
-import emoticonDeactiveSVG from '@/assets/category/emoticon-deactive.svg';
-import webtoonDeactiveSVG from '@/assets/category/webtoon-deactive.svg';
 // nonImage 가져오기
 // 아이콘 가져오기
 import {
+  CharacterIcon,
+  ColoringIcon,
+  ConceptArtIcon,
+  DrawingIcon,
+  EmoticonIcon,
   FavoriteIcon,
   LeveloneBadgeIcon,
   LevelthirdBadgeIcon,
   LeveltwoBadgeIcon,
   SubscribeIcon,
+  WebtoonIcon,
 } from '@/components/common/icons';
 import { LiveClock } from '@/components/lecture/LiveClock';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
