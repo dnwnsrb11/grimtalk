@@ -159,7 +159,7 @@ export const MainPage = () => {
             <div className="flex h-[100%] flex-col gap-4">
               {popularInstructors && popularInstructors.length > 0 ? (
                 popularInstructors.map((instroductor, index) => (
-                  <PopularInstructor key={index} instroductor={instroductor} />
+                  <PopularInstructor key={index} index={index} instroductor={instroductor} />
                 ))
               ) : (
                 <div className="flex h-full items-center justify-center rounded-xl border border-gray-300 bg-gray-100 p-6 text-gray-600">
@@ -191,7 +191,7 @@ export const MainPage = () => {
             <div className="flex h-[100%] flex-col gap-4">
               {hotInstructors && hotInstructors.length > 0 ? (
                 hotInstructors.map((instructor, index) => (
-                  <PopularInstructor key={index} instroductor={instructor} />
+                  <PopularInstructor key={index} index={index} instroductor={instructor} />
                 ))
               ) : (
                 <div className="flex h-full items-center justify-center rounded-xl border border-gray-300 bg-gray-100 p-6 text-gray-600">

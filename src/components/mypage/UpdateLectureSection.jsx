@@ -108,11 +108,7 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
       for (const [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
       }
-      const { data } = await _axiosAuth.put(`/lecture/${updateLectureId.lectureId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const { data } = await _axiosAuth.put(`/lecture/${updateLectureId.lectureId}`, formData);
       return data;
     },
     onSuccess: () => {
