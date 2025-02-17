@@ -1,12 +1,12 @@
 import Lottie from 'react-lottie';
 
-import HomeBannerMottion from '@/assets/lottie/mainBannerMottion.json';
+import MainBannerMove from '@/assets/lottie/MainBannerMove.json';
 
 export const HomeBanner = () => {
   const defaultOptions = {
     loop: true,
     autoplay: true,
-    animationData: HomeBannerMottion,
+    animationData: MainBannerMove,
     rendererSettings: {
       preserveAspectRatio: 'xMidYMid slice',
     },
