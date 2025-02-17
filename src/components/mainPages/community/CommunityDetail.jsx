@@ -55,8 +55,7 @@ export const CommunityDetail = ({ communityId, onBack }) => {
         <button
           onClick={() => {
             try {
-              // navigate(`/lecture/${lectureIdWithCommunityId}`);
-              alert('이동에 실패했습니다. 다시 시도해주세요.');
+              navigate(`/lecture/${community.lectureId}`);
             } catch (error) {
               alert('이동에 실패했습니다. 다시 시도해주세요.');
               console.error('Navigation Error:', error);
