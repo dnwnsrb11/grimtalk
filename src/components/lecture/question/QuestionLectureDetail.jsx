@@ -51,6 +51,7 @@ export const QuestionLectureDetail = ({
       setAnserId(data?.comments[0]?.commentId);
       return data;
     },
+    staleTime: 0,
     onError: () => {
       navigate('/notfound');
     },
