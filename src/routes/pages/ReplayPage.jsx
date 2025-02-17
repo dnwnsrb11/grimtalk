@@ -2,7 +2,7 @@ import { Excalidraw, exportToBlob } from '@excalidraw/excalidraw';
 import { useQuery } from '@tanstack/react-query';
 import { animate } from 'motion';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
 import { NextPlayIcon, OpacityIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
@@ -13,6 +13,10 @@ import { handleApiError } from '@/utils/errorHandler';
 
 export const ReplayPage = () => {
   const navigate = useNavigate();
+  // 비디오 url 받아오기
+  const location = useLocation();
+  const { replayUrl } = location.state || {};
+
   const { curriculumId } = useParams();
   const {
     data: replayData,
@@ -349,6 +353,23 @@ export const ReplayPage = () => {
     }
   };
 
+  // 동영상 처리 로직
+  const containerRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(true);
+
+  const toggleVideo = () => {
+    if (containerRef.current) {
+      if (isVisible) {
+        containerRef.current.style.top = '0';
+        containerRef.current.style.right = '-100%';
+      } else {
+        containerRef.current.style.top = '1rem';
+        containerRef.current.style.right = '1rem';
+      }
+      setIsVisible(!isVisible);
+    }
+  };
+
   // 로딩
   if (isLoading) {
     return <LoadingComponents />;
@@ -401,7 +422,7 @@ export const ReplayPage = () => {
                   {/* 움직이는 현재 시간 */}
                   <div className="opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                     <div
-                      className="absolute -top-14 rounded-xl border border-gray-border-color px-[20px] py-[5px]"
+                      className="border-gray-border-color absolute -top-14 rounded-xl border px-[20px] py-[5px]"
                       style={{
                         left: `${Math.min((currentTime / maxTime) * 100 - 7, 100)}%`,
                       }}
@@ -434,6 +455,8 @@ export const ReplayPage = () => {
                     step={0.1}
                     className="
                       [&::-webkit-slider-thumb]:scale-120
+                      after:bg-primary-color
+                      [&::-webkit-slider-thumb]:bg-primary-color
                       relative
                       m-0
                       h-10
@@ -449,14 +472,12 @@ export const ReplayPage = () => {
                       after:w-[var(--range-progress)]
                       after:-translate-y-1/2
                       after:rounded-xl
-                      after:bg-primary-color
                       [&::-webkit-slider-runnable-track]:h-full
                       [&::-webkit-slider-runnable-track]:rounded-xl
                       [&::-webkit-slider-runnable-track]:bg-[#E7E7EF]
                       [&::-webkit-slider-thumb]:w-4
                       [&::-webkit-slider-thumb]:appearance-none
                       [&::-webkit-slider-thumb]:rounded-xl
-                      [&::-webkit-slider-thumb]:bg-primary-color
                       [&::-webkit-slider-thumb]:transition-all
                       [&::-webkit-slider-thumb]:hover:scale-150
                       [&::-webkit-slider-thumb]:hover:shadow-lg
@@ -476,7 +497,7 @@ export const ReplayPage = () => {
             <div className="flex w-[25%] items-center gap-2">
               <div className="group relative flex w-[100%] items-center justify-center rounded-xl border">
                 {/* 투명도값 박스 -> 호버시 나타남 */}
-                <div className="absolute -top-0 z-0 rounded-xl border border-gray-border-color px-[20px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
+                <div className="border-gray-border-color absolute -top-0 z-0 rounded-xl border px-[20px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
                   <p className="text-text-gray-color">{rangeProgress}</p>
                 </div>
                 {/* 아이콘 위치 */}
@@ -492,6 +513,7 @@ export const ReplayPage = () => {
                   step={1}
                   className={`
                     [&::-webkit-slider-thumb]:scale-120
+                    [&::-webkit-slider-thumb]:bg-primary-color
                     relative
                     m-0
                     h-10
@@ -514,7 +536,6 @@ export const ReplayPage = () => {
                     [&::-webkit-slider-thumb]:w-4
                     [&::-webkit-slider-thumb]:appearance-none
                     [&::-webkit-slider-thumb]:rounded-xl
-                    [&::-webkit-slider-thumb]:bg-primary-color
                     [&::-webkit-slider-thumb]:transition-all
                     [&::-webkit-slider-thumb]:hover:scale-150
                     [&::-webkit-slider-thumb]:hover:shadow-lg
@@ -529,7 +550,7 @@ export const ReplayPage = () => {
               </div>
               {/* 현재 색상 + 색상 변경 */}
               <div
-                className="group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border border-gray-border-color bg-white px-[10px] py-[10px] transition-colors duration-300 hover:border-white hover:bg-[#E7E7EF]"
+                className="border-gray-border-color group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border bg-white px-[10px] py-[10px] transition-colors duration-300 hover:border-white hover:bg-[#E7E7EF]"
                 onClick={() => updateColor(nowColor)}
               >
                 <div
@@ -537,7 +558,7 @@ export const ReplayPage = () => {
                   className="h-[30px] w-[10px] rounded-md text-center transition-colors duration-300"
                   style={{ backgroundColor: '#ffffff' }} // 초기값 설정
                 ></div>
-                <p className="text-[14px] font-light text-replay-disable-btn-font-color">
+                <p className="text-replay-disable-btn-font-color text-[14px] font-light">
                   {nowColor ? nowColor.toString().substring(0, 6) : ''}
                 </p>
                 <div className="absolute -top-0 rounded-xl border px-[15px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
@@ -547,14 +568,58 @@ export const ReplayPage = () => {
             </div>
             {/* 이미지 추출 기능 */}
             <div className="w-[80px] text-center">
-              <div className="group rounded-2xl border border-gray-border-color bg-white text-white transition-all duration-300 hover:bg-primary-color">
+              <div className="border-gray-border-color hover:bg-primary-color group rounded-2xl border bg-white text-white transition-all duration-300">
                 <button className="p-4" onClick={handleExportImage}>
-                  <p className="text-[16px] text-text-gray-color group-hover:text-white">완료</p>
+                  <p className="text-text-gray-color text-[16px] group-hover:text-white">완료</p>
                 </button>
               </div>
             </div>
           </div>
         </div>
+        {/* 영상 */}
+        <div
+          ref={containerRef}
+          style={{
+            position: 'fixed',
+            zIndex: 50,
+            transition: 'all 0.8s ease-in-out',
+            top: '1rem',
+            right: '1rem',
+            borderRadius: '1rem',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{ position: 'relative' }}>
+            <video width="400" controls>
+              <source src={replayUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <button
+              onClick={toggleVideo}
+              className="bg-white transition-colors duration-200 hover:bg-[#FF5C38] hover:text-white"
+              style={{
+                position: 'absolute',
+                right: '0.5rem',
+                top: '0.5rem',
+                zIndex: 'auto',
+                cursor: 'pointer',
+                borderRadius: '1rem',
+                padding: '0.5rem',
+              }}
+            >
+              {isVisible ? '숨기기' : '보이기'}
+            </button>
+          </div>
+        </div>
+        {!isVisible && (
+          <div
+            className="absolute right-4 top-4 z-50 cursor-pointer rounded-2xl border bg-white p-2 transition-all duration-200 hover:bg-[#FF5C38] hover:text-white"
+            onClick={toggleVideo}
+          >
+            <p>보이기</p>
+          </div>
+        )}
         {/* 작업 리스트 */}
         <div
           ref={animationContainerRef}
