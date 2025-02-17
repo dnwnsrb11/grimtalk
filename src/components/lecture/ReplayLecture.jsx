@@ -21,6 +21,7 @@ export const ReplayLecture = ({ checkInstructor, lecture }) => {
       const { data } = await _axios(`/replay/${lecture.lectureId}`);
       return data.body.data.list;
     },
+    staleTime: 0,
   });
 
   const [replayDate, setReplayDate] = useState('');
