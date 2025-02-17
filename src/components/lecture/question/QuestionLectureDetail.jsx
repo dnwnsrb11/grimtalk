@@ -149,8 +149,7 @@ export const QuestionLectureDetail = ({
         <>
           <div className="mt-[20px] flex flex-col gap-2">
             <div className="mt-[20px] w-full">
-              <input
-                type="text"
+              <textarea
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 onKeyDown={(e) => {

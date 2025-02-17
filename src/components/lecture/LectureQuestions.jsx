@@ -35,6 +35,7 @@ export const LectureQuestions = ({
 
       return data.body.data.list;
     },
+    staleTime: 0,
     onError: (error) => {
       alert('에러');
     },

@@ -128,7 +128,14 @@ export const LectureNoticeDetail = ({ noticeDate, setIsActive, checkInstructor }
               </button>
             </>
           )
-        ) : null}
+        ) : (
+          <button
+            className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
+            onClick={() => setIsActive('/')}
+          >
+            <p className="text-[18px] font-semibold">뒤로가기</p>
+          </button>
+        )}
       </div>
     </>
   );

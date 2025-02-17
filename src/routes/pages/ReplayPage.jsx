@@ -2,7 +2,7 @@ import { Excalidraw, exportToBlob } from '@excalidraw/excalidraw';
 import { useQuery } from '@tanstack/react-query';
 import { animate } from 'motion';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
 import { NextPlayIcon, OpacityIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
@@ -13,6 +13,7 @@ import { handleApiError } from '@/utils/errorHandler';
 
 export const ReplayPage = () => {
   const navigate = useNavigate();
+  const { curriculumId } = useParams();
   const {
     data: replayData,
     isLoading,
@@ -21,7 +22,7 @@ export const ReplayPage = () => {
   } = useQuery({
     queryKey: ['replayData'],
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/stroke/${4}`); //추후 api 요청 하드코딩에서 변경 예정
+      const { data } = await _axiosAuth.get(`/stroke/${curriculumId}`); //추후 api 요청 하드코딩에서 변경 예정
       // 만약 데이터가 없다면
       if (data.body?.code !== undefined) {
         // 코드가 200이 아닌 경우 에러 처리
@@ -340,7 +341,9 @@ export const ReplayPage = () => {
       });
 
       // 네비게이션으로 ai 페이지로 이동
-      navigate('/aicompare', { state: { ImageData: base64Image } });
+      navigate('/aicompare', {
+        state: { curriculumId: curriculumId, ImageData: base64Image },
+      });
     } catch (error) {
       console.log('이미지 추출 실패', error);
     }
