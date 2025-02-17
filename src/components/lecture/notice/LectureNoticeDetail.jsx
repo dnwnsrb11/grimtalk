@@ -87,7 +87,7 @@ export const LectureNoticeDetail = ({ noticeDate, setIsActive, checkInstructor }
               : '날짜 없음'}
           </div>
 
-          <p className="mt-[60px] text-[18px]">{noticeDetail?.content}</p>
+          <p className="mt-[60px] whitespace-pre-line text-[18px]">{noticeDetail?.content}</p>
         </div>
       )}
       <div className="mt-[60px] justify-items-end">
@@ -98,12 +98,12 @@ export const LectureNoticeDetail = ({ noticeDate, setIsActive, checkInstructor }
       <div className="mt-[20px] flex justify-end gap-3">
         {id === noticeDate.lectureMemberId ? (
           isEditing ? (
-            <>
+            <div className="flex gap-3">
               <button
                 className="bg-bg-gay-color rounded-2xl border border-gray-border-color p-[10px]"
                 onClick={() => setIsEditing(false)} // ✨ 수정 취소 버튼
               >
-                <p className="text-[18px] font-semibold">취소</p>
+                <p className="text-[18px] font-semibold">수정취소</p>
               </button>
               <button
                 className="rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
@@ -111,7 +111,7 @@ export const LectureNoticeDetail = ({ noticeDate, setIsActive, checkInstructor }
               >
                 <p className="text-[18px] font-semibold text-white">저장하기</p>
               </button>
-            </>
+            </div>
           ) : (
             <>
               <button
