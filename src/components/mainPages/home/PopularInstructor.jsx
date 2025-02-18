@@ -67,10 +67,15 @@ export const PopularInstructor = ({ index, instroductor }) => {
                 </div>
                 {instroductorTags?.map((tag, index) => (
                   <div
-                    className="mr-1 inline-block rounded-full border bg-bg-gray-color px-3 py-1"
+                    className="mr-1 inline-block max-w-[70px] rounded-full border bg-bg-gray-color px-3 py-1"
                     key={index}
                   >
-                    <p className="text-text-gray-color">{tag}</p>
+                    <p
+                      className="overflow-hidden text-ellipsis whitespace-nowrap text-text-gray-color"
+                      title={tag}
+                    >
+                      {tag}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -88,9 +93,9 @@ export const PopularInstructor = ({ index, instroductor }) => {
                 },
               })
             }
-            className='className="w-[140px] text-center" px-1 py-3 text-[16px] text-[#828282] transition-all duration-150 hover:text-[17px] hover:text-black'
+            className='className="w-[140px] text-center" px-1 py-3 text-[14px] text-[#828282] transition-all duration-150 hover:text-black'
           >
-            <p className=" px-1 font-light ">자세히 보기 &gt;</p>
+            <p className=" px-1 font-light ">자세히 보기</p>
           </button>
         </div>
       </div>
