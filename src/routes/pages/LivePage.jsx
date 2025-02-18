@@ -196,6 +196,25 @@ export const LivePage = () => {
     // console.log('최종 화이트보드 요소들:', receivedElementsRef.current);
   };
 
+  //현재 색상값 최신화 로직
+  const [nowColor, setNowColor] = useState('#000000');
+  // 최신 내용의 색상값을 추가
+  const updateWalkList = (newElement) => {
+    setNowColor(newElement[0].strokeColor);
+  };
+
+  // 선 색상 변경
+  const updateColor = (color) => {
+    if (!participantAPIRef) return;
+    if (color.startsWith('#')) {
+      participantAPIRef.current.updateScene({
+        appState: {
+          currentItemStrokeColor: color, // 선 색상
+        },
+      });
+    }
+  };
+
   // STOMP 연결 관리
   const setupStompConnection = useCallback(() => {
     if (!stompService || !curriculumSubject) return;
@@ -216,7 +235,6 @@ export const LivePage = () => {
         client.subscribe(`/pub/receive/${curriculumSubject}`, (message) => {
           try {
             const data = JSON.parse(message.body);
-            console.log('📥 수신된 드로잉 데이터:', data.message);
 
             if (data.message.type === 'drawing') {
               // console.log('🎨 화이트보드에 적용할 요소들:', data.message.elements);
@@ -224,11 +242,11 @@ export const LivePage = () => {
               data.message.elements.forEach((el) => {
                 updateOrAddElementToArray(el);
               });
-              // console.log('🔄 화이트보드 업데이트 전 현재 요소들:', receivedElementsRef.current);
+              // 위에서 처리된 배열을 실제로 적용 -> updateScene
               roomCreatorAPIRef.current?.updateScene({
                 elements: receivedElementsRef.current,
               });
-              console.log('✅ 화이트보드 업데이트 완료');
+              updateWalkList(data.message.elements);
             }
           } catch (error) {
             console.error('❌ 메시지 파싱 실패:', error);
@@ -259,15 +277,13 @@ export const LivePage = () => {
       if (!isStompReady || !participantUtils.isCreator(nickname)) return;
 
       console.log('🎨 강사가 그린 데이터:', elements);
-
+      // message에 담아서 전달
       const message = {
         type: 'drawing',
         elements: elements,
         timestamp: Date.now(),
       };
-
-      // console.log('📤 전송하는 메시지:', message);
-
+      // stomp로 담아서 전달한다.
       stompService.client.publish({
         destination: `/sub/send/${curriculumSubject}`,
         body: JSON.stringify(message),
@@ -1024,7 +1040,6 @@ export const LivePage = () => {
 
                   // 복원된 요소가 있을 경우, 모든 복원된 요소를 한 번에 전송
                   if (restoredElements.length > 0) {
-                    console.log('🔄 복원된 요소들 전송:', restoredElements);
                     const allRestoredElements = restoredElements.map((el) => ({
                       ...el,
                       type: 'restored',
@@ -1034,7 +1049,6 @@ export const LivePage = () => {
                   }
                   // 삭제 이벤트가 있을 경우, 모든 삭제된 요소를 한 번에 전송
                   else if (deletedElements.length > 0) {
-                    console.log('🗑️ 삭제된 요소들 전송:', deletedElements);
                     const allDeletedElements = deletedElements.map((el) => ({
                       ...el,
                       type: 'deleted',
@@ -1046,13 +1060,11 @@ export const LivePage = () => {
                     const validElements = elements.filter((element) => !element.isDeleted);
                     if (validElements.length > 0) {
                       const latestElement = validElements[validElements.length - 1];
-                      console.log('✏️ 새로 추가 또는 업데이트된 요소 전송:', latestElement);
                       handleInstructorDrawingChange([latestElement]);
                     }
                   }
 
                   setRoomCreatorElements(elements);
-                  // console.log('💾 최종 roomCreatorElements 상태:', elements);
 
                   // 녹화 기능
                   const newLastElement = elements[elements.length - 1];
@@ -1166,7 +1178,7 @@ export const LivePage = () => {
 
                 {/* 투명도 조절 UI - 오버레이 모드에서만 표시 */}
                 {isOverlayMode && (
-                  <div className="absolute left-1/2 top-3 z-30 flex h-[50px] w-[200px] -translate-x-1/2 items-center gap-2 rounded-xl border border-gray-border-color bg-white p-4">
+                  <div className="absolute left-1/2 top-3 z-30 flex min-h-[50px] min-w-[300px] -translate-x-1/2 items-center gap-2 rounded-xl border border-gray-border-color bg-white p-1">
                     <div className="group relative flex w-full items-center justify-center rounded-xl border">
                       <div className="absolute left-3 z-10 flex items-center gap-2">
                         <OpacityIcon
@@ -1212,6 +1224,18 @@ export const LivePage = () => {
                       <p className="absolute right-3 z-10 text-text-gray-color opacity-0 transition-all duration-300 group-hover:opacity-100">
                         {rangeProgress}%
                       </p>
+                    </div>
+                    <div className="rounded-1 group flex h-10 items-center gap-1 rounded-xl border border-[#EFEFEF] bg-[#F7F7F7] p-1 px-[10px]">
+                      <div
+                        className="h-[10px] w-[10px] rounded-full"
+                        style={{ backgroundColor: nowColor }}
+                      ></div>
+                      <button
+                        className="text-[#828282] transition-colors duration-150 group-hover:text-black"
+                        onClick={() => updateColor(nowColor)}
+                      >
+                        <p>{nowColor}</p>
+                      </button>
                     </div>
                   </div>
                 )}
