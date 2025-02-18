@@ -218,12 +218,12 @@ export const LivePage = () => {
             console.log('📥 수신된 드로잉 데이터:', data.message);
 
             if (data.message.type === 'drawing') {
-              console.log('🎨 화이트보드에 적용할 요소들:', data.message.elements);
+              // console.log('🎨 화이트보드에 적용할 요소들:', data.message.elements);
               // 메시지의 모든 요소를 순회하며 업데이트 처리
               data.message.elements.forEach((el) => {
                 updateOrAddElementToArray(el);
               });
-              console.log('🔄 화이트보드 업데이트 전 현재 요소들:', receivedElementsRef.current);
+              // console.log('🔄 화이트보드 업데이트 전 현재 요소들:', receivedElementsRef.current);
               roomCreatorAPIRef.current?.updateScene({
                 elements: receivedElementsRef.current,
               });
@@ -265,7 +265,7 @@ export const LivePage = () => {
         timestamp: Date.now(),
       };
 
-      console.log('📤 전송하는 메시지:', message);
+      // console.log('📤 전송하는 메시지:', message);
 
       stompService.client.publish({
         destination: `/sub/send/${curriculumSubject}`,
@@ -986,21 +986,21 @@ export const LivePage = () => {
             <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
               <Excalidraw
                 onChange={(elements) => {
-                  console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
+                  // console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
 
                   // 이전 상태와 비교하여 삭제된 요소 찾기
                   const deletedElements = elements.filter((currentEl) => {
                     const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
                     return prevEl && !prevEl.isDeleted && currentEl.isDeleted;
                   });
-                  console.log('🗑️ 감지된 삭제된 요소들:', deletedElements);
+                  // console.log('🗑️ 감지된 삭제된 요소들:', deletedElements);
 
                   // 이전 상태와 비교하여 복원된(undo) 요소 찾기
                   const restoredElements = elements.filter((currentEl) => {
                     const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
                     return prevEl && prevEl.isDeleted && !currentEl.isDeleted;
                   });
-                  console.log('🔄 감지된 복원된 요소들:', restoredElements);
+                  // console.log('🔄 감지된 복원된 요소들:', restoredElements);
 
                   // 복원된 요소가 있을 경우, 모든 복원된 요소를 한 번에 전송
                   if (restoredElements.length > 0) {
@@ -1032,7 +1032,7 @@ export const LivePage = () => {
                   }
 
                   setRoomCreatorElements(elements);
-                  console.log('💾 최종 roomCreatorElements 상태:', elements);
+                  // console.log('💾 최종 roomCreatorElements 상태:', elements);
 
                   // 녹화 기능
                   const newLastElement = elements[elements.length - 1];
