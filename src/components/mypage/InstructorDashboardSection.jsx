@@ -22,6 +22,9 @@ export const InstructorDashboardSection = ({ nickname }) => {
       alert('에러');
     },
     staleTime: 0,
+    cacheTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
 
   // 나의 최근 라이브 변수
