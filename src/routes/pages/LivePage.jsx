@@ -1,6 +1,6 @@
 import '@/styles/live.css';
 
-import { Excalidraw, exportToBlob, WelcomeScreen } from '@excalidraw/excalidraw';
+import { Excalidraw, exportToBlob, MainMenu, WelcomeScreen } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { Client } from '@stomp/stompjs';
 import { AnimatePresence, motion } from 'motion/react';
@@ -1080,6 +1080,14 @@ export const LivePage = () => {
                   },
                 }}
               >
+                <MainMenu>
+                  <MainMenu.ItemLink href="https://google.com" target="_blank">
+                    🔍구글에서 이미지 찾기
+                  </MainMenu.ItemLink>
+                  <MainMenu.ItemLink href="https://pinterest.com" target="_blank">
+                    📌핀터레스트에서 이미지 찾기
+                  </MainMenu.ItemLink>
+                </MainMenu>
                 <WelcomeScreen>
                   <WelcomeScreen.Center>
                     <WelcomeScreen.Hints.ToolbarHint />
@@ -1142,6 +1150,14 @@ export const LivePage = () => {
                           },
                         }}
                       >
+                        <MainMenu>
+                          <MainMenu.ItemLink href="https://google.com" target="_blank">
+                            🔍구글에서 이미지 찾기
+                          </MainMenu.ItemLink>
+                          <MainMenu.ItemLink href="https://pinterest.com" target="_blank">
+                            📌핀터레스트에서 이미지 찾기
+                          </MainMenu.ItemLink>
+                        </MainMenu>
                         <WelcomeScreen>
                           <WelcomeScreen.Center>
                             <WelcomeScreen.Hints.ToolbarHint />

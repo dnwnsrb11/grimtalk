@@ -662,8 +662,12 @@ export const ReplayPage = () => {
             }}
           >
             <MainMenu>
-              <MainMenu.ItemLink href="https://google.com">Google</MainMenu.ItemLink>
-              <MainMenu.ItemLink href="https://excalidraw.com">Excalidraw</MainMenu.ItemLink>
+              <MainMenu.ItemLink href="https://google.com" target="_blank">
+                🔍구글에서 이미지 찾기
+              </MainMenu.ItemLink>
+              <MainMenu.ItemLink href="https://pinterest.com" target="_blank">
+                📌핀터레스트에서 이미지 찾기
+              </MainMenu.ItemLink>
             </MainMenu>
             <WelcomeScreen>
               <WelcomeScreen.Center>
