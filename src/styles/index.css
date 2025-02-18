@@ -76,3 +76,7 @@ body {
 .excalidraw {
   --ui-font: 'Pretendard' !important;
 }
+
+.layer-ui__wrapper__top-right {
+  display: none !important;
+}
