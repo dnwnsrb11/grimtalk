@@ -19,10 +19,10 @@ export const LoginPage = () => {
 
   return (
     <div className="mt-[200px] flex h-full items-center justify-center gap-2 pb-[250px]">
-      <div className="relative z-10 w-80 rounded-lg bg-white bg-opacity-80 p-5 shadow-lg">
-        <div className="mb-1 flex flex-row justify-between">
-          <p className="text-xl">로그인</p>
-          <p className="pt-2 text-xs">오신 것을 환영합니다.</p>
+      <div className="relative z-10 w-96 rounded-2xl bg-white bg-opacity-80 p-8 shadow-lg">
+        <div className="mb-3 flex flex-row justify-between">
+          <p className="text-xl font-bold">로그인</p>
+          <p className="pt-2 text-[14px]">오신 것을 환영합니다.</p>
         </div>
 
         {/* onKeyDown 이벤트 추가 */}
@@ -30,14 +30,14 @@ export const LoginPage = () => {
           <input
             type="text"
             placeholder="이메일을 입력하세요"
-            className="h-10 rounded-md border border-gray-border-color pl-3"
+            className="h-10 rounded-md border border-gray-border-color pl-3 transition-all duration-200 hover:border-primary-color"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
             placeholder="비밀번호를 입력하세요"
-            className="h-10 rounded-md border border-gray-border-color pl-3"
+            className="h-10 rounded-md border border-gray-border-color pl-3 transition-all duration-200 hover:border-primary-color"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
