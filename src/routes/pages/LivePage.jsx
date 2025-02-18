@@ -224,7 +224,7 @@ export const LivePage = () => {
               data.message.elements.forEach((el) => {
                 updateOrAddElementToArray(el);
               });
-              // console.log('🔄 화이트보드 업데이트 전 현재 요소들:', receivedElementsRef.current);
+              // 위에서 처리된 배열을 실제로 적용 -> updateScene
               roomCreatorAPIRef.current?.updateScene({
                 elements: receivedElementsRef.current,
               });
@@ -259,15 +259,13 @@ export const LivePage = () => {
       if (!isStompReady || !participantUtils.isCreator(nickname)) return;
 
       console.log('🎨 강사가 그린 데이터:', elements);
-
+      // message에 담아서 전달
       const message = {
         type: 'drawing',
         elements: elements,
         timestamp: Date.now(),
       };
-
-      // console.log('📤 전송하는 메시지:', message);
-
+      // stomp로 담아서 전달한다.
       stompService.client.publish({
         destination: `/sub/send/${curriculumSubject}`,
         body: JSON.stringify(message),
@@ -1024,7 +1022,6 @@ export const LivePage = () => {
 
                   // 복원된 요소가 있을 경우, 모든 복원된 요소를 한 번에 전송
                   if (restoredElements.length > 0) {
-                    console.log('🔄 복원된 요소들 전송:', restoredElements);
                     const allRestoredElements = restoredElements.map((el) => ({
                       ...el,
                       type: 'restored',
@@ -1034,7 +1031,6 @@ export const LivePage = () => {
                   }
                   // 삭제 이벤트가 있을 경우, 모든 삭제된 요소를 한 번에 전송
                   else if (deletedElements.length > 0) {
-                    console.log('🗑️ 삭제된 요소들 전송:', deletedElements);
                     const allDeletedElements = deletedElements.map((el) => ({
                       ...el,
                       type: 'deleted',
@@ -1046,13 +1042,11 @@ export const LivePage = () => {
                     const validElements = elements.filter((element) => !element.isDeleted);
                     if (validElements.length > 0) {
                       const latestElement = validElements[validElements.length - 1];
-                      console.log('✏️ 새로 추가 또는 업데이트된 요소 전송:', latestElement);
                       handleInstructorDrawingChange([latestElement]);
                     }
                   }
 
                   setRoomCreatorElements(elements);
-                  // console.log('💾 최종 roomCreatorElements 상태:', elements);
 
                   // 녹화 기능
                   const newLastElement = elements[elements.length - 1];
