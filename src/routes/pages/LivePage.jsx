@@ -203,6 +203,18 @@ export const LivePage = () => {
     setNowColor(newElement[0].strokeColor);
   };
 
+  // 선 색상 변경
+  const updateColor = (color) => {
+    if (!participantAPIRef) return;
+    if (color.startsWith('#')) {
+      participantAPIRef.current.updateScene({
+        appState: {
+          currentItemStrokeColor: color, // 선 색상
+        },
+      });
+    }
+  };
+
   // STOMP 연결 관리
   const setupStompConnection = useCallback(() => {
     if (!stompService || !curriculumSubject) return;
@@ -1213,12 +1225,15 @@ export const LivePage = () => {
                         {rangeProgress}%
                       </p>
                     </div>
-                    <div className="rounded-1 group flex h-10 items-center gap-1 rounded-xl border bg-[#F7F7F7] p-1 px-[10px]">
+                    <div className="rounded-1 group flex h-10 items-center gap-1 rounded-xl border border-[#EFEFEF] bg-[#F7F7F7] p-1 px-[10px]">
                       <div
                         className="h-[10px] w-[10px] rounded-full"
                         style={{ backgroundColor: nowColor }}
                       ></div>
-                      <button className="text-[#828282] transition-colors duration-150 group-hover:text-black">
+                      <button
+                        className="text-[#828282] transition-colors duration-150 group-hover:text-black"
+                        onClick={() => updateColor(nowColor)}
+                      >
                         <p>{nowColor}</p>
                       </button>
                     </div>
