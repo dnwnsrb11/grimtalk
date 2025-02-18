@@ -1,4 +1,4 @@
-import { Excalidraw, exportToBlob, WelcomeScreen } from '@excalidraw/excalidraw';
+import { Excalidraw, exportToBlob, MainMenu, WelcomeScreen } from '@excalidraw/excalidraw';
 import { useQuery } from '@tanstack/react-query';
 import { animate } from 'motion';
 import { useEffect, useRef, useState } from 'react';
@@ -655,7 +655,16 @@ export const ReplayPage = () => {
                 viewBackgroundColor: 'transparent',
               },
             }}
+            UIOptions={{
+              tools: {
+                image: false, // 이미지 도구 비활성화
+              },
+            }}
           >
+            <MainMenu>
+              <MainMenu.ItemLink href="https://google.com">Google</MainMenu.ItemLink>
+              <MainMenu.ItemLink href="https://excalidraw.com">Excalidraw</MainMenu.ItemLink>
+            </MainMenu>
             <WelcomeScreen>
               <WelcomeScreen.Center>
                 <WelcomeScreen.Hints.ToolbarHint />

@@ -1074,6 +1074,11 @@ export const LivePage = () => {
                     currentItemBackgroundColor: '#ffffff',
                   },
                 }}
+                UIOptions={{
+                  tools: {
+                    image: false, // 이미지 도구 비활성화
+                  },
+                }}
               >
                 <WelcomeScreen>
                   <WelcomeScreen.Center>
@@ -1131,6 +1136,9 @@ export const LivePage = () => {
                         UIOptions={{
                           canvasActions: {
                             changeViewBackgroundColor: false,
+                          },
+                          tools: {
+                            image: false, // 이미지 도구 비활성화
                           },
                         }}
                       >
