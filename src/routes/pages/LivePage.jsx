@@ -18,6 +18,7 @@ import {
 } from '@/api/live';
 import { useNotificationStore } from '@/api/notification';
 import { LeftArrowIcon, OpacityIcon } from '@/components/common/icons';
+import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
 import { LoadingScreen } from '@/components/live/LoadingScreen';
 import {
@@ -812,6 +813,25 @@ export const LivePage = () => {
 
           {/* 채팅 컴포넌트 */}
           <LiveKitRoom serverUrl={LIVEKIT_URL} token={chatToken} connect={true}>
+            {/* 방장의 오디오 트랙 렌더링 */}
+            {!participantUtils.isCreator(nickname) &&
+              remoteTracks.length > 0 &&
+              remoteTracks
+                .filter(
+                  (track) =>
+                    track.participantIdentity ===
+                      participantUtils.getTokenParticipantName(
+                        liveStore.roomCreator,
+                        TOKEN_TYPES.RTC,
+                      ) && track.trackPublication.kind === 'audio',
+                )
+                .map((remoteTrack) => (
+                  <AudioComponent
+                    key={remoteTrack.trackPublication.trackSid}
+                    track={remoteTrack.trackPublication.audioTrack}
+                  />
+                ))}
+
             <CustomChat
               onLeave={handleLeaveAttempt}
               isCreator={participantUtils.isCreator(nickname)}
