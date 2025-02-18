@@ -107,28 +107,28 @@ export const LivePage = () => {
   // timeHistory 업데이트
   useEffect(() => {
     if (lastElement !== null) {
-      //null이 아니면 업데이트 시작
-      setTimeHistory((prevHistory) => [
-        ...prevHistory, // 기존 배열에 새 요소 추가
-        {
-          time: elapsedTime,
-          element: lastElement, // lastElement만 추가
-        },
-      ]);
+      if (elapsedTime !== 0) {
+        //null이 아니면 업데이트 시작
+        setTimeHistory((prevHistory) => [
+          ...prevHistory, // 기존 배열에 새 요소 추가
+          {
+            time: elapsedTime,
+            element: lastElement, // lastElement만 추가
+          },
+        ]);
+      }
     }
   }, [lastElement]); // elapsedTime과 lastElement만 의존성으로 설정
 
   // 전달기능
   const sendDataButton = () => {
     setSendData(timeHistory);
-    console.log('~!!!!데이터');
     console.log(timeHistory);
   };
 
   const { mutate: addStroke } = useAddStrokeMutation(curriculumId);
   useEffect(() => {
     if (sendData) {
-      console.log('전달 데이터:', sendData);
       addStroke(sendData); // strokeData는 여기서 전달
     }
   }, [sendData]);
@@ -136,11 +136,11 @@ export const LivePage = () => {
   // 요소를 하나씩 추가하거나 최신화하는 함수(출력)
   const updateOrAddElementToArray = (newElement) => {
     console.log('🔄 updateOrAddElementToArray 실행. 새로운 요소:', newElement);
-    console.log('현재 화이트보드 요소들:', receivedElementsRef.current);
+    // console.log('현재 화이트보드 요소들:', receivedElementsRef.current);
 
     // 삭제된 요소 처리
     if (newElement.type === 'deleted') {
-      console.log('❌ 삭제 요소 처리 중:', newElement);
+      // console.log('❌ 삭제 요소 처리 중:', newElement);
       // 삭제할 요소의 인덱스 찾기
       const deleteIndex = receivedElementsRef.current.findIndex(
         (element) => element.id === newElement.id,
@@ -151,14 +151,14 @@ export const LivePage = () => {
         receivedElementsRef.current = receivedElementsRef.current.filter(
           (_, index) => index !== deleteIndex,
         );
-        console.log('삭제 후 화이트보드 요소들:', receivedElementsRef.current);
+        // console.log('삭제 후 화이트보드 요소들:', receivedElementsRef.current);
       }
       return; // 삭제 처리 후 함수 종료
     }
 
     // 복원된 요소 처리
     if (newElement.type === 'restored') {
-      console.log('🔄 복원 요소 처리 중:', newElement);
+      // console.log('🔄 복원 요소 처리 중:', newElement);
       const existingIndex = receivedElementsRef.current.findIndex(
         (element) => element.id === newElement.id,
       );
@@ -173,7 +173,7 @@ export const LivePage = () => {
             isDeleted: false,
           },
         ];
-        console.log('복원 후 화이트보드 요소들:', receivedElementsRef.current);
+        // console.log('복원 후 화이트보드 요소들:', receivedElementsRef.current);
       }
       return;
     }
@@ -185,14 +185,14 @@ export const LivePage = () => {
 
     if (existingIndex !== -1) {
       // 기존 요소가 있으면 최신화
-      console.log('🔄 기존 요소 업데이트:', newElement);
+      // console.log('🔄 기존 요소 업데이트:', newElement);
       receivedElementsRef.current[existingIndex] = newElement;
     } else {
       // 없으면 새로 추가
-      console.log('➕ 새 요소 추가:', newElement);
+      // console.log('➕ 새 요소 추가:', newElement);
       receivedElementsRef.current = [...receivedElementsRef.current, newElement];
     }
-    console.log('최종 화이트보드 요소들:', receivedElementsRef.current);
+    // console.log('최종 화이트보드 요소들:', receivedElementsRef.current);
   };
 
   // STOMP 연결 관리
@@ -218,12 +218,12 @@ export const LivePage = () => {
             console.log('📥 수신된 드로잉 데이터:', data.message);
 
             if (data.message.type === 'drawing') {
-              console.log('🎨 화이트보드에 적용할 요소들:', data.message.elements);
+              // console.log('🎨 화이트보드에 적용할 요소들:', data.message.elements);
               // 메시지의 모든 요소를 순회하며 업데이트 처리
               data.message.elements.forEach((el) => {
                 updateOrAddElementToArray(el);
               });
-              console.log('🔄 화이트보드 업데이트 전 현재 요소들:', receivedElementsRef.current);
+              // console.log('🔄 화이트보드 업데이트 전 현재 요소들:', receivedElementsRef.current);
               roomCreatorAPIRef.current?.updateScene({
                 elements: receivedElementsRef.current,
               });
@@ -265,7 +265,7 @@ export const LivePage = () => {
         timestamp: Date.now(),
       };
 
-      console.log('📤 전송하는 메시지:', message);
+      // console.log('📤 전송하는 메시지:', message);
 
       stompService.client.publish({
         destination: `/sub/send/${curriculumSubject}`,
@@ -986,21 +986,21 @@ export const LivePage = () => {
             <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
               <Excalidraw
                 onChange={(elements) => {
-                  console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
+                  // console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
 
                   // 이전 상태와 비교하여 삭제된 요소 찾기
                   const deletedElements = elements.filter((currentEl) => {
                     const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
                     return prevEl && !prevEl.isDeleted && currentEl.isDeleted;
                   });
-                  console.log('🗑️ 감지된 삭제된 요소들:', deletedElements);
+                  // console.log('🗑️ 감지된 삭제된 요소들:', deletedElements);
 
                   // 이전 상태와 비교하여 복원된(undo) 요소 찾기
                   const restoredElements = elements.filter((currentEl) => {
                     const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
                     return prevEl && prevEl.isDeleted && !currentEl.isDeleted;
                   });
-                  console.log('🔄 감지된 복원된 요소들:', restoredElements);
+                  // console.log('🔄 감지된 복원된 요소들:', restoredElements);
 
                   // 복원된 요소가 있을 경우, 모든 복원된 요소를 한 번에 전송
                   if (restoredElements.length > 0) {
@@ -1032,7 +1032,7 @@ export const LivePage = () => {
                   }
 
                   setRoomCreatorElements(elements);
-                  console.log('💾 최종 roomCreatorElements 상태:', elements);
+                  // console.log('💾 최종 roomCreatorElements 상태:', elements);
 
                   // 녹화 기능
                   const newLastElement = elements[elements.length - 1];
