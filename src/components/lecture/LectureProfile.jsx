@@ -255,7 +255,13 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                 {lecture?.instructorInfo?.intro === null ? (
                   <p className="font-medium text-text-gray-color">작성된 소개 메시지가 없습니다.</p>
                 ) : (
-                  <p className="whitespace-pre-line">{lecture?.instructorInfo?.intro}</p>
+                  <p className="whitespace-pre-line">
+                    {lecture?.instructorInfo?.intro
+                      ? lecture.instructorInfo.intro.length > 100
+                        ? `${lecture.instructorInfo.intro.slice(0, 100)}...`
+                        : lecture.instructorInfo.intro
+                      : ''}
+                  </p>
                 )}
               </div>
               <div className="mt-[15px] flex gap-3">
