@@ -107,14 +107,16 @@ export const LivePage = () => {
   // timeHistory 업데이트
   useEffect(() => {
     if (lastElement !== null) {
-      //null이 아니면 업데이트 시작
-      setTimeHistory((prevHistory) => [
-        ...prevHistory, // 기존 배열에 새 요소 추가
-        {
-          time: elapsedTime,
-          element: lastElement, // lastElement만 추가
-        },
-      ]);
+      if (elapsedTime !== 0) {
+        //null이 아니면 업데이트 시작
+        setTimeHistory((prevHistory) => [
+          ...prevHistory, // 기존 배열에 새 요소 추가
+          {
+            time: elapsedTime,
+            element: lastElement, // lastElement만 추가
+          },
+        ]);
+      }
     }
   }, [lastElement]); // elapsedTime과 lastElement만 의존성으로 설정
 
