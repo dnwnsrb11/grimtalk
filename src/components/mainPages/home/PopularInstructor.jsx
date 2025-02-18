@@ -6,7 +6,6 @@ import {
   RankOneBadgeIcon,
   RankThreeBadgeIcon,
   RankTwoBadgeIcon,
-  SubscribeIcon,
 } from '@/components/common/icons';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -23,7 +22,7 @@ export const PopularInstructor = ({ index, instroductor }) => {
   const instroductorMemberId = instroductor?.memberId;
   // console.log('현재 로그인한 유저 ID:', id);
   // const icons = [rankOneBadgeIcon, rankTwoBadgeIcon, rankThreeBadgeIcon, rankFourBadgeIcon];
-  console.log(index);
+
   return (
     <>
       <div className="flex items-center justify-between rounded-2xl border p-[20px]">
@@ -59,9 +58,12 @@ export const PopularInstructor = ({ index, instroductor }) => {
               <div className="flex flex-row">
                 {' '}
                 <div className="mr-1 flex flex-row items-center gap-2 rounded-2xl border bg-primary-color px-3 py-1 text-white">
-                  <SubscribeIcon className=" stroke-white text-white transition-colors duration-0 group-hover:stroke-black" />
+                  {/* <SubscribeIcon className=" stroke-white text-white transition-colors duration-0 group-hover:stroke-black" /> */}
 
-                  <div>구독수 {instroductorSubscribed}</div>
+                  <div className="flex items-center gap-1 font-bold">
+                    {' '}
+                    <span className="text-[14px] font-light">구독수</span> {instroductorSubscribed}
+                  </div>
                 </div>
                 {instroductorTags?.map((tag, index) => (
                   <div
@@ -81,12 +83,12 @@ export const PopularInstructor = ({ index, instroductor }) => {
               navigate(`/mypage/${instroductorMemberId}`, {
                 state: {
                   joinId: instroductorMemberId,
-                  selectedMenu: '유저소개,',
+                  selectedMenu: '유저소개',
                   selectedProfileMenu: '강사',
                 },
               })
             }
-            className='className="w-[140px] text-center" px-1 py-3 text-[16px] text-[#828282] transition-all duration-150 hover:text-[17px] hover:text-black'
+            className='className="w-[140px] text-center" rounded-2xl bg-[#FFC2B4] px-1 py-3 hover:scale-105 hover:bg-[#FFC2B4]/80'
           >
             <p className=" px-1 font-light ">자세히 보기 &gt;</p>
           </button>

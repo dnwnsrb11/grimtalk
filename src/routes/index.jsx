@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
 import { RootLayout } from '@/layouts/RootLayout';
 import { AiComparePage } from '@/routes/pages/AiComparePage';
@@ -95,6 +95,10 @@ const router = createBrowserRouter([
       {
         path: '/findpassword',
         element: <FindPasswordPage />,
+      },
+      {
+        path: '*',
+        element: <Navigate to="/notfound" replace />,
       },
     ],
   },

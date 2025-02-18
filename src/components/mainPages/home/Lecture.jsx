@@ -53,7 +53,7 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
   return (
     <div className="w-full">
       <div>
-        <div onClick={() => navigate(`/lecture/${lectureId}`)}>
+        <button onClick={() => navigate(`/lecture/${lectureId}`)}>
           {/* 🔹 이미지 크기 통일 */}
           <div className="max-h-[175px] min-h-[175px] w-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
             <img
@@ -88,7 +88,7 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
               </div>
             </div>
           </div>
-        </div>
+        </button>
 
         {showStar && (
           <div className="mt-2 flex items-center gap-2">

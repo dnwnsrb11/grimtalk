@@ -104,9 +104,9 @@ export const InstructorDashboardSection = ({ nickname }) => {
             <div className="flex flex-col justify-center">
               {totalLectureElement ? (
                 <>
-                  <p className="text-xl text-[#6E6E6E]">가장 많은 라이브 시청수를 가진 방송은</p>
+                  <p className="text-xl text-[#6E6E6E]">만드신 강의 총 개수는</p>
                   <p className="text-xl text-[#6E6E6E]">
-                    <span className="font-semibold text-black">{totalLectureElement}</span> 명
+                    <span className="font-semibold text-black">{totalLectureElement}</span> 개
                     입니다!
                   </p>
                 </>

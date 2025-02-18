@@ -1,8 +1,9 @@
+import { motion } from 'motion/react';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useLogout } from '@/api/auth';
-import { AlarmIcon, LogoIcon, ReadingGlassesIcon } from '@/components/common/icons';
+import { LogoIcon, ReadingGlassesIcon } from '@/components/common/icons';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export const Navbar = () => {
@@ -64,9 +65,15 @@ export const Navbar = () => {
   return (
     <div className="flex items-center">
       {/* 로고 */}
-      <button onClick={() => navigate('/')} className="focus:outline-none">
+      <motion.button
+        onClick={() => navigate('/')}
+        className="focus:outline-none"
+        whileHover={{ scale: 1.1, rotate: 3 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 10 }}
+      >
         <LogoIcon />
-      </button>
+      </motion.button>
 
       {/* 네비게이션 메뉴 */}
       <div className="ml-[50px] flex flex-row gap-[25px] text-[18px]">
@@ -138,19 +145,16 @@ export const Navbar = () => {
           </div>
         )}
 
-        {/* 알림 버튼 */}
         {isLogin && (
-          <button
-            onClick={toggleModal}
-            className="group relative ml-[15px] flex h-[41px] w-[41px] items-center justify-center rounded-xl bg-[#EFEFEF] transition-all duration-200 hover:scale-110 hover:bg-primary-color focus:outline-none"
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="ml-5 text-text-gray-color"
           >
-            <AlarmIcon className="group-hover:stroke-white" />
-            {notificationCount > 0 && (
-              <div className="absolute -right-1.5 -top-1.5 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-500 text-xs text-white transition-all duration-200 group-hover:border group-hover:bg-white group-hover:text-black">
-                {notificationCount}
-              </div>
-            )}
-          </button>
+            <span className="font-bold text-primary-color">{userData.nickname}</span>
+            <p>님 환영합니다!</p>
+          </motion.div>
         )}
       </div>
     </div>
