@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import Lottie from 'react-lottie';
 import { useNavigate } from 'react-router-dom';
 
 import { useLogin } from '@/api/auth';
+import welcomeMotion from '@/assets/lottie/welcomeMotion.json';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -17,9 +19,21 @@ export const LoginPage = () => {
     }
   };
 
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: welcomeMotion,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
+
   return (
-    <div className="mt-[200px] flex h-full items-center justify-center gap-2 pb-[250px]">
-      <div className="relative z-10 w-96 rounded-2xl bg-white bg-opacity-80 p-8 shadow-lg">
+    <div className="mt-[200px] flex h-full flex-col items-center justify-center gap-2 pb-[250px]">
+      <div className="mb-[30px]">
+        <Lottie options={defaultOptions} height={80} width={330} />
+      </div>
+      <div className="relative z-10 w-96 rounded-2xl border bg-white bg-opacity-80 p-8">
         <div className="mb-3 flex flex-row justify-between">
           <p className="text-xl font-bold">로그인</p>
           <p className="pt-2 text-[14px]">오신 것을 환영합니다.</p>
