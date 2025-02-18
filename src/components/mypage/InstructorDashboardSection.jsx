@@ -111,7 +111,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
                   </p>
                 </>
               ) : (
-                <p className="text-xl text-gray-500">라이브 시청 기록이 없습니다.</p>
+                <p className="text-xl text-gray-500">만드신 강의가 없습니다.</p>
               )}
             </div>
           </div>
