@@ -81,7 +81,7 @@ export const PopularInstructor = ({ index, instroductor }) => {
               navigate(`/mypage/${instroductorMemberId}`, {
                 state: {
                   joinId: instroductorMemberId,
-                  selectedMenu: '유저소개,',
+                  selectedMenu: '유저소개',
                   selectedProfileMenu: '강사',
                 },
               })
