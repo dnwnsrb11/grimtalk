@@ -26,8 +26,16 @@ export const MemberIntroSection = ({ joinId }) => {
       const { data } = await _axiosAuth.get(`/user/${joinId}`);
       return data.body.data.intro;
     },
-    enabled: !!joinId, // joinId가 있을 때만 요청
+    // enabled: !!joinId, // joinId가 있을 때만 요청
     staleTime: 0,
+    onSuccess: (data) => {
+      console.log(data.body.code);
+      if (data.body.code !== 200) {
+        alert('로그인 후 이용해주세요.');
+        console.log('ㅁㄴㅇㄹ');
+        navigate('/login');
+      }
+    },
   });
   // fetch로 바로 조회
   useEffect(() => {

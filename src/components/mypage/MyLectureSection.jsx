@@ -12,14 +12,16 @@ export const MyLectureSection = ({ joinId, myid }) => {
   const [selectedLecture, setSelectedLecture] = useState(null);
   // 내 강의 목록 조회
   const { data: myLectures } = useQuery({
-    queryKey: ['myLectures'],
+    queryKey: ['myLectures', joinId], // 🔹 joinId를 key에 추가하여 변경 감지
     queryFn: async () => {
-      const { data } = await _axiosAuth.get(`/mypage/lecture`);
-
+      const url = myid === joinId ? `/mypage/lecture` : `/user/lecture/${joinId}`;
+      const { data } = await _axiosAuth.get(url);
+      console.log(data);
       return data.body.data.list;
     },
     staleTime: 0,
   });
+
   const [isEditing, setIsEditing] = useState(false);
   const handleUpdate = (lecture) => {
     setSelectedLecture(lecture);
@@ -31,8 +33,8 @@ export const MyLectureSection = ({ joinId, myid }) => {
     <>
       {!isEditing ? (
         <div className="grid grid-cols-3 gap-3">
-          {myLectures && myLectures.length > 0 ? (
-            myLectures.map((myLecture, index) => (
+          {myLectures && myLectures?.length > 0 ? (
+            myLectures?.map((myLecture, index) => (
               <div
                 key={index}
                 className="group relative cursor-pointer rounded-lg border border-gray-200 p-3"
