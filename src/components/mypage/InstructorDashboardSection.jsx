@@ -50,7 +50,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
                 title={myRecentLive?.subject}
                 image={myRecentLive?.image || posterNoneImg}
                 expectedLiveTime={myRecentLive?.expectedLiveTime}
-                id={myRecentLive.replayId}
+                id={myRecentLive?.lectureId}
               />
             ) : (
               <div className="py-4 pt-[6%] text-center text-gray-500">최근 라이브가 없습니다.</div>
