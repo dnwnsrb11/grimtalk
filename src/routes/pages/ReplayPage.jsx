@@ -1,11 +1,17 @@
-import { Excalidraw, exportToBlob } from '@excalidraw/excalidraw';
+import { Excalidraw, exportToBlob, WelcomeScreen } from '@excalidraw/excalidraw';
 import { useQuery } from '@tanstack/react-query';
 import { animate } from 'motion';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
-import { NextPlayIcon, OpacityIcon, PlayingIcon, StopIcon } from '@/components/common/icons';
+import {
+  FooterIcon,
+  NextPlayIcon,
+  OpacityIcon,
+  PlayingIcon,
+  StopIcon,
+} from '@/components/common/icons';
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayWorkList } from '@/components/replayPage/ReplayWorkList';
@@ -649,7 +655,19 @@ export const ReplayPage = () => {
                 viewBackgroundColor: 'transparent',
               },
             }}
-          />
+          >
+            <WelcomeScreen>
+              <WelcomeScreen.Center>
+                <WelcomeScreen.Hints.ToolbarHint />
+                <WelcomeScreen.Center.Logo>
+                  <FooterIcon className="opacity-50" />
+                </WelcomeScreen.Center.Logo>
+                <WelcomeScreen.Center.Heading>
+                  아래 재생버튼을 통해 강사의 그림을 다시 볼 수 있습니다!
+                </WelcomeScreen.Center.Heading>
+              </WelcomeScreen.Center>
+            </WelcomeScreen>
+          </Excalidraw>
         </div>
 
         <div ref={bottomCanvasRef} className="absolute inset-0 z-10">

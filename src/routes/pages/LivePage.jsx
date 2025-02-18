@@ -1,6 +1,6 @@
 import '@/styles/live.css';
 
-import { Excalidraw, exportToBlob } from '@excalidraw/excalidraw';
+import { Excalidraw, exportToBlob, WelcomeScreen } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { Client } from '@stomp/stompjs';
 import { AnimatePresence, motion } from 'motion/react';
@@ -17,7 +17,7 @@ import {
   useLiveCount,
 } from '@/api/live';
 import { useNotificationStore } from '@/api/notification';
-import { LeftArrowIcon, OpacityIcon } from '@/components/common/icons';
+import { FooterIcon, LeftArrowIcon, OpacityIcon } from '@/components/common/icons';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
 import { LoadingScreen } from '@/components/live/LoadingScreen';
@@ -1074,7 +1074,19 @@ export const LivePage = () => {
                     currentItemBackgroundColor: '#ffffff',
                   },
                 }}
-              />
+              >
+                <WelcomeScreen>
+                  <WelcomeScreen.Center>
+                    <WelcomeScreen.Hints.ToolbarHint />
+                    <WelcomeScreen.Center.Logo>
+                      <FooterIcon className="opacity-50" />
+                    </WelcomeScreen.Center.Logo>
+                    <WelcomeScreen.Center.Heading>
+                      본인의 그림을 수강생에게 표현해보세요!
+                    </WelcomeScreen.Center.Heading>
+                  </WelcomeScreen.Center>
+                </WelcomeScreen>
+              </Excalidraw>
             </div>
           ) : (
             <div className="flex h-[calc(100vh-50px)] flex-col">
@@ -1121,7 +1133,21 @@ export const LivePage = () => {
                             changeViewBackgroundColor: false,
                           },
                         }}
-                      />
+                      >
+                        <WelcomeScreen>
+                          <WelcomeScreen.Center>
+                            <WelcomeScreen.Hints.ToolbarHint />
+                            <WelcomeScreen.Center.Logo>
+                              <FooterIcon className="opacity-50" />
+                            </WelcomeScreen.Center.Logo>
+                            <WelcomeScreen.Center.Heading>
+                              강사의 그림을 따라 그려보세요!
+                              <br />
+                              아래의 버튼을 통해 겹치기/겹치기 해제를 할 수 있습니다.
+                            </WelcomeScreen.Center.Heading>
+                          </WelcomeScreen.Center>
+                        </WelcomeScreen>
+                      </Excalidraw>
                     </div>
                   </div>
                 </div>
