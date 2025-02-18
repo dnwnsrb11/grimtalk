@@ -1005,6 +1005,7 @@ export const LivePage = () => {
           {participantUtils.isCreator(nickname) ? (
             <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
               <Excalidraw
+                langCode="ko-KR"
                 onChange={(elements) => {
                   // console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
 
@@ -1103,6 +1104,7 @@ export const LivePage = () => {
                     </h3>
                     <div className="h-[calc(100%-40px)]">
                       <Excalidraw
+                        langCode="ko-KR"
                         excalidrawAPI={(api) => {
                           participantAPIRef.current = api;
                         }}
@@ -1138,6 +1140,7 @@ export const LivePage = () => {
                     </h3>
                     <div className="h-[calc(100%-40px)]">
                       <Excalidraw
+                        langCode="ko-KR"
                         excalidrawAPI={(api) => {
                           roomCreatorAPIRef.current = api;
                         }}

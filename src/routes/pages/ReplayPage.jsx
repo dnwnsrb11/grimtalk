@@ -641,6 +641,7 @@ export const ReplayPage = () => {
 
         <div className="absolute inset-0 z-20 border">
           <Excalidraw
+            langCode="ko-KR"
             // 엑스칼리드로우 사용하는 부분에 api도 연결
             excalidrawAPI={(api) => setTopExcalidrawAPI(api)}
             initialData={{
@@ -653,6 +654,7 @@ export const ReplayPage = () => {
 
         <div ref={bottomCanvasRef} className="absolute inset-0 z-10">
           <Excalidraw
+            langCode="ko-KR"
             viewModeEnabled={true}
             excalidrawAPI={(api) => setExcalidrawAPI(api)}
             initialData={{
