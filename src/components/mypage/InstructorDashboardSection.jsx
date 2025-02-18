@@ -26,6 +26,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
 
   // 나의 최근 라이브 변수
   const myRecentLive = instructorDashboard?.myRecentLive || null;
+  console.log(myRecentLive);
 
   // 총 구독자 수 변수
   const subscribeNumber = instructorDashboard?.subscribeNumber || null;
@@ -46,9 +47,10 @@ export const InstructorDashboardSection = ({ nickname }) => {
           <DashboardCard title="최근 나의 라이브">
             {myRecentLive ? (
               <DatedLectureCurriculumItem
-                title={myRecentLive}
+                title={myRecentLive?.subject}
                 image={myRecentLive?.image || posterNoneImg}
-                date={myRecentLive}
+                expectedLiveTime={myRecentLive?.expectedLiveTime}
+                id={myRecentLive.replayId}
               />
             ) : (
               <div className="py-4 pt-[6%] text-center text-gray-500">최근 라이브가 없습니다.</div>
