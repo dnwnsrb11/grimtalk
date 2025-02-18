@@ -5,7 +5,7 @@ export const AiCompareComponent = ({ data, analysisResult }) => {
     try {
       if (data?.length >= 3) {
         const sumScore = (data[0].myDrawing * 2 + data[1].myDrawing + data[2].myDrawing * 3) / 6;
-        return sumScore / 3;
+        return sumScore;
       }
       return 0; // 데이터가 부족한 경우
     } catch (error) {
