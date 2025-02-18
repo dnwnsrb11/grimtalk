@@ -15,6 +15,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
     queryKey: ['recentLive'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/dashboard/instructor`);
+      console.log(data);
       return data.body.data;
     },
     onError: () => {
@@ -25,12 +26,13 @@ export const InstructorDashboardSection = ({ nickname }) => {
 
   // 나의 최근 라이브 변수
   const myRecentLive = instructorDashboard?.myRecentLive || null;
+  console.log(myRecentLive);
 
   // 총 구독자 수 변수
   const subscribeNumber = instructorDashboard?.subscribeNumber || null;
 
   // 나의 강의 리스트 변수
-  const myLectures = instructorDashboard?.myLectures || [];
+  const myLectures = instructorDashboard?.liveCounts || [];
 
   // 시청자가 가장 많이 본 라이브 변수
   const totalLectureElement = instructorDashboard?.totalLectureElement || null;
@@ -45,9 +47,10 @@ export const InstructorDashboardSection = ({ nickname }) => {
           <DashboardCard title="최근 나의 라이브">
             {myRecentLive ? (
               <DatedLectureCurriculumItem
-                title={myRecentLive}
+                title={myRecentLive?.subject}
                 image={myRecentLive?.image || posterNoneImg}
-                date={myRecentLive}
+                expectedLiveTime={myRecentLive?.expectedLiveTime}
+                id={myRecentLive.replayId}
               />
             ) : (
               <div className="py-4 pt-[6%] text-center text-gray-500">최근 라이브가 없습니다.</div>
@@ -101,9 +104,9 @@ export const InstructorDashboardSection = ({ nickname }) => {
             <div className="flex flex-col justify-center">
               {totalLectureElement ? (
                 <>
-                  <p className="text-xl text-[#6E6E6E]">가장 많은 라이브 시청수를 가진 방송은</p>
+                  <p className="text-xl text-[#6E6E6E]">만드신 강의 총 개수는</p>
                   <p className="text-xl text-[#6E6E6E]">
-                    <span className="font-semibold text-black">{totalLectureElement}</span> 명
+                    <span className="font-semibold text-black">{totalLectureElement}</span> 개
                     입니다!
                   </p>
                 </>

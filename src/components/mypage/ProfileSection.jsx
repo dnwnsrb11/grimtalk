@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useLocation, useParams } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
-import posterNoneImg from '@/assets/posterNoneImg.png';
+import nonProfile from '@/assets/nonProfile.png';
 import {
   InstructorIcon,
   LeveloneBadgeIcon,
@@ -142,7 +142,7 @@ export const ProfileSection = ({
         {/* 프로필 이미지 -> 값이 없을 경우 랜더링 유무 체크 */}
         <img
           className=" h-40 w-40 rounded-full bg-white"
-          src={profileSectionCheck?.image || posterNoneImg}
+          src={profileSectionCheck?.image || nonProfile}
           alt="profile"
         />
         {/* 사용자 이름과 뱃지 */}

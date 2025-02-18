@@ -152,7 +152,8 @@ export const Navbar = () => {
             transition={{ duration: 0.5 }}
             className="ml-5 text-text-gray-color"
           >
-            <span className="font-bold text-primary-color">{userData.nickname}</span>님 환영합니다!
+            <span className="font-bold text-primary-color">{userData.nickname}</span>
+            <p>님 환영합니다!</p>
           </motion.div>
         )}
       </div>
