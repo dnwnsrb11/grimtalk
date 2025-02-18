@@ -35,7 +35,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
   const subscribeNumber = instructorDashboard?.subscribeNumber || null;
 
   // 나의 강의 리스트 변수
-  const myLectures = instructorDashboard?.liveCounts || [];
+  const myLectures = instructorDashboard?.myLectures || [];
 
   // 시청자가 가장 많이 본 라이브 변수
   const totalLectureElement = instructorDashboard?.totalLectureElement || null;
