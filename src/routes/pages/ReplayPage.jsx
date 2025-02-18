@@ -422,7 +422,7 @@ export const ReplayPage = () => {
                   {/* 움직이는 현재 시간 */}
                   <div className="opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                     <div
-                      className="border-gray-border-color absolute -top-14 rounded-xl border px-[20px] py-[5px]"
+                      className="absolute -top-14 rounded-xl border border-gray-border-color px-[20px] py-[5px]"
                       style={{
                         left: `${Math.min((currentTime / maxTime) * 100 - 7, 100)}%`,
                       }}
@@ -455,8 +455,6 @@ export const ReplayPage = () => {
                     step={0.1}
                     className="
                       [&::-webkit-slider-thumb]:scale-120
-                      after:bg-primary-color
-                      [&::-webkit-slider-thumb]:bg-primary-color
                       relative
                       m-0
                       h-10
@@ -472,12 +470,14 @@ export const ReplayPage = () => {
                       after:w-[var(--range-progress)]
                       after:-translate-y-1/2
                       after:rounded-xl
+                      after:bg-primary-color
                       [&::-webkit-slider-runnable-track]:h-full
                       [&::-webkit-slider-runnable-track]:rounded-xl
                       [&::-webkit-slider-runnable-track]:bg-[#E7E7EF]
                       [&::-webkit-slider-thumb]:w-4
                       [&::-webkit-slider-thumb]:appearance-none
                       [&::-webkit-slider-thumb]:rounded-xl
+                      [&::-webkit-slider-thumb]:bg-primary-color
                       [&::-webkit-slider-thumb]:transition-all
                       [&::-webkit-slider-thumb]:hover:scale-150
                       [&::-webkit-slider-thumb]:hover:shadow-lg
@@ -497,7 +497,7 @@ export const ReplayPage = () => {
             <div className="flex w-[25%] items-center gap-2">
               <div className="group relative flex w-[100%] items-center justify-center rounded-xl border">
                 {/* 투명도값 박스 -> 호버시 나타남 */}
-                <div className="border-gray-border-color absolute -top-0 z-0 rounded-xl border px-[20px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
+                <div className="absolute -top-0 z-0 rounded-xl border border-gray-border-color px-[20px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
                   <p className="text-text-gray-color">{rangeProgress}</p>
                 </div>
                 {/* 아이콘 위치 */}
@@ -513,7 +513,6 @@ export const ReplayPage = () => {
                   step={1}
                   className={`
                     [&::-webkit-slider-thumb]:scale-120
-                    [&::-webkit-slider-thumb]:bg-primary-color
                     relative
                     m-0
                     h-10
@@ -536,6 +535,7 @@ export const ReplayPage = () => {
                     [&::-webkit-slider-thumb]:w-4
                     [&::-webkit-slider-thumb]:appearance-none
                     [&::-webkit-slider-thumb]:rounded-xl
+                    [&::-webkit-slider-thumb]:bg-primary-color
                     [&::-webkit-slider-thumb]:transition-all
                     [&::-webkit-slider-thumb]:hover:scale-150
                     [&::-webkit-slider-thumb]:hover:shadow-lg
@@ -550,7 +550,7 @@ export const ReplayPage = () => {
               </div>
               {/* 현재 색상 + 색상 변경 */}
               <div
-                className="border-gray-border-color group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border bg-white px-[10px] py-[10px] transition-colors duration-300 hover:border-white hover:bg-[#E7E7EF]"
+                className="group relative flex min-w-[40%] cursor-pointer items-center justify-center gap-3 rounded-2xl border border-gray-border-color bg-white px-[10px] py-[10px] transition-colors duration-300 hover:border-white hover:bg-[#E7E7EF]"
                 onClick={() => updateColor(nowColor)}
               >
                 <div
@@ -558,7 +558,7 @@ export const ReplayPage = () => {
                   className="h-[30px] w-[10px] rounded-md text-center transition-colors duration-300"
                   style={{ backgroundColor: '#ffffff' }} // 초기값 설정
                 ></div>
-                <p className="text-replay-disable-btn-font-color text-[14px] font-light">
+                <p className="text-[14px] font-light text-replay-disable-btn-font-color">
                   {nowColor ? nowColor.toString().substring(0, 6) : ''}
                 </p>
                 <div className="absolute -top-0 rounded-xl border px-[15px] py-[5px] opacity-0 transition-all duration-500 group-hover:-top-14 group-hover:opacity-100">
@@ -568,9 +568,9 @@ export const ReplayPage = () => {
             </div>
             {/* 이미지 추출 기능 */}
             <div className="w-[80px] text-center">
-              <div className="border-gray-border-color hover:bg-primary-color group rounded-2xl border bg-white text-white transition-all duration-300">
+              <div className="group rounded-2xl border border-gray-border-color bg-white text-white transition-all duration-300 hover:bg-primary-color">
                 <button className="p-4" onClick={handleExportImage}>
-                  <p className="text-text-gray-color text-[16px] group-hover:text-white">완료</p>
+                  <p className="text-[16px] text-text-gray-color group-hover:text-white">완료</p>
                 </button>
               </div>
             </div>
