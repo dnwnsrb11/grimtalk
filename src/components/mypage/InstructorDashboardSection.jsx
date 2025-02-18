@@ -47,10 +47,10 @@ export const InstructorDashboardSection = ({ nickname }) => {
           <DashboardCard title="최근 나의 라이브">
             {myRecentLive ? (
               <DatedLectureCurriculumItem
-                title={myRecentLive.subject}
+                title={myRecentLive?.subject}
                 image={myRecentLive?.image || posterNoneImg}
-                expectedLiveTime={myRecentLive.expectedLiveTime}
-                // date={myRecentLive}
+                expectedLiveTime={myRecentLive?.expectedLiveTime}
+                id={myRecentLive.replayId}
               />
             ) : (
               <div className="py-4 pt-[6%] text-center text-gray-500">최근 라이브가 없습니다.</div>
