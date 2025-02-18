@@ -29,7 +29,7 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
       navigate('/notfound');
     },
   });
-
+  console.log(checkInstructor);
   const [score, setScore] = useState(0);
   const [reviewText, setReviewText] = useState('');
 
@@ -127,18 +127,21 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
               placeholder="강의에 대한 리뷰를 알려주세요~!"
               className="min-h-[200px] w-full resize-none rounded-2xl border border-gray-border-color p-5 transition-all duration-200 focus:border-primary-color focus:outline-none"
               maxLength={MAX_LENGTH}
+              disabled={checkInstructor} // ✅ 강사가 맞으면 입력 비활성화
             ></textarea>
             <small>
               {reviewText.length} / {MAX_LENGTH}
             </small>
-            <div className="mt-[10px] flex justify-end">
-              <button
-                className="rounded-2xl bg-primary-color px-[30px] py-[10px]"
-                onClick={() => addReviewMutation.mutate()}
-              >
-                <p className="text-[18px] font-semibold text-white">리뷰 작성하기</p>
-              </button>
-            </div>
+            {!checkInstructor && ( // ✅ 강사가 아닐 때만 버튼 표시
+              <div className="mt-[10px] flex justify-end">
+                <button
+                  className="rounded-2xl bg-primary-color px-[30px] py-[10px]"
+                  onClick={() => addReviewMutation.mutate()}
+                >
+                  <p className="text-[18px] font-semibold text-white">리뷰 작성하기</p>
+                </button>
+              </div>
+            )}
           </div>
         </div>
         <div>

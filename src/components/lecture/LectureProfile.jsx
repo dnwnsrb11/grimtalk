@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
 // nonImage 가져오기
+import nonImage from '@/assets/nonProfile.png';
 // 아이콘 가져오기
 import {
   CharacterIcon,
@@ -195,21 +196,30 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                 {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
                 <div className="overflow-hidden rounded-full">
                   <img
-                    src={lecture?.instructorInfo?.image || null}
+                    src={lecture?.instructorInfo?.image || nonImage}
                     alt="profileimg"
                     className="h-[162px] w-[162px]"
                   />
                 </div>
-                <div className="absolute bottom-0 right-0 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-disabled-font-color">
-                  {/* 뱃지 svg로 초기화 */}
-                  {lecture?.instructorInfo?.subscribeNumber <= 10 ? (
+                {lecture?.instructorInfo?.subscribeNumber >= 3 && (
+                  <div className="absolute bottom-0 right-0 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-disabled-font-color">
+                    {/* 뱃지 svg로 초기화 */}
+                    {/* {lecture?.instructorInfo?.subscribeNumber <= 10 ? (
                     <LeveloneBadgeIcon />
                   ) : lecture?.instructorInfo?.subscribeNumber <= 100 ? (
                     <LeveltwoBadgeIcon />
                   ) : lecture?.instructorInfo?.subscribeNumber >= 101 ? (
                     <LevelthirdBadgeIcon />
-                  ) : null}
-                </div>
+                  ) : null} */}
+                    {lecture?.instructorInfo?.subscribeNumber >= 101 ? (
+                      <LevelthirdBadgeIcon />
+                    ) : lecture?.instructorInfo?.subscribeNumber >= 10 ? (
+                      <LeveltwoBadgeIcon />
+                    ) : lecture?.instructorInfo?.subscribeNumber >= 3 ? (
+                      <LeveloneBadgeIcon />
+                    ) : null}
+                  </div>
+                )}
               </div>
             </div>
             <div>
@@ -221,7 +231,13 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                 {lecture?.instructorInfo?.intro === null ? (
                   <p className="font-medium text-text-gray-color">작성된 소개 메시지가 없습니다.</p>
                 ) : (
-                  <p className="whitespace-pre-line">{lecture?.instructorInfo?.intro}</p>
+                  <p className="whitespace-pre-line">
+                    {lecture?.instructorInfo?.intro
+                      ? lecture.instructorInfo.intro.length > 100
+                        ? `${lecture.instructorInfo.intro.slice(0, 100)}...`
+                        : lecture.instructorInfo.intro
+                      : ''}
+                  </p>
                 )}
               </div>
               <div className="mt-[15px] flex gap-3">
