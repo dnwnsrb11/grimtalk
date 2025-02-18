@@ -123,14 +123,12 @@ export const LivePage = () => {
   // 전달기능
   const sendDataButton = () => {
     setSendData(timeHistory);
-    console.log('~!!!!데이터');
     console.log(timeHistory);
   };
 
   const { mutate: addStroke } = useAddStrokeMutation(curriculumId);
   useEffect(() => {
     if (sendData) {
-      console.log('전달 데이터:', sendData);
       addStroke(sendData); // strokeData는 여기서 전달
     }
   }, [sendData]);
@@ -138,11 +136,11 @@ export const LivePage = () => {
   // 요소를 하나씩 추가하거나 최신화하는 함수(출력)
   const updateOrAddElementToArray = (newElement) => {
     console.log('🔄 updateOrAddElementToArray 실행. 새로운 요소:', newElement);
-    console.log('현재 화이트보드 요소들:', receivedElementsRef.current);
+    // console.log('현재 화이트보드 요소들:', receivedElementsRef.current);
 
     // 삭제된 요소 처리
     if (newElement.type === 'deleted') {
-      console.log('❌ 삭제 요소 처리 중:', newElement);
+      // console.log('❌ 삭제 요소 처리 중:', newElement);
       // 삭제할 요소의 인덱스 찾기
       const deleteIndex = receivedElementsRef.current.findIndex(
         (element) => element.id === newElement.id,
@@ -153,14 +151,14 @@ export const LivePage = () => {
         receivedElementsRef.current = receivedElementsRef.current.filter(
           (_, index) => index !== deleteIndex,
         );
-        console.log('삭제 후 화이트보드 요소들:', receivedElementsRef.current);
+        // console.log('삭제 후 화이트보드 요소들:', receivedElementsRef.current);
       }
       return; // 삭제 처리 후 함수 종료
     }
 
     // 복원된 요소 처리
     if (newElement.type === 'restored') {
-      console.log('🔄 복원 요소 처리 중:', newElement);
+      // console.log('🔄 복원 요소 처리 중:', newElement);
       const existingIndex = receivedElementsRef.current.findIndex(
         (element) => element.id === newElement.id,
       );
@@ -175,7 +173,7 @@ export const LivePage = () => {
             isDeleted: false,
           },
         ];
-        console.log('복원 후 화이트보드 요소들:', receivedElementsRef.current);
+        // console.log('복원 후 화이트보드 요소들:', receivedElementsRef.current);
       }
       return;
     }
@@ -187,14 +185,14 @@ export const LivePage = () => {
 
     if (existingIndex !== -1) {
       // 기존 요소가 있으면 최신화
-      console.log('🔄 기존 요소 업데이트:', newElement);
+      // console.log('🔄 기존 요소 업데이트:', newElement);
       receivedElementsRef.current[existingIndex] = newElement;
     } else {
       // 없으면 새로 추가
-      console.log('➕ 새 요소 추가:', newElement);
+      // console.log('➕ 새 요소 추가:', newElement);
       receivedElementsRef.current = [...receivedElementsRef.current, newElement];
     }
-    console.log('최종 화이트보드 요소들:', receivedElementsRef.current);
+    // console.log('최종 화이트보드 요소들:', receivedElementsRef.current);
   };
 
   // STOMP 연결 관리
