@@ -4,21 +4,21 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
-import artDeactiveSVG from '@/assets/category/art-deactive.svg';
-import characterDeactiveSVG from '@/assets/category/character-deactive.svg';
-import coloringDeactiveSVG from '@/assets/category/coloring-deactive.svg';
-import drawingDeactiveSVG from '@/assets/category/drawing-deactive.svg';
-import emoticonDeactiveSVG from '@/assets/category/emoticon-deactive.svg';
-import webtoonDeactiveSVG from '@/assets/category/webtoon-deactive.svg';
 // nonImage 가져오기
 import nonImage from '@/assets/nonProfile.png';
 // 아이콘 가져오기
 import {
+  CharacterIcon,
+  ColoringIcon,
+  ConceptArtIcon,
+  DrawingIcon,
+  EmoticonIcon,
   FavoriteIcon,
   LeveloneBadgeIcon,
   LevelthirdBadgeIcon,
   LeveltwoBadgeIcon,
   SubscribeIcon,
+  WebtoonIcon,
 } from '@/components/common/icons';
 import { LiveClock } from '@/components/lecture/LiveClock';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
@@ -173,23 +173,15 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
           </div>
           <div className="flex items-end">
             <div className=" flex items-center gap-2 rounded-full border bg-primary-color px-3 py-1">
-              {lecture?.category === '웹툰' && (
-                <img src={webtoonDeactiveSVG} alt="웹툰" className="h-5 w-5" />
-              )}
+              {lecture?.category === '웹툰' && <WebtoonIcon className="h-5 w-5" fill="white" />}
               {lecture?.category === '이모티콘' && (
-                <img src={emoticonDeactiveSVG} alt="이모티콘" className="h-5 w-5" />
+                <EmoticonIcon className="h-5 w-5" fill="white" />
               )}
-              {lecture?.category === '캐릭터' && (
-                <img src={characterDeactiveSVG} alt="캐릭터" className="h-5 w-5" />
-              )}
-              {lecture?.category === '드로잉' && (
-                <img src={drawingDeactiveSVG} alt="드로잉" className="h-5 w-5" />
-              )}
-              {lecture?.category === '컬러링' && (
-                <img src={coloringDeactiveSVG} alt="컬러링" className="h-5 w-5" />
-              )}
+              {lecture?.category === '캐릭터' && <CharacterIcon className="h-5 w-5" fill="white" />}
+              {lecture?.category === '드로잉' && <DrawingIcon className="h-5 w-5" fill="white" />}
+              {lecture?.category === '컬러링' && <ColoringIcon className="h-5 w-5" fill="white" />}
               {lecture?.category === '컨셉 아트' && (
-                <img src={artDeactiveSVG} alt="컨셉아트" className="h-5 w-5" />
+                <ConceptArtIcon className="h-5 w-5" fill="white" />
               )}
               <p className="text-white">{lecture?.category}</p>
             </div>

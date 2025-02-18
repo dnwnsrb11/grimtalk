@@ -22,7 +22,7 @@ export const PopularInstructor = ({ index, instroductor }) => {
   const instroductorMemberId = instroductor?.memberId;
   // console.log('현재 로그인한 유저 ID:', id);
   // const icons = [rankOneBadgeIcon, rankTwoBadgeIcon, rankThreeBadgeIcon, rankFourBadgeIcon];
-  console.log(index);
+
   return (
     <>
       <div className="flex items-center justify-between rounded-2xl border p-[20px]">

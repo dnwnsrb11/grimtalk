@@ -1,6 +1,7 @@
 // nonImage 가져오기
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useLocation, useParams } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
@@ -15,7 +16,6 @@ import {
 } from '@/components/common/icons';
 import { NavigationMenu } from '@/components/mypage/NavigationMenu';
 import { useAuthStore } from '@/store/useAuthStore';
-
 // 마이페이지의 프로필 섹션을 담당하는 컴포넌트
 export const ProfileSection = ({
   selectedMenu, // 현재 선택된 네비게이션 메뉴
@@ -71,7 +71,7 @@ export const ProfileSection = ({
       return data;
     },
     onSuccess: () => {
-      alert('강사 구독이 추가되었습니다.');
+      toast.success('강사 구독이 추가되었습니다.');
       setCheckSubscribe(true);
     },
     onError: (error) => {
@@ -86,7 +86,7 @@ export const ProfileSection = ({
       return data;
     },
     onSuccess: () => {
-      alert('강사 구독이 취소되었습니다.');
+      toast.success('강사 구독이 취소되었습니다.');
       setCheckSubscribe(false);
     },
     onError: (error) => {

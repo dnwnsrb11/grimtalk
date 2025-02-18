@@ -120,11 +120,7 @@ export const MainPageLive = () => {
             </div>
           ) : (
             popularLiveRooms.map((liveRoom, index) => (
-              <div
-                key={index}
-                className="mb-[40px] w-[calc(25%_-_0.75rem)]"
-                onClick={() => handleJoinLive(liveRoom)}
-              >
+              <div key={index} className="mb-[40px] w-[calc(25%_-_0.75rem)]">
                 <LiveList
                   LiveRoom={liveRoom}
                   onJoinClick={() => handleJoinLive(liveRoom)}
