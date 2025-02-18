@@ -7,6 +7,7 @@ import { Banner } from '@/components/mainPages/home/Banner';
 import { CategoryList } from '@/components/mainPages/home/category/CategoryList';
 import { LectureItem } from '@/components/mainPages/home/category/LectureItem';
 
+
 export const MainPageCategory = () => {
   const [selectedCategory, setSelectCategory] = useState('');
   const location = useLocation();
