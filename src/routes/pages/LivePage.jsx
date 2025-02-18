@@ -196,6 +196,13 @@ export const LivePage = () => {
     // console.log('최종 화이트보드 요소들:', receivedElementsRef.current);
   };
 
+  //현재 색상값 최신화 로직
+  const [nowColor, setNowColor] = useState([]);
+  // 최신 내용의 색상값을 추가
+  const updateWalkList = (newElement) => {
+    setNowColor(newElement[0].strokeColor);
+  };
+
   // STOMP 연결 관리
   const setupStompConnection = useCallback(() => {
     if (!stompService || !curriculumSubject) return;
@@ -216,7 +223,6 @@ export const LivePage = () => {
         client.subscribe(`/pub/receive/${curriculumSubject}`, (message) => {
           try {
             const data = JSON.parse(message.body);
-            console.log('📥 수신된 드로잉 데이터:', data.message);
 
             if (data.message.type === 'drawing') {
               // console.log('🎨 화이트보드에 적용할 요소들:', data.message.elements);
@@ -228,7 +234,7 @@ export const LivePage = () => {
               roomCreatorAPIRef.current?.updateScene({
                 elements: receivedElementsRef.current,
               });
-              console.log('✅ 화이트보드 업데이트 완료');
+              updateWalkList(data.message.elements);
             }
           } catch (error) {
             console.error('❌ 메시지 파싱 실패:', error);
@@ -885,7 +891,7 @@ export const LivePage = () => {
                 <AlertDialogDescription className="break-keep text-base">
                   {participantUtils.isCreator(nickname) ? (
                     <>
-                      <h2 className="mb-3 text-xl font-bold text-primary-color">
+                      <h2 className="text-primary-color mb-3 text-xl font-bold">
                         라이브 종료 전 확인
                       </h2>
                       <p className="mb-2">
@@ -895,19 +901,19 @@ export const LivePage = () => {
                       </p>
                       <p className="mb-2">
                         종료 후,{' '}
-                        <span className="font-semibold text-primary-color">최종 완성 이미지</span>가
+                        <span className="text-primary-color font-semibold">최종 완성 이미지</span>가
                         다시보기 페이지에 업로드되어 수강생들이 확인할 수 있습니다. (
-                        <span className="font-semibold text-primary-color">이미지</span>는 종료 시{' '}
-                        <span className="font-semibold text-primary-color">자동으로 업로드</span>
+                        <span className="text-primary-color font-semibold">이미지</span>는 종료 시{' '}
+                        <span className="text-primary-color font-semibold">자동으로 업로드</span>
                         됩니다.)
                       </p>
-                      <p className="text-right font-semibold text-primary-color">
+                      <p className="text-primary-color text-right font-semibold">
                         정말로 종료하시겠습니까?
                       </p>
                     </>
                   ) : (
                     <>
-                      <h2 className="mb-3 text-xl font-bold text-primary-color">
+                      <h2 className="text-primary-color mb-3 text-xl font-bold">
                         라이브 퇴장 전 확인
                       </h2>
                       {lastNotification?.type === 'LIVE_END' ? (
@@ -916,22 +922,22 @@ export const LivePage = () => {
                             라이브를 퇴장하기 전,{' '}
                             <strong className="text-primary-color">AI 비교 버튼</strong>을 누르면
                             본인의 현재 이미지가 AI 비교 페이지에 업로드되어 강사의 그림과{' '}
-                            <span className="font-semibold text-primary-color">
+                            <span className="text-primary-color font-semibold">
                               얼마나 유사한지{' '}
                             </span>
                             비교를 받아보실 수 있습니다.
                           </p>
                           <p className="mb-2">
                             종료 후,{' '}
-                            <span className="font-semibold text-primary-color">
+                            <span className="text-primary-color font-semibold">
                               강사의 최종 완성 이미지
                             </span>
                             가{' '}
-                            <span className="font-semibold text-primary-color">
+                            <span className="text-primary-color font-semibold">
                               다시보기 페이지
                             </span>
                             에 업로드되니 다시{' '}
-                            <span className="font-semibold text-primary-color">강사의 그림</span>을
+                            <span className="text-primary-color font-semibold">강사의 그림</span>을
                             따라 그려보고 싶다면, 꼭 이용해주세요!
                           </p>
                         </>
@@ -1001,7 +1007,7 @@ export const LivePage = () => {
 
           {/* Excalidraw 컴포넌트 */}
           {participantUtils.isCreator(nickname) ? (
-            <div className="excalidraw-wrapper rounded-xl border border-gray-border-color bg-white p-4">
+            <div className="excalidraw-wrapper border-gray-border-color rounded-xl border bg-white p-4">
               <Excalidraw
                 onChange={(elements) => {
                   // console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
@@ -1075,7 +1081,7 @@ export const LivePage = () => {
               <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
                 <button
                   onClick={() => setIsOverlayMode(!isOverlayMode)}
-                  className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
+                  className="bg-primary-color rounded-lg px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
                 >
                   {isOverlayMode ? '겹치기 해제' : '겹치기'}
                 </button>
@@ -1090,7 +1096,7 @@ export const LivePage = () => {
                   `}
                 >
                   <div
-                    className={`h-full rounded-xl border border-gray-border-color ${isOverlayMode ? 'bg-transparent' : 'bg-white'} p-4`}
+                    className={`border-gray-border-color h-full rounded-xl border ${isOverlayMode ? 'bg-transparent' : 'bg-white'} p-4`}
                   >
                     <h3 className="mb-4 text-xl font-bold">
                       <span className="text-primary-color">내 </span>화이트보드
@@ -1126,7 +1132,7 @@ export const LivePage = () => {
                     order-1 bg-transparent
                   `}
                 >
-                  <div className="h-full rounded-xl border border-gray-border-color bg-white p-4">
+                  <div className="border-gray-border-color h-full rounded-xl border bg-white p-4">
                     <h3 className={`mb-4 text-xl font-bold ${isOverlayMode ? 'invisible' : ''}`}>
                       <span className="text-primary-color">방장 </span>화이트보드
                     </h3>
@@ -1160,7 +1166,7 @@ export const LivePage = () => {
 
                 {/* 투명도 조절 UI - 오버레이 모드에서만 표시 */}
                 {isOverlayMode && (
-                  <div className="absolute left-1/2 top-3 z-30 flex h-[50px] w-[200px] -translate-x-1/2 items-center gap-2 rounded-xl border border-gray-border-color bg-white p-4">
+                  <div className="border-gray-border-color absolute left-1/2 top-3 z-30 flex h-[50px] w-[200px] -translate-x-1/2 items-center gap-2 rounded-xl border bg-white p-4">
                     <div className="group relative flex w-full items-center justify-center rounded-xl border">
                       <div className="absolute left-3 z-10 flex items-center gap-2">
                         <OpacityIcon
@@ -1179,11 +1185,12 @@ export const LivePage = () => {
                         step={1}
                         className={`
                           [&::-webkit-slider-thumb]:scale-120
-                          relative m-0 h-10 w-full
-                          cursor-pointer appearance-none rounded-xl p-0
-                          after:absolute after:left-0 after:top-[50%]
-                          after:h-10 after:w-[var(--range-progress)]
-                          after:-translate-y-1/2 after:rounded-xl
+                          [&::-webkit-slider-thumb]:bg-primary-color relative m-0 h-10
+                          w-full cursor-pointer appearance-none rounded-xl
+                          p-0 after:absolute after:left-0
+                          after:top-[50%] after:h-10
+                          after:w-[var(--range-progress)] after:-translate-y-1/2
+                          after:rounded-xl
                           after:bg-[#E7E7EF]
                           [&::-webkit-slider-runnable-track]:h-10
                           [&::-webkit-slider-runnable-track]:rounded-xl
@@ -1191,7 +1198,6 @@ export const LivePage = () => {
                           [&::-webkit-slider-thumb]:w-4
                           [&::-webkit-slider-thumb]:appearance-none
                           [&::-webkit-slider-thumb]:rounded-xl
-                          [&::-webkit-slider-thumb]:bg-primary-color
                           [&::-webkit-slider-thumb]:transition-all
                           [&::-webkit-slider-thumb]:hover:scale-150
                           [&::-webkit-slider-thumb]:hover:shadow-lg
@@ -1203,7 +1209,7 @@ export const LivePage = () => {
                         }}
                         onChange={changeOpacity}
                       />
-                      <p className="absolute right-3 z-10 text-text-gray-color opacity-0 transition-all duration-300 group-hover:opacity-100">
+                      <p className="text-text-gray-color absolute right-3 z-10 opacity-0 transition-all duration-300 group-hover:opacity-100">
                         {rangeProgress}%
                       </p>
                     </div>
