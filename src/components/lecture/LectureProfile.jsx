@@ -201,16 +201,25 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                     className="h-[162px] w-[162px]"
                   />
                 </div>
-                <div className="absolute bottom-0 right-0 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-disabled-font-color">
-                  {/* 뱃지 svg로 초기화 */}
-                  {lecture?.instructorInfo?.subscribeNumber <= 10 ? (
+                {lecture?.instructorInfo?.subscribeNumber >= 3 && (
+                  <div className="absolute bottom-0 right-0 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-disabled-font-color">
+                    {/* 뱃지 svg로 초기화 */}
+                    {/* {lecture?.instructorInfo?.subscribeNumber <= 10 ? (
                     <LeveloneBadgeIcon />
                   ) : lecture?.instructorInfo?.subscribeNumber <= 100 ? (
                     <LeveltwoBadgeIcon />
                   ) : lecture?.instructorInfo?.subscribeNumber >= 101 ? (
                     <LevelthirdBadgeIcon />
-                  ) : null}
-                </div>
+                  ) : null} */}
+                    {lecture?.instructorInfo?.subscribeNumber >= 101 ? (
+                      <LevelthirdBadgeIcon />
+                    ) : lecture?.instructorInfo?.subscribeNumber >= 10 ? (
+                      <LeveltwoBadgeIcon />
+                    ) : lecture?.instructorInfo?.subscribeNumber >= 3 ? (
+                      <LeveloneBadgeIcon />
+                    ) : null}
+                  </div>
+                )}
               </div>
             </div>
             <div>
@@ -222,7 +231,13 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                 {lecture?.instructorInfo?.intro === null ? (
                   <p className="font-medium text-text-gray-color">작성된 소개 메시지가 없습니다.</p>
                 ) : (
-                  <p className="whitespace-pre-line">{lecture?.instructorInfo?.intro}</p>
+                  <p className="whitespace-pre-line">
+                    {lecture?.instructorInfo?.intro
+                      ? lecture.instructorInfo.intro.length > 100
+                        ? `${lecture.instructorInfo.intro.slice(0, 100)}...`
+                        : lecture.instructorInfo.intro
+                      : ''}
+                  </p>
                 )}
               </div>
               <div className="mt-[15px] flex gap-3">
