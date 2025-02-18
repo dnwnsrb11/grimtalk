@@ -23,7 +23,7 @@ export const MemberSettingsSection = () => {
     memberId: memberSettings?.email,
     memberPassword: 'password',
     memberSubscribeNumber: memberSettings?.subscribeNumber,
-    memberIntro: memberSettings?.intro,
+    memberIntro: memberSettings?.intro || '소개글을 작성해주세요.',
     memberImage: memberSettings?.image,
   };
   // console.log(memberSettings);
@@ -90,7 +90,15 @@ export const MemberSettingsSection = () => {
   // 수정 api 요청
   const memberSettingsChange = useMutation({
     mutationFn: async (formData) => {
-      const { data } = await _axiosAuth.put(`/user`, formData);
+      // console.log('ㅁㄴㅇㄴㅁㅇ');
+      formData.forEach((value, key) => {
+        console.log(`${key}:`, value);
+      });
+      const { data } = await _axiosAuth.put(`/user`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return data;
     },
     onSuccess: () => {
@@ -109,7 +117,14 @@ export const MemberSettingsSection = () => {
   });
 
   const handleSubmit = async () => {
-    if (!nickname.trim() || !memberIntro.trim() || !selectedFile) {
+    console.log('폼 제출 시작');
+
+    if (!nickname.trim() || !memberIntro.trim()) {
+      alert('닉네임과 소개글을 입력해주세요.');
+      return;
+    }
+
+    if (!selectedFile) {
       alert('프로필 이미지를 선택해주세요.');
       return;
     }
@@ -117,11 +132,14 @@ export const MemberSettingsSection = () => {
     const formData = new FormData();
     formData.append('nickname', nickname);
     formData.append('intro', memberIntro);
-    formData.append('image', selectedFile);
 
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
+    if (selectedFile) {
+      formData.append('image', selectedFile);
+    }
+
+    // formData.forEach((value, key) => {
+    //   console.log(`${key}:`, value);
+    // });
 
     memberSettingsChange.mutate(formData);
   };
@@ -166,7 +184,7 @@ export const MemberSettingsSection = () => {
         <div>
           <div>
             <div className="flex flex-row items-center gap-3">
-              <label className="text-xl font-bold">배너 이미지</label>
+              <label className="text-xl font-bold">프로필 이미지</label>
               <div className="relative inline-block">
                 <div className="group flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-gray-300 text-sm font-bold text-gray-800">
                   ?
@@ -236,7 +254,7 @@ export const MemberSettingsSection = () => {
         </button> */}
         <button
           onClick={handleSubmit}
-          disabled={!memberSettings} // memberSettings가 없으면 비활성화
+          // disabled={!memberSettings} // memberSettings가 없으면 비활성화
           className={`rounded-md px-4 py-2 text-sm font-semibold text-white 
     ${
       memberSettings

@@ -83,14 +83,14 @@ export const PopularInstructor = ({ index, instroductor }) => {
               navigate(`/mypage/${instroductorMemberId}`, {
                 state: {
                   joinId: instroductorMemberId,
-                  selectedMenu: '유저소개,',
+                  selectedMenu: '유저소개',
                   selectedProfileMenu: '강사',
                 },
               })
             }
-            className='className="w-[140px] text-center" rounded-2xl bg-[#FFC2B4] px-1 py-3'
+            className='className="w-[140px] text-center" px-1 py-3 text-[16px] text-[#828282] transition-all duration-150 hover:text-[17px] hover:text-black'
           >
-            <p className="px-1 text-lg font-medium text-[#D2310C]">소개 페이지</p>
+            <p className=" px-1 font-light ">자세히 보기 &gt;</p>
           </button>
         </div>
       </div>
