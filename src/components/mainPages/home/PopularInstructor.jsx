@@ -88,7 +88,7 @@ export const PopularInstructor = ({ index, instroductor }) => {
                 },
               })
             }
-            className='className="w-[140px] text-center" rounded-2xl bg-[#FFC2B4] px-1 py-3 hover:scale-105 hover:bg-[#FFC2B4]/80'
+            className='className="w-[140px] text-center" px-1 py-3 text-[16px] text-[#828282] transition-all duration-150 hover:text-[17px] hover:text-black'
           >
             <p className=" px-1 font-light ">자세히 보기 &gt;</p>
           </button>
