@@ -1,31 +1,34 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import { _axiosAuth } from '@/api/instance';
-import artDeactiveSVG from '@/assets/category/art-deactive.svg';
-import characterDeactiveSVG from '@/assets/category/character-deactive.svg';
-import coloringDeactiveSVG from '@/assets/category/coloring-deactive.svg';
-import drawingDeactiveSVG from '@/assets/category/drawing-deactive.svg';
-import emoticonDeactiveSVG from '@/assets/category/emoticon-deactive.svg';
-import webtoonDeactiveSVG from '@/assets/category/webtoon-deactive.svg';
 // nonImage 가져오기
+import nonImage from '@/assets/nonProfile.png';
 // 아이콘 가져오기
 import {
+  CharacterIcon,
+  ColoringIcon,
+  ConceptArtIcon,
+  DrawingIcon,
+  EmoticonIcon,
   FavoriteIcon,
   LeveloneBadgeIcon,
   LevelthirdBadgeIcon,
   LeveltwoBadgeIcon,
   SubscribeIcon,
+  WebtoonIcon,
 } from '@/components/common/icons';
 import { LiveClock } from '@/components/lecture/LiveClock';
 import { HashTagChip } from '@/components/mypage/HashTagChip';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useFavoriteStore } from '@/store/useFavoriteStore';
 
 export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }) => {
   const { id, email, nickname } = useAuthStore((state) => state.userData);
+  const { checkFavorite, setCheckFavorite } = useFavoriteStore();
   const navigate = useNavigate();
-  const [checkFavorite, setCheckFavorite] = useState(false);
   //   구독시 값에 따라 버튼 활성화, 비활성화 기능 구현
   const [checkSubscribe, setCheckSubscribe] = useState(false);
 
@@ -36,14 +39,13 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       return data;
     },
     onSuccess: () => {
-      alert('즐겨찾기가 추가되었습니다.'); // ✅ 성공 알림 추가
+      toast.success('즐겨찾기가 추가되었습니다.'); // ✅ 성공 알림 추가
       setCheckFavorite(true);
     },
     onError: (error) => {
       alert('즐겨찾기 추가 실패'); // ❌ 실패 알림 추가
     },
   });
-  console.log(lecture, '!@#@!#2!#!@#');
   // 강의 즐겨찾기 취소
   const lectureFavoriteCancel = useMutation({
     mutationFn: async () => {
@@ -51,7 +53,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       return data;
     },
     onSuccess: () => {
-      alert('즐겨찾기가 삭제제되었습니다.'); // ✅ 성공 알림 추가
+      toast.success('즐겨찾기가 삭제되었습니다.'); // ✅ 성공 알림 추가
       setCheckFavorite(false);
     },
     onError: (error) => {
@@ -63,10 +65,8 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
   const favoriteSubmit = async () => {
     if (!checkFavorite) {
       lectureFavorite.mutate();
-      console.log('추가');
     } else {
       lectureFavoriteCancel.mutate();
-      console.log('삭제');
     }
   };
 
@@ -79,7 +79,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       return data;
     },
     onSuccess: () => {
-      alert('강사 구독이 추가되었습니다.');
+      toast.success('강사 구독이 추가되었습니다.');
       setCheckSubscribe(true);
     },
     onError: (error) => {
@@ -94,7 +94,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       return data;
     },
     onSuccess: () => {
-      alert('강사 구독이 취소되었습니다.');
+      toast.success('강사 구독이 취소되었습니다.');
       setCheckSubscribe(false);
     },
     onError: (error) => {
@@ -125,19 +125,14 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
   useEffect(() => {
     if (!check || check.length === 0) return; // check가 없거나 빈 배열이면 실행 X
 
-    console.log('✅ check 값 변경됨:', check);
-
     // check 배열을 돌면서 lecture.instructorInfo.id와 비교
     const isMatched = check.some((item) => {
-      console.log('🔍 비교 중:', item.memberId, lecture?.instructorInfo?.id);
       return item.memberId === lecture?.instructorInfo?.id; // 올바르게 return 추가
     });
 
     if (isMatched) {
-      console.log('✅ 매칭된 ID 발견:', lecture?.instructorInfo?.id);
       setCheckSubscribe(true);
     } else {
-      console.log('❌ 매칭된 ID 없음');
       setCheckSubscribe(false);
     }
   }, [check, lecture?.instructorInfo?.id]); // check 또는 instructor ID가 변경될 때 실행
@@ -152,24 +147,13 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
   });
 
   useEffect(() => {
-    if (!checkF || !checkF.list || checkF.list.length === 0) return; // checkF.list가 없거나 빈 배열이면 실행 X
-
-    console.log('✅ 즐겨찾기 데이터 변경됨:', checkF);
-
-    // checkF.list 배열을 돌면서 lecture.lectureId와 비교
+    if (!checkF || !checkF.list || checkF.list.length === 0) return;
     const isMatched = checkF.list.some((item) => {
-      console.log('🔍 비교 중:', item.lectureId, lecture?.lectureId);
-      return item.lectureId === lecture?.lectureId; // return 추가
+      return item.lectureId === lecture?.lectureId;
     });
 
-    if (isMatched) {
-      console.log('✅ 즐겨찾기된 강의 발견:', lecture?.lectureId);
-      setCheckFavorite(true);
-    } else {
-      console.log('❌ 즐겨찾기된 강의 없음');
-      setCheckFavorite(false);
-    }
-  }, [checkF, lecture?.lectureId]); // checkF 또는 lecture.id 변경 시 실행
+    setCheckFavorite(isMatched);
+  }, [checkF, lecture?.lectureId, setCheckFavorite]);
 
   return (
     <>
@@ -189,23 +173,15 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
           </div>
           <div className="flex items-end">
             <div className=" flex items-center gap-2 rounded-full border bg-primary-color px-3 py-1">
-              {lecture?.category === '웹툰' && (
-                <img src={webtoonDeactiveSVG} alt="웹툰" className="h-5 w-5" />
-              )}
+              {lecture?.category === '웹툰' && <WebtoonIcon className="h-5 w-5" fill="white" />}
               {lecture?.category === '이모티콘' && (
-                <img src={emoticonDeactiveSVG} alt="이모티콘" className="h-5 w-5" />
+                <EmoticonIcon className="h-5 w-5" fill="white" />
               )}
-              {lecture?.category === '캐릭터' && (
-                <img src={characterDeactiveSVG} alt="캐릭터" className="h-5 w-5" />
-              )}
-              {lecture?.category === '드로잉' && (
-                <img src={drawingDeactiveSVG} alt="드로잉" className="h-5 w-5" />
-              )}
-              {lecture?.category === '컬러링' && (
-                <img src={coloringDeactiveSVG} alt="컬러링" className="h-5 w-5" />
-              )}
+              {lecture?.category === '캐릭터' && <CharacterIcon className="h-5 w-5" fill="white" />}
+              {lecture?.category === '드로잉' && <DrawingIcon className="h-5 w-5" fill="white" />}
+              {lecture?.category === '컬러링' && <ColoringIcon className="h-5 w-5" fill="white" />}
               {lecture?.category === '컨셉 아트' && (
-                <img src={artDeactiveSVG} alt="컨셉아트" className="h-5 w-5" />
+                <ConceptArtIcon className="h-5 w-5" fill="white" />
               )}
               <p className="text-white">{lecture?.category}</p>
             </div>
@@ -220,7 +196,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                 {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
                 <div className="overflow-hidden rounded-full">
                   <img
-                    src={lecture?.instructorInfo?.image || null}
+                    src={lecture?.instructorInfo?.image || nonImage}
                     alt="profileimg"
                     className="h-[162px] w-[162px]"
                   />

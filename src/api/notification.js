@@ -38,90 +38,88 @@ const subscribeToNotifications = () => {
   const accessToken = localStorage.getItem('accessToken');
   const queryClient = new QueryClient();
 
-  // 이미 연결이 존재하거나 로그인하지 않은 경우 구독하지 않음
   if (!isLogin || !accessToken || NotificationEventSource.getInstance()) return;
 
-  // 로그인 상태 변경 감지를 위한 구독 설정
-  const unsubscribeAuth = useAuthStore.subscribe(
-    (state) => [state.isLogin],
-    ([currentIsLogin]) => {
-      if (!currentIsLogin) {
-        NotificationEventSource.closeConnection();
-      }
-    },
-    { fireImmediately: false },
-  );
+  let reconnectAttempts = 0;
+  const MAX_RECONNECT_ATTEMPTS = 5;
+  const RECONNECT_DELAY = 3000;
 
   try {
-    // EventSourcePolyfill을 사용하여 SSE 연결 생성
     const newEventSource = new EventSourcePolyfill(
       `${import.meta.env.VITE_API_BASE_URL}/sse/notification/subscribe`,
       {
         headers: {
           'X-Access-Token': `Bearer ${accessToken}`,
+          Accept: 'text/event-stream',
         },
         withCredentials: true,
+        heartbeatTimeout: 45000,
       },
     );
 
-    // 새로운 알림 수신 시 이벤트 핸들러
-    newEventSource.addEventListener('notification', (event) => {
-      const notification = JSON.parse(event.data);
-      // 알림 상태 업데이트
-      useNotificationStore.getState().setLastNotification(notification);
-      // 토스트 메시지로 알림 표시 (커스텀 알림 아이콘 사용)
-      toast(notification.message, {
-        icon: '🔔',
-        position: 'top-right',
-      });
-      // 알림 목록 갱신
-      queryClient.invalidateQueries(['notifications']);
-    });
+    // 연결 시작 시 로그
+    newEventSource.onopen = () => {
+      console.log('SSE 연결이 성공적으로 설정되었습니다.');
+      reconnectAttempts = 0; // 연결 성공시 재시도 카운트 초기화
+    };
 
-    // 에러 발생 시 처리 및 재연결 로직
-    newEventSource.onerror = (error) => {
-      // 1초 후 재연결 시도
+    const reconnectSSE = () => {
+      if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+        console.error('최대 재연결 시도 횟수를 초과했습니다.');
+        NotificationEventSource.closeConnection();
+        return;
+      }
+
+      NotificationEventSource.closeConnection();
+      reconnectAttempts++;
+
+      console.log(
+        `${reconnectAttempts}번째 재연결 시도... ${RECONNECT_DELAY / 1000}초 후 시도합니다.`,
+      );
+
       setTimeout(() => {
         if (!NotificationEventSource.getInstance()) {
           subscribeToNotifications();
         }
-      }, 1000);
-      console.error('SSE Error:', error);
+      }, RECONNECT_DELAY);
     };
 
-    // 연결 상태 모니터링을 위한 변수와 상수 선언
-    const HEARTBEAT_TIMEOUT = 45000; // 45초
-    const HEARTBEAT_CHECK_INTERVAL = 15000; // 15초
-    let lastHeartbeatTime = Date.now();
+    // 에러 처리
+    newEventSource.onerror = (error) => {
+      console.error('SSE 연결 오류:', error);
 
-    newEventSource.addEventListener('ping', (event) => {
-      lastHeartbeatTime = Date.now();
-    });
-
-    // 연결 상태 모니터링
-    const heartbeatInterval = setInterval(() => {
-      const now = Date.now();
-      if (now - lastHeartbeatTime > HEARTBEAT_TIMEOUT) {
-        clearInterval(heartbeatInterval);
-        NotificationEventSource.closeConnection();
-        subscribeToNotifications(); // 재연결
+      if (newEventSource.readyState === EventSource.CLOSED) {
+        reconnectSSE();
       }
-    }, HEARTBEAT_CHECK_INTERVAL);
+    };
 
-    // 연결 종료 시 heartbeat 인터벌 정리
-    newEventSource.addEventListener('close', () => {
-      clearInterval(heartbeatInterval);
+    // 알림 이벤트 처리
+    newEventSource.addEventListener('notification', (event) => {
+      try {
+        const notification = JSON.parse(event.data);
+        useNotificationStore.getState().setLastNotification(notification);
+
+        // 토스트 메시지 표시 전에 기존 토스트 제거
+        toast.dismiss();
+        toast(notification.message, {
+          icon: '🔔',
+          position: 'top-right',
+          duration: 5000,
+        });
+
+        queryClient.invalidateQueries(['notifications']);
+      } catch (error) {
+        console.error('알림 처리 중 오류 발생:', error);
+      }
     });
 
     NotificationEventSource.setInstance(newEventSource);
   } catch (error) {
-    console.error('SSE Connection Error:', error);
-    NotificationEventSource.closeConnection();
+    console.error('SSE 초기 연결 실패:', error);
+    reconnectSSE();
   }
 
-  // 구독 해제 함수 반환
   return () => {
-    unsubscribeAuth();
     NotificationEventSource.closeConnection();
   };
 };
