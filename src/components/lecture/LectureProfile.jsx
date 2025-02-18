@@ -11,6 +11,7 @@ import drawingDeactiveSVG from '@/assets/category/drawing-deactive.svg';
 import emoticonDeactiveSVG from '@/assets/category/emoticon-deactive.svg';
 import webtoonDeactiveSVG from '@/assets/category/webtoon-deactive.svg';
 // nonImage 가져오기
+import nonImage from '@/assets/nonProfile.png';
 // 아이콘 가져오기
 import {
   FavoriteIcon,
@@ -203,7 +204,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                 {/*  현재 기본 이미지로 되어 잇는데 추후 값에 따라 다르게 렌더링 되게 변경 하기  */}
                 <div className="overflow-hidden rounded-full">
                   <img
-                    src={lecture?.instructorInfo?.image || null}
+                    src={lecture?.instructorInfo?.image || nonImage}
                     alt="profileimg"
                     className="h-[162px] w-[162px]"
                   />
