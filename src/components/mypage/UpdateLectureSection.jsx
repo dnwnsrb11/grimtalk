@@ -131,15 +131,33 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
 
   // 수정된 제출 핸들러
   const handleSubmit = async () => {
-    if (
-      !lecture.category ||
-      !lecture.subject ||
-      !lecture.intro ||
-      !lecture.hashtags ||
-      lecture.hashtags.length === 0 ||
-      curriculums.length === 0
-    ) {
-      toast.error('모든 필드를 입력해주세요.');
+    if (!lecture.subject) {
+      alert('강의 제목을 입력해주세요.');
+      return;
+    }
+
+    if (!lecture.intro) {
+      alert('강의 내용을 입력해주세요.');
+      return;
+    }
+
+    if (!lecture.category || lecture.category.length === 0) {
+      alert('강의 카테고리를 선택해주세요.');
+      return;
+    }
+
+    if (!lecture.bannerImage) {
+      alert('배너 이미지를 업로드해주세요.');
+      return;
+    }
+
+    if (!lecture.hashtags || lecture.hashtags.length === 0) {
+      alert('해시태그를 입력해주세요.');
+      return;
+    }
+
+    if (curriculums.length === 0) {
+      alert('커리큘럼을 입력해주세요.');
       return;
     }
 
@@ -231,7 +249,7 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
 
   // 커리큘럼 삭제
   const handleDeleteCurriculum = (id) => {
-    setCurriculums(curriculums.filter((curriculum) => curriculum.id !== id));
+    setCurriculums(curriculums.filter((curriculum) => curriculum.curriculumId !== id));
     toast.success('커리큘럼이 삭제되었습니다.');
   };
 
@@ -300,6 +318,9 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
         <small className="text-gray-500">
           {lecture.subject.length}/{MAX_LENGTH_SUBJECT}
         </small>
+        {!lecture.subject ? (
+          <p className="m-0 p-0 text-primary-color">강의 제목을 입력해주세요.</p>
+        ) : null}
       </div>
 
       {/* 커리큘럼 입력 폼 섹션 */}
@@ -381,7 +402,7 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
       <div className="grid grid-cols-1 gap-3">
         {curriculums.map((curriculum) => (
           <div
-            key={curriculum.id}
+            key={curriculum.curriculumId}
             className="rounded-[20px] border border-[#000000] border-opacity-20 p-5"
           >
             <p className="text-md font-semibold text-[#C6C6C6] opacity-90">커리큘럼 제목</p>
@@ -396,7 +417,7 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
               </span>
               <button
                 className="rounded-md bg-bg-gray-color px-3 py-2 text-sm text-common-font-color hover:bg-red-100"
-                onClick={() => handleDeleteCurriculum(curriculum.id)}
+                onClick={() => handleDeleteCurriculum(curriculum.curriculumId)}
               >
                 삭제
               </button>
@@ -417,6 +438,7 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
         <small className="text-gray-500">
           {lecture.intro.length}/{MAX_LENGTH}
         </small>
+        {!lecture.intro ? <p className=" text-primary-color">강의 내용을 입력해주세요.</p> : null}
       </div>
 
       {/* 배너 이미지 업로드 섹션 */}
@@ -455,6 +477,11 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
               이미지 찾기
             </button>
           </div>
+          {!lecture.bannerImage ? (
+            <p className=" text-primary-color">배너 이미지를 업로드해주세요.</p>
+          ) : (
+            <p className=" text-green-600">배너 이미지가 업로드되었습니다.</p>
+          )}
         </div>
         {/* 태그 입력 섹션 */}
         <div className="flex flex-col gap-3">
@@ -506,6 +533,9 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
               ))
             )}
           </div>
+          {lecture.hashtags.length === 0 ? (
+            <p className=" text-primary-color">태그를 1개 이상 입력해주세요.</p>
+          ) : null}
         </div>
         {/* 카테고리 선택 */}
         <select
