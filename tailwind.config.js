@@ -4,6 +4,9 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      screens: {
+        screen1380: '1380px',
+      }, // 반응형 작업을 위해 추가
       gridTemplateColumns: {
         14: 'repeat(14, minmax(0, 1fr))',
       },
