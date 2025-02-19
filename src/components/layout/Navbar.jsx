@@ -150,10 +150,10 @@ export const Navbar = () => {
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="ml-5 text-text-gray-color"
+            className="ml-5 cursor-pointer text-text-gray-color"
+            onClick={() => navigate(`/mypage/${userData.id}`, { state: { joinId: userData.id } })}
           >
             <span className="font-bold text-primary-color">{userData.nickname}</span>
-            <p>님 환영합니다!</p>
           </motion.div>
         )}
       </div>
