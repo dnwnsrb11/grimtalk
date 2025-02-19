@@ -38,7 +38,6 @@ export const LectureCreateWrite = ({ setIsActive, setCreateNoticeDate, lecture }
       setIsActive('/');
     },
     onError: (error) => {
-      console.error('Error:', error);
       toast.error('공지사항 등록에 실패했습니다.');
     },
   });

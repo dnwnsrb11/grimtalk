@@ -21,7 +21,6 @@ export const AiSimilarityPage = () => {
     if (file) {
       setFileName(file.name);
       setImageSrc(URL.createObjectURL(file));
-      console.log(imageSrc);
     }
   };
   return (

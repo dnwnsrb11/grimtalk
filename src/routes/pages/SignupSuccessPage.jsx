@@ -6,7 +6,7 @@ import { LoginHi } from '@/components/common/icons';
 export const SignupSuccessPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location);
+
   return (
     <AnimatePresence>
       <motion.div

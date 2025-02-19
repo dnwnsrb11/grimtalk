@@ -88,7 +88,6 @@ const subscribeToNotifications = () => {
       }, 5000);
 
       newEventSource.onerror = (error) => {
-        console.error('SSE 연결 오류:', error);
         clearInterval(connectionCheck);
 
         if (newEventSource.readyState === EventSource.CLOSED) {
@@ -111,14 +110,13 @@ const subscribeToNotifications = () => {
           });
 
           queryClient.invalidateQueries(['notifications']);
-        } catch (error) {
-          console.error('알림 처리 중 오류 발생:', error);
+        } catch {
+          return null;
         }
       });
 
       NotificationEventSource.setInstance(newEventSource);
     } catch (error) {
-      console.error('SSE 초기 연결 실패:', error);
       setTimeout(connect, currentReconnectDelay);
     }
   };

@@ -124,7 +124,7 @@ export const LivePage = () => {
   // 전달기능
   const sendDataButton = () => {
     setSendData(timeHistory);
-    console.log(timeHistory);
+    // console.log(timeHistory);
   };
 
   const { mutate: addStroke } = useAddStrokeMutation(curriculumId);
@@ -136,7 +136,7 @@ export const LivePage = () => {
 
   // 요소를 하나씩 추가하거나 최신화하는 함수(출력)
   const updateOrAddElementToArray = (newElement) => {
-    console.log('🔄 updateOrAddElementToArray 실행. 새로운 요소:', newElement);
+    // console.log('🔄 updateOrAddElementToArray 실행. 새로운 요소:', newElement);
     // console.log('현재 화이트보드 요소들:', receivedElementsRef.current);
 
     // 삭제된 요소 처리
@@ -227,7 +227,7 @@ export const LivePage = () => {
     });
 
     client.onConnect = () => {
-      console.log('STOMP Connected');
+      // console.log('STOMP Connected');
       setIsStompReady(true);
       setIsConnected(true);
 
@@ -249,14 +249,15 @@ export const LivePage = () => {
               updateWalkList(data.message.elements);
             }
           } catch (error) {
-            console.error('❌ 메시지 파싱 실패:', error);
+            // console.error('❌ 메시지 파싱 실패:', error);
+            return null;
           }
         });
       }
     };
 
     client.onStompError = (frame) => {
-      console.error('STOMP Error:', frame.headers['message']);
+      // console.error('STOMP Error:', frame.headers['message']);
       setIsStompReady(false);
       setIsConnected(false);
     };
@@ -276,7 +277,7 @@ export const LivePage = () => {
     (elements) => {
       if (!isStompReady || !participantUtils.isCreator(nickname)) return;
 
-      console.log('🎨 강사가 그린 데이터:', elements);
+      // console.log('🎨 강사가 그린 데이터:', elements);
       // message에 담아서 전달
       const message = {
         type: 'drawing',
@@ -419,7 +420,7 @@ export const LivePage = () => {
 
       setIsConnected(true);
     } catch (error) {
-      console.error('방 연결 중 오류 발생:', error);
+      // console.error('방 연결 중 오류 발생:', error);
       alert('방 연결에 실패했습니다.');
       navigate(-1);
     }
@@ -678,9 +679,10 @@ export const LivePage = () => {
       formData.append('image', file);
 
       const base64Image = await InstructorExportImage(formData);
-      console.log('이미지 추출 성공', base64Image);
+      // console.log('이미지 추출 성공', base64Image);
     } catch (error) {
-      console.log('이미지 추출 실패', error);
+      // console.log('이미지 추출 실패', error);
+      return null;
     }
   };
 
@@ -789,7 +791,7 @@ export const LivePage = () => {
       quality: 1,
       exportPadding: 10,
     });
-    console.log('이미지 추출 성공', blob);
+    // console.log('이미지 추출 성공', blob);
 
     // 직렬화를 통해 전송 가능한 상태로 변경하자
     const base64Image = await new Promise((resolve, reject) => {

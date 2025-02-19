@@ -107,18 +107,14 @@ export const ProfileSection = ({
   useEffect(() => {
     if (!check || check.length === 0) return; // check가 없거나 빈 배열이면 실행 X
 
-    console.log('✅ check 값 변경됨:', check);
-
     // check 배열을 돌면서 lecture.instructorInfo.id와 비교
     const isMatched = check.some((item) => {
       return item.memberId === profileSectionCheck?.id; // 올바르게 return 추가
     });
 
     if (isMatched) {
-      console.log('✅ 매칭된 ID 발견:', profileSectionCheck?.id);
       setCheckSubscribe(true);
     } else {
-      console.log('❌ 매칭된 ID 없음');
       setCheckSubscribe(false);
     }
   }, [check, profileSectionCheck?.id]); // check 또는 instructor ID가 변경될 때 실행

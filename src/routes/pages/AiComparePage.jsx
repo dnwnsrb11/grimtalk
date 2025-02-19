@@ -15,12 +15,10 @@ const fetchImageAsBlob = async (imageUrl) => {
     const response = await fetch(imageUrl);
     // 응답을 Blob(이진 대형 객체) 형식으로 변환
     const blob = await response.blob();
-    console.log(blob);
+
     return blob;
-  } catch (error) {
-    // 이미지 불러오기 중 발생하는 오류 로깅 및 전파
-    console.error('이미지를 불러오는 중 오류 발생:', error);
-    throw error;
+  } catch {
+    return null;
   }
 };
 
@@ -76,12 +74,8 @@ export const AiComparePage = () => {
 
       // 받아온 이미지 URL을 Blob으로 변환
       const imageUrl = data.body.data.imageUrl;
-      console.log('complete');
+
       return fetchImageAsBlob(imageUrl);
-    },
-    // 오류 발생 시 콘솔에 로깅
-    onError: (error) => {
-      console.error('이미지 로딩 실패:', error);
     },
   });
 
@@ -119,7 +113,6 @@ export const AiComparePage = () => {
     },
     // 성공 시 분석 결과 로깅
     onSuccess: (data) => {
-      console.log('분석 완료:', data);
       setAnalysisResult(data);
       setIsAnalyzing(false);
       setCheckAiMutation(true);
@@ -141,12 +134,10 @@ export const AiComparePage = () => {
           },
         ];
         setChartData(formattedData); // 변환된 데이터를 상태에 저장
-        console.log(formattedData);
       }
     },
     // 실패 시 오류 로깅
     onError: (error) => {
-      console.error('분석 실패:', error);
       setIsAnalyzing(false);
     },
   });
@@ -155,7 +146,6 @@ export const AiComparePage = () => {
   const handleAnalysis = () => {
     // 이미지 데이터 존재 여부 확인
     if (!imageData || !InstructorBlob) {
-      console.error('이미지가 모두 준비되지 않았습니다.');
       return;
     }
     setIsAnalyzing(true);
@@ -210,14 +200,6 @@ export const AiComparePage = () => {
       setCheckDataSave(true);
       return data;
     },
-    onSuccess: (data) => {
-      // 성공 시 처리 (예: 토스트 메시지, 상태 업데이트 등)
-      console.log('데이터 저장 성공:', data);
-    },
-    onError: (error) => {
-      // 에러 처리
-      console.error('데이터 저장 실패:', error);
-    },
   });
 
   // 이미지 로딩 중 로딩 컴포넌트 표시
@@ -265,16 +247,16 @@ export const AiComparePage = () => {
         </div>
 
         {/* 버튼과 결과 섹션 */}
-        <div className="bg-bg-gray-color mt-[20px] flex justify-between rounded-2xl border p-6 transition-all duration-200">
+        <div className="mt-[20px] flex justify-between rounded-2xl border bg-bg-gray-color p-6 transition-all duration-200">
           <div>
             <p className="text-[18px] font-semibold">
               그려주신 그림을 강사그림과 비교하여 유사도를 통하여 그림 실력을 확인해보실수 있습니다.
             </p>
-            <p className="text-text-gray-color text-[14px] font-normal">
+            <p className="text-[14px] font-normal text-text-gray-color">
               분석 시작 버튼을 클릭하면 분석이 시작됩니다.
             </p>
             {isAnalyzing && (
-              <p className="text-primary-color mt-2 animate-pulse">
+              <p className="mt-2 animate-pulse text-primary-color">
                 AI가 그림을 분석하고 있습니다... 잠시만 기다려주세요.
               </p>
             )}
@@ -284,7 +266,7 @@ export const AiComparePage = () => {
               className={`w-40 rounded-lg px-6 py-3 text-white transition-colors duration-300 disabled:bg-gray-300
                 ${
                   isAnalyzing
-                    ? 'animate-gradient from-primary-color to-primary-color relative overflow-hidden bg-gradient-to-r via-[#FF451C] bg-[length:200%_auto]'
+                    ? 'animate-gradient relative overflow-hidden bg-gradient-to-r from-primary-color via-[#FF451C] to-primary-color bg-[length:200%_auto]'
                     : 'bg-primary-color hover:bg-[#FF451C]'
                 }`}
               onClick={handleAnalysis}
@@ -310,9 +292,9 @@ export const AiComparePage = () => {
               <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
                 <div className="flex w-[100%] flex-col items-center">
                   <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
-                    <span className="text-text-gray-color text-[18px] font-light">색감 유사도</span>
+                    <span className="text-[18px] font-light text-text-gray-color">색감 유사도</span>
                   </div>
-                  <h1 className="text-primary-color text-[46px] font-bold">
+                  <h1 className="text-[46px] font-bold text-primary-color">
                     <CountUpAnimation targetNumber={Number(analysisResult.color_similarity)} />%
                   </h1>
                 </div>
@@ -323,9 +305,9 @@ export const AiComparePage = () => {
               <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
                 <div className="flex w-[100%] flex-col items-center">
                   <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
-                    <span className="text-text-gray-color text-[18px] font-light">선 유사도</span>
+                    <span className="text-[18px] font-light text-text-gray-color">선 유사도</span>
                   </div>
-                  <h1 className="text-primary-color text-[46px] font-bold">
+                  <h1 className="text-[46px] font-bold text-primary-color">
                     <CountUpAnimation
                       targetNumber={Number(analysisResult.line_thickness_similarity)}
                     />
@@ -339,9 +321,9 @@ export const AiComparePage = () => {
               <div className="animate-fade-slide-down mt-[10px] flex flex-col items-center gap-4 rounded-2xl border p-6">
                 <div className="flex w-[100%] flex-col items-center">
                   <div className="rounded-full border border-gray-400 px-[15px] py-[5px]">
-                    <span className="text-text-gray-color text-[18px] font-light">구조 유사도</span>
+                    <span className="text-[18px] font-light text-text-gray-color">구조 유사도</span>
                   </div>
-                  <h1 className="text-primary-color text-[46px] font-bold">
+                  <h1 className="text-[46px] font-bold text-primary-color">
                     <CountUpAnimation targetNumber={Number(analysisResult.structure_similarity)} />%
                   </h1>
                 </div>
@@ -351,11 +333,10 @@ export const AiComparePage = () => {
               </div>
             </div>
             <div>
-              {console.log('chartData:', chartData)} {/* 데이터 확인용 */}
               <AiCompareComponent data={chartData} analysisResult={analysisResult} />
             </div>
             <div className="mt-[40px] border-t pt-[20px]">
-              <div className="bg-bg-gray-color mt-[20px] flex items-center justify-between rounded-2xl border p-6 transition-all duration-200">
+              <div className="mt-[20px] flex items-center justify-between rounded-2xl border bg-bg-gray-color p-6 transition-all duration-200">
                 <p className="text-[18px] font-semibold">
                   비교한 데이터는 저장하여 관리할 수 있습니다.
                 </p>

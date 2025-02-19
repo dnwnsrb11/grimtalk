@@ -16,7 +16,7 @@ export class LiveKitService {
     this.room.removeAllListeners(RoomEvent.TrackUnsubscribed);
 
     this.room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
-      console.log('LiveKitService - Track 구독:', participant.identity);
+      // console.log('LiveKitService - Track 구독:', participant.identity);
       callbacks.onTrackSubscribed(track, publication, participant);
     });
 
@@ -31,8 +31,9 @@ export class LiveKitService {
       await this.room.connect(this.url, token);
       return this.room;
     } catch (error) {
-      console.error('LiveKitService - 연결 실패:', error);
-      throw error;
+      // console.error('LiveKitService - 연결 실패:', error);
+      // throw error;
+      alert('LiveKit 서버 연결에 실패했습니다.');
     }
   }
 
@@ -54,7 +55,7 @@ export class LiveKitService {
       if (enableCamera) {
         promises.push(
           this.room.localParticipant.setCameraEnabled(true).catch((err) => {
-            console.warn('LiveKitService - 카메라 활성화 실패:', err);
+            // console.warn('LiveKitService - 카메라 활성화 실패:', err);
             return null;
           }),
         );
@@ -63,7 +64,7 @@ export class LiveKitService {
       if (enableMic) {
         promises.push(
           this.room.localParticipant.setMicrophoneEnabled(true).catch((err) => {
-            console.warn('LiveKitService - 마이크 활성화 실패:', err);
+            // console.warn('LiveKitService - 마이크 활성화 실패:', err);
             return null;
           }),
         );
@@ -77,7 +78,7 @@ export class LiveKitService {
       // 카메라 트랙 반환 (이전과 동일)
       return this.room.localParticipant.videoTrackPublications.values().next().value?.videoTrack;
     } catch (error) {
-      console.warn('LiveKitService - 미디어 활성화 중 예상치 못한 오류:', error);
+      // console.warn('LiveKitService - 미디어 활성화 중 예상치 못한 오류:', error);
       return null;
     }
   }

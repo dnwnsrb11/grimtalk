@@ -97,8 +97,9 @@ const joinLive = async (roomId, userId) => {
     const response = await _axiosAuth.post(`${LIVE_JOIN_STATUS_URL}/${roomId}/join/${userId}`);
     return response.data;
   } catch (error) {
-    console.error('라이브 입장 실패:', error);
-    throw error;
+    // console.error('라이브 입장 실패:', error);
+    // throw error;
+    alert('라이브 입장 실패:');
   }
 };
 
@@ -108,15 +109,15 @@ const useAddStrokeMutation = (roomId) => {
     mutationFn: async (strokeData) => {
       // mutationFn에서 파라미터로 받음
       const { data } = await _axiosAuth.post(`/stroke/${roomId}`, strokeData);
-      console.log(strokeData);
+      // console.log(strokeData);
       return data;
     },
-    onError: (error) => {
-      console.error('스트로크 저장 실패:', error);
-    },
-    onSuccess: (data) => {
-      console.log('스트로크 저장 성공:', data);
-    },
+    // onError: (error) => {
+    //   console.error('스트로크 저장 실패:', error);
+    // },
+    // onSuccess: (data) => {
+    //   console.log('스트로크 저장 성공:', data);
+    // },
   });
 };
 
@@ -128,8 +129,9 @@ const leaveLive = async (roomId, userId) => {
     const response = await _axiosAuth.post(`${LIVE_JOIN_STATUS_URL}/${roomId}/leave/${userId}`);
     return response.data;
   } catch (error) {
-    console.error('라이브 퇴장 실패:', error);
-    throw error;
+    // console.error('라이브 퇴장 실패:', error);
+    // throw error;
+    return null;
   }
 };
 
@@ -143,8 +145,9 @@ const getLiveCount = async (roomId) => {
     }
     return response.data - 1; // 방장 제외
   } catch (error) {
-    console.error('참여자 수 조회 실패:', error);
-    throw error;
+    // console.error('참여자 수 조회 실패:', error);
+    // throw error;
+    return null;
   }
 };
 
@@ -166,8 +169,9 @@ const InstructorLeaveLive = async (curriculumId, userId) => {
     });
     return response.data;
   } catch (error) {
-    console.error('강사 라이브 퇴장 실패:', error);
-    throw error;
+    // console.error('강사 라이브 퇴장 실패:', error);
+    // throw error;
+    return null;
   }
 };
 
@@ -181,8 +185,9 @@ const InstructorExportImage = async (formData) => {
     });
     return response.data;
   } catch (error) {
-    console.error('강사 이미지 추출 실패:', error);
-    throw error;
+    // console.error('강사 이미지 추출 실패:', error);
+    // throw error;
+    return null;
   }
 };
 

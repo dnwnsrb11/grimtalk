@@ -111,8 +111,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
       setCheckSubscribe(false);
     }
   };
-  // console.log('targetid:', lecture?.instructorInfo?.id);
-  // console.log('myid:', id);
+
   const { data: check } = useQuery({
     queryKey: ['check'],
     queryFn: async () => {

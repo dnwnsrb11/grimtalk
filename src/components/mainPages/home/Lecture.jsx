@@ -35,11 +35,7 @@ export const Lecture = ({ lecture, showStar = true, showUpdate = false }) => {
       return data;
     },
     onSuccess: () => {
-      console.log(`${lectureSubject} 강의가 삭제되었습니다.`);
       queryClient.invalidateQueries(['lectures']); // ✅ 삭제 후 목록 갱신
-    },
-    onError: (error) => {
-      console.error('삭제 실패:', error);
     },
   });
 

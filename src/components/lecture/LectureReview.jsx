@@ -29,7 +29,7 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
       navigate('/notfound');
     },
   });
-  console.log(checkInstructor);
+
   const [score, setScore] = useState(0);
   const [reviewText, setReviewText] = useState('');
 

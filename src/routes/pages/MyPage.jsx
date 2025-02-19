@@ -20,7 +20,7 @@ export const MyPage = () => {
   const [selectedMenu, setSelectedMenu] = useState('유저소개');
   // 헤더 요청한 사람과로그인 한 살마 id가 같으면 강사로 설정
   const { userData } = useAuthStore();
-  console.log(userData);
+
   const navigate = useNavigate();
   const location = useLocation();
   const joinId = location.state.joinId || userData.id;

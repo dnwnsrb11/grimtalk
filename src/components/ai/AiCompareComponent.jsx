@@ -9,7 +9,6 @@ export const AiCompareComponent = ({ data, analysisResult }) => {
       }
       return 0; // 데이터가 부족한 경우
     } catch (error) {
-      console.error('데이터 합산 중 오류 발생:', error);
       return 0;
     }
   };
@@ -36,7 +35,7 @@ export const AiCompareComponent = ({ data, analysisResult }) => {
       </div>
       <div className="flex w-[50%] flex-col justify-end rounded-2xl">
         <div className="max-w-[150px] rounded-full border px-[15px] py-[5px] text-center">
-          <p className="text-text-gray-color m-0 text-[18px] font-light">평균 유사도</p>
+          <p className="m-0 text-[18px] font-light text-text-gray-color">평균 유사도</p>
         </div>
         <p className="m-0 text-[74px] font-bold text-[#FF5C38]">{sumData().toFixed(0)}%</p>
         <p className="break-keep">{analysisResult.overall_feedback}</p>

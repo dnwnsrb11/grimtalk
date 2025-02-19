@@ -7,7 +7,6 @@ import { UpdateLectureSection } from '@/components/mypage/UpdateLectureSection';
 import { MyPageContentLayout } from '@/layouts/MyPageContentLayout';
 
 export const MyLectureSection = ({ joinId, myid }) => {
-  console.log(joinId, myid);
   // 강의 수정하기
   const [selectedLecture, setSelectedLecture] = useState(null);
   // 내 강의 목록 조회
@@ -16,7 +15,7 @@ export const MyLectureSection = ({ joinId, myid }) => {
     queryFn: async () => {
       const url = myid === joinId ? `/mypage/lecture` : `/user/lecture/${joinId}`;
       const { data } = await _axiosAuth.get(url);
-      console.log(data);
+
       return data.body.data.list;
     },
     staleTime: 0,
@@ -25,7 +24,7 @@ export const MyLectureSection = ({ joinId, myid }) => {
   const [isEditing, setIsEditing] = useState(false);
   const handleUpdate = (lecture) => {
     setSelectedLecture(lecture);
-    console.log(lecture);
+
     setIsEditing(true);
   };
 

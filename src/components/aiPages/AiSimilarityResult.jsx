@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 
 export const AiSimilarityResultPage = ({ imageSrc, similarity }) => {
-  console.log(imageSrc);
-
   const [animatedSimilarity, setAnimatedSimilarity] = useState(0);
   useEffect(() => {
     let interval;

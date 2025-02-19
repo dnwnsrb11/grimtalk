@@ -132,7 +132,7 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
     },
     onSuccess: (data) => {
       alert('강의가 성공적으로 생성되었습니다!');
-      console.log(data);
+
       onBack();
     },
     onError: (error) => {
@@ -198,10 +198,6 @@ export const CreateLectureSection = ({ userDataId, onBack }) => {
       alert('해시태그를 선택하세요.');
       return;
     }
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
-    console.log(formData);
 
     createLectureMutation.mutate(formData);
   };

@@ -70,7 +70,6 @@ export const OpenviduV3ReferencePage = () => {
     if (liveKitService) {
       liveKitService.setupEventListeners({
         onTrackSubscribed: (track, publication, participant) => {
-          console.log('LivePage - Track subscribed:', participant.identity);
           setRemoteTracks((prev) => [
             ...prev,
             {
@@ -103,7 +102,8 @@ export const OpenviduV3ReferencePage = () => {
             }),
           });
         } catch (error) {
-          console.error('Failed to send Excalidraw data:', error);
+          // console.error('Failed to send Excalidraw data:', error);
+          alert('에러발생');
         }
       }
     },
@@ -115,7 +115,6 @@ export const OpenviduV3ReferencePage = () => {
     if (stompService && isConnected) {
       const subscription = stompService.subscribe(`/pub/receive/${roomName}`, (message) => {
         const data = JSON.parse(message.body);
-        console.log('Received data:', data); // 데이터 수신 확인
       });
 
       return () => {
@@ -176,7 +175,6 @@ export const OpenviduV3ReferencePage = () => {
       setChatToken(chatToken);
       setRtcToken(rtcToken);
     } catch (error) {
-      console.error('Failed to create room:', error);
       await leaveRoom();
     }
   };
@@ -199,9 +197,7 @@ export const OpenviduV3ReferencePage = () => {
       await createRoom(selectedRoom, creator);
 
       // 방 생성 성공 메시지
-      console.log(`Room ${selectedRoom} created successfully`);
     } catch (error) {
-      console.error('방 생성 중 오류 발생:', error);
       alert('방 생성에 실패했습니다.');
     }
   };
@@ -242,7 +238,6 @@ export const OpenviduV3ReferencePage = () => {
       setRtcToken(rtcToken);
       setChatToken(chatToken);
     } catch (error) {
-      console.error('방 참여 중 오류 발생:', error);
       await leaveRoom();
       throw error;
     }
@@ -261,9 +256,7 @@ export const OpenviduV3ReferencePage = () => {
       await joinRoom(selectedRoom, creator);
 
       // 방 참여 성공 메시지
-      console.log(`Room ${selectedRoom} joined successfully`);
     } catch (error) {
-      console.error('방 참여 중 오류 발생:', error);
       alert('방 참여에 실패했습니다.');
     }
   };

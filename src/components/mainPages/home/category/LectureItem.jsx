@@ -83,7 +83,6 @@ export const LectureItem = ({ isMyPage = false, search }) => {
           className="mt-2 rounded-[10px] bg-bg-gray-color px-3 py-2 text-[#343434] transition-all duration-200 hover:bg-red-50 hover:shadow-md"
           onClick={(e) => {
             e.stopPropagation(); // 부모 div 클릭 이벤트 방지
-            console.log('삭제 로직 실행');
           }}
         >
           삭제하기

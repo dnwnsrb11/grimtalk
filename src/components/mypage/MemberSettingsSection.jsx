@@ -26,7 +26,7 @@ export const MemberSettingsSection = () => {
     memberIntro: memberSettings?.intro || '소개글을 작성해주세요.',
     memberImage: memberSettings?.image,
   };
-  // console.log(memberSettings);
+
   const [memberProfileImage, setMemberProfileImage] = useState(memberImage);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
@@ -90,10 +90,6 @@ export const MemberSettingsSection = () => {
   // 수정 api 요청
   const memberSettingsChange = useMutation({
     mutationFn: async (formData) => {
-      // console.log('ㅁㄴㅇㄴㅁㅇ');
-      formData.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      });
       const { data } = await _axiosAuth.put(`/user`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -117,8 +113,6 @@ export const MemberSettingsSection = () => {
   });
 
   const handleSubmit = async () => {
-    console.log('폼 제출 시작');
-
     if (!nickname.trim() || !memberIntro.trim()) {
       alert('닉네임과 소개글을 입력해주세요.');
       return;
@@ -136,10 +130,6 @@ export const MemberSettingsSection = () => {
     if (selectedFile) {
       formData.append('image', selectedFile);
     }
-
-    // formData.forEach((value, key) => {
-    //   console.log(`${key}:`, value);
-    // });
 
     memberSettingsChange.mutate(formData);
   };

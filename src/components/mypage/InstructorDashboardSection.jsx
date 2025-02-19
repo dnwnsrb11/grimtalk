@@ -15,7 +15,7 @@ export const InstructorDashboardSection = ({ nickname }) => {
     queryKey: ['recentLive'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(`/dashboard/instructor`);
-      console.log(data);
+
       return data.body.data;
     },
     onError: () => {
@@ -29,7 +29,6 @@ export const InstructorDashboardSection = ({ nickname }) => {
 
   // 나의 최근 라이브 변수
   const myRecentLive = instructorDashboard?.myRecentLive || null;
-  console.log(myRecentLive);
 
   // 총 구독자 수 변수
   const subscribeNumber = instructorDashboard?.subscribeNumber || null;

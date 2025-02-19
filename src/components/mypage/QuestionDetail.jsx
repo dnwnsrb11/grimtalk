@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { _axiosAuth } from '@/api/instance';
 
 export const QuestionDetail = ({ boardId, setIsActive }) => {
-  //   console.log('asdsadsadasdsa');
   const navigate = useNavigate();
   const checkInstructor = useState(true);
   const { data: questionDetail } = useQuery({

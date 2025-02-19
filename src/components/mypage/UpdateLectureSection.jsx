@@ -9,7 +9,6 @@ const MAX_LENGTH = 1000;
 const MAX_LENGTH_SUBJECT = 100;
 
 export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
-  // console.log(updateLectureId);
   const { lectureId } = useParams(); // URL에서 강의 ID 가져오기
   const [selectDate, setSelectDate] = useState(false);
   const [lecture, setLecture] = useState({
@@ -104,10 +103,6 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
   // 강의 수정 mutation
   const updateLectureMutation = useMutation({
     mutationFn: async (formData) => {
-      console.log('📌 FormData 내용 확인:');
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
       const { data } = await _axiosAuth.put(`/lecture/${updateLectureId.lectureId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -121,7 +116,6 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
     },
     onError: (error) => {
       toast.error('강의 수정에 실패했습니다.');
-      console.error(error);
     },
   });
 
@@ -187,12 +181,6 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
     lecture.hashtags.forEach((tag, index) => {
       formData.append(`hashtags[${index}]`, tag.text);
     });
-
-    // 🛠 FormData 콘솔 출력
-    // console.log('📌 FormData 내용 확인:');
-    // for (const [key, value] of formData.entries()) {
-    //   console.log(`${key}:`, value);
-    // }
 
     updateLectureMutation.mutate(formData);
   };

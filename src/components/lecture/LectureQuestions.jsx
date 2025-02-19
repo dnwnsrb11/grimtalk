@@ -70,7 +70,7 @@ export const LectureQuestions = ({
   if (isError) return <div>에러가 발생했습니다.</div>;
 
   // 컴포넌트 생성 분기
-  console.log(routerBoardBoardId);
+
   if (isActive === '질문 상세페이지' || !!routerBoardBoardId || !!routerBoardCreatedId) {
     return (
       <QuestionLectureDetail

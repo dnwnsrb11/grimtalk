@@ -53,9 +53,6 @@ export const SignupPage = () => {
         alert(data.body.message);
       }
     },
-    onError: (error) => {
-      console.error(error);
-    },
   });
 
   const handleEmailChange = (value) => {

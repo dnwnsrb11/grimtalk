@@ -42,7 +42,6 @@ export const CreateLiveTestPage = () => {
 
   const createRoom = async (curriculumSubject, creator) => {
     try {
-      console.log('방 생성 시도:', { curriculumSubject, creator });
       localStorage.setItem('roomCreator', creator);
       liveStore.setRoomCreator(creator);
       liveStore.setRoomName(curriculumSubject);
@@ -52,7 +51,6 @@ export const CreateLiveTestPage = () => {
         },
       });
     } catch (error) {
-      console.error('방 생성 실패:', error);
       alert(error.message || '방 생성에 실패했습니다.');
     }
   };
@@ -75,7 +73,6 @@ export const CreateLiveTestPage = () => {
       liveStore.setRoomCreator(participantUtils.removeTokenPrefix(creator));
       navigate(`/live/${selectedRoom}`);
     } catch (error) {
-      console.error('방 참여 중 오류 발생:', error);
       alert('방 참여에 실패했습니다.');
     }
   };

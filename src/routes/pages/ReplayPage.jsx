@@ -342,7 +342,6 @@ export const ReplayPage = () => {
         quality: 1,
         exportPadding: 10,
       });
-      console.log('이미지 추출 성공', blob);
 
       // 직렬화를 통해 전송 가능한 상태로 변경하자
       const base64Image = await new Promise((resolve, reject) => {
@@ -360,7 +359,7 @@ export const ReplayPage = () => {
         state: { curriculumId: curriculumId, ImageData: base64Image },
       });
     } catch (error) {
-      console.log('이미지 추출 실패', error);
+      return null;
     }
   };
 

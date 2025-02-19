@@ -20,8 +20,6 @@ export const PopularInstructor = ({ index, instroductor }) => {
       ? instroductor?.memberTags
       : ['더미태그1', '더미태그2'];
   const instroductorMemberId = instroductor?.memberId;
-  // console.log('현재 로그인한 유저 ID:', id);
-  // const icons = [rankOneBadgeIcon, rankTwoBadgeIcon, rankThreeBadgeIcon, rankFourBadgeIcon];
 
   return (
     <>
