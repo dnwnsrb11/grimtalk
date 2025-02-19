@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { _axiosAuth } from '@/api/instance';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 
-export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }) => {
+export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor, lectureId }) => {
   const navigate = useNavigate();
   // api 호출
   const {
@@ -82,6 +82,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor }
     navigate(`/replay/${replayDate.curriculumId}`, {
       state: {
         replayUrl: replay.replayUrl,
+        lectureId: lectureId,
       },
     });
   };

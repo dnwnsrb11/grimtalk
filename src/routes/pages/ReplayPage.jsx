@@ -21,7 +21,7 @@ export const ReplayPage = () => {
   const navigate = useNavigate();
   // 비디오 url 받아오기
   const location = useLocation();
-  const { replayUrl } = location.state || {};
+  const { replayUrl, lectureId } = location.state || {};
 
   const { curriculumId } = useParams();
   const {
@@ -37,6 +37,11 @@ export const ReplayPage = () => {
       if (data.body?.code !== undefined) {
         // 코드가 200이 아닌 경우 에러 처리
         if (data.body.code !== 200) {
+          //강의가 없을경우 뒤로 보내기
+          if (data.body.code === 404) {
+            alert('해당 커리큘럼의 다시보기가 녹화되어 있지 않습니다.');
+            navigate(`/lecture/${lectureId}`);
+          }
           handleApiError(data);
           throw new Error(data.body.message || '데이터를 찾을 수 없습니다');
         }
