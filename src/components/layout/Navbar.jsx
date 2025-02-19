@@ -76,36 +76,49 @@ export const Navbar = () => {
       </motion.button>
 
       {/* 네비게이션 메뉴 */}
-      <div className="ml-[50px] flex flex-row gap-[25px] text-[18px]">
-        <button onClick={() => navigate('/')} className={getNavItemClasses('/')}>
-          홈
-        </button>
-        <button onClick={() => navigate('/category')} className={getNavItemClasses('/category')}>
-          카테고리
-        </button>
-        <button onClick={() => navigate('/community')} className={getNavItemClasses('/community')}>
-          커뮤니티
-        </button>
-        <button onClick={() => navigate('/live')} className={getNavItemClasses('/live')}>
-          라이브
-        </button>
-        {/* 검색창 */}
-        <div className="flex h-[50px] w-[400px] items-center justify-between rounded-xl border border-solid bg-[#EFEFEF]">
-          <input
-            type="text"
-            className="ml-[25px] h-full w-full bg-[#EFEFEF] outline-none"
-            placeholder="관심 카테고리, 강의 찾기"
-            value={search}
-            onChange={handleSearchChange}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleSearchClick(e);
-              }
-            }}
-          />
-          <button onClick={handleSearchClick} className="focus:outline-none">
-            <ReadingGlassesIcon width={20} height={20} />
+      <div className="ml-[50px] flex flex-row gap-[15px] text-[18px]">
+        <div className="flex items-center gap-5">
+          <button onClick={() => navigate('/')} className={getNavItemClasses('/')}>
+            홈
           </button>
+          <button onClick={() => navigate('/category')} className={getNavItemClasses('/category')}>
+            카테고리
+          </button>
+          <button
+            onClick={() => navigate('/community')}
+            className={getNavItemClasses('/community')}
+          >
+            커뮤니티
+          </button>
+          <button onClick={() => navigate('/live')} className={getNavItemClasses('/live')}>
+            라이브
+          </button>
+        </div>
+        {/* 검색창 1380 미만일 때는 숨김 */}
+        <div className="hidden screen1380:block">
+          <div className="flex h-[50px] w-[50%] min-w-[280px] items-center justify-between rounded-xl border border-solid bg-[#EFEFEF]">
+            <input
+              type="text"
+              className="ml-[25px] h-full w-full bg-[#EFEFEF] outline-none"
+              placeholder="관심 카테고리, 강의 찾기"
+              value={search}
+              onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearchClick(e);
+                }
+              }}
+            />
+            <button onClick={handleSearchClick} className="focus:outline-none">
+              <ReadingGlassesIcon width={20} height={20} />
+            </button>
+          </div>
+        </div>
+        {/* 그 미만일때 나타나는 검색 아이콘 */}
+        <div className="block screen1380:hidden">
+          <div className="rounded-xl border bg-[#EFEFEF] p-2" onClick={() => navigate('/category')}>
+            <ReadingGlassesIcon width={20} height={20} className={'mr-[0px]'} />
+          </div>
         </div>
       </div>
 
