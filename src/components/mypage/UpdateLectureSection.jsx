@@ -131,15 +131,33 @@ export const UpdateLectureSection = ({ onBack, updateLectureId }) => {
 
   // 수정된 제출 핸들러
   const handleSubmit = async () => {
-    if (
-      !lecture.category ||
-      !lecture.subject ||
-      !lecture.intro ||
-      !lecture.hashtags ||
-      lecture.hashtags.length === 0 ||
-      curriculums.length === 0
-    ) {
-      toast.error('모든 필드를 입력해주세요.');
+    if (!lecture.subject) {
+      alert('강의 제목을 입력해주세요.');
+      return;
+    }
+
+    if (!lecture.intro) {
+      alert('강의 내용을 입력해주세요.');
+      return;
+    }
+
+    if (!lecture.category || lecture.category.length === 0) {
+      alert('강의 카테고리를 선택해주세요.');
+      return;
+    }
+
+    if (!lecture.bannerImage) {
+      alert('배너 이미지를 업로드해주세요.');
+      return;
+    }
+
+    if (!lecture.hashtags || lecture.hashtags.length === 0) {
+      alert('해시태그를 입력해주세요.');
+      return;
+    }
+
+    if (curriculums.length === 0) {
+      alert('커리큘럼을 입력해주세요.');
       return;
     }
 
