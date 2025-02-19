@@ -72,3 +72,11 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.excalidraw {
+  --ui-font: 'Pretendard' !important;
+}
+
+.layer-ui__wrapper__top-right {
+  display: none !important;
+}
