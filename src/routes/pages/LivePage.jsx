@@ -203,7 +203,7 @@ export const LivePage = () => {
       // console.log('➕ 새 요소 추가:', newElement);
       receivedElementsRef.current = [...receivedElementsRef.current, newElement];
     }
-    // console.log('최종 화이트보드 요소들:', receivedElementsRef.current);
+    console.log('최종 화이트보드 요소들:', receivedElementsRef.current);
   };
 
   //현재 색상값 최신화 로직
@@ -227,12 +227,13 @@ export const LivePage = () => {
 
   // 수강생의 경우
   const [shouldFetch, setShouldFetch] = useState(false);
+  const [shouldFetch2, setShoudFetch2] = useState(false);
 
-  // 마운트 2초 후 요청 활성화
+  // 마운트 8초 후 요청 활성화
   useEffect(() => {
     const timer = setTimeout(() => {
       setShouldFetch(true);
-    }, 7000);
+    }, 8000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -248,9 +249,21 @@ export const LivePage = () => {
         `https://www.grimtalk.com:28080/overall/json/${curriculumSubject}`,
       );
       if (roomCreatorAPIRef?.current && data.message.elements) {
-        roomCreatorAPIRef.current.updateScene({
-          elements: data.message.elements,
-        });
+        if (shouldFetch2 === false) {
+          console.log('초기 데이터 로드됨');
+
+          // 현재 요소와 병합하기
+          const currentElements = roomCreatorAPIRef.current.getSceneElements() || [];
+          const mergedElements = [...data.message.elements];
+
+          // 요소 적용
+          roomCreatorAPIRef.current.updateScene({
+            elements: mergedElements,
+          });
+          receivedElementsRef.current = mergedElements;
+          console.log('최신화 완료:', mergedElements.length);
+          setShoudFetch2(true);
+        }
       }
       return data.message.elements;
     },
@@ -939,10 +952,10 @@ export const LivePage = () => {
                 .filter(
                   (track) =>
                     track.participantIdentity ===
-                      participantUtils.getTokenParticipantName(
-                        liveStore.roomCreator,
-                        TOKEN_TYPES.RTC,
-                      ) && track.trackPublication.kind === 'audio',
+                    participantUtils.getTokenParticipantName(
+                      liveStore.roomCreator,
+                      TOKEN_TYPES.RTC,
+                    ) && track.trackPublication.kind === 'audio',
                 )
                 .map((remoteTrack) => (
                   <AudioComponent
@@ -968,14 +981,14 @@ export const LivePage = () => {
                 participantUtils.isCreator(nickname)
                   ? localTrack
                   : remoteTracks.find(
-                      (track) =>
-                        track.trackPublication?.kind === 'video' &&
-                        track.participantIdentity ===
-                          participantUtils.getTokenParticipantName(
-                            liveStore.roomCreator,
-                            TOKEN_TYPES.RTC,
-                          ),
-                    )?.trackPublication?.videoTrack
+                    (track) =>
+                      track.trackPublication?.kind === 'video' &&
+                      track.participantIdentity ===
+                      participantUtils.getTokenParticipantName(
+                        liveStore.roomCreator,
+                        TOKEN_TYPES.RTC,
+                      ),
+                  )?.trackPublication?.videoTrack
               }
               participantIdentity={
                 participantUtils.isCreator(nickname) ? nickname : liveStore.roomCreator || ''
@@ -1135,41 +1148,35 @@ export const LivePage = () => {
               <Excalidraw
                 langCode="ko-KR"
                 onChange={(elements) => {
-                  // console.log('🎨 Excalidraw onChange 이벤트 발생. 전체 요소:', elements);
-
-                  // 이전 상태와 비교하여 삭제된 요소 찾기
+                  // 0. 삭제/복원된 요소 찾기
                   const deletedElements = elements.filter((currentEl) => {
                     const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
                     return prevEl && !prevEl.isDeleted && currentEl.isDeleted;
                   });
-                  // console.log('🗑️ 감지된 삭제된 요소들:', deletedElements);
 
-                  // 이전 상태와 비교하여 복원된(undo) 요소 찾기
                   const restoredElements = elements.filter((currentEl) => {
                     const prevEl = roomCreatorElements.find((el) => el.id === currentEl.id);
                     return prevEl && prevEl.isDeleted && !currentEl.isDeleted;
                   });
-                  // console.log('🔄 감지된 복원된 요소들:', restoredElements);
 
-                  // 복원된 요소가 있을 경우, 모든 복원된 요소를 한 번에 전송
+                  // 1. 이벤트 유형에 따른 메시지 전송 처리
                   if (restoredElements.length > 0) {
+                    // 복원된 요소들을 한 번에 전송
                     const allRestoredElements = restoredElements.map((el) => ({
                       ...el,
                       type: 'restored',
                       elementType: el.type,
                     }));
                     handleInstructorDrawingChange(allRestoredElements);
-                  }
-                  // 삭제 이벤트가 있을 경우, 모든 삭제된 요소를 한 번에 전송
-                  else if (deletedElements.length > 0) {
+                  } else if (deletedElements.length > 0) {
+                    // 삭제된 요소들을 한 번에 전송
                     const allDeletedElements = deletedElements.map((el) => ({
                       ...el,
                       type: 'deleted',
                     }));
                     handleInstructorDrawingChange(allDeletedElements);
-                  }
-                  // 새로 추가/변경된 요소가 있을 경우
-                  else {
+                  } else {
+                    // 새로 추가/변경된 요소만 전송
                     const validElements = elements.filter((element) => !element.isDeleted);
                     if (validElements.length > 0) {
                       const latestElement = validElements[validElements.length - 1];
@@ -1177,12 +1184,12 @@ export const LivePage = () => {
                     }
                   }
 
+                  // 2. 상태 업데이트 - 참조 유지하며 업데이트
                   setRoomCreatorElements(elements);
 
-                  // 녹화 기능
+                  // 3. 녹화 기능용 마지막 요소 업데이트
                   const newLastElement = elements[elements.length - 1];
                   if (lastElement !== newLastElement) {
-                    // 녹화 업데이트
                     setLastElement(newLastElement);
                   }
                 }}
