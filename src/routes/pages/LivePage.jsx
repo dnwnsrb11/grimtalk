@@ -1163,18 +1163,44 @@ export const LivePage = () => {
                 </button>
                 {/* 반장 엑스칼리 컨트롤 */}
                 <div className="flex items-center justify-center gap-3 rounded-xl border bg-[#ECECF4] p-2">
-                  <button onClick={() => moveReft('scrollX-')}>
-                    <RightArrowIcon fill={'#2F2F34'} className="rotate-180" />
-                  </button>
-                  <button onClick={() => moveReft('scrollX+')}>
-                    <RightArrowIcon fill={'#2F2F34'} />
-                  </button>
-                  <button onClick={() => moveReft('scrollY-')}>
-                    <LeftArrowIcon fill={'#2F2F34'} className="rotate-90" />
-                  </button>
-                  <button onClick={() => moveReft('scrollY+')}>
-                    <RightArrowIcon fill={'#2F2F34'} className="rotate-90" />
-                  </button>
+                  <div className="group relative z-10 flex items-center justify-center gap-2">
+                    <button onClick={() => moveReft('scrollX-')} className="group">
+                      <RightArrowIcon
+                        fill={'#2F2F34'}
+                        className="rotate-180 group-hover:fill-[#FF4F28]"
+                      />
+                    </button>
+                    <button onClick={() => moveReft('scrollX+')} className="group">
+                      <RightArrowIcon fill={'#2F2F34'} className="group-hover:fill-[#FF4F28]" />
+                    </button>
+                    <button onClick={() => moveReft('scrollY-')} className="group">
+                      <LeftArrowIcon
+                        fill={'#2F2F34'}
+                        className="rotate-90 group-hover:fill-[#FF4F28]"
+                      />
+                    </button>
+                    <button onClick={() => moveReft('scrollY+')} className="group">
+                      <RightArrowIcon
+                        fill={'#2F2F34'}
+                        className="rotate-90 group-hover:fill-[#FF4F28]"
+                      />
+                    </button>
+                    <button
+                      onClick={() => moveReft('zoomIn')}
+                      className="text-[#2F2F34] hover:text-[#FF4F28]"
+                    >
+                      <p className="text-[24px] font-normal"> + </p>
+                    </button>
+                    <button
+                      onClick={() => moveReft('zoomOut')}
+                      className="text-[#2F2F34] hover:text-[#FF4F28]"
+                    >
+                      <p className="text-[24px] font-normal"> - </p>
+                    </button>
+                    <div className="absolute -top-0 -z-10 rounded-xl border p-2 opacity-0 transition-all duration-200 group-hover:-top-14 group-hover:opacity-100">
+                      <p>방장보드 조절</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
