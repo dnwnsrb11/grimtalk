@@ -113,7 +113,7 @@ export const QuestionLectureDetail = ({
   if (isLoading) {
     return <LoadingComponents />;
   }
-  if (isError) return <div>에러가 발생했습니다.ㅁㄴㅇ</div>;
+  if (isError) return <div>에러가 발생했습니다.</div>;
 
   return (
     <>
@@ -125,7 +125,7 @@ export const QuestionLectureDetail = ({
             : '날짜 없음'}
         </div>
         <div className="ml-[10px] mt-[20px]">
-          <p className="text-[18px]">{board.content || ''}</p>
+          <p className="whitespace-pre-line text-[18px]">{board.content || ''}</p>
         </div>
       </div>
       <div className="flex w-full justify-end">
