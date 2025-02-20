@@ -1254,18 +1254,6 @@ export const LivePage = () => {
                         className="rotate-90 group-hover:fill-[#FF4F28]"
                       />
                     </button>
-                    <button
-                      onClick={() => moveReft('zoomIn')}
-                      className="text-[#2F2F34] hover:text-[#FF4F28]"
-                    >
-                      <p className="text-[24px] font-normal"> + </p>
-                    </button>
-                    <button
-                      onClick={() => moveReft('zoomOut')}
-                      className="text-[#2F2F34] hover:text-[#FF4F28]"
-                    >
-                      <p className="text-[24px] font-normal"> - </p>
-                    </button>
                     <div className="absolute -top-0 -z-10 rounded-xl border p-2 opacity-0 transition-all duration-200 group-hover:-top-14 group-hover:opacity-100">
                       <p>방장보드 조절</p>
                     </div>
