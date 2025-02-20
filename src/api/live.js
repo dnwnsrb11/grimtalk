@@ -54,6 +54,16 @@ const liveApi = {
     });
     return response.data;
   },
+
+  checkLive: async (curriculumId) => {
+    try {
+      const response = await _axiosAuth.get(`/curriculum/check-live/${curriculumId}`);
+      return response.data.body.data.liveStatus;
+    } catch (error) {
+      console.error('라이브 상태 조회 실패:', error);
+      throw error;
+    }
+  },
 };
 
 // 라이브 방 목록 조회
@@ -186,6 +196,15 @@ const InstructorExportImage = async (formData) => {
   }
 };
 
+const useCheckLive = (curriculumId, enabled = false) => {
+  return useQuery({
+    queryKey: ['checkLive', curriculumId],
+    queryFn: () => liveApi.checkLive(curriculumId),
+    enabled: !!curriculumId && enabled, // curriculumId가 있고 enabled가 true일 때만 쿼리 실행
+    refetchInterval: 5000, // 5초마다 데이터 갱신
+  });
+};
+
 export {
   endLive,
   InstructorExportImage,
@@ -194,6 +213,7 @@ export {
   leaveLive,
   liveApi,
   useAddStrokeMutation,
+  useCheckLive,
   useFavoriteRoomList,
   useFavoriteRoomListTop4,
   useLiveCount,
