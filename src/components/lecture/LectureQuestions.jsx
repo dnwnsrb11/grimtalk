@@ -126,7 +126,7 @@ export const LectureQuestions = ({
                 onClick={() => {
                   if (!id) {
                     navigate('/login'); // 로그인되지 않은 경우 로그인 페이지로 이동
-                    toast.error('로그인이 필요합니다.');
+                    toast.error('로그인 후 이용해주세요.');
                     return;
                   }
                   setIsActive('질문 작성페이지');

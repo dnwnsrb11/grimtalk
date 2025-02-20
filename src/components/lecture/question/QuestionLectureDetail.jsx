@@ -169,7 +169,7 @@ export const QuestionLectureDetail = ({
                 onClick={() => {
                   if (!id) {
                     navigate('/login');
-                    toast.error('로그인이 필요합니다.');
+                    toast.error('로그인 후 이용해주세요.');
                     return;
                   }
                   addCommentMutation.mutate();
