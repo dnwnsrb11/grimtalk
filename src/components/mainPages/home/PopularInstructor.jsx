@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import posterNoneImg from '@/assets/posterNoneImg.png';
@@ -10,7 +11,7 @@ import {
 import { useAuthStore } from '@/store/useAuthStore';
 
 export const PopularInstructor = ({ index, instroductor }) => {
-  const { id, email, nickname } = useAuthStore((state) => state.userData);
+  const { id } = useAuthStore((state) => state.userData);
   const navigate = useNavigate();
   const instroductorSubscribed = instroductor?.subscribeNumber || 0;
   const instroductorNickname = instroductor?.nickname || '더미닉네임';
@@ -20,8 +21,23 @@ export const PopularInstructor = ({ index, instroductor }) => {
       ? instroductor?.memberTags
       : ['더미태그1', '더미태그2'];
   const instroductorMemberId = instroductor?.memberId;
-  // console.log('현재 로그인한 유저 ID:', id);
-  // const icons = [rankOneBadgeIcon, rankTwoBadgeIcon, rankThreeBadgeIcon, rankFourBadgeIcon];
+
+  const handleNavigation = () => {
+    if (!id) {
+      // 로그인이 되어 있지 않으면 로그인 페이지로 이동
+      navigate('/login');
+      toast.error('로그인 후 이용해주세요.');
+    } else {
+      // 로그인 상태일 경우 강사 페이지로 이동
+      navigate(`/mypage/${instroductorMemberId}`, {
+        state: {
+          joinId: instroductorMemberId,
+          selectedMenu: '유저소개',
+          selectedProfileMenu: '강사',
+        },
+      });
+    }
+  };
 
   return (
     <>
@@ -38,9 +54,6 @@ export const PopularInstructor = ({ index, instroductor }) => {
               <RankFourBadgeIcon />
             )}
           </div>
-          {/* <div>
-            <img src={PopularIMG1} alt="img" className="h-[38px] w-[38px]" />
-          </div> */}
           <div>
             <div className="h-[80px] w-[80px] overflow-hidden rounded-full">
               <img
@@ -56,12 +69,8 @@ export const PopularInstructor = ({ index, instroductor }) => {
             </div>
             <div className="mt-1">
               <div className="flex flex-row">
-                {' '}
                 <div className="mr-1 flex flex-row items-center gap-2 rounded-2xl border bg-primary-color px-3 py-1 text-white">
-                  {/* <SubscribeIcon className=" stroke-white text-white transition-colors duration-0 group-hover:stroke-black" /> */}
-
                   <div className="flex items-center gap-1 font-bold">
-                    {' '}
                     <span className="text-[14px] font-light">구독수</span> {instroductorSubscribed}
                   </div>
                 </div>
@@ -84,18 +93,10 @@ export const PopularInstructor = ({ index, instroductor }) => {
         </div>
         <div className="flex flex-row items-center gap-5">
           <button
-            onClick={() =>
-              navigate(`/mypage/${instroductorMemberId}`, {
-                state: {
-                  joinId: instroductorMemberId,
-                  selectedMenu: '유저소개',
-                  selectedProfileMenu: '강사',
-                },
-              })
-            }
-            className='className="w-[140px] text-center" px-1 py-3 text-[14px] text-[#828282] transition-all duration-150 hover:text-black'
+            onClick={handleNavigation}
+            className="w-[140px] px-1 py-3 text-center text-[14px] text-[#828282] transition-all duration-150 hover:text-black"
           >
-            <p className=" px-1 font-light ">자세히 보기</p>
+            <p className="px-1 font-light">자세히 보기</p>
           </button>
         </div>
       </div>

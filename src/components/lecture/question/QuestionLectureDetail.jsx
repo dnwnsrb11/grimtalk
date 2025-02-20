@@ -166,7 +166,14 @@ export const QuestionLectureDetail = ({
             <div className="flex justify-end">
               <button
                 className="w-[65px] rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
-                onClick={() => addCommentMutation.mutate()}
+                onClick={() => {
+                  if (!id) {
+                    navigate('/login');
+                    toast.error('로그인 후 이용해주세요.');
+                    return;
+                  }
+                  addCommentMutation.mutate();
+                }}
               >
                 <p className="text-[12px] font-semibold text-white">작성하기</p>
               </button>
