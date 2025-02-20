@@ -699,3 +699,142 @@ body {
   align-items: center;
   gap: 8px;
 }
+
+#room
+  > div.flex.h-\[calc\(100vh-50px\)\].flex-col
+  > div.relative.flex-1
+  > div.absolute.inset-0.z-20.bg-transparent.order-2
+  > div
+  > div
+  > div
+  > div.layer-ui__wrapper
+  > div
+  > div
+  > section
+  > div
+  > div
+  > div
+  > div
+  > div
+  > label:nth-child(5) {
+  display: none !important;
+}
+
+#room
+  > div.flex.h-\[calc\(100vh-50px\)\].flex-col
+  > div.relative.flex-1
+  > div.absolute.inset-0.z-20.bg-transparent.order-2
+  > div
+  > div
+  > div
+  > div.layer-ui__wrapper
+  > div
+  > div
+  > section
+  > div
+  > div
+  > div
+  > div
+  > div
+  > label:nth-child(6) {
+  display: none !important;
+}
+#room
+  > div.flex.h-\[calc\(100vh-50px\)\].flex-col
+  > div.relative.flex-1
+  > div.absolute.inset-0.z-20.bg-transparent.order-2
+  > div
+  > div
+  > div
+  > div.layer-ui__wrapper
+  > div
+  > div
+  > section
+  > div
+  > div
+  > div
+  > div
+  > div
+  > label:nth-child(7) {
+  display: none !important;
+}
+
+#room
+  > div.flex.h-\[calc\(100vh-50px\)\].flex-col
+  > div.relative.flex-1
+  > div.absolute.inset-0.z-20.bg-transparent.order-2
+  > div
+  > div
+  > div
+  > div.layer-ui__wrapper
+  > div
+  > div
+  > section
+  > div
+  > div
+  > div
+  > div
+  > div
+  > label:nth-child(8) {
+  display: none !important;
+}
+
+#room
+  > div.flex.h-\[calc\(100vh-50px\)\].flex-col
+  > div.relative.flex-1
+  > div.absolute.inset-0.z-20.bg-transparent.order-2
+  > div
+  > div
+  > div
+  > div.layer-ui__wrapper
+  > div
+  > div
+  > section
+  > div
+  > div
+  > div
+  > div
+  > div
+  > label:nth-child(9) {
+  display: none !important;
+}
+
+#room
+  > div.flex.h-\[calc\(100vh-50px\)\].flex-col
+  > div.relative.flex-1
+  > div.absolute.inset-0.z-20.bg-transparent.order-2
+  > div
+  > div
+  > div
+  > div.layer-ui__wrapper
+  > div
+  > div
+  > section
+  > div
+  > div
+  > div
+  > div
+  > div
+  > label:nth-child(11) {
+  display: none !important;
+}
+
+#room
+  > div.flex.h-\[calc\(100vh-50px\)\].flex-col
+  > div.relative.flex-1
+  > div.absolute.inset-0.z-20.bg-transparent.order-2
+  > div
+  > div
+  > div
+  > div.layer-ui__wrapper
+  > div.FixedSideContainer.FixedSideContainer_side_top
+  > div
+  > section
+  > div
+  > div.Stack.Stack_vertical
+  > div
+  > div
+  > div.Stack.Stack_horizontal
+  > button {
+  display: none !important;
+}
