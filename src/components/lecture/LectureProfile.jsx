@@ -272,7 +272,14 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                   ) : (
                     <button
                       className="group flex items-center gap-2 rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white"
-                      onClick={subscribeSubmit}
+                      onClick={() => {
+                        if (!id) {
+                          navigate('/login');
+                          toast.error('로그인 후 이용해주세요.');
+                          return;
+                        }
+                        subscribeSubmit;
+                      }}
                     >
                       <SubscribeIcon
                         className="stroke-black transition-colors duration-0 group-hover:stroke-white"
@@ -330,7 +337,14 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
               <div className="group items-center justify-center rounded-xl border border-gray-border-color bg-bg-gray-color py-[10px] transition-all duration-300 hover:bg-primary-color hover:text-white">
                 <button
                   className="flex w-[100%] items-center justify-center gap-2"
-                  onClick={favoriteSubmit}
+                  onClick={() => {
+                    if (!id) {
+                      navigate('/login');
+                      toast.error('로그인 후 이용해주세요.');
+                      return;
+                    }
+                    favoriteSubmit;
+                  }}
                 >
                   <FavoriteIcon
                     className="stroke-white transition-colors duration-0 group-hover:stroke-white"
