@@ -245,7 +245,7 @@ export const LivePage = () => {
     queryKey: ['updateElementHistory'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(
-        `https://www.grimtalk.com:28080/overall/json/퍼스널 컬러와 심리학`,
+        `https://www.grimtalk.com:28080/overall/json/${curriculumSubject}`,
       );
       if (roomCreatorAPIRef?.current && data.message.elements) {
         roomCreatorAPIRef.current.updateScene({
