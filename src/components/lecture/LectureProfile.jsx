@@ -244,15 +244,20 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                 {/* 버튼 */}
                 <button
                   className="rounded-xl border bg-bg-gray-color p-2 px-3 font-semibold transition-all duration-300 hover:bg-primary-color hover:text-white"
-                  onClick={() =>
+                  onClick={() => {
+                    if (!id) {
+                      navigate('/login');
+                      toast.error('로그인 후 이용해주세요.');
+                      return;
+                    }
                     navigate(`/mypage/${lecture?.instructorInfo?.id}`, {
                       state: {
                         joinId: lecture?.instructorInfo?.id,
                         selectedMenu: '유저소개',
                         selectedProfileMenu: '강사',
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
                   자세히 보기
                 </button>
