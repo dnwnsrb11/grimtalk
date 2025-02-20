@@ -246,7 +246,7 @@ export const LivePage = () => {
     queryKey: ['updateElementHistory'],
     queryFn: async () => {
       const { data } = await _axiosAuth.get(
-        `https://www.grimtalk.com:28080/overall/json/${curriculumSubject}`,
+        `https://www.grimtalk.com:28080/overall/json/${curriculumId}`,
       );
       if (roomCreatorAPIRef?.current && data.message.elements) {
         if (shouldFetch2 === false) {
@@ -274,7 +274,7 @@ export const LivePage = () => {
 
   // STOMP 연결 관리
   const setupStompConnection = useCallback(() => {
-    if (!stompService || !curriculumSubject) return;
+    if (!stompService || !curriculumId) return;
 
     const client = new Client({
       brokerURL: STOMP_URL,
@@ -289,7 +289,7 @@ export const LivePage = () => {
       setIsConnected(true);
 
       if (!participantUtils.isCreator(nickname)) {
-        client.subscribe(`/pub/receive/${curriculumSubject}`, (message) => {
+        client.subscribe(`/pub/receive/${curriculumId}`, (message) => {
           try {
             const data = JSON.parse(message.body);
 
@@ -326,7 +326,7 @@ export const LivePage = () => {
         client.deactivate();
       }
     };
-  }, [stompService, curriculumSubject, nickname]);
+  }, [stompService, curriculumId, nickname]);
 
   // 드로잉 변경 핸들러 (강사용)
   const handleInstructorDrawingChange = useCallback(
@@ -342,11 +342,11 @@ export const LivePage = () => {
       };
       // stomp로 담아서 전달한다.
       stompService.client.publish({
-        destination: `/sub/send/${curriculumSubject}`,
+        destination: `/sub/send/${curriculumId}`,
         body: JSON.stringify(message),
       });
     },
-    [isStompReady, nickname, curriculumSubject, stompService],
+    [isStompReady, nickname, curriculumId, stompService],
   );
   // const [roomCreatorExcalidrawAPI, setRoomCreatorExcalidrawAPI] = useState(null);
   // const [participantExcalidrawAPI, setParticipantExcalidrawAPI] = useState(null);
@@ -691,14 +691,14 @@ export const LivePage = () => {
         setIsConnected(false);
       }
     };
-  }, [curriculumSubject]);
+  }, [curriculumId]);
 
   // 화이트보드 업데이트 함수
   const updateBoard = useCallback(
     (elements, boardType) => {
       if (stompService?.active && isConnected) {
         stompService.publish({
-          destination: `/sub/receive/${curriculumSubject}`,
+          destination: `/sub/receive/${curriculumId}`,
           body: JSON.stringify({
             type: 'excalidraw',
             boardType,
@@ -708,7 +708,7 @@ export const LivePage = () => {
         });
       }
     },
-    [stompService, isConnected, nickname, curriculumSubject],
+    [stompService, isConnected, nickname, curriculumId],
   );
 
   // 강사 이미지 추출 함수
