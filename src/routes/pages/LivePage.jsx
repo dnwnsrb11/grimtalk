@@ -14,10 +14,12 @@ import {
   leaveLive,
   liveApi,
   useAddStrokeMutation,
+  useCheckLive,
   useLiveCount,
 } from '@/api/live';
 import { useNotificationStore } from '@/api/notification';
 import { FooterIcon, LeftArrowIcon, OpacityIcon } from '@/components/common/icons';
+import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
 import { LoadingScreen } from '@/components/live/LoadingScreen';
@@ -47,8 +49,13 @@ export const LivePage = () => {
   const { id, nickname } = useAuthStore((state) => state.userData);
   const { state } = useLocation();
   const curriculumId = state?.curriculumId;
+  const [shouldCheckLive, setShouldCheckLive] = useState(false);
   const { data: liveCount } = useLiveCount(curriculumId);
   const lastNotification = useNotificationStore((state) => state.lastNotification);
+  const { data: liveStatus, isLoading: isCheckingLive } = useCheckLive(
+    curriculumId,
+    shouldCheckLive,
+  );
 
   // 서비스 초기화
   const [stompService] = useState(() => new StompService(STOMP_URL));
@@ -698,10 +705,27 @@ export const LivePage = () => {
     navigate(-1);
   }, [nickname, curriculumId, id, room, liveStore, navigate]);
 
-  // 방 나가기 시도 함수
   const handleLeaveAttempt = useCallback(() => {
-    setIsLeaveDialogOpen(true);
-  }, []);
+    if (!participantUtils.isCreator(nickname)) {
+      setShouldCheckLive(true);
+    } else {
+      setIsLeaveDialogOpen(true);
+    }
+  }, [nickname]);
+
+  // API 로딩이 끝나면 다이얼로그를 표시
+  useEffect(() => {
+    if (!isCheckingLive && shouldCheckLive) {
+      setIsLeaveDialogOpen(true);
+    }
+  }, [isCheckingLive, shouldCheckLive]);
+
+  // 다이얼로그가 닫힐 때 shouldCheckLive 초기화
+  useEffect(() => {
+    if (!isLeaveDialogOpen) {
+      setShouldCheckLive(false);
+    }
+  }, [isLeaveDialogOpen]);
 
   // 브라우저 창 닫기, 새로고침, 뒤로가기 이벤트 처리
   useEffect(() => {
@@ -928,7 +952,9 @@ export const LivePage = () => {
                       <h2 className="mb-3 text-xl font-bold text-primary-color">
                         라이브 퇴장 전 확인
                       </h2>
-                      {lastNotification?.type === 'LIVE_END' ? (
+                      {isCheckingLive ? (
+                        <LoadingComponents />
+                      ) : !participantUtils.isCreator(nickname) && liveStatus ? (
                         <>
                           <p className="mb-2">
                             라이브를 퇴장하기 전,{' '}
@@ -953,6 +979,14 @@ export const LivePage = () => {
                             따라 그려보고 싶다면, 꼭 이용해주세요!
                           </p>
                         </>
+                      ) : !participantUtils.isCreator(nickname) && !liveStatus ? (
+                        <>
+                          <p className="mb-2 font-semibold text-primary-color">
+                            지금 퇴장하시면, 강사가 라이브 종료를 하기 전까지 다시보기 및 AI 유사도
+                            분석을 하지 못합니다.
+                          </p>
+                          <p className="mb-2">그래도 퇴장하시겠습니까?</p>
+                        </>
                       ) : (
                         <p className="mb-2">현재 진행 중인 라이브 방송에서 퇴장하시겠습니까?</p>
                       )}
@@ -963,24 +997,23 @@ export const LivePage = () => {
               <AlertDialogFooter>
                 <div className="flex w-full flex-row items-center justify-between">
                   <div className="flex gap-2">
-                    {!participantUtils.isCreator(nickname) &&
-                      lastNotification?.type === 'LIVE_END' && (
-                        <>
-                          <AlertDialogAction
-                            className="bg-primary-color hover:bg-primary-color hover:opacity-90"
-                            onClick={handleParticipantExportImage}
-                          >
-                            AI 비교
-                          </AlertDialogAction>
+                    {!participantUtils.isCreator(nickname) && liveStatus && (
+                      <>
+                        <AlertDialogAction
+                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                          onClick={handleParticipantExportImage}
+                        >
+                          AI 비교
+                        </AlertDialogAction>
 
-                          <AlertDialogAction
-                            className="bg-primary-color hover:bg-primary-color hover:opacity-90"
-                            onClick={goReplayPage}
-                          >
-                            다시보기
-                          </AlertDialogAction>
-                        </>
-                      )}
+                        <AlertDialogAction
+                          className="bg-primary-color hover:bg-primary-color hover:opacity-90"
+                          onClick={goReplayPage}
+                        >
+                          다시보기
+                        </AlertDialogAction>
+                      </>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <AlertDialogCancel className="border-gray-border-color hover:bg-bg-gray-color">
