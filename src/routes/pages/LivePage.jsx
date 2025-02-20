@@ -824,6 +824,18 @@ export const LivePage = () => {
         updateAppState.scrollY = nowcurrentAppState.scrollY + amount;
       } else if (direction === 'scrollY-') {
         updateAppState.scrollY = nowcurrentAppState.scrollY - amount;
+      } else if (direction === 'zoomIn') {
+        // 확대 기능
+        updateAppState.zoom = {
+          value: Math.min(nowcurrentAppState.zoom.value + zoomFactor, 2), // 최대 200%로 제한
+          valueText: `${Math.round((nowcurrentAppState.zoom.value + zoomFactor) * 100)}%`,
+        };
+      } else if (direction === 'zoomOut') {
+        // 축소 기능
+        updateAppState.zoom = {
+          value: Math.max(nowcurrentAppState.zoom.value - zoomFactor, 0.3), // 최소 30%로 제한
+          valueText: `${Math.round((nowcurrentAppState.zoom.value - zoomFactor) * 100)}%`,
+        };
       }
 
       roomCreatorAPIRef.current.updateScene({
@@ -862,10 +874,10 @@ export const LivePage = () => {
                 .filter(
                   (track) =>
                     track.participantIdentity ===
-                    participantUtils.getTokenParticipantName(
-                      liveStore.roomCreator,
-                      TOKEN_TYPES.RTC,
-                    ) && track.trackPublication.kind === 'audio',
+                      participantUtils.getTokenParticipantName(
+                        liveStore.roomCreator,
+                        TOKEN_TYPES.RTC,
+                      ) && track.trackPublication.kind === 'audio',
                 )
                 .map((remoteTrack) => (
                   <AudioComponent
@@ -891,14 +903,14 @@ export const LivePage = () => {
                 participantUtils.isCreator(nickname)
                   ? localTrack
                   : remoteTracks.find(
-                    (track) =>
-                      track.trackPublication?.kind === 'video' &&
-                      track.participantIdentity ===
-                      participantUtils.getTokenParticipantName(
-                        liveStore.roomCreator,
-                        TOKEN_TYPES.RTC,
-                      ),
-                  )?.trackPublication?.videoTrack
+                      (track) =>
+                        track.trackPublication?.kind === 'video' &&
+                        track.participantIdentity ===
+                          participantUtils.getTokenParticipantName(
+                            liveStore.roomCreator,
+                            TOKEN_TYPES.RTC,
+                          ),
+                    )?.trackPublication?.videoTrack
               }
               participantIdentity={
                 participantUtils.isCreator(nickname) ? nickname : liveStore.roomCreator || ''
