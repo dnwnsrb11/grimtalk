@@ -15,7 +15,6 @@ import {
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayWorkList } from '@/components/replayPage/ReplayWorkList';
-import { handleApiError } from '@/utils/errorHandler';
 
 export const ReplayPage = () => {
   const navigate = useNavigate();
@@ -667,12 +666,7 @@ export const ReplayPage = () => {
             }}
           >
             <MainMenu>
-              <MainMenu.ItemLink href="https://google.com" target="_blank">
-                🔍구글에서 이미지 찾기
-              </MainMenu.ItemLink>
-              <MainMenu.ItemLink href="https://pinterest.com" target="_blank">
-                📌핀터레스트에서 이미지 찾기
-              </MainMenu.ItemLink>
+              <MainMenu.Item>기능은 추후 추가될 예정입니다.</MainMenu.Item>
             </MainMenu>
             <WelcomeScreen>
               <WelcomeScreen.Center>

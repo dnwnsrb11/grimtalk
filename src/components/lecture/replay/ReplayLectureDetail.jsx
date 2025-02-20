@@ -53,7 +53,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor, 
       const formData = new FormData();
 
       formData.append('curriculumId', replayDate.curriculumId);
-      formData.append('video', video);
+      formData.append('replayUrl', video);
 
       try {
         const { data } = await _axiosAuth.post(`/replay`, formData, {
@@ -65,8 +65,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor, 
         });
         return data;
       } catch (error) {
-        console.error('업로드 에러:', error);
-        throw error;
+        alert('업로드 실패');
       }
     },
     onSuccess: () => {
@@ -99,7 +98,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor, 
         </div>
         <div className="mt-[10px] flex items-center justify-center">
           <button
-            className="bg-primary-color rounded-2xl border px-[120px] py-[20px] text-center"
+            className="rounded-2xl border bg-primary-color px-[120px] py-[20px] text-center"
             onClick={navigateReplay}
           >
             <p className="text-[18px] font-semibold text-white">다시보기</p>
@@ -108,16 +107,16 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor, 
       </div>
       {checkInstructor && (
         <div className="mt-[50px]">
-          <hr className="border-divider-color mt-[40px] border" />
+          <hr className="mt-[40px] border border-divider-color" />
           <div className="mt-[20px]">
             <h1 className="text-[32px] font-bold">다시보기 파일 업로드</h1>
             <div className="mt-[20px] flex justify-between gap-3">
               {video ? (
-                <div className="bg-bg-gray-color flex w-[85%] items-center rounded-2xl border">
+                <div className="flex w-[85%] items-center rounded-2xl border bg-bg-gray-color">
                   <p className="px-[20px] text-[18px] font-medium text-[#C6C6C6]">{video.name}</p>
                 </div>
               ) : (
-                <div className="bg-bg-gray-color flex w-[85%] items-center rounded-2xl border">
+                <div className="flex w-[85%] items-center rounded-2xl border bg-bg-gray-color">
                   <p className="px-[20px] text-[18px] font-medium text-[#C6C6C6]">
                     파일을 업로드 해주세요.
                   </p>
@@ -125,7 +124,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor, 
               )}
               <label
                 htmlFor="upload-video"
-                className="border-gray-border-color bg-bg-gray-color hover:bg-primary-color w-[12%] cursor-pointer rounded-2xl border px-[25px] py-[20px] text-center text-[18px] font-semibold text-[#343434] transition-all duration-200 hover:text-white"
+                className="w-[12%] cursor-pointer rounded-2xl border border-gray-border-color bg-bg-gray-color px-[25px] py-[20px] text-center text-[18px] font-semibold text-[#343434] transition-all duration-200 hover:bg-primary-color hover:text-white"
               >
                 영상 찾기
               </label>
@@ -140,17 +139,17 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor, 
           </div>
         </div>
       )}
-      <hr className="border-divider-color mt-[40px] border" />
+      <hr className="mt-[40px] border border-divider-color" />
       <div className="mt-[20px] flex justify-end gap-3">
         <button
-          className="border-gray-border-color bg-bg-gray-color rounded-2xl border p-[10px]"
+          className="rounded-2xl border border-gray-border-color bg-bg-gray-color p-[10px]"
           onClick={() => setIsActive(false)}
         >
           <p className="text-[18px] font-semibold">뒤로가기</p>
         </button>
         {checkInstructor && (
           <button
-            className="border-gray-border-color bg-primary-color rounded-2xl border p-[10px]"
+            className="rounded-2xl border border-gray-border-color bg-primary-color p-[10px]"
             onClick={() => addVideoMutaion.mutate()}
           >
             <p className="text-[18px] font-semibold text-white">자료 업로드</p>
