@@ -883,6 +883,7 @@ export const LivePage = () => {
   };
 
   //방장 화이트보드 컨트롤 기능
+  //방장 화이트보드 컨트롤 기능
   const moveReft = (direction, amount = 50) => {
     if (roomCreatorAPIRef.current) {
       const nowcurrentAppState = roomCreatorAPIRef.current.getAppState();
@@ -899,16 +900,14 @@ export const LivePage = () => {
       } else if (direction === 'scrollY-') {
         updateAppState.scrollY = nowcurrentAppState.scrollY - amount;
       } else if (direction === 'zoomIn') {
-        // 확대 기능
+        // 확대 기능 - zoom은 객체이므로 value 속성 사용
         updateAppState.zoom = {
-          value: Math.min(nowcurrentAppState.zoom.value + zoomFactor, 2), // 최대 200%로 제한
-          valueText: `${Math.round((nowcurrentAppState.zoom.value + zoomFactor) * 100)}%`,
+          value: Math.min(nowcurrentAppState.zoom.value + 0.1, 30),
         };
       } else if (direction === 'zoomOut') {
-        // 축소 기능
+        // 축소 기능 - zoom은 객체이므로 value 속성 사용
         updateAppState.zoom = {
-          value: Math.max(nowcurrentAppState.zoom.value - zoomFactor, 0.3), // 최소 30%로 제한
-          valueText: `${Math.round((nowcurrentAppState.zoom.value - zoomFactor) * 100)}%`,
+          value: Math.max(nowcurrentAppState.zoom.value - 0.1, 0.1),
         };
       }
 
@@ -952,10 +951,10 @@ export const LivePage = () => {
                 .filter(
                   (track) =>
                     track.participantIdentity ===
-                    participantUtils.getTokenParticipantName(
-                      liveStore.roomCreator,
-                      TOKEN_TYPES.RTC,
-                    ) && track.trackPublication.kind === 'audio',
+                      participantUtils.getTokenParticipantName(
+                        liveStore.roomCreator,
+                        TOKEN_TYPES.RTC,
+                      ) && track.trackPublication.kind === 'audio',
                 )
                 .map((remoteTrack) => (
                   <AudioComponent
@@ -981,14 +980,14 @@ export const LivePage = () => {
                 participantUtils.isCreator(nickname)
                   ? localTrack
                   : remoteTracks.find(
-                    (track) =>
-                      track.trackPublication?.kind === 'video' &&
-                      track.participantIdentity ===
-                      participantUtils.getTokenParticipantName(
-                        liveStore.roomCreator,
-                        TOKEN_TYPES.RTC,
-                      ),
-                  )?.trackPublication?.videoTrack
+                      (track) =>
+                        track.trackPublication?.kind === 'video' &&
+                        track.participantIdentity ===
+                          participantUtils.getTokenParticipantName(
+                            liveStore.roomCreator,
+                            TOKEN_TYPES.RTC,
+                          ),
+                    )?.trackPublication?.videoTrack
               }
               participantIdentity={
                 participantUtils.isCreator(nickname) ? nickname : liveStore.roomCreator || ''
@@ -1260,6 +1259,12 @@ export const LivePage = () => {
                         fill={'#2F2F34'}
                         className="rotate-90 group-hover:fill-[#FF4F28]"
                       />
+                    </button>
+                    <button onClick={() => moveReft('zoomIn')} className="group">
+                      <p className="text-[28px] font-thin"> + </p>
+                    </button>
+                    <button onClick={() => moveReft('zoomOut')} className="group">
+                      <p className="text-[28px] font-thin"> - </p>
                     </button>
                     <div className="absolute -top-0 -z-10 rounded-xl border p-2 opacity-0 transition-all duration-200 group-hover:-top-14 group-hover:opacity-100">
                       <p>방장보드 조절</p>
