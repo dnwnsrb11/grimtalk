@@ -3,10 +3,12 @@ import '@/styles/live.css';
 import { Excalidraw, exportToBlob, MainMenu, WelcomeScreen } from '@excalidraw/excalidraw';
 import { LiveKitRoom } from '@livekit/components-react';
 import { Client } from '@stomp/stompjs';
+import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import { _axiosAuth } from '@/api/instance';
 import {
   InstructorExportImage,
   InstructorLeaveLive,
@@ -19,7 +21,6 @@ import {
 } from '@/api/live';
 import { useNotificationStore } from '@/api/notification';
 import { FooterIcon, LeftArrowIcon, OpacityIcon, RightArrowIcon } from '@/components/common/icons';
-
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
@@ -223,6 +224,40 @@ export const LivePage = () => {
       });
     }
   };
+
+  // 수강생의 경우
+  const [shouldFetch, setShouldFetch] = useState(false);
+
+  // 마운트 2초 후 요청 활성화
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShouldFetch(true);
+    }, 7000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const {
+    data: updateElementHistory,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['updateElementHistory'],
+    queryFn: async () => {
+      const { data } = await _axiosAuth.get(
+        `https://www.grimtalk.com:28080/overall/json/퍼스널 컬러와 심리학`,
+      );
+      if (roomCreatorAPIRef?.current && data.message.elements) {
+        roomCreatorAPIRef.current.updateScene({
+          elements: data.message.elements,
+        });
+      }
+      return data.message.elements;
+    },
+    enabled: !participantUtils.isCreator(nickname) && shouldFetch, // 방장이 아니고 shouldFetch가 true일 때만 활성화
+    refetchInterval: false, // 주기적인 요청 안 보내기
+    refetchOnWindowFocus: false, // 창 포커스 시 재요청 안 함
+  });
 
   // STOMP 연결 관리
   const setupStompConnection = useCallback(() => {
