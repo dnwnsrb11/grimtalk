@@ -808,6 +808,32 @@ export const LivePage = () => {
     });
   };
 
+  //방장 화이트보드 컨트롤 기능
+  const moveReft = (direction, amount = 50) => {
+    if (roomCreatorAPIRef.current) {
+      const nowcurrentAppState = roomCreatorAPIRef.current.getAppState();
+
+      //현재 값을 복사
+      const updateAppState = { ...nowcurrentAppState };
+
+      if (direction === 'scrollX+') {
+        updateAppState.scrollX = nowcurrentAppState.scrollX + amount;
+      } else if (direction === 'scrollX-') {
+        updateAppState.scrollX = nowcurrentAppState.scrollX - amount;
+      } else if (direction === 'scrollY+') {
+        updateAppState.scrollY = nowcurrentAppState.scrollY + amount;
+      } else if (direction === 'scrollY-') {
+        updateAppState.scrollY = nowcurrentAppState.scrollY - amount;
+      }
+
+      roomCreatorAPIRef.current.updateScene({
+        appState: updateAppState,
+      });
+    }
+  };
+
+  moveReft(scrollX);
+
   const goReplayPage = () => {
     navigate(`/replay/${curriculumId}`);
   };
@@ -1125,7 +1151,7 @@ export const LivePage = () => {
                 </button>
                 {/* 반장 엑스칼리 컨트롤 */}
                 <div className="border">
-                  <button className="border">
+                  <button className="border" onClick={() => moveReft()}>
                     <p>왼쪽</p>
                   </button>
                 </div>
