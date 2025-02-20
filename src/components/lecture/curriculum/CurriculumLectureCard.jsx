@@ -13,7 +13,7 @@ export const CurriculumLectureCard = ({ curriculum, instructorId, instructorNick
 
   const handleJoinLive = () => {
     if (!id) {
-      toast.error('로그인이 필요한 서비스입니다.');
+      toast.error('로그인 후 이용해주세요.');
       navigate('/login');
       return;
     }

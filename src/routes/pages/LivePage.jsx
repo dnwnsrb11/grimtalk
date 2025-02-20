@@ -18,7 +18,8 @@ import {
   useLiveCount,
 } from '@/api/live';
 import { useNotificationStore } from '@/api/notification';
-import { FooterIcon, LeftArrowIcon, OpacityIcon } from '@/components/common/icons';
+import { FooterIcon, LeftArrowIcon, OpacityIcon, RightArrowIcon } from '@/components/common/icons';
+
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
@@ -49,6 +50,7 @@ export const LivePage = () => {
   const { id, nickname } = useAuthStore((state) => state.userData);
   const { state } = useLocation();
   const curriculumId = state?.curriculumId;
+  const lectureId = state?.lectureId;
   const [shouldCheckLive, setShouldCheckLive] = useState(false);
   const { data: liveCount } = useLiveCount(curriculumId);
   const lastNotification = useNotificationStore((state) => state.lastNotification);
@@ -832,8 +834,50 @@ export const LivePage = () => {
     });
   };
 
+  //방장 화이트보드 컨트롤 기능
+  const moveReft = (direction, amount = 50) => {
+    if (roomCreatorAPIRef.current) {
+      const nowcurrentAppState = roomCreatorAPIRef.current.getAppState();
+
+      //현재 값을 복사
+      const updateAppState = { ...nowcurrentAppState };
+
+      if (direction === 'scrollX+') {
+        updateAppState.scrollX = nowcurrentAppState.scrollX + amount;
+      } else if (direction === 'scrollX-') {
+        updateAppState.scrollX = nowcurrentAppState.scrollX - amount;
+      } else if (direction === 'scrollY+') {
+        updateAppState.scrollY = nowcurrentAppState.scrollY + amount;
+      } else if (direction === 'scrollY-') {
+        updateAppState.scrollY = nowcurrentAppState.scrollY - amount;
+      } else if (direction === 'zoomIn') {
+        // 확대 기능
+        updateAppState.zoom = {
+          value: Math.min(nowcurrentAppState.zoom.value + zoomFactor, 2), // 최대 200%로 제한
+          valueText: `${Math.round((nowcurrentAppState.zoom.value + zoomFactor) * 100)}%`,
+        };
+      } else if (direction === 'zoomOut') {
+        // 축소 기능
+        updateAppState.zoom = {
+          value: Math.max(nowcurrentAppState.zoom.value - zoomFactor, 0.3), // 최소 30%로 제한
+          valueText: `${Math.round((nowcurrentAppState.zoom.value - zoomFactor) * 100)}%`,
+        };
+      }
+
+      roomCreatorAPIRef.current.updateScene({
+        appState: updateAppState,
+      });
+    }
+  };
+
+  moveReft(scrollX);
+
   const goReplayPage = () => {
-    navigate(`/replay/${curriculumId}`);
+    try {
+      navigate(`/replay/${curriculumId}`, { state: { lectureId: lectureId } });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -1144,13 +1188,54 @@ export const LivePage = () => {
           ) : (
             <div className="flex h-[calc(100vh-50px)] flex-col">
               {/* 겹치기 토글 버튼 */}
-              <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
+              <div className="absolute bottom-4 left-1/2 z-30 flex -translate-x-1/2 gap-2">
                 <button
                   onClick={() => setIsOverlayMode(!isOverlayMode)}
                   className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
                 >
                   {isOverlayMode ? '겹치기 해제' : '겹치기'}
                 </button>
+                {/* 반장 엑스칼리 컨트롤 */}
+                <div className="flex items-center justify-center gap-3 rounded-xl border bg-[#ECECF4] p-2">
+                  <div className="group relative z-10 flex items-center justify-center gap-2">
+                    <button onClick={() => moveReft('scrollX-')} className="group">
+                      <RightArrowIcon
+                        fill={'#2F2F34'}
+                        className="rotate-180 group-hover:fill-[#FF4F28]"
+                      />
+                    </button>
+                    <button onClick={() => moveReft('scrollX+')} className="group">
+                      <RightArrowIcon fill={'#2F2F34'} className="group-hover:fill-[#FF4F28]" />
+                    </button>
+                    <button onClick={() => moveReft('scrollY-')} className="group">
+                      <LeftArrowIcon
+                        fill={'#2F2F34'}
+                        className="rotate-90 group-hover:fill-[#FF4F28]"
+                      />
+                    </button>
+                    <button onClick={() => moveReft('scrollY+')} className="group">
+                      <RightArrowIcon
+                        fill={'#2F2F34'}
+                        className="rotate-90 group-hover:fill-[#FF4F28]"
+                      />
+                    </button>
+                    <button
+                      onClick={() => moveReft('zoomIn')}
+                      className="text-[#2F2F34] hover:text-[#FF4F28]"
+                    >
+                      <p className="text-[24px] font-normal"> + </p>
+                    </button>
+                    <button
+                      onClick={() => moveReft('zoomOut')}
+                      className="text-[#2F2F34] hover:text-[#FF4F28]"
+                    >
+                      <p className="text-[24px] font-normal"> - </p>
+                    </button>
+                    <div className="absolute -top-0 -z-10 rounded-xl border p-2 opacity-0 transition-all duration-200 group-hover:-top-14 group-hover:opacity-100">
+                      <p>방장보드 조절</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className={`relative flex-1 ${isOverlayMode ? '' : 'flex gap-2'}`}>

@@ -7,7 +7,6 @@ import { Banner } from '@/components/mainPages/home/Banner';
 import { CategoryList } from '@/components/mainPages/home/category/CategoryList';
 import { LectureItem } from '@/components/mainPages/home/category/LectureItem';
 
-
 export const MainPageCategory = () => {
   const [selectedCategory, setSelectCategory] = useState('');
   const location = useLocation();
@@ -28,7 +27,7 @@ export const MainPageCategory = () => {
     queryKey: ['categorySearch', selectedCategory, searchKeywordQuery],
     queryFn: async () => {
       const { data } = await _axios.get(
-        `/lecture/search/combined?keyword=${searchKeywordQuery}&category=${selectedCategory}&page=1&size=12`,
+        `/lecture/search/combined?keyword=${searchKeywordQuery}&category=${selectedCategory}&page=1&size=100`,
       );
       return data.body.data.list;
     },
@@ -88,7 +87,7 @@ export const MainPageCategory = () => {
       </div>
 
       {/* ✅ "더 보기" 버튼 - 4개 이상일 경우만 표시 */}
-      {sortedLectures.length > visibleLecturesCount && (
+      {sortedLectures.length >= visibleLecturesCount && (
         <div className="mt-4 flex justify-center">
           <button
             onClick={loadMoreLectures}
