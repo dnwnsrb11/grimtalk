@@ -49,6 +49,7 @@ export const LivePage = () => {
   const { id, nickname } = useAuthStore((state) => state.userData);
   const { state } = useLocation();
   const curriculumId = state?.curriculumId;
+  const lectureId = state?.lectureId;
   const [shouldCheckLive, setShouldCheckLive] = useState(false);
   const { data: liveCount } = useLiveCount(curriculumId);
   const lastNotification = useNotificationStore((state) => state.lastNotification);
@@ -833,7 +834,11 @@ export const LivePage = () => {
   };
 
   const goReplayPage = () => {
-    navigate(`/replay/${curriculumId}`);
+    try {
+      navigate(`/replay/${curriculumId}`, { state: { lectureId: lectureId } });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

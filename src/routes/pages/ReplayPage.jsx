@@ -15,7 +15,6 @@ import {
 // import sendData from '@/assets/test/testPainte.json';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReplayWorkList } from '@/components/replayPage/ReplayWorkList';
-import { handleApiError } from '@/utils/errorHandler';
 
 export const ReplayPage = () => {
   const navigate = useNavigate();
