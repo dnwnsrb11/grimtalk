@@ -283,7 +283,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                           toast.error('로그인 후 이용해주세요.');
                           return;
                         }
-                        subscribeSubmit;
+                        subscribeSubmit();
                       }}
                     >
                       <SubscribeIcon
@@ -348,7 +348,7 @@ export const LectureProfile = ({ checkInstructor, lecture, setSelectedCategory }
                       toast.error('로그인 후 이용해주세요.');
                       return;
                     }
-                    favoriteSubmit;
+                    favoriteSubmit();
                   }}
                 >
                   <FavoriteIcon
