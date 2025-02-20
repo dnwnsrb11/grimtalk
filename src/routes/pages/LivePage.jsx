@@ -233,7 +233,7 @@ export const LivePage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShouldFetch(true);
-    }, 8000);
+    }, 7000);
 
     return () => clearTimeout(timer);
   }, []);
