@@ -7,8 +7,10 @@ import { _axios, _axiosAuth } from '@/api/instance';
 import { StarReviewIcon } from '@/components/common/icons';
 import { LoadingComponents } from '@/components/common/LoadingComponents';
 import { ReviewLectureCard } from '@/components/lecture/review/ReviewLectureCard';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const LectureReview = ({ lecture, checkInstructor }) => {
+  const { id } = useAuthStore((state) => state.userData);
   const queryClient = useQueryClient();
   const MAX_LENGTH = 255;
   const navigate = useNavigate();
@@ -136,7 +138,14 @@ export const LectureReview = ({ lecture, checkInstructor }) => {
               <div className="mt-[10px] flex justify-end">
                 <button
                   className="rounded-2xl bg-primary-color px-[30px] py-[10px]"
-                  onClick={() => addReviewMutation.mutate()}
+                  onClick={() => {
+                    if (!id) {
+                      navigate('/login');
+                      toast.error('로그인 후 이용해주세요.');
+                      return;
+                    }
+                    addReviewMutation.mutate();
+                  }}
                 >
                   <p className="text-[18px] font-semibold text-white">리뷰 작성하기</p>
                 </button>

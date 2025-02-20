@@ -85,6 +85,7 @@ export const MainPageLive = () => {
       navigate(`/live/${liveRoom.curriculumName}`, {
         state: {
           curriculumId: liveRoom.curriculumId,
+          lectureId: liveRoom.lectureId,
         },
       });
     } catch (error) {
