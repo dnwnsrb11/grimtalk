@@ -1116,13 +1116,19 @@ export const LivePage = () => {
           ) : (
             <div className="flex h-[calc(100vh-50px)] flex-col">
               {/* 겹치기 토글 버튼 */}
-              <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
+              <div className="absolute bottom-4 left-1/2 z-30 flex -translate-x-1/2 gap-2">
                 <button
                   onClick={() => setIsOverlayMode(!isOverlayMode)}
                   className="rounded-lg bg-primary-color px-4 py-2 text-white transition-all hover:border-none hover:opacity-90"
                 >
                   {isOverlayMode ? '겹치기 해제' : '겹치기'}
                 </button>
+                {/* 반장 엑스칼리 컨트롤 */}
+                <div className="border">
+                  <button className="border">
+                    <p>왼쪽</p>
+                  </button>
+                </div>
               </div>
 
               <div className={`relative flex-1 ${isOverlayMode ? '' : 'flex gap-2'}`}>
