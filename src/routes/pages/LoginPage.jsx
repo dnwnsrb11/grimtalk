@@ -29,7 +29,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="mt-[200px] flex h-full flex-col items-center justify-center gap-2 pb-[250px]">
+    <div className="mt-[10%] flex h-full flex-col items-center justify-center gap-2 pb-[250px]">
       <div className="mb-[30px]">
         <Lottie options={defaultOptions} height={80} width={330} />
       </div>
