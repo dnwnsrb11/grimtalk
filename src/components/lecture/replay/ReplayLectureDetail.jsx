@@ -29,7 +29,6 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor, 
   const uploadVideo = (file) => {
     if (file) {
       setVideo(file);
-      console.log(file);
     }
   };
   const uploadDrawingImg = (file) => {
@@ -66,8 +65,7 @@ export const ReplayLectureDetail = ({ replayDate, setIsActive, checkInstructor, 
         });
         return data;
       } catch (error) {
-        console.error('업로드 에러:', error);
-        throw error;
+        alert('업로드 실패');
       }
     },
     onSuccess: () => {
