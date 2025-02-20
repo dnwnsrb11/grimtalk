@@ -17,7 +17,7 @@ import {
   useLiveCount,
 } from '@/api/live';
 import { useNotificationStore } from '@/api/notification';
-import { FooterIcon, LeftArrowIcon, OpacityIcon } from '@/components/common/icons';
+import { FooterIcon, LeftArrowIcon, OpacityIcon, RightArrowIcon } from '@/components/common/icons';
 import { AudioComponent } from '@/components/live/AudioComponent';
 import { CustomChat } from '@/components/live/CustomChat';
 import { LoadingScreen } from '@/components/live/LoadingScreen';
@@ -862,10 +862,10 @@ export const LivePage = () => {
                 .filter(
                   (track) =>
                     track.participantIdentity ===
-                      participantUtils.getTokenParticipantName(
-                        liveStore.roomCreator,
-                        TOKEN_TYPES.RTC,
-                      ) && track.trackPublication.kind === 'audio',
+                    participantUtils.getTokenParticipantName(
+                      liveStore.roomCreator,
+                      TOKEN_TYPES.RTC,
+                    ) && track.trackPublication.kind === 'audio',
                 )
                 .map((remoteTrack) => (
                   <AudioComponent
@@ -891,14 +891,14 @@ export const LivePage = () => {
                 participantUtils.isCreator(nickname)
                   ? localTrack
                   : remoteTracks.find(
-                      (track) =>
-                        track.trackPublication?.kind === 'video' &&
-                        track.participantIdentity ===
-                          participantUtils.getTokenParticipantName(
-                            liveStore.roomCreator,
-                            TOKEN_TYPES.RTC,
-                          ),
-                    )?.trackPublication?.videoTrack
+                    (track) =>
+                      track.trackPublication?.kind === 'video' &&
+                      track.participantIdentity ===
+                      participantUtils.getTokenParticipantName(
+                        liveStore.roomCreator,
+                        TOKEN_TYPES.RTC,
+                      ),
+                  )?.trackPublication?.videoTrack
               }
               participantIdentity={
                 participantUtils.isCreator(nickname) ? nickname : liveStore.roomCreator || ''
@@ -1150,9 +1150,18 @@ export const LivePage = () => {
                   {isOverlayMode ? '겹치기 해제' : '겹치기'}
                 </button>
                 {/* 반장 엑스칼리 컨트롤 */}
-                <div className="border">
-                  <button className="border" onClick={() => moveReft()}>
-                    <p>왼쪽</p>
+                <div className="flex items-center justify-center gap-3 rounded-xl border bg-[#ECECF4] p-2">
+                  <button onClick={() => moveReft('scrollX-')}>
+                    <RightArrowIcon fill={'#2F2F34'} className="rotate-180" />
+                  </button>
+                  <button onClick={() => moveReft('scrollX+')}>
+                    <RightArrowIcon fill={'#2F2F34'} />
+                  </button>
+                  <button onClick={() => moveReft('scrollY-')}>
+                    <LeftArrowIcon fill={'#2F2F34'} className="rotate-90" />
+                  </button>
+                  <button onClick={() => moveReft('scrollY+')}>
+                    <RightArrowIcon fill={'#2F2F34'} className="rotate-90" />
                   </button>
                 </div>
               </div>
