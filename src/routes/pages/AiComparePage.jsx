@@ -348,7 +348,7 @@ export const AiComparePage = () => {
                   </h1>
                 </div>
                 <div>
-                  <p className="break-keep">{analysisResult.color_comment}</p>
+                  <p className="break-keep">{analysisResult.structure_comment}</p>
                 </div>
               </div>
             </div>
