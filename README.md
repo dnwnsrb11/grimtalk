@@ -6,6 +6,7 @@
 - [🌐그림톡 서비스 바로가기](http://www.grimtalk.com)
 - [🎬영상 포트폴리오](https://youtu.be/ytY4NvndIQs)
 - [🎞시연 영상](https://youtu.be/ad_1H_TuAF4)
+- [개발회고(개인)](https://velog.io/@dnwnsrb11/SSAFY-12%EA%B8%B0-2%ED%95%99%EA%B8%B0-%EA%B3%B5%ED%86%B5-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%9A%B0%EC%88%98%ED%8C%80)
 
 ---
 
