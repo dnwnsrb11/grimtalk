@@ -1,4 +1,4 @@
-# 🎨 그림톡 (프론트엔드 - repositories)
+![15](https://github.com/user-attachments/assets/53def5b4-ed25-4920-b96e-018890696507)![12](https://github.com/user-attachments/assets/3f28817f-0a35-461e-981f-5c46fd45de98)![4](https://github.com/user-attachments/assets/18512ced-e305-4996-a510-e160794301c3)# 🎨 그림톡 (프론트엔드 - repositories)
 
 > **라이브로 배우고, 누구나 강사가 되는 그림 플랫폼!**  
 > 실시간 소통 기반 미술 교육 플랫폼
@@ -28,7 +28,8 @@
 - AI 기반의 그림 유사도 측정을 통해 효율적인 피드백 가능
 
 ### 메인페이지
-![mainpage](GIF 모음집/mainpage.gif)
+<img width="1453" alt="스크린샷 2025-03-16 오후 4 55 37" src="https://github.com/user-attachments/assets/ef4d9f1a-5b6a-4787-b61f-674314c93745" />
+
 ---
 
 ## 🚀 주요 기능
@@ -182,10 +183,12 @@ src
 └── service           # 비즈니스 로직을 처리하는 서비스 계층
 ```
 ### 🏗️ 아키텍처
-![architecture](사진 모음집/architecture.png)
+![2](https://github.com/user-attachments/assets/29af8cca-ab49-4400-8797-23fbcea9b995)
+
 
 ### 📚 ERD
-![erd](사진 모음집/erd.png)
+![3](https://github.com/user-attachments/assets/9f284c7d-2f6f-4b1f-a930-a3d5eb4d53ae)
+
 
 ---
 
@@ -263,6 +266,36 @@ src
 - **완성도를 위한 QA -> 3차 QA까지 했으며 약 150개**
 - 기획, 요구사항 명세서, ERD구성, API 명세서
 
+
+---
+
+# 기능 시연
+## 강사 시점
+### 로그인
+![4](https://github.com/user-attachments/assets/c9eb4045-36ce-4cab-9b81-aa4b807088a4)
+### 내 강의 페이지
+![5](https://github.com/user-attachments/assets/417c993b-8d97-496c-b22f-1ff5eb1c7e57)
+### 질문 답변
+![6](https://github.com/user-attachments/assets/aaa21d4d-361e-481a-a65f-75480b9869f3)
+### 라이브 시작
+![7](https://github.com/user-attachments/assets/24779384-a9cb-4c75-8294-6db364b3831e)
+### 라이브 강의
+![8](https://github.com/user-attachments/assets/e83bd5f2-8181-41a6-9288-73655e54d37d)
+### 다시보기
+![9](https://github.com/user-attachments/assets/fe0eff68-c13a-445a-b24f-5782f37f30a1)
+
+---
+## 수강생 시점
+### 로그인
+![10](https://github.com/user-attachments/assets/473cb36f-263b-49a8-a5c4-6d7565e77c7d)
+### 라이브 입장
+![12](https://github.com/user-attachments/assets/846af80a-68d6-41b5-85c1-2d7d295eb80a)
+### AI 그림 비교
+![14](https://github.com/user-attachments/assets/aa13261c-3231-4ee3-99f7-2af00f3bcb70)
+### 다시보기
+![15](https://github.com/user-attachments/assets/26859276-681a-4cb7-a5ef-7f7ed9702a3c)
+### 리뷰 작성
+![16](https://github.com/user-attachments/assets/b4193680-0ef0-41d3-92d6-84b3c2af303c)
 
 ---
 
