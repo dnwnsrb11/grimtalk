@@ -1,4 +1,4 @@
-![15](https://github.com/user-attachments/assets/53def5b4-ed25-4920-b96e-018890696507)![12](https://github.com/user-attachments/assets/3f28817f-0a35-461e-981f-5c46fd45de98)![4](https://github.com/user-attachments/assets/18512ced-e305-4996-a510-e160794301c3)# 🎨 그림톡 (프론트엔드 - repositories)
+🎨 그림톡 (프론트엔드 - repositories)
 
 > **라이브로 배우고, 누구나 강사가 되는 그림 플랫폼!**  
 > 실시간 소통 기반 미술 교육 플랫폼
